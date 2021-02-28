@@ -16,7 +16,7 @@
 // ----- 2. JSON Grammar -----
 
 JSON_text
-  = ws value:value ws { return value; }
+  = begin_array ws begin_object ws value:value ws end_object ws end_array { return value; }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -37,6 +37,7 @@ value
   / array
   / number
   / string
+  / directive
 
 false = "false" { return false; }
 null  = "null"  { return null;  }
@@ -142,6 +143,17 @@ quotation_mark
 
 unescaped
   = [^\0-\x1F\x22\x5C]
+
+// ----- 8. Diretivas -----
+
+directive
+  = repeat 
+  // / outras diretivas
+
+repeat
+  = "'" ws "repeat" ws "(" ws min:int ws "," ws max:int ws ")" ws "'" ws ":" ws val:value {
+    return Array(Math.floor(Math.random() * (max - min + 1)) + min).fill(val)
+ }
 
 // ----- Core ABNF Rules -----
 
