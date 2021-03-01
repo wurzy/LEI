@@ -2,7 +2,7 @@
   <div class="hello">
     <Navbar/>
     <div class="row">
-      <input class="btn btn-primary" type="button" value="Generate">
+      <input class="btn btn-primary" type="button" value="Generate" @click="generate">
     </div>
     <div class="row">
       <div class="col-md-6">
@@ -27,6 +27,7 @@
 
 <script>
 import Navbar from '../components/Navbar.vue' 
+import {convert} from '../grammar/convert.js'
 
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -114,8 +115,10 @@ export default {
     },
     methods: {
       onCmCodeChange(newcode){
-        console.log(newcode)
         this.code = newcode
+      },
+      generate(){
+        this.result = convert(this.code)
       }
     },
     computed: {
