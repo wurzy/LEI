@@ -64,9 +64,10 @@ object
     { return members !== null ? members: {}; }
 
 member
-  = name:string name_separator value:value {
+  = name:object_name name_separator value:value {
       return { name: name, value: value };
     }
+  / res:directive { return res }
 
 // ----- 5. Arrays -----
 
@@ -115,7 +116,10 @@ zero
 // ----- 7. Strings -----
 
 string "string"
-  = quotation_mark chars:char* quotation_mark { return chars.join(""); }
+  = quotation_mark chars:char* quotation_mark { console.log(chars.join("")); return chars.join(""); }
+
+object_name
+  = chars:[a-zA-Z_]+ { console.log(chars.join("")); return chars.join(""); }
 
 char
   = unescaped
@@ -147,16 +151,20 @@ unescaped
 // ----- 8. Diretivas -----
 
 directive
-  = repeat 
+  = repeat
+  / range
   // / outras diretivas
 
 repeat
-  = "'" ws "repeat" ws "(" ws min:int ws "," ws max:int ws ")" ws "'" ws ":" ws val:value {
+  = "'" ws "repeat" ws "(" ws min:number ws "," ws max:number ws ")" ws "'" ws ":" ws val:value {
     return Array(Math.floor(Math.random() * (max - min + 1)) + min).fill(val)
+ }
+ / "'" ws "repeat" ws "(" ws min:number ws ")" ws "'" ws ":" ws val:value {
+    return Array(min).fill(val)
  }
 
 range
-  = "range(" num:int ")" {
+  = "range(" num:number ")" {
     return [...Array(num).keys()];
   }
 
