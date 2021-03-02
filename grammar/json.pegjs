@@ -116,10 +116,10 @@ zero
 // ----- 7. Strings -----
 
 string "string"
-  = quotation_mark chars:char* quotation_mark { console.log(chars.join("")); return chars.join(""); }
+  = quotation_mark chars:char* quotation_mark { return chars.join(""); }
 
 object_name
-  = chars:[a-zA-Z_]+ { console.log(chars.join("")); return chars.join(""); }
+  = chars:[a-zA-Z_]+ { return chars.join(""); }
 
 char
   = unescaped
@@ -165,7 +165,7 @@ repeat
 
 range
   = "range(" num:number ")" {
-    return [...Array(num).keys()];
+    return [...Array(Math.floor(num)).keys()];
   }
 
 // ----- Core ABNF Rules -----
