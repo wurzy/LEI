@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <Navbar/>
     <div class="row">
       <input class="btn btn-primary" type="button" value="Generate" @click="generate">
@@ -137,8 +137,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.row {max-width: 100%;}
+.row {max-width: 100%;margin-left: -8px;}
 .col-md-6 {padding-right: 0px; height:100%; min-height: 745px;}
-.row{margin-left: -8px;}
 .btn{margin-left: 15px; margin-bottom: 3px;}
 </style>
