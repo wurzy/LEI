@@ -155,6 +155,11 @@ repeat
     return Array(Math.floor(Math.random() * (max - min + 1)) + min).fill(val)
  }
 
+range
+  = "range(" num:int ")" {
+    return [...Array(num).keys()];
+  }
+
 // ----- Core ABNF Rules -----
 
 // See RFC 4234, Appendix B (http://tools.ietf.org/html/rfc4234).
