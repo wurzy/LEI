@@ -1,9 +1,9 @@
+var parser = require("./parser.js")
+
 /**
  * Transforms DSL JSON-like to JSON Dataset
  * @param {String} text 
 */
-var parser = require("/src/grammar/parser.js")
-
 function convert(text) {
     console.log(JSON.stringify(parser.parse(text)))
     return JSON.stringify(parser.parse(text),null,2)

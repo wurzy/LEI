@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div>
     <Navbar/>
     <div class="row">
       <input class="btn btn-primary" type="button" value="Generate" @click="generate">
@@ -50,49 +50,36 @@ export default {
   },
   data() {
       return {
-        result: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+        result: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
         code: `[
+ {
+
+  'repeat(3)':
+  [
   {
-    'repeat(5, 10)': {
-      _id: '{{objectId()}}',
-      index: '{{index()}}',
-      guid: '{{guid()}}',
-      isActive: '{{bool()}}',
-      balance: '{{floating(1000, 4000, 2, "$0,0.00")}}',
-      picture: 'http://placehold.it/32x32',
-      age: '{{integer(20, 40)}}',
-      eyeColor: '{{random("blue", "brown", "green")}}',
-      name: {
-        first: '{{firstName()}}',
-        last: '{{surname()}}'
-      },
-      company: '{{company().toUpperCase()}}',
-      phone: '+1 {{phone()}}',
-      address: '{{integer(100, 999)}} {{street()}}, {{city()}}, {{state()}}, {{integer(100, 10000)}}',
-      about: '{{lorem(1, "paragraphs")}}',
-      registered: '{{moment(this.date(new Date(2014, 0, 1), new Date())).format("LLLL")}}',
-      latitude: '{{floating(-90.000001, 90)}}',
-      longitude: '{{floating(-180.000001, 180)}}',
-      tags: [
-        {
-          'repeat(5)': '{{lorem(1, "words")}}'
-        }
-      ],
-      range: range(10),
-      friends: [
-        {
-          'repeat(3)': {
-            id: '{{index()}}',
-            name: '{{firstName()}} {{surname()}}'
-          }
-        }
-      ],
-      favoriteFruit(tags) {
-        const fruits = ['apple', 'banana', 'strawberry'];
-        return fruits[tags.integer(0, fruits.length - 1)];
-      }
-    }
+   range: range(5),
+   string: "boas",
+   numero: 93,
+   name: {
+     first: "Hugo",
+     last: "Cardoso"
+   },
+   boolean: false
+  },
+  {
+   estudante: false,
+   trabalhador: true,
+   outros: null,
+   lista_exemplo: [
+     "string",
+     32,
+     { elem: 1, indice: 2, lista_nested: [1,2,3], range: range(3) }
+   ]
   }
+  ]
+
+
+ }
 ]`,
         cmOption: {
           tabSize: 4,
@@ -137,8 +124,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.row {max-width: 100%;}
+.row {max-width: 100%;margin-left: -8px;}
 .col-md-6 {padding-right: 0px; height:100%; min-height: 745px;}
-.row{margin-left: -8px;}
 .btn{margin-left: 15px; margin-bottom: 3px;}
 </style>
