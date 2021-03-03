@@ -37,7 +37,6 @@ value
   / array
   / number
   / string
-  / directive
 
 false = "false" { return false; }
 null  = "null"  { return null;  }
@@ -64,10 +63,9 @@ object
     { return members !== null ? members: {}; }
 
 member
-  = name:object_name name_separator value:value {
+  = name:string name_separator value:value {
       return { name: name, value: value };
     }
-  / res:directive { return res }
 
 // ----- 5. Arrays -----
 
@@ -118,9 +116,6 @@ zero
 string "string"
   = quotation_mark chars:char* quotation_mark { return chars.join(""); }
 
-object_name
-  = chars:[a-zA-Z_]+ { return chars.join(""); }
-
 char
   = unescaped
   / escape
@@ -147,26 +142,6 @@ quotation_mark
 
 unescaped
   = [^\0-\x1F\x22\x5C]
-
-// ----- 8. Diretivas -----
-
-directive
-  = repeat
-  / range
-  // / outras diretivas
-
-repeat
-  = "'" ws "repeat" ws "(" ws min:number ws "," ws max:number ws ")" ws "'" ws ":" ws val:value {
-    return Array(Math.floor(Math.random() * (max - min + 1)) + min).fill(val)
- }
- / "'" ws "repeat" ws "(" ws min:number ws ")" ws "'" ws ":" ws val:value {
-    return Array(min).fill(val)
- }
-
-range
-  = "range(" num:number ")" {
-    return [...Array(Math.floor(num)).keys()];
-  }
 
 // ----- Core ABNF Rules -----
 
