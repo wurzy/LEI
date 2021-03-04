@@ -56,6 +56,13 @@ value
   / string
   / directive
 
+simple_value
+  = false
+  / null
+  / true
+  / number
+  / string
+
 false = "false" { return false; }
 null  = "null"  { return null;  }
 true  = "true"  { return true;  }
@@ -138,6 +145,11 @@ zero
 string "string"
   = quotation_mark chars:char* quotation_mark { return chars.join(""); }
 
+lorem_string
+  = quotation_mark word:"words" quotation_mark { return word; }
+  / quotation_mark word:"sentences" quotation_mark { return word; }
+  / quotation_mark word:"paragraphs" quotation_mark { return word; }
+
 object_name
   = chars:[a-zA-Z0-9_]+ { return chars.join(""); }
 
@@ -216,6 +228,16 @@ mous_func
     var formatted = formatNumber(roundedRandom)
     var split = formatted.split('.')
     return unit + split[0].replace(/,/g, int_sep) + dec_sep + split[1]
+  }
+  / "random(" values:(
+      head:simple_value
+      tail:(value_separator v:simple_value { return v; })*
+      { return [head].concat(tail); }
+    )? ")" {
+      return values[Math.floor(Math.random() * values.length)];
+  }
+  / "lorem(" ws num:number ws "," ws units:lorem_string ws ")" {
+    return loremIpsum({ count: Math.floor(num), units })
   }
 
 // ----- 9. Diretivas -----
