@@ -1,0 +1,32 @@
+{
+  "kind": "collectionType",
+  "collectionName": "produtos",
+  "info": {
+    "name": "Produto"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "preco": {
+      "type": "decimal"
+    },
+    "quantidade": {
+      "type": "integer"
+    },
+    "descricao": {
+      "type": "text"
+    },
+    "categorias": {
+      "via": "produtos",
+      "collection": "categoria"
+    }
+  }
+}
