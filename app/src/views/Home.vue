@@ -55,34 +55,33 @@ export default {
         parser: parser,
         result: "",
         code: `[
- {
-
-  'repeat(3)':
-  [
-  {
-   range: range(5),
-   string: "boas",
-   numero: 93,
-   name: {
-     first: "Hugo",
-     last: "Cardoso"
-   },
-   boolean: false
-  },
-  {
-   estudante: false,
-   trabalhador: true,
-   outros: null,
-   lista_exemplo: [
-     "string",
-     32,
-     { elem: 1, indice: 2, lista_nested: [1,2,3], range: range(3) }
-   ]
-  }
-  ]
-
-
- }
+	'repeat(3)': [
+      {
+	  	range: range(5),
+	  	string: "boas",
+	  	numero: 93,
+	  	name: {
+	    	first: "Hugo",
+	    	last: "Cardoso"
+	  	},
+    	boolean: false
+	  },
+	  {
+	  	estudante: false,
+	  	trabalhador: true,
+	  	outros: null,
+	  	lista_exemplo: [
+	  		"string",
+	  		32,
+	  		{
+	  			elem: 1, 
+                indice: 2, 
+                lista_nested: [1,2,3], 
+                range: range(3) 
+            }
+    	]
+      }
+  	]
 ]`,
         cmOption: {
           tabSize: 4,

@@ -33,7 +33,7 @@
 // ----- 2. JSON Grammar -----
 
 JSON_text
-  = ws value:array ws { return value; }
+  = ws value:value ws { return value; }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -246,9 +246,8 @@ mous_func
 // ----- 9. Diretivas -----
 
 directive
-  = repeat
+  = "[" ws val:repeat  ws "]" { return val; }
   / range
-  // / outras diretivas
 
 repeat
   = "'" ws "repeat" ws "(" ws min:number ws "," ws max:number ws ")" ws "'" ws ":" ws val:value {
