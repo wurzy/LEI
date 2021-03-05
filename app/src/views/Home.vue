@@ -3,6 +3,7 @@
     <Navbar/>
     <div class="row">
       <input class="btn btn-primary" type="button" value="Generate" @click="generate">
+      <input class="btn btn-primary" type="button" value="Download" @click="download('dataset.json')">
     </div>
     <div class="row">
       <div class="col-md-6">
@@ -52,7 +53,7 @@ export default {
   data() {
       return {
         parser: parser,
-        result: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+        result: "",
         code: `[
  {
 
@@ -108,6 +109,23 @@ export default {
       },
       generate(){
         this.result = convert(this.code,this.parser)
+      },
+      download(filename){
+        if(this.result == "") {
+          alert("No dataset to download.")
+        }
+        else {
+          var element = document.createElement('a');
+          element.setAttribute('href', "data:text/json;charset=utf-8," + encodeURIComponent(this.result));
+          element.setAttribute('download', filename);
+
+          element.style.display = 'none';
+          document.body.appendChild(element);
+
+          element.click();
+
+          document.body.removeChild(element);
+        }
       }
     },
     computed: {
