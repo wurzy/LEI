@@ -198,6 +198,9 @@ mous_func
   / "integer(" ws min:number ws "," ws max:number ws ")" {
     return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1) + Math.floor(min));
   }
+  / "integer(" ws min:number ws "," ws max:number ws ",\"" ws unit:. ws "\")" {
+    return String(Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1) + Math.floor(min))) + unit;
+  }
   // gerar float aleatório sem especificação do nr de casas decimais
   / "floating(" ws min:number ws "," ws max:number ws ")" {
     var decimals = 3; //3 caracteres decimais por predefinição
