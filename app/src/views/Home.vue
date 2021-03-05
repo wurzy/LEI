@@ -13,7 +13,7 @@
                 @input="onCmCodeChange"
         />
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 col-md-offset-2">
         <codemirror
                 ref="output"
                 :value="result"
@@ -126,7 +126,9 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.row {max-width: 100%;margin-left: -8px;}
-.col-md-6 {padding-right: 0px; height:100%; min-height: 745px;}
+.row {margin-left: -8px; max-width: 100%}
+.col-md-6 {padding-right: 0px; height: 89vh !important;}
 .btn{margin-left: 15px; margin-bottom: 3px;}
+.vue-codemirror{height:100%}
+
 </style>
