@@ -28,6 +28,7 @@
 <script>
 import Navbar from '../components/Navbar.vue' 
 import {convert} from '../grammar/convert.js'
+import parser from '../grammar/parser.js'
 
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -50,6 +51,7 @@ export default {
   },
   data() {
       return {
+        parser: parser,
         result: "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
         code: `[
  {
@@ -105,7 +107,7 @@ export default {
         this.code = newcode
       },
       generate(){
-        this.result = convert(this.code)
+        this.result = convert(this.code,this.parser)
       }
     },
     computed: {
