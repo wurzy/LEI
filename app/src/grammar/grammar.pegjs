@@ -220,14 +220,14 @@ mous_func
     return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
   }
   // gerar float aleatório com especificação do nr de casas decimais e formato
-  / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws "," ws "\"" unit:. "0" int_sep:[.,] "0" dec_sep:[.,] "00\"" ws ")" {
+  / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws "," ws "\"0" int_sep:[.,] "0" dec_sep:[.,] "00" unit:. "\"" ws ")" {
     var random = min + (max - min) * Math.random();
     var decimals = Math.floor(dec)
     var roundedRandom = String(Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals))
 
     var formatted = formatNumber(roundedRandom)
     var split = formatted.split('.')
-    return unit + split[0].replace(/,/g, int_sep) + dec_sep + split[1]
+    return split[0].replace(/,/g, int_sep) + dec_sep + split[1] + unit
   }
   / "random(" values:(
       head:simple_value
