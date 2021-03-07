@@ -55,8 +55,19 @@ export default {
         parser: parser,
         result: "",
         code: `[
-	'repeat(3)': [
-      {
+	'repeat(3)': {
+        _id: '{{objectId()}}',
+        guid: '{{guid()}}',
+        boleano: '{{bool()}}',
+        inteiro_2args: '{{integer(30,70)}}',
+        inteiro_3args: '{{integer(100,400,"$")}}',
+        float_2args: '{{floating(-180.0451, 180)}}',
+        float_3args: '{{floating(-180.0451, 180, 2)}}',
+        float_4args: '{{floating(1000, 4000, 2, "0,0.00€")}}',
+        aleatorio: '{{random("blue", null, true, false, 23, 17.56)}}',
+        lorem_palavras: '{{lorem(4,"words")}}',
+        lorem_frases: '{{lorem(3,"sentences")}}',
+        lorem_paragrafos: '{{lorem(2,"paragraphs")}}',
 	  	range: range(5),
 	  	string: "boas",
 	  	numero: 93,
@@ -64,9 +75,7 @@ export default {
 	    	first: "Hugo",
 	    	last: "Cardoso"
 	  	},
-    	boolean: false
-	  },
-	  {
+    	boolean: false,
 	  	estudante: false,
 	  	trabalhador: true,
 	  	outros: null,
@@ -80,8 +89,7 @@ export default {
                 range: range(3) 
             }
     	]
-      }
-  	]
+    }
 ]`,
         cmOption: {
           tabSize: 4,

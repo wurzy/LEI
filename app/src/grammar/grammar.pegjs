@@ -130,7 +130,7 @@ zero
 // ----- 7. Strings -----
 
 string "string"
-  = string_mark chars:char* string_mark { return chars.join(""); }
+  = quotation_mark chars:char* quotation_mark { return chars.join(""); }
 
 lorem_string
   = quotation_mark word:"words" quotation_mark { return word; }
@@ -138,7 +138,7 @@ lorem_string
   / quotation_mark word:"paragraphs" quotation_mark { return word; }
 
 key
-  = chars:[a-z_][a-zA-Z0-9_]* { return chars.join(""); }
+  = head:[a-z_] tail:[a-zA-Z0-9_]* { return head.concat(tail.join("")); }
 
 char
   = unescaped
@@ -161,10 +161,6 @@ char
 escape = "\\"
 
 quotation_mark = '"'
-
-apostrophe = "'"
-
-string_mark = quotation_mark / apostrophe
 
 unescaped
   = [^\0-\x1F\x22\x5C]
@@ -230,6 +226,21 @@ mous_func
   }
   / "lorem(" ws num:number ws "," ws units:lorem_string ws ")" {
     return loremIpsum({ count: Math.floor(num), units })
+  }
+  / "distrito()" {
+    Distrito.getRandom()
+      .then(dados => {return dados})
+      .catch(e => {return e})
+  }
+  / "concelho()" {
+    Concelho.getRandom()
+      .then(dados => {return dados})
+      .catch(e => {return e})
+  }
+  / "freguesia()" {
+    Freguesia.getRandom()
+      .then(dados => {return dados})
+      .catch(e => {return e})
   }
 
 // ----- 9. Diretivas -----

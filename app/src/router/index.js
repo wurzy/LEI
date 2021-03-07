@@ -2,6 +2,19 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 
+/*import mongoose from 'mongoose'
+
+mongoose.connect('mongodb://127.0.0.1:27017/LEI', 
+      { useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 5000});
+  
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'Erro de conexão ao MongoDB...'));
+db.once('open', function() {
+  console.log("Conexão ao MongoDB realizada com sucesso...")
+});*/
+
 Vue.use(VueRouter)
 
 const routes = [
