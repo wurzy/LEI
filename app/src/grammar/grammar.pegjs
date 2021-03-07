@@ -1,17 +1,5 @@
-// JSON Grammar
+// DSL Grammar
 // ============
-//
-// Based on the grammar from RFC 7159 [1].
-//
-// Note that JSON is also specified in ECMA-262 [2], ECMA-404 [3], and on the
-// JSON website [4] (somewhat informally). The RFC seems the most authoritative
-// source, which is confirmed e.g. by [5].
-//
-// [1] http://tools.ietf.org/html/rfc7159
-// [2] http://www.ecma-international.org/publications/standards/Ecma-262.htm
-// [3] http://www.ecma-international.org/publications/standards/Ecma-404.htm
-// [4] http://json.org/
-// [5] https://www.tbray.org/ongoing/When/201x/2014/03/05/RFC7159-JSON
 
 {
   function hex (value) {
@@ -88,10 +76,9 @@ object
     { return members !== null ? members: {}; }
 
 member
-  = name:object_name name_separator value:object_value {
+  = name:key name_separator value:object_value {
       return { name: name, value: value };
     }
-  / res:directive { return res }
 
 object_value
   = value / moustaches
@@ -143,15 +130,15 @@ zero
 // ----- 7. Strings -----
 
 string "string"
-  = quotation_mark chars:char* quotation_mark { return chars.join(""); }
+  = string_mark chars:char* string_mark { return chars.join(""); }
 
 lorem_string
   = quotation_mark word:"words" quotation_mark { return word; }
   / quotation_mark word:"sentences" quotation_mark { return word; }
   / quotation_mark word:"paragraphs" quotation_mark { return word; }
 
-object_name
-  = chars:[a-zA-Z0-9_]+ { return chars.join(""); }
+key
+  = chars:[a-z_][a-zA-Z0-9_]* { return chars.join(""); }
 
 char
   = unescaped
@@ -171,11 +158,13 @@ char
     )
     { return sequence; }
 
-escape
-  = "\\"
+escape = "\\"
 
-quotation_mark
-  = '"'
+quotation_mark = '"'
+
+apostrophe = "'"
+
+string_mark = quotation_mark / apostrophe
 
 unescaped
   = [^\0-\x1F\x22\x5C]
