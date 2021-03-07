@@ -30,10 +30,10 @@
   }
 }
 
-// ----- 2. JSON Grammar -----
+// ----- 2. DSL Grammar -----
 
-JSON_text
-  = ws value:value ws { return value; }
+DSL_text
+  = ws value:repeat_object ws { return value; }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -246,16 +246,26 @@ mous_func
 // ----- 9. Diretivas -----
 
 directive
-  = "[" ws val:repeat  ws "]" { return val; }
+  = repeat
   / range
 
 repeat
-  = "'" ws "repeat" ws "(" ws min:number ws "," ws max:number ws ")" ws "'" ws ":" ws val:value {
-    return Array(Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1)) + Math.floor(min)).fill(val)
- }
- / "'" ws "repeat" ws "(" ws min:number ws ")" ws "'" ws ":" ws val:value {
-    return Array(Math.floor(min)).fill(val)
- }
+  = size:repeat_signature ws ":" ws val:value {
+    return Array(size).fill(val)
+  }
+
+repeat_object
+  = "[" ws size:repeat_signature ws ":" ws obj:object ws "]" {
+    return Array(size).fill(obj)
+  }
+
+repeat_signature
+  = "'" ws "repeat" ws "(" ws min:number ws "," ws max:number ws ")" ws "'" {
+    return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1)) + Math.floor(min)
+  }
+  / "'" ws "repeat" ws "(" ws min:number ws ")" ws "'" {
+    return Math.floor(min)
+  }
 
 range
   = "range(" num:number ")" {
