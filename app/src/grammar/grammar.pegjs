@@ -2,6 +2,8 @@
 // ============
 
 {
+  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","random","loremIpsum"]
+
   function clone(obj) {
     var copy;
 
@@ -39,33 +41,31 @@
   function repeatArray(size, obj) {
     var arr = []
 
-    var indexKeys = Object.keys(obj).filter(key => obj[key] === "'{{index()}}'")
-    var codeKeys = Object.keys(obj).filter(key => 
-          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "code"))
-    var moustachesKeys = Object.keys(obj).filter(key =>
-          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "moustaches"))
+    var keys = Object.keys(obj).filter(k => 
+          typeof obj[k] === 'object' && 
+          obj[k] !== null && 
+          Object.prototype.hasOwnProperty.call(obj[k], "moustaches") &&
+          moustachesKeys.includes(obj[k].moustaches))
 
     for (var i = 0; i < size; i++) {
       var objClone = clone(obj)
 
-      indexKeys.forEach(key => { objClone[key] = i })
-
-      codeKeys.forEach(key => {
-        var F = new Function(objClone[key]["code"]);
-        objClone[key] = F()
-      })
-      
-      moustachesKeys.forEach(key => {
-        switch (objClone[key].moustaches) {
-          case "loremIpsum": objClone[key] = loremIpsum({ count: objClone[key].count, units: objClone[key].units }); break
-          case "random": objClone[key] = objClone[key].values[Math.floor(Math.random() * objClone[key].values.length)]; break
+      keys.forEach(k => {
+        switch (objClone[k].moustaches) {
+          case "index": objClone[k] = i; break
+          case "loremIpsum": objClone[k] = loremIpsum({ count: objClone[k].count, units: objClone[k].units }); break
+          case "random": objClone[k] = objClone[k].values[Math.floor(Math.random() * objClone[k].values.length)]; break
           case "missing":
-            if (Math.random() > objClone[key].probability) objClone[key] = objClone[key].value
-            else delete objClone[key]
+            if (Math.random() > objClone[k].probability) objClone[k] = objClone[k].value
+            else delete objClone[k]
             break
           case "having":
-            if (Math.random() < objClone[key].probability) objClone[key] = objClone[key].value
-            else delete objClone[key]
+            if (Math.random() < objClone[k].probability) objClone[k] = objClone[k].value
+            else delete objClone[k]
+            break
+          default:
+            var F = new Function(objClone[k]["code"]);
+            objClone[k] = F()
             break
         }
       })
@@ -233,6 +233,7 @@ moustaches
 mous_func
   = "objectId()" {
     return {
+      moustaches: "objectId",
       code: `var hexDate = Math.floor(Date.now() / 1000).toString(16)
              var hexRandom = Math.floor(Math.random() * 16).toString(16)
              return hexDate + ' '.repeat(16).replace(/./g, () => hexRandom)`
@@ -240,26 +241,35 @@ mous_func
   }
   / "guid()" {
     return {
+      moustaches: "guid",
       code: `return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
       );`
     }
   }
-  / "index()" {}
-  / "bool()" { return {code: `return Math.random() < 0.5;`} }
+  / "index()" { return { moustaches: "index" } }
+  / "bool()" {
+    return {
+      moustaches: "bool",
+      code: `return Math.random() < 0.5;`
+    } 
+  }
   / "integer(" ws min:number ws "," ws max:number ws ")" {
     return {
+      moustaches: "integer",
       code: `return Math.floor(Math.random() * (${Math.floor(min)} - ${Math.floor(max)} + 1) + ${Math.floor(max)});`
     }
   }
   / "integer(" ws min:number ws "," ws max:number ws ",\"" ws unit:. ws "\")" {
     return {
+      moustaches: "integer",
       code: `return String(Math.floor(Math.random() * (${Math.floor(max)} - ${Math.floor(min)} + 1) + ${Math.floor(min)})) + '${unit}';`
     }
   }
   // gerar float aleatório sem especificação do nr de casas decimais
   / "floating(" ws min:number ws "," ws max:number ws ")" {
     return {
+      moustaches: "floating",
       code: `var decimals = 3; //3 caracteres decimais por predefinição
              const maxStr = String(${max});
              const minStr = String(${min});
@@ -277,6 +287,7 @@ mous_func
   // gerar float aleatório com especificação do nr de casas decimais
   / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws ")" {
     return {
+      moustaches: "floating",
       code: `var random = ${min} + (${max} - ${min}) * Math.random();
              var decimals = ${Math.floor(dec)};
              return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)`
@@ -285,6 +296,7 @@ mous_func
   // gerar float aleatório com especificação do nr de casas decimais e formato
   / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws "," ws "\"0" int_sep:[.,] "0" dec_sep:[.,] "00" unit:. "\"" ws ")" {
     return {
+      moustaches: "floating",
       code: `var random = ${min} + (${max} - ${min}) * Math.random();
              var decimals = ${Math.floor(dec)};
              var roundedRandom = String(Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals))
