@@ -2,21 +2,6 @@
 // ============
 
 {
-  function hex (value) {
-    return Math.floor(value).toString(16)
-  }
-
-  function formatNumber(input) {
-    var x = input.split('.');
-    var x1 = x[0];
-    var x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-        x1 = x1.replace( rgx, '$1' + ',' + '$2' );
-    }
-    return x1 + x2;
-  }
-
   function clone(obj) {
     var copy;
 
@@ -53,11 +38,33 @@
 
   function repeatArray(size, obj) {
     var arr = []
-    var keys = Object.keys(obj).filter(key => obj[key] === "'{{index()}}'")
+
+    var indexKeys = Object.keys(obj).filter(key => obj[key] === "'{{index()}}'")
+    var codeKeys = Object.keys(obj).filter(key => 
+          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "code"))
+    var randomKeys = Object.keys(obj).filter(key =>
+          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "random"))
+    var loremKeys = Object.keys(obj).filter(key =>
+          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "loremIpsum"))
 
     for (var i = 0; i < size; i++) {
       var objClone = clone(obj)
-      keys.forEach(key => { objClone[key] = i })
+
+      indexKeys.forEach(key => { objClone[key] = i })
+
+      codeKeys.forEach(key => {
+        var F = new Function(objClone[key]["code"]);
+        objClone[key] = F()
+      })
+      
+      loremKeys.forEach(key => {
+        objClone[key] = loremIpsum({ count: objClone[key].count, units: objClone[key].units })
+      })
+      
+      randomKeys.forEach(key => {
+        objClone[key] = objClone[key].values[Math.floor(Math.random() * objClone[key].values.length)]
+      })
+
       arr.push(objClone)
     }
 
@@ -221,63 +228,94 @@ moustaches
 
 mous_func
   = "objectId()" {
-    return hex(Date.now() / 1000) + ' '.repeat(16).replace(/./g, () => hex(Math.random() * 16))
+    return {
+      code: `var hexDate = Math.floor(Date.now() / 1000).toString(16)
+             var hexRandom = Math.floor(Math.random() * 16).toString(16)
+             return hexDate + ' '.repeat(16).replace(/./g, () => hexRandom)`
+    }
   }
   / "guid()" {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    );
+    return {
+      code: `return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );`
+    }
   }
-  / "index()" { return "'{{index()}}'"; }
-  / "bool()" { return Math.random() < 0.5; }
+  / "index()" {}
+  / "bool()" { return {code: `return Math.random() < 0.5;`} }
   / "integer(" ws min:number ws "," ws max:number ws ")" {
-    return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1) + Math.floor(min));
+    return {
+      code: `return Math.floor(Math.random() * (${Math.floor(min)} - ${Math.floor(max)} + 1) + ${Math.floor(max)});`
+    }
   }
   / "integer(" ws min:number ws "," ws max:number ws ",\"" ws unit:. ws "\")" {
-    return String(Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1) + Math.floor(min))) + unit;
+    return {
+      code: `return String(Math.floor(Math.random() * (${Math.floor(max)} - ${Math.floor(min)} + 1) + ${Math.floor(min)})) + '${unit}';`
+    }
   }
   // gerar float aleatório sem especificação do nr de casas decimais
   / "floating(" ws min:number ws "," ws max:number ws ")" {
-    var decimals = 3; //3 caracteres decimais por predefinição
-    const minStr = String(min);
-    const maxStr = String(max);
+    return {
+      code: `var decimals = 3; //3 caracteres decimais por predefinição
+             const maxStr = String(${max});
+             const minStr = String(${min});
 
-    if (minStr.includes('.')) decimals = minStr.split('.')[1].length;
-    if (maxStr.includes('.')) {
-      var maxDecimals = maxStr.split('.')[1].length;
-      if (decimals < maxDecimals) decimals = maxDecimals;
+             if (minStr.includes('.')) decimals = minStr.split('.')[1].length;
+             if (maxStr.includes('.')) {
+               var maxDecimals = maxStr.split('.')[1].length;
+               if (decimals < maxDecimals) decimals = maxDecimals;
+             }
+
+             var random = ${min} + (${max} - ${min}) * Math.random();
+             return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)`
     }
-
-    var random = min + (max - min) * Math.random();
-    return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
   }
   // gerar float aleatório com especificação do nr de casas decimais
   / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws ")" {
-    var random = min + (max - min) * Math.random();
-    var decimals = Math.floor(dec)
-    return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
+    return {
+      code: `var random = ${min} + (${max} - ${min}) * Math.random();
+             var decimals = ${Math.floor(dec)};
+             return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)`
+    }
   }
   // gerar float aleatório com especificação do nr de casas decimais e formato
   / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws "," ws "\"0" int_sep:[.,] "0" dec_sep:[.,] "00" unit:. "\"" ws ")" {
-    var random = min + (max - min) * Math.random();
-    var decimals = Math.floor(dec)
-    var roundedRandom = String(Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals))
+    return {
+      code: `var random = ${min} + (${max} - ${min}) * Math.random();
+             var decimals = ${Math.floor(dec)};
+             var roundedRandom = String(Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals))
 
-    var formatted = formatNumber(roundedRandom)
-    var split = formatted.split('.')
-    return split[0].replace(/,/g, int_sep) + dec_sep + split[1] + unit
+             var x = roundedRandom.split('.');
+             var x1 = x[0];
+             var x2 = x.length > 1 ? '.' + x[1] : '';
+             var rgx = /(\\d+)(\\d{3})/;
+             while (rgx.test(x1)) {
+                 x1 = x1.replace( rgx, '$1' + ',' + '$2' );
+             }
+             var formatted =  x1 + x2;
+             
+             var split = formatted.split('.')
+             return split[0].replace(/,/g, '${int_sep}') + '${dec_sep}' + split[1] + '${unit}'`
+    }
   }
   / "random(" values:(
       head:simple_value
       tail:(value_separator v:simple_value { return v; })*
       { return [head].concat(tail); }
     )? ")" {
-      return values[Math.floor(Math.random() * values.length)];
+      return {
+        random: true,
+        values
+      }
   }
   / "lorem(" ws num:number ws "," ws units:lorem_string ws ")" {
-    return loremIpsum({ count: Math.floor(num), units })
+    return {
+      loremIpsum: true,
+      count: Math.floor(num),
+      units
+    } 
   }
-  / "distrito()" {
+  /* "distrito()" {
     Distrito.getRandom()
       .then(dados => {return dados})
       .catch(e => {return e})
@@ -291,7 +329,7 @@ mous_func
     Freguesia.getRandom()
       .then(dados => {return dados})
       .catch(e => {return e})
-  }
+  }*/
 
 // ----- 9. Diretivas -----
 
@@ -328,14 +366,12 @@ probability = missing / having
 
 missing
   = "missing(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
-    console.log(prob)
     if (Math.random() > (parseInt(prob.join(""))/100)) return m
     else return null
   }
 
 having
   = "having(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
-    console.log(prob)
     if (Math.random() < (parseInt(prob.join(""))/100)) return m
     else return null
   }
