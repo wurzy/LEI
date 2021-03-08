@@ -111,10 +111,11 @@ object
       tail:(value_separator m:member { return m; })*
       {
         var result = {};
+        head = head === null ? [] : [head] 
 
-        [head].concat(tail).forEach(function(element) {
-          result[element.name] = element.value;
-        });
+        head.concat(tail).forEach(function(element) {
+          if (element !== null) result[element.name] = element.value;
+        })
 
         return result;
       }
@@ -126,6 +127,7 @@ member
   = name:key name_separator value:object_value {
       return { name: name, value: value };
     }
+  / probability
 
 object_value
   = value / moustaches
@@ -319,7 +321,23 @@ repeat_signature
 
 range
   = "range(" num:number ")" {
-    return [...Array(Math.floor(num)).keys()];
+    return [...Array(Math.floor(num)).keys()]
+  }
+
+probability = missing / having
+
+missing
+  = "missing(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
+    console.log(prob)
+    if (Math.random() > (parseInt(prob.join(""))/100)) return m
+    else return null
+  }
+
+having
+  = "having(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
+    console.log(prob)
+    if (Math.random() < (parseInt(prob.join(""))/100)) return m
+    else return null
   }
 
 // ----- Core ABNF Rules -----

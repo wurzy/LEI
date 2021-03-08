@@ -59,7 +59,9 @@ export default {
         _id: '{{objectId()}}',
         guid: '{{guid()}}',
   		indice: '{{index()}}',
-        boleano: '{{bool()}}',
+  		having(30): {
+        	boleano: '{{bool()}}'
+        },
         inteiro_2args: '{{integer(30,70)}}',
         inteiro_3args: '{{integer(100,400,"$")}}',
         float_2args: '{{floating(-180.0451, 180)}}',
