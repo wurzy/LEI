@@ -58,6 +58,7 @@ export default {
 	'repeat(3)': {
         _id: '{{objectId()}}',
         guid: '{{guid()}}',
+  		indice: '{{index()}}',
         boleano: '{{bool()}}',
         inteiro_2args: '{{integer(30,70)}}',
         inteiro_3args: '{{integer(100,400,"$")}}',
@@ -88,7 +89,12 @@ export default {
                 lista_nested: [1,2,3], 
                 range: range(3) 
             }
-    	]
+    	],
+  		objeto: [
+			'repeat(5)': {
+  				indice_objeto: '{{index()}}'
+  			}
+		]
     }
 ]`,
         cmOption: {

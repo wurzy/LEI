@@ -16,6 +16,53 @@
     }
     return x1 + x2;
   }
+
+  function clone(obj) {
+    var copy;
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+
+    // Handle Date
+    if (obj instanceof Date) {
+        copy = new Date();
+        copy.setTime(obj.getTime());
+        return copy;
+    }
+
+    // Handle Array
+    if (obj instanceof Array) {
+        copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = clone(obj[i]);
+        }
+        return copy;
+    }
+
+    // Handle Object
+    if (obj instanceof Object) {
+        copy = {};
+        for (var attr in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, attr)) copy[attr] = clone(obj[attr]);
+        }
+        return copy;
+    }
+
+    throw new Error("Unable to copy obj! Its type isn't supported.");
+  }
+
+  function repeatArray(size, obj) {
+    var arr = []
+    var keys = Object.keys(obj).filter(key => obj[key] === "'{{index()}}'")
+
+    for (var i = 0; i < size; i++) {
+      var objClone = clone(obj)
+      keys.forEach(key => { objClone[key] = i })
+      arr.push(objClone)
+    }
+
+    return arr
+  }
 }
 
 // ----- 2. DSL Grammar -----
@@ -179,6 +226,7 @@ mous_func
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     );
   }
+  / "index()" { return "'{{index()}}'"; }
   / "bool()" { return Math.random() < 0.5; }
   / "integer(" ws min:number ws "," ws max:number ws ")" {
     return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1) + Math.floor(min));
@@ -251,12 +299,14 @@ directive
 
 repeat
   = size:repeat_signature ws ":" ws val:value {
-    return Array(size).fill(val)
+    if (typeof val === 'object' && val !== null) return repeatArray(size,val)
+    else return Array(size).fill(val)
   }
 
 repeat_object
   = "[" ws size:repeat_signature ws ":" ws obj:object ws "]" {
-    return Array(size).fill(obj)
+    //return Array(size).fill(obj)
+    return repeatArray(size,obj)
   }
 
 repeat_signature
