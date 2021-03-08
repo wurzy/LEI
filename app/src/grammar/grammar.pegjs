@@ -42,10 +42,8 @@
     var indexKeys = Object.keys(obj).filter(key => obj[key] === "'{{index()}}'")
     var codeKeys = Object.keys(obj).filter(key => 
           typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "code"))
-    var randomKeys = Object.keys(obj).filter(key =>
-          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "random"))
-    var loremKeys = Object.keys(obj).filter(key =>
-          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "loremIpsum"))
+    var moustachesKeys = Object.keys(obj).filter(key =>
+          typeof obj[key] === 'object' && obj[key] !== null && Object.prototype.hasOwnProperty.call(obj[key], "moustaches"))
 
     for (var i = 0; i < size; i++) {
       var objClone = clone(obj)
@@ -57,12 +55,19 @@
         objClone[key] = F()
       })
       
-      loremKeys.forEach(key => {
-        objClone[key] = loremIpsum({ count: objClone[key].count, units: objClone[key].units })
-      })
-      
-      randomKeys.forEach(key => {
-        objClone[key] = objClone[key].values[Math.floor(Math.random() * objClone[key].values.length)]
+      moustachesKeys.forEach(key => {
+        switch (objClone[key].moustaches) {
+          case "loremIpsum": objClone[key] = loremIpsum({ count: objClone[key].count, units: objClone[key].units }); break
+          case "random": objClone[key] = objClone[key].values[Math.floor(Math.random() * objClone[key].values.length)]; break
+          case "missing":
+            if (Math.random() > objClone[key].probability) objClone[key] = objClone[key].value
+            else delete objClone[key]
+            break
+          case "having":
+            if (Math.random() < objClone[key].probability) objClone[key] = objClone[key].value
+            else delete objClone[key]
+            break
+        }
       })
 
       arr.push(objClone)
@@ -118,10 +123,9 @@ object
       tail:(value_separator m:member { return m; })*
       {
         var result = {};
-        head = head === null ? [] : [head] 
 
-        head.concat(tail).forEach(function(element) {
-          if (element !== null) result[element.name] = element.value;
+        [head].concat(tail).forEach(function(element) {
+          result[element.name] = element.value;
         })
 
         return result;
@@ -304,13 +308,13 @@ mous_func
       { return [head].concat(tail); }
     )? ")" {
       return {
-        random: true,
+        moustaches: "random",
         values
       }
   }
   / "lorem(" ws num:number ws "," ws units:lorem_string ws ")" {
     return {
-      loremIpsum: true,
+      moustaches: "loremIpsum",
       count: Math.floor(num),
       units
     } 
@@ -366,14 +370,26 @@ probability = missing / having
 
 missing
   = "missing(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
-    if (Math.random() > (parseInt(prob.join(""))/100)) return m
-    else return null
+    return {
+      name: m.name,
+      value: {
+        moustaches: "missing",
+        probability: parseInt(prob.join(""))/100,
+        value: m.value
+      }
+    }
   }
 
 having
   = "having(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
-    if (Math.random() < (parseInt(prob.join(""))/100)) return m
-    else return null
+    return {
+      name: m.name,
+      value: {
+        moustaches: "having",
+        probability: parseInt(prob.join(""))/100,
+        value: m.value
+      }
+    }
   }
 
 // ----- Core ABNF Rules -----
