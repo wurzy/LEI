@@ -1,9 +1,20 @@
 <template>
   <div>
-    <Navbar/>
     <div class="row">
-      <input class="btn btn-primary" type="button" value="Generate" @click="generate">
-      <input class="btn btn-primary" type="button" value="Download" @click="download('dataset.json')">
+      <div class="col-md-9">
+        <input class="btn btn-primary float-left" type="button" value="Generate" @click="generate"/>
+      </div>
+      <div class="col-md-3">
+        <div class="input-group">
+          <div class="input-group-prepend ">
+            <span class="input-group-text" id="basic-addon1">Name</span>
+          </div>
+          <input type="text" class="form-control" id="filename" value="dataset">
+          <div class="input-group-append">
+            <button class="btn btn-primary" type="button" @click="download">Download</button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="row">
       <div class="col-md-6">
@@ -27,7 +38,6 @@
 </template>
 
 <script>
-import Navbar from '../components/Navbar.vue' 
 import {convert} from '../grammar/convert.js'
 import parser from '../grammar/parser.js'
 
@@ -44,9 +54,6 @@ import 'codemirror/mode/javascript/javascript.js'
 
 export default {
   name: 'Home',
-  components:{
-    Navbar
-  },
   props: {
     msg: String
   },
@@ -117,12 +124,13 @@ export default {
       generate(){
         this.result = convert(this.code,this.parser)
       },
-      download(filename){
+      download(){
         if(this.result == "") {
-          alert("No dataset to download.")
+          alert("Generate a Dataset first.")
         }
         else {
           var element = document.createElement('a');
+          var filename = document.getElementById('filename').value + '.json'
           element.setAttribute('href', "data:text/json;charset=utf-8," + encodeURIComponent(this.result));
           element.setAttribute('download', filename);
 
@@ -151,9 +159,8 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.row {margin-left: -8px; max-width: 100%}
+.row {margin-left: -8px; max-width: 100%; margin-bottom: 3px;}
+.col-md-3 {padding-right: 0px;}
 .col-md-6 {padding-right: 0px; height: 89vh !important;}
-.btn{margin-left: 15px; margin-bottom: 3px;}
 .vue-codemirror{height:100%}
-
 </style>
