@@ -3447,7 +3447,7 @@ const parser = (function() {
     }
 
 
-      var moustachesKeys = ["objectId","guid","index","bool","integer","floating","random","loremIpsum"]
+      var moustachesKeys = ["objectId","guid","index","bool","integer","floating","random","loremIpsum","having","missing"]
 
       function clone(obj) {
         var copy;
@@ -3483,41 +3483,58 @@ const parser = (function() {
         throw new Error("Unable to copy obj! Its type isn't supported.");
       }
 
-      function repeatArray(size, obj) {
-        var arr = []
+      function moustachesSwitch(obj, i) {
+        switch (obj.moustaches) {
+          case "index": obj = i; break
+          case "loremIpsum": obj = loremIpsum({ count: obj.count, units: obj.units }); break
+          case "random": obj = obj.values[Math.floor(Math.random() * obj.values.length)]; break
+          case "missing":
+            if (Math.random() > obj.probability) {
+              obj = moustachesSwitch(obj.value, i)
+            }
+            else obj = null
+            break
+          case "having":
+            if (Math.random() < obj.probability) {
+              obj = moustachesSwitch(obj.value, i)
+            }
+            else obj = null
+            break
+          default:
+            var F = new Function(obj["code"]);
+            obj = F()
+            break
+        }
 
+        return obj
+      }
+
+      function resolveMoustaches(obj, i) {
+        var objectKeys = Object.keys(obj).filter(k => 
+              typeof obj[k] === 'object' && 
+              obj[k] !== null && !Array.isArray(obj[k]) &&
+              !(Object.prototype.hasOwnProperty.call(obj[k], "moustaches") &&
+              moustachesKeys.includes(obj[k].moustaches)))
+          
+        objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k]) })
+        
         var keys = Object.keys(obj).filter(k => 
               typeof obj[k] === 'object' && 
               obj[k] !== null && 
               Object.prototype.hasOwnProperty.call(obj[k], "moustaches") &&
               moustachesKeys.includes(obj[k].moustaches))
 
-        for (var i = 0; i < size; i++) {
-          var objClone = clone(obj)
+        keys.forEach(k => {
+          obj[k] = moustachesSwitch(obj[k], i)
+          if (obj[k] === null) delete obj[k]
+        })
 
-          keys.forEach(k => {
-            switch (objClone[k].moustaches) {
-              case "index": objClone[k] = i; break
-              case "loremIpsum": objClone[k] = loremIpsum({ count: objClone[k].count, units: objClone[k].units }); break
-              case "random": objClone[k] = objClone[k].values[Math.floor(Math.random() * objClone[k].values.length)]; break
-              case "missing":
-                if (Math.random() > objClone[k].probability) objClone[k] = objClone[k].value
-                else delete objClone[k]
-                break
-              case "having":
-                if (Math.random() < objClone[k].probability) objClone[k] = objClone[k].value
-                else delete objClone[k]
-                break
-              default:
-                var F = new Function(objClone[k]["code"]);
-                objClone[k] = F()
-                break
-            }
-          })
+        return obj
+      }
 
-          arr.push(objClone)
-        }
-
+      function repeatArray(size, obj) {
+        var arr = []
+        for (var i = 0; i < size; i++) arr.push(resolveMoustaches(clone(obj),i))
         return arr
       }
 

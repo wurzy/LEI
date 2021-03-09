@@ -66,10 +66,10 @@ export default {
         _id: '{{objectId()}}',
         guid: '{{guid()}}',
   		indice: '{{index()}}',
-  		having(30): {
-        	boleano: '{{bool()}}'
+        boleano: '{{bool()}}',
+  		missing(50): {
+        	inteiro_2args: '{{integer(30,70)}}'
         },
-        inteiro_2args: '{{integer(30,70)}}',
         inteiro_3args: '{{integer(100,400,"$")}}',
         float_2args: '{{floating(-180.0451, 180)}}',
         float_3args: '{{floating(-180.0451, 180, 2)}}',
