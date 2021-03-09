@@ -81,6 +81,8 @@ export default {
         lorem_frases: '{{lorem(3,"sentences")}}',
         lorem_paragrafos: '{{lorem(2,"paragraphs")}}',
 	  	range: range(5),
+        range_asc: range(10,15),
+        range_desc: range(15,10),
 	  	string: "boas",
 	  	numero: 93,
 	  	name: {

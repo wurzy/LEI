@@ -431,21 +431,32 @@ repeat
 
 repeat_object
   = "[" ws size:repeat_signature ws ":" ws obj:object ws "]" {
-    //return Array(size).fill(obj)
     return repeatArray(size,obj)
   }
 
 repeat_signature
-  = "'" ws "repeat" ws "(" ws min:number ws "," ws max:number ws ")" ws "'" {
-    return Math.floor(Math.random() * (Math.floor(max) - Math.floor(min) + 1)) + Math.floor(min)
+  = "'" ws "repeat" ws "(" ws min:int ws "," ws max:int ws ")" ws "'" {
+    return Math.floor(Math.random() * (max - min + 1)) + min
   }
-  / "'" ws "repeat" ws "(" ws min:number ws ")" ws "'" {
-    return Math.floor(min)
+  / "'" ws "repeat" ws "(" ws min:int ws ")" ws "'" {
+    return min
   }
 
 range
-  = "range(" num:number ")" {
-    return [...Array(Math.floor(num)).keys()]
+  = "range(" ws num:int ws ")" {
+    return [...Array(num).keys()]
+  }
+  / "range(" ws init:int ws "," ws end:int ws ")" {
+    var range = []
+
+    if (init < end) {
+      for (var i = init; i < end; i++) range.push(i)
+    }
+    else if (init > end) {
+      for (var j = init; j > end; j--) range.push(j)
+    }
+
+    return range
   }
 
 probability = missing / having
