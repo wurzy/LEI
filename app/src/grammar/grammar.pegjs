@@ -2,7 +2,7 @@
 // ============
 
 {
-  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","random","loremIpsum","having","missing"]
+  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","position","random","loremIpsum","having","missing"]
 
   function clone(obj) {
     var copy;
@@ -38,9 +38,24 @@
     throw new Error("Unable to copy obj! Its type isn't supported.");
   }
 
+  function genFloat(min, max, dec) {
+    var random = min + (max - min) * Math.random();
+    var decimals = Math.floor(dec);
+    return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
+  }
+
   function moustachesSwitch(obj, i) {
     switch (obj.moustaches) {
       case "index": obj = i; break
+      case "position":
+        if (Object.keys(obj).length == 1) obj = "(" + genFloat(-90,90,5) + ", " + genFloat(-180,180,5) + ")"
+        else {
+          if (obj.lat.min > obj.lat.max) {var latmax = obj.lat.min; obj.lat.min = obj.lat.max; obj.lat.max = latmax}
+          if (obj.long.min > obj.long.max) {var longmax = obj.long.min; obj.long.min = obj.long.max; obj.long.max = longmax}
+
+          obj = "(" + genFloat(obj.lat.min,obj.lat.max,5) + ", " + genFloat(obj.long.min,obj.long.max,5) + ")"
+        }
+        break
       case "loremIpsum": obj = loremIpsum({ count: obj.count, units: obj.units }); break
       case "random": obj = obj.values[Math.floor(Math.random() * obj.values.length)]; break
       case "missing":
@@ -200,6 +215,12 @@ plus
 zero
   = "0"
 
+latitude
+  = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
+
+longitude
+  = (minus / plus)?("180"(".""0"+)?/(("1"[0-7][0-9])/([1-9]?[0-9]))("."[0-9]+)?) { return parseFloat(text()); }
+
 // ----- 7. Strings -----
 
 string "string"
@@ -327,7 +348,17 @@ mous_func
              return split[0].replace(/,/g, '${int_sep}') + '${dec_sep}' + split[1] + '${unit}'`
     }
   }
-  / "random(" values:(
+  / "position()" {
+    return { moustaches: "position" }
+  }
+  / "position(" ws "[" ws min_lat:latitude ws "," max_lat:latitude ws "]" ws "," ws "[" ws min_long:longitude ws "," max_long:longitude ws "]" ws ")" {
+    return {
+      moustaches: "position",
+      lat: {min: min_lat, max: max_lat},
+      long: {min: min_long, max: max_long}
+    }
+  }
+  / "random(" ws values:(
       head:simple_value
       tail:(value_separator v:simple_value { return v; })*
       { return [head].concat(tail); }

@@ -66,14 +66,16 @@ export default {
         _id: '{{objectId()}}',
         guid: '{{guid()}}',
   		indice: '{{index()}}',
-        boleano: '{{bool()}}',
   		missing(50): {
-        	inteiro_2args: '{{integer(30,70)}}'
+        	boleano: '{{bool()}}'
         },
+        inteiro_2args: '{{integer(30,70)}}',
         inteiro_3args: '{{integer(100,400,"$")}}',
         float_2args: '{{floating(-180.0451, 180)}}',
         float_3args: '{{floating(-180.0451, 180, 2)}}',
         float_4args: '{{floating(1000, 4000, 2, "0,0.00€")}}',
+        posicao: '{{position()}}',
+        posicao_com_limites: '{{position([0,30.5],[-50,-25.4])}}',
         aleatorio: '{{random("blue", null, true, false, 23, 17.56)}}',
         lorem_palavras: '{{lorem(4,"words")}}',
         lorem_frases: '{{lorem(3,"sentences")}}',
