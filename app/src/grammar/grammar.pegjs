@@ -4,6 +4,19 @@
 {
   var moustachesKeys = ["objectId","guid","index","bool","integer","floating","position","random","loremIpsum","having","missing"]
 
+  function hex(x) { return Math.floor(x).toString(16) }
+
+  function formatNumber(num) {
+    var x = num.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\\d+)(\\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace( rgx, '$1' + ',' + '$2' );
+    }
+    return x1 + x2;
+  }
+
   function clone(obj) {
     var copy;
 
@@ -38,38 +51,98 @@
     throw new Error("Unable to copy obj! Its type isn't supported.");
   }
 
-  function genFloat(min, max, dec) {
+  function genObjectId() {
+    return hex(Date.now() / 1000) + ' '.repeat(16).replace(/./g, () => hex(Math.random() * 16))
+  }
+
+  function genGuid() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))
+  }
+
+  function genBoolean() { return Math.random() < 0.5 }
+
+  function genInteger(min, max) {
+    return Math.floor(Math.random() * (min - max + 1) + max)
+  }
+
+  function genInteger2(min, max, unit) {
+    return String(Math.floor(Math.random() * (max - min + 1) + min)) + unit
+  }
+
+  function genFloat(min, max) {
+    var decimals = 3; //3 caracteres decimais por predefinição
+    const maxStr = String(max);
+    const minStr = String(min);
+
+    if (minStr.includes('.')) decimals = minStr.split('.')[1].length;
+    if (maxStr.includes('.')) {
+      var maxDecimals = maxStr.split('.')[1].length;
+      if (decimals < maxDecimals) decimals = maxDecimals;
+    }
+
     var random = min + (max - min) * Math.random();
-    var decimals = Math.floor(dec);
     return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
+  }
+
+  function genFloat2(min, max, decimals) {
+    var random = min + (max - min) * Math.random()
+    return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
+  }
+
+  function genFloat3(min, max, decimals, int_sep, dec_sep, unit) {
+    var random = min + (max - min) * Math.random()
+    var roundedRandom = String(Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals))
+    var formatted = formatNumber(roundedRandom)
+             
+    var split = formatted.split('.')
+    return split[0].replace(/,/g, int_sep) + dec_sep + split[1] + unit
+  }
+
+  function genPosition() {
+    return "(" + genFloat(-90,90,5) + ", " + genFloat(-180,180,5) + ")"
+  }
+
+  function genPosition2(lat, long) {
+    if (lat.min > lat.max) {var latmax = lat.min; lat.min = lat.max; lat.max = latmax}
+    if (long.min > long.max) {var longmax = long.min; long.min = long.max; long.max = longmax}
+
+    return "(" + genFloat(lat.min, lat.max, 5) + ", " + genFloat(long.min, long.max, 5) + ")"
+  }
+
+  function genLorem(count, units) { return loremIpsum({ count, units }) }
+
+  function genRandom(values) { return values[Math.floor(Math.random() * values.length)] }
+
+  function genProbability(type, probability, value, i) {
+    if (type == "missing" && Math.random() > probability) return moustachesSwitch(value, i)
+    else if (type == "having" && Math.random() < probability) return moustachesSwitch(value, i)
+    return null
   }
 
   function moustachesSwitch(obj, i) {
     switch (obj.moustaches) {
+      case "objectId": obj = genObjectId(); break
+      case "guid": obj = genGuid(); break
       case "index": obj = i; break
+      case "bool": obj = genBoolean(); break
+      case "integer":
+        if (Object.prototype.hasOwnProperty.call(obj, "unit")) obj = genInteger2(obj.min, obj.max, obj.unit)
+        else obj = genInteger(obj.min, obj.max)
+        break
+      case "floating":
+        if (Object.prototype.hasOwnProperty.call(obj, "unit")) obj = genFloat3(obj.min, obj.max, obj.decimals, obj.int_sep, obj.dec_sep, obj.unit)
+        else if (Object.prototype.hasOwnProperty.call(obj, "decimals")) obj = genFloat2(obj.min, obj.max, obj.decimals)
+        else obj = genFloat(obj.min, obj.max)
+        break
       case "position":
-        if (Object.keys(obj).length == 1) obj = "(" + genFloat(-90,90,5) + ", " + genFloat(-180,180,5) + ")"
-        else {
-          if (obj.lat.min > obj.lat.max) {var latmax = obj.lat.min; obj.lat.min = obj.lat.max; obj.lat.max = latmax}
-          if (obj.long.min > obj.long.max) {var longmax = obj.long.min; obj.long.min = obj.long.max; obj.long.max = longmax}
-
-          obj = "(" + genFloat(obj.lat.min,obj.lat.max,5) + ", " + genFloat(obj.long.min,obj.long.max,5) + ")"
-        }
+        if (Object.prototype.hasOwnProperty.call(obj, "lat")) obj = genPosition2(obj.lat, obj.long)
+        else obj = genPosition()
         break
-      case "loremIpsum": obj = loremIpsum({ count: obj.count, units: obj.units }); break
-      case "random": obj = obj.values[Math.floor(Math.random() * obj.values.length)]; break
-      case "missing":
-        if (Math.random() > obj.probability) obj = moustachesSwitch(obj.value, i)
-        else obj = null
-        break
-      case "having":
-        if (Math.random() < obj.probability) obj = moustachesSwitch(obj.value, i)
-        else obj = null
-        break
-      default:
-        var F = new Function(obj["code"]);
-        obj = F()
-        break
+      case "loremIpsum": obj = genLorem(obj.count, obj.units); break
+      case "random": obj = genRandom(obj.values); break
+      case "missing": obj = genProbability("missing", obj.probability, obj.value, i); break
+      case "having": obj = genProbability("having", obj.probability, obj.value, i); break
     }
 
     return obj
@@ -204,7 +277,7 @@ frac
   = decimal_point DIGIT+
 
 int
-  = zero / (digit1_9 DIGIT*)
+  = zero / (digit1_9 DIGIT*) { return parseInt(text()); }
 
 minus
   = "-"
@@ -265,87 +338,41 @@ moustaches
   = "'" ws "{{" ws value:mous_func ws "}}" ws "'" { return value; }
 
 mous_func
-  = "objectId()" {
-    return {
-      moustaches: "objectId",
-      code: `var hexDate = Math.floor(Date.now() / 1000).toString(16)
-             var hexRandom = Math.floor(Math.random() * 16).toString(16)
-             return hexDate + ' '.repeat(16).replace(/./g, () => hexRandom)`
-    }
-  }
-  / "guid()" {
-    return {
-      moustaches: "guid",
-      code: `return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-      );`
-    }
-  }
+  = "objectId()" { return {  moustaches: "objectId" } }
+  / "guid()" { return { moustaches: "guid" } }
   / "index()" { return { moustaches: "index" } }
-  / "bool()" {
-    return {
-      moustaches: "bool",
-      code: `return Math.random() < 0.5;`
-    } 
-  }
-  / "integer(" ws min:number ws "," ws max:number ws ")" {
+  / "bool()" { return { moustaches: "bool" } }
+  / "integer(" ws min:int ws "," ws max:int ws ")" {
     return {
       moustaches: "integer",
-      code: `return Math.floor(Math.random() * (${Math.floor(min)} - ${Math.floor(max)} + 1) + ${Math.floor(max)});`
+      min, max
     }
   }
-  / "integer(" ws min:number ws "," ws max:number ws ",\"" ws unit:. ws "\")" {
+  / "integer(" ws min:int ws "," ws max:int ws ",\"" ws unit:. ws "\")" {
     return {
       moustaches: "integer",
-      code: `return String(Math.floor(Math.random() * (${Math.floor(max)} - ${Math.floor(min)} + 1) + ${Math.floor(min)})) + '${unit}';`
+      min, max, unit
     }
   }
   // gerar float aleatório sem especificação do nr de casas decimais
   / "floating(" ws min:number ws "," ws max:number ws ")" {
     return {
       moustaches: "floating",
-      code: `var decimals = 3; //3 caracteres decimais por predefinição
-             const maxStr = String(${max});
-             const minStr = String(${min});
-
-             if (minStr.includes('.')) decimals = minStr.split('.')[1].length;
-             if (maxStr.includes('.')) {
-               var maxDecimals = maxStr.split('.')[1].length;
-               if (decimals < maxDecimals) decimals = maxDecimals;
-             }
-
-             var random = ${min} + (${max} - ${min}) * Math.random();
-             return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)`
+      min, max
     }
   }
   // gerar float aleatório com especificação do nr de casas decimais
-  / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws ")" {
+  / "floating(" ws min:number ws "," ws max:number ws "," ws decimals:int ws ")" {
     return {
       moustaches: "floating",
-      code: `var random = ${min} + (${max} - ${min}) * Math.random();
-             var decimals = ${Math.floor(dec)};
-             return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)`
+      min, max, decimals
     }
   }
   // gerar float aleatório com especificação do nr de casas decimais e formato
-  / "floating(" ws min:number ws "," ws max:number ws "," ws dec:number ws "," ws "\"0" int_sep:[.,] "0" dec_sep:[.,] "00" unit:. "\"" ws ")" {
+  / "floating(" ws min:number ws "," ws max:number ws "," ws decimals:number ws "," ws "\"0" int_sep:[.,] "0" dec_sep:[.,] "00" unit:. "\"" ws ")" {
     return {
       moustaches: "floating",
-      code: `var random = ${min} + (${max} - ${min}) * Math.random();
-             var decimals = ${Math.floor(dec)};
-             var roundedRandom = String(Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals))
-
-             var x = roundedRandom.split('.');
-             var x1 = x[0];
-             var x2 = x.length > 1 ? '.' + x[1] : '';
-             var rgx = /(\\d+)(\\d{3})/;
-             while (rgx.test(x1)) {
-                 x1 = x1.replace( rgx, '$1' + ',' + '$2' );
-             }
-             var formatted =  x1 + x2;
-             
-             var split = formatted.split('.')
-             return split[0].replace(/,/g, '${int_sep}') + '${dec_sep}' + split[1] + '${unit}'`
+      min, max, int_sep, dec_sep, unit, decimals
     }
   }
   / "position()" {
@@ -368,11 +395,10 @@ mous_func
         values
       }
   }
-  / "lorem(" ws num:number ws "," ws units:lorem_string ws ")" {
+  / "lorem(" ws count:int ws "," ws units:lorem_string ws ")" {
     return {
       moustaches: "loremIpsum",
-      count: Math.floor(num),
-      units
+      count, units
     } 
   }
   /* "distrito()" {
