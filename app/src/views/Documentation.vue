@@ -14,7 +14,7 @@
 
     <div>
         <h4>Definição de Pares Chave-Valor</h4>
-        <p>Um par chave-valor é composto por duas <i>Strings</i> separadas por dois pontos (<b>:</b>).</p> 
+        <p>Um par chave-valor é composto por dois elementos separadas por dois pontos (<b>:</b>).</p> 
         <p>A chave não pode conter espaços brancos (exceto entre o último caractere da <i>String</i> e o separador) nem qualquer outro caractere que não percença ao alfabeto ou que não seja um <i>underscore</i>.</p>
         <p>Por exemplo, <code>lorem_ipsum</code> é uma chave válida enquanto <code>lorem ipsum</code>, <code>lorem:ipsum</code> ou <code>lorem-ipsum</code> não são.</p>
         <p>A única exceção é a diretiva <code>repeat</code>, que está entre plicas e que recebe como argumento um inteiro. Esta é responsável por gerar um <i>array</i> de objetos cujo comprimento é o dado por argumento.</p>
