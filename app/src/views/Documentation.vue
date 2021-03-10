@@ -35,7 +35,7 @@
         <h4>Funções "Moustache"</h4>
         <p>A utilidade destas funções é automatizar diretivas para o utilizador, de modo a ter um maior leque de <i>datasets</i> possíveis.</p>
         <p>Têm de ser escritas envoltas de duas chavetas no par chave-valor pretendido assim como plicas a englobar toda a estrutura.</p>
-        <p>Por exemplo, <code v-html="'\'{{ range(5) }}\''"></code> é uma função "Moustache" válida.</p>
+        <p>Por exemplo, <code v-html="'\'{{ integer() }}\''"></code> é uma função "Moustache" válida.</p>
         <p>De seguida estão explícitas todas as que se encontram atualmente disponíveis.</p>
     </div>
     <div class="method">
