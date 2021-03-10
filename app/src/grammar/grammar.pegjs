@@ -2,7 +2,7 @@
 // ============
 
 {
-  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","position","random","loremIpsum","having","missing"]
+  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","position","phone","random","loremIpsum","having","missing"]
 
   function hex(x) { return Math.floor(x).toString(16) }
 
@@ -110,6 +110,20 @@
     return "(" + genFloat(lat.min, lat.max, 5) + ", " + genFloat(long.min, long.max, 5) + ")"
   }
 
+  function genPhone() {
+    var number = "9" + genRandom([1,2,3,6])
+    while (number.length < 11) {
+      if (number.length == 3 || number.length == 7) number += " "
+      else number += (Math.floor(Math.random() * 9) + 1)
+    }
+    return number
+  }
+
+  function genPhone2(extension) {
+    if (extension) return "+351 " + genPhone()
+    return genPhone()
+  }
+
   function genLorem(count, units) { return loremIpsum({ count, units }) }
 
   function genRandom(values) { return values[Math.floor(Math.random() * values.length)] }
@@ -138,6 +152,10 @@
       case "position":
         if (Object.prototype.hasOwnProperty.call(obj, "lat")) obj = genPosition2(obj.lat, obj.long)
         else obj = genPosition()
+        break
+      case "phone":
+        if (Object.prototype.hasOwnProperty.call(obj, "extension")) obj = genPhone2(obj.extension)
+        else obj = genPhone()
         break
       case "loremIpsum": obj = genLorem(obj.count, obj.units); break
       case "random": obj = genRandom(obj.values); break
@@ -383,6 +401,13 @@ mous_func
       moustaches: "position",
       lat: {min: min_lat, max: max_lat},
       long: {min: min_long, max: max_long}
+    }
+  }
+  / "phone()" { return { moustaches: "phone" } }
+  / "phone(" ws extension:(true/false) ws ")" {
+    return {
+      moustaches: "phone",
+      extension
     }
   }
   / "random(" ws values:(

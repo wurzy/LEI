@@ -26,9 +26,11 @@ MOUSTACHES (valores de propriedades de objetos):
 '{{integer(int1,int2,unidades)}}' - gera um inteiro aleatório >= int1 e <= int2 e acrescenta as unidades indicadas
 '{{floating(num1,num2)}}' - gera um float aleatório >= num1 e <= num2 (nr de casas decimais = nr de casas decimais do argumento com mais)
 '{{floating(num1,num2,casas)}}' - gera um float aleatório >= num1 e <= num2 com o nr de casas decimais indicadas
-'{{floating(num1,num2,casas,unidades)}}' - gera um float aleatório >= num1 e <= num2 com o nr de casas decimais indicadas e acrescenta as unidades indicadas
+'{{floating(num1,num2,casas,formato)}}' - gera um float aleatório >= num1 e <= num2 com o nr de casas decimais indicadas no formato dado
 '{{position()}}' - gera coordenadas aleatórias
 '{{position([min_lat, max_lat], [min_long, max_long])}}' - gera coordenadas dentro dos intervalos dados
+'{{phone()}}' - gera um número de telemóvel português (sem extensão)
+'{{phone(bool)}}' - gera um número de telemóvel português com extensão (+351), se bool == true
 '{{random(arg1,...,argN)}}' - escolhe um dos argumentos aleatoriamente (pode receber inteiros, floats, strings, boleanos e null; mínimo 1 arg)
 '{{lorem(n,"words"/"sentences"/"paragraphs")}}' - gera n palavras/frases/parágrafos lorem ipsum
 
