@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div class="col-md-9">
-        <input class="btn btn-primary float-left" type="button" value="Generate" @click="generate"/>
+        <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
       </div>
       <div class="col-md-3">
         <div class="input-group">
