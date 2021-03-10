@@ -31,18 +31,13 @@
     </div>
 
     <hr/>
-
     <div>
-        <h4>Exemplo DSL</h4>
-        <codemirror 
-                ref="example1"
-                :value= "example1"
-                :options="cmOption"
-        />
+        <h4>Funções "Moustache"</h4>
+        <p>Uma função "Moustache" é a forma do utilizador gerar valores de forma automatizada.</p>
+        <p>Têm de ser escritas envoltas de duas chavetas no par chave-valor pretendido assim como plicas a englobar toda a estrutura.</p>
+        <p>Por exemplo, <code v-html="'\'{{ range(5) }}\''"></code> é uma função "Moustache" válida.</p>
+        <p>De seguida estão explícitas todas as que se encontram atualmente disponíveis.</p>
     </div>
-
-    <hr/>
-
     <div class="method">
         <div class="row margin-0 list-header hidden-sm hidden-xs">
             <div class="col-md-3"><div class="header">Moustache</div></div>
@@ -225,14 +220,14 @@
                     <div class="isrequired">
                         Min:: <code>Integer</code>,<br/>
                         Max:: <code>Integer</code>,<br/>
-                        Unit:: <code>String</code>
+                        Unid:: <code>String</code>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        Gera um inteiro aleatório entre Min e Max, mas acrescenta uma <i>String</i> no final. <br/>
+                        Gera um inteiro aleatório entre Min e Max, mas acrescenta uma <i>String</i> Unid no final. <br/>
                         Exemplo: integer(2,4,"$") = "3$"
                     </div>
                 </div>
@@ -290,14 +285,14 @@
                     <div class="isrequired">
                         Min:: <code>Float</code>,<br/>
                         Max:: <code>Float</code>,<br/>
-                        Casas:: <code>Integer</code>
+                        C:: <code>Integer</code>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        Gera um número decimal aleatório entre Min e Max com um total de Casas casas decimais. <br/>
+                        Gera um número decimal aleatório entre Min e Max com um total de C casas decimais. <br/>
                         Exemplo: floating(-180, 180, 2) = -19.11
                     </div>
                 </div>
@@ -307,7 +302,7 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        integer 
+                        floating 
                     </div>
                 </div>
             </div>
@@ -321,15 +316,17 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Nenhum
+                        Min:: <code>Float</code>,<br/>
+                        Max:: <code>Float</code>,<br/>
+                        F:: <code>String</code>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        Gera um ID aleatório com 24 bytes. <br/>
-                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                        Gera um número decimal aleatório entre Min e Max, no formato F indicado. <br/>
+                        Exemplo: floating(0, 180, "0,0.00€") = "20.56€"
                     </div>
                 </div>
             </div>
@@ -338,7 +335,7 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        integer 
+                        position 
                     </div>
                 </div>
             </div>
@@ -359,8 +356,8 @@
             <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        Gera um ID aleatório com 24 bytes. <br/>
-                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                        Gera um conjunto de coordenadas cartesianas aleatórias. <br/>
+                        Exemplo: position() = "(22.491, 101.037)"
                     </div>
                 </div>
             </div>
@@ -369,7 +366,7 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        integer 
+                        position 
                     </div>
                 </div>
             </div>
@@ -383,15 +380,16 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Nenhum
+                        [MinLat,MaxLat]:: <code>[Float]</code>,<br/>
+                        [MinLon,MaxLon]:: <code>[Float]</code>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        Gera um ID aleatório com 24 bytes. <br/>
-                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                        Gera um conjunto de coordenadas cartesianas aleatórias, com limites superiores e inferiores. <br/>
+                        Exemplo: position([0.03,3],[-5,-2.4]) = "(1.311, -3.97)"
                     </div>
                 </div>
             </div>
@@ -400,7 +398,7 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        integer 
+                        phone 
                     </div>
                 </div>
             </div>
@@ -421,8 +419,8 @@
             <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        Gera um ID aleatório com 24 bytes. <br/>
-                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                        Gera um número de telemóvel português. <br/>
+                        Exemplo: phone() = "911 154 239"
                     </div>
                 </div>
             </div>
@@ -431,7 +429,7 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        integer 
+                        phone 
                     </div>
                 </div>
             </div>
@@ -445,20 +443,96 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Nenhum
+                        bool:: <code>Boolean</code>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        Gera um ID aleatório com 24 bytes. <br/>
-                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                        Gera um número de telemóvel português, se bool==true é colocada a extensão. <br/>
+                        Exemplo: phone(true) = "+351 911 154 239"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        random 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>Object</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        arg1:: <code>Object</code>,<br/>
+                        ...,<br/>
+                        argN::<code>Object</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Retorna aleatoriamente um dos argumentos passados à função. <br/>
+                        Exemplo: random("blue", null, true, false, 23, 17.56) = 23
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        lorem 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Num:: <code>Integer</code>,<br/>
+                        Parte:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera Num palavras, frases ou parágrafos de <i>lorem ipsum</i>. A varíavel Parte tem de ser igual a "words", "sentences" ou "paragraphs".<br/>
+                        Exemplo: lorem(3,"words") = "mollit fugiat officia"
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <br/>
+    <hr/>
+    <div>
+        <h4>Exemplo DSL</h4>
+        <codemirror 
+                ref="example1"
+                :value= "example1"
+                :options="cmOption"
+        />
+    </div>
+    <br/>
   </div>
 </template>
 
