@@ -1,30 +1,61 @@
 <template>
   <div class="container">
-
-    <h2>Documentation</h2>
+    <br/>
+    <h2>Documentação</h2>
     <hr/>
     <div>
-        <h4>Defining the DSL (Domain Specific Language)</h4>
-        <p>The DSL is defined by pairs of keys and values grouped inside a <code>repeat</code> statement.</p> The <code>repeat</code> statement itself is encased in square brackets to indicate that an array of objects is to be formed.
-        <p>This is important for the end user as it makes the syntax similar to other programming languages.</p>
-        <p>There can also be nested <code>repeat</code> statements, as it is an easy way to allow the definition of arbitrarily-typed arrays of objects.</p>
+        <h4>Definição da DSL <i>(Domain Specific Language)</i></h4>
+        <p>A DSL é definida por pares de chave-valor agrupados dentro de um bloco iniciado pela diretiva <code>repeat</code>, envolta de parêntesis retos.</p>
+        <p>Esta definição é importante para o utilizador final, uma vez que a sintaxe é muito semelhante a outras linguagens de programação e, portanto, permite uma melhor compreensão da gramática.</p>
+        <p>É possível, também, existirem objetos aninhados. Assim, permite tipar arbritrariamente <i>arrays</i> de objetos para o <i>dataset</i> final.</p>
+    </div>
+
+    <hr/>
+
+    <div>
+        <h4>Definição de Pares Chave-Valor</h4>
+        <p>Um par chave-valor é composto por duas <i>Strings</i> separadas por dois pontos (<b>:</b>).</p> 
+        <p>A chave não pode conter espaços brancos (exceto entre o último caratér da <i>String</i> e o separador) nem qualquer outro caratér que não percença ao alfabeto ou que não seja um <i>underscore</i>.</p>
+        <p>Por exemplo, <code>lorem_ipsum</code> é uma chave válida enquanto <code>lorem ipsum</code>, <code>lorem:ipsum</code> ou <code>lorem-ipsum</code> não são.</p>
+        <p>A única exceção é a diretiva <code>repeat</code>, que está entre plicas e que recebe como argumento um inteiro. Esta é responsável por gerar um <i>array</i> de objetos cujo comprimento é o dado por argumento.</p>
+        <p>Os valores podem ser um dos seguintes:</p>
+        <ul>
+            <li>Número</li>
+            <li><i>String</i></li>
+            <li><i>Array</i></li>
+            <li>Booleano</li>
+            <li>null</li>
+            <li>Objeto DSL</li>
+            <li>Função "Moustache" (a ver mais à frente)</li>
+        </ul>
+    </div>
+
+    <hr/>
+
+    <div>
+        <h4>Exemplo DSL</h4>
+        <codemirror 
+                ref="example1"
+                :value= "example1"
+                :options="cmOption"
+        />
     </div>
 
     <hr/>
 
     <div class="method">
         <div class="row margin-0 list-header hidden-sm hidden-xs">
-            <div class="col-md-3"><div class="header">Property</div></div>
-            <div class="col-md-2"><div class="header">Type</div></div>
-            <div class="col-md-2"><div class="header">Required</div></div>
-            <div class="col-md-5"><div class="header">Description</div></div>
+            <div class="col-md-3"><div class="header">Moustache</div></div>
+            <div class="col-md-2"><div class="header">Tipo</div></div>
+            <div class="col-md-3"><div class="header">Argumento(s)</div></div>
+            <div class="col-md-4"><div class="header">Descrição</div></div>
         </div>
 
         <div class="row margin-0">
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        CurrencyCode  <span class="mobile-isrequired">[Required]</span>
+                        objectID 
                     </div>
                 </div>
             </div>
@@ -35,17 +66,18 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Yes
+                        Nenhum
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        The standard ISO 4217 3-letter currency code
+                        Gera um ID aleatório com 24 bytes. <br/>
+                        Exemplo: "6048e87b9281fc9a1afe8e61"
                     </div>
                 </div>
             </div>
@@ -54,28 +86,29 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        PriceType  <span class="mobile-isrequired">[Required]</span>
+                        guid 
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="cell">
                     <div class="type">
-                        <code>Int32</code>
+                        <code>String</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Yes
+                        Nenhum
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        The type of price
+                        Gera um UUID aleatório. <br/>
+                        Exemplo: "3d16d5d0-4b11-4de8-9e26-6668b52d9219"
                     </div>
                 </div>
             </div>
@@ -84,28 +117,28 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        WarehouseID  <span class="mobile-isrequired">[Required]</span>
+                        index 
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="cell">
                     <div class="type">
-                        <code>Int32</code>
+                        <code>Integer</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Yes
+                        Nenhum
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        The unique identifier for the warehouse
+                        Retorna o índice atual do objeto gerado pelo 'repeat'. <br/>
                     </div>
                 </div>
             </div>
@@ -114,28 +147,28 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        ItemCodes
+                        bool
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="cell">
                     <div class="type">
-                        <code>String[]</code>
+                        <code>Boolean</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        <span class="text-muted">No</span>
+                        Nenhum
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-
+                        Gera um booleano aleatório.
                     </div>
                 </div>
             </div>
@@ -144,31 +177,283 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="propertyname">
-                        LanguageID
-                        <a class="lookuplink" href="javascript:;">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </a>
+                        integer 
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="cell">
                     <div class="type">
-                        <code>Int32?</code>
+                        <code>Integer</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Min:: <code>Integer</code>,<br/>
+                        Max:: <code>Integer</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um inteiro aleatório entre Min e Max. <br/>
+                        Exemplo: integer(2,4) = 3
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
                     </div>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="cell">
-                    <div class="isrequired">
-                        <span class="text-muted">No</span>
+                    <div class="type">
+                        <code>String</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Min:: <code>Integer</code>,<br/>
+                        Max:: <code>Integer</code>,<br/>
+                        Unit:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
                 <div class="cell">
                     <div class="description">
-                        The customer's preferred language ID (ex. 0 (English), 1 (Spanish), etc.)
+                        Gera um inteiro aleatório entre Min e Max, mas acrescenta uma <i>String</i> no final. <br/>
+                        Exemplo: integer(2,4,"$") = "3$"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        floating 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>Float</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Min:: <code>Float</code>,<br/>
+                        Max:: <code>Float</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um número decimal aleatório entre Min e Max. <br/>
+                        Exemplo: floating(-180, 180) = -19.1059
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        floating 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>Float</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Min:: <code>Float</code>,<br/>
+                        Max:: <code>Float</code>,<br/>
+                        Casas:: <code>Integer</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um número decimal aleatório entre Min e Max com um total de Casas casas decimais. <br/>
+                        Exemplo: floating(-180, 180, 2) = -19.11
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um ID aleatório com 24 bytes. <br/>
+                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um ID aleatório com 24 bytes. <br/>
+                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um ID aleatório com 24 bytes. <br/>
+                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um ID aleatório com 24 bytes. <br/>
+                        Exemplo: "6048e87b9281fc9a1afe8e61"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="cell">
+                    <div class="description">
+                        Gera um ID aleatório com 24 bytes. <br/>
+                        Exemplo: "6048e87b9281fc9a1afe8e61"
                     </div>
                 </div>
             </div>
@@ -181,9 +466,74 @@
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+import "codemirror/theme/dracula.css";
+import 'codemirror/keymap/sublime'
+import 'codemirror/mode/javascript/javascript.js'
+
 export default {
-    name: 'Documentation'
-}
+  name: 'Documentation',
+  data() {
+      return {
+        example1: `[
+	'repeat(3)': {
+        _id: '{{objectId()}}',
+  		missing(50): {
+        	boleano: '{{bool()}}'
+        },
+        posicao: '{{position()}}',
+        telemovel: '{{phone()}}',
+	  	range: range(5),
+	  	string: "string",
+	  	numero: 93,
+	  	name: {
+	    	first: "Universidade",
+	    	last: "do Minho"
+	  	},
+	  	lista_exemplo: [
+	  		"string",
+	  		32,
+	  		{
+	  			elem: 1, 
+                indice: 2, 
+                lista_nested: [1,2,3], 
+                range: range(3) 
+            }
+    	],
+  		objeto: [
+			'repeat(5)': {
+  				indice_objeto: '{{index()}}'
+  			}
+		]
+    }
+]`,
+        cmOption: {
+          tabSize: 4,
+          styleActiveLine: true,
+          lineNumbers: true,
+          line: true,
+          foldGutter: true,
+          styleSelectedText: true,
+          mode: 'text/javascript',
+          keyMap: "sublime",
+          matchBrackets: true,
+          showCursorWhenSelecting: true,
+          theme: "dracula",
+          extraKeys: { "Ctrl": "autocomplete" },
+          hintOptions:{
+            completeSingle: false
+          }
+        }
+      }
+    },
+    computed: {
+      codemirror() {
+        return this.$refs.example1.codemirror
+      }
+    },
+    mounted() {
+      this.codemirror.setSize("100%", "100%")
+    }
+  }
 </script>
 <style scoped>
 /* Methods */
