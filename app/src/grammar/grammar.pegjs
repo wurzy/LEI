@@ -2,7 +2,7 @@
 // ============
 
 {
-  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","position","phone","random","loremIpsum","having","missing"]
+  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","position","phone","date","random","loremIpsum","having","missing"]
 
   function hex(x) { return Math.floor(x).toString(16) }
 
@@ -10,7 +10,7 @@
     var x = num.split('.');
     var x1 = x[0];
     var x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\\d+)(\\d{3})/;
+    var rgx = /(\d+)(\d{3})/;
     while (rgx.test(x1)) {
         x1 = x1.replace( rgx, '$1' + ',' + '$2' );
     }
@@ -124,6 +124,16 @@
     return genPhone()
   }
 
+  function genDate(start) {
+    var date = new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime()))
+    return moment(date).format('DD/MM/YYYY')
+  }
+
+  function genDate2(start,end) {
+    var date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+    return moment(date).format('DD/MM/YYYY')
+  }
+
   function genLorem(count, units) { return loremIpsum({ count, units }) }
 
   function genRandom(values) { return values[Math.floor(Math.random() * values.length)] }
@@ -156,6 +166,10 @@
       case "phone":
         if (Object.prototype.hasOwnProperty.call(obj, "extension")) obj = genPhone2(obj.extension)
         else obj = genPhone()
+        break
+      case "date":
+        if (Object.prototype.hasOwnProperty.call(obj, "end")) obj = genDate2(obj.start, obj.end)
+        else obj = genDate(obj.start)
         break
       case "loremIpsum": obj = genLorem(obj.count, obj.units); break
       case "random": obj = genRandom(obj.values); break
@@ -322,6 +336,12 @@ lorem_string
   / quotation_mark word:"sentences" quotation_mark { return word; }
   / quotation_mark word:"paragraphs" quotation_mark { return word; }
 
+date
+  = quotation_mark date:((((("0"[1-9]/"1"[0-9]/"2"[0-8])"/"("0"[1-9]/"1"[012]))/(("29"/"30"/"31")"/"("0"[13578]/"1"[02]))/(("29"/"30")"/"("0"[4,6,9]/"11")))"/"("19"/[2-9][0-9])[0-9][0-9])/("29""/""02""/"("19"/[2-9][0-9])("00"/"04"/"08"/"12"/"16"/"20"/"24"/"28"/"32"/"36"/"40"/"44"/"48"/"52"/"56"/"60"/"64"/"68"/"72"/"76"/"80"/"84"/"88"/"92"/"96"))) quotation_mark {
+    var split = date.flat(2).join("").split(/\//)
+    return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]))
+  }
+
 key
   = head:[a-z_] tail:[a-zA-Z0-9_]* { return head.concat(tail.join("")); }
 
@@ -408,6 +428,18 @@ mous_func
     return {
       moustaches: "phone",
       extension
+    }
+  }
+  / "date(" ws start:date ws ")" {
+    return {
+      moustaches: "date",
+      start
+    }
+  }
+  / "date(" ws start:date "," end:date ws ")" {
+    return {
+      moustaches: "date",
+      start, end
     }
   }
   / "random(" ws values:(

@@ -78,6 +78,8 @@ export default {
         posicao_com_limites: '{{position([0,30.5],[-50,-25.4])}}',
         telemovel: '{{phone()}}',
         telemovel_ext: '{{phone(true)}}',
+        data: '{{date("10/01/2015")}}',
+        data2: '{{date("10/05/2019","10/01/2018")}}',
         aleatorio: '{{random("blue", null, true, false, 23, 17.56)}}',
         lorem_palavras: '{{lorem(3,"words")}}',
         lorem_frases: '{{lorem(2,"sentences")}}',
