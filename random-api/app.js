@@ -3,7 +3,7 @@ var express = require('express');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://127.0.0.1:27017/Locais-Geograficos-PT', 
+mongoose.connect('mongodb://127.0.0.1:27017/LEI2021', 
       { useNewUrlParser: true,
         useUnifiedTopology: true,
         serverSelectionTimeoutMS: 5000});
@@ -15,6 +15,7 @@ db.once('open', function() {
 });
 
 var distritosRouter = require('./routes/distritos');
+var nomesRouter = require('./routes/nomes');
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use('/distritos', distritosRouter);
+app.use('/nomes', nomesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
