@@ -16,9 +16,9 @@ router.get('/nome', function(req, res, next) {
       .catch(e => res.status(500).jsonp({error: e}))
 });
 
-/* GET sobrenome aleatório */
-router.get('/sobrenome', function(req, res, next) {
-    Nome.sobrenome()
+/* GET apelido aleatório */
+router.get('/apelido', function(req, res, next) {
+    Nome.apelido()
       .then(dados => res.status(200).jsonp(dados[0])) // aggregate retorna array
       .catch(e => res.status(500).jsonp({error: e}))
 });

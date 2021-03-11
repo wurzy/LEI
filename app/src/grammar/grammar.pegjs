@@ -124,14 +124,13 @@
     return genPhone()
   }
 
-  function genDate(start) {
-    var date = new Date(start.getTime() + Math.random() * (new Date().getTime() - start.getTime()))
-    return moment(date).format('DD/MM/YYYY')
-  }
+  function genDate(start, end, format) {
+    var random = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+    var date = moment(random).format(format.replace(/A/g, "Y").replace(/[^DMY]/g, "/"))
 
-  function genDate2(start,end) {
-    var date = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-    return moment(date).format('DD/MM/YYYY')
+    var dateSpl = date.split(/\//g)
+    var formatSpl = format.split(/[A-Y]+/g)
+    return dateSpl[0] + formatSpl[1] + dateSpl[1] + formatSpl[2] + dateSpl[2]
   }
 
   function genLorem(count, units) { return loremIpsum({ count, units }) }
@@ -167,10 +166,7 @@
         if (Object.prototype.hasOwnProperty.call(obj, "extension")) obj = genPhone2(obj.extension)
         else obj = genPhone()
         break
-      case "date":
-        if (Object.prototype.hasOwnProperty.call(obj, "end")) obj = genDate2(obj.start, obj.end)
-        else obj = genDate(obj.start)
-        break
+      case "date": obj = genDate(obj.start, obj.end, obj.format); break
       case "loremIpsum": obj = genLorem(obj.count, obj.units); break
       case "random": obj = genRandom(obj.values); break
       case "missing": obj = genProbability("missing", obj.probability, obj.value, i); break
@@ -221,6 +217,7 @@ end_array       = ws "]" ws
 end_object      = ws "}" ws
 name_separator  = ws ":" ws
 value_separator = ws "," ws
+date_separator  = ws "/"/"-"/"." ws
 
 ws "whitespace" = [ \t\n\r]*
 
@@ -342,6 +339,11 @@ date
     return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]))
   }
 
+date_format
+  = "DD" date_separator "MM" date_separator "AAAA"/"YYYY" { return text(); }
+  / "MM" date_separator "DD" date_separator "AAAA"/"YYYY" { return text(); }
+  / "AAAA"/"YYYY" date_separator "MM" date_separator "DD" { return text(); }
+
 key
   = head:[a-z_] tail:[a-zA-Z0-9_]* { return head.concat(tail.join("")); }
 
@@ -430,16 +432,13 @@ mous_func
       extension
     }
   }
-  / "date(" ws start:date ws ")" {
+  // "date(" ws start:date ws args:(("," ws f:date_format ws { return {format: f} }) / ("," ws e:date ws form:("," ws f:date_format ws {return f})? { return {end: e, format: form} }))? ")" {
+  / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
       moustaches: "date",
-      start
-    }
-  }
-  / "date(" ws start:date "," end:date ws ")" {
-    return {
-      moustaches: "date",
-      start, end
+      start, 
+      end: !end ? new Date() : end,
+      format: !format ? 'DD/MM/YYYY' : format
     }
   }
   / "random(" ws values:(

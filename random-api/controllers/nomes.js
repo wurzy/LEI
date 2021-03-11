@@ -15,11 +15,11 @@ module.exports.nome = () => {
         .exec()
 }
 
-module.exports.sobrenome = () => {
+module.exports.apelido = () => {
     return Nome
         .aggregate([
             { $sample: { size: 1 } },
-            { $project: {_id: 0, sobrenome: "$sobrenome"}}
+            { $project: {_id: 0, apelido: "$apelido"}}
         ])
         .exec()
 }
@@ -28,7 +28,7 @@ module.exports.nomeCompleto = () => {
     return Nome
         .aggregate([
             { $sample: { size: 1 } },
-            { $addFields: {completo: {$concat: ["$nome", " ", "$sobrenome"]}}},
+            { $addFields: {completo: {$concat: ["$nome", " ", "$apelido"]}}},
             { $project: {_id: 0, nome: "$completo"}}
         ])
         .exec()

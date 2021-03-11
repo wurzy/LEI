@@ -14,12 +14,12 @@ var mega = txt1.concat(txt2,txt3,txt4,txt5,txt6,txt7,txt8,txt9,txt10)
 
 var finalJSON = []
 mega.forEach(nomeCompleto => {
-    let [nome, ...sobrenome] = nomeCompleto.split(' ')
-    sobrenome = sobrenome.join(' ')
+    let [nome, ...apelido] = nomeCompleto.split(' ')
+    apelido = apelido.join(' ')
 
-    if(nome == "" || sobrenome == "") return
+    if(nome == "" || apelido == "") return
 
-    finalJSON.push({nome: nome, sobrenome: sobrenome})
+    finalJSON.push({nome: nome, apelido: apelido})
 })
 
 fs.writeFileSync('./listaNomes.json',JSON.stringify(finalJSON,null,2))

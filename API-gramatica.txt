@@ -43,6 +43,8 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
+- moustaches da data não funciona com argumento de formato
+
 - interpolação de strings com moustaches
 - funções como propriedades de objeto
 
