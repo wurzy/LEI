@@ -1,0 +1,39 @@
+VÁRIAS COLEÇÕES:
+
+[
+	'repeat(3)': {
+        _id: '{{objectId()}}',
+        guid: '{{guid()}}',
+  		indice: '{{index()}}'
+    },
+	'repeat(2)': {
+        string: "ola!!",
+        inteiro: '{{integer(30,50)}}'
+    },
+	'repeat(2)': {
+        posicao: '{{position()}}',
+        telemovel: '{{phone()}}',
+        float: '{{floating(10,80)}}',
+        bool: true
+    }
+]
+
+---------------------------------------------------------------------
+
+REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
+
+[
+	'repeat(3)': {
+        _id: '{{objectId()}}',
+        guid: '{{guid()}}',
+  		indice: '{{index()}}',
+  		teste: [
+  			'repeat(3)': {
+  				bool: '{{bool()}}',
+  				posicao: '{{position()}}'
+  			},
+            'repeat(2)': [1,2,3,4],
+            'repeat(4)': "TESTE"
+        ]
+    }
+]

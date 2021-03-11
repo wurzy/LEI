@@ -199,7 +199,7 @@
 // ----- 2. DSL Grammar -----
 
 DSL_text
-  = ws value:repeat_object ws { return value; }
+  = ws value:repeat_object_seq ws { return value; }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -445,17 +445,37 @@ mous_func
 // ----- 9. Diretivas -----
 
 directive
-  = repeat
+  = repeat_any_seq
   / range
 
-repeat
+repeat_any_seq
+  = begin_array
+    values:(
+      head:repeat_any
+      tail:(value_separator r:repeat_any { return r })*
+      { return ([head].concat(tail)).flat() }
+    )?
+    end_array
+    { return values !== null ? values : [] }
+
+repeat_any
   = size:repeat_signature ws ":" ws val:value {
     if (typeof val === 'object' && val !== null) return repeatArray(size,val)
     else return Array(size).fill(val)
   }
 
+repeat_object_seq
+  = begin_array
+    values:(
+      head:repeat_object
+      tail:(value_separator r:repeat_object { return r })*
+      { return ([head].concat(tail)).flat() }
+    )?
+    end_array
+    { return values !== null ? values : [] }
+
 repeat_object
-  = "[" ws size:repeat_signature ws ":" ws obj:object ws "]" {
+  = size:repeat_signature ws ":" ws obj:object {
     return repeatArray(size,obj)
   }
 

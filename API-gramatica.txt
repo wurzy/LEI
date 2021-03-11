@@ -1,6 +1,7 @@
 ESTRUTURA DSL:
 [
   'repeat(x)': {...}
+  (, 'repeat(x)': {...})*
 ]
 
 ---------------------------------------------------------
@@ -9,10 +10,10 @@ DIRETIVAS:
 
 range(n) - gera uma lista [0,n[
 range(init,end) - gera uma lista [init,end[; ordem ascendente ou descendente
-'repeat(n)' - repete o elemento à frente n vezes
-'repeat(min,max)' - repete o elemento à frente entre min a max vezes
-missing(x) {prop objeto} - probabilidade x(1-99) de o objeto não possuir a propriedade em questão
-having(x) {prop objeto} - probabilidade x(1-99) de o objeto possuir a propriedade em questão
+[ 'repeat(n)': ... ] - repete o elemento à frente n vezes; o mesmo array pode ter vários repeats seguidos
+[ 'repeat(min,max)': ... ] - repete o elemento à frente entre min a max vezes; o mesmo array pode ter vários repeats seguidos
+missing(x) {prop} - probabilidade x(1-99) de o objeto não possuir a propriedade em questão
+having(x) {prop} - probabilidade x(1-99) de o objeto possuir a propriedade em questão
 
 ---------------------------------------------------------
 
@@ -40,6 +41,10 @@ POR IMPLEMENTAR:
 
 - interpolação de strings com moustaches
 - funções como propriedades de objeto
+
+- repeat com random - garantir que todos os resultados do random são diferentes
+
+'{{date()}}' - gera uma data aleatória
 
 '{{freguesia()}}' - dá uma freguesia aleatória
 '{{concelho()}}' - " concelho
