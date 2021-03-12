@@ -100,29 +100,23 @@
     return rounded
   }
 
-  function genPosition() {
-    return "(" + genFloat(-90,90,5) + ", " + genFloat(-180,180,5) + ")"
+  function genPosition(lat, long) {
+    if (!lat) return "(" + genFloat(-90,90,5) + ", " + genFloat(-180,180,5) + ")"
+    else {
+      if (lat.min > lat.max) {var latmax = lat.min; lat.min = lat.max; lat.max = latmax}
+      if (long.min > long.max) {var longmax = long.min; long.min = long.max; long.max = longmax}
+
+      return "(" + genFloat(lat.min, lat.max, 5) + ", " + genFloat(long.min, long.max, 5) + ")"
+    }
   }
 
-  function genPosition2(lat, long) {
-    if (lat.min > lat.max) {var latmax = lat.min; lat.min = lat.max; lat.max = latmax}
-    if (long.min > long.max) {var longmax = long.min; long.min = long.max; long.max = longmax}
-
-    return "(" + genFloat(lat.min, lat.max, 5) + ", " + genFloat(long.min, long.max, 5) + ")"
-  }
-
-  function genPhone() {
+  function genPhone(extension) {
     var number = "9" + genRandom([1,2,3,6])
     while (number.length < 11) {
       if (number.length == 3 || number.length == 7) number += " "
       else number += (Math.floor(Math.random() * 9) + 1)
     }
-    return number
-  }
-
-  function genPhone2(extension) {
-    if (extension) return "+351 " + genPhone()
-    return genPhone()
+    return extension ? ("+351 " + number) : number
   }
 
   function genDate(start, end, format) {
@@ -168,14 +162,8 @@
       case "bool": obj = genBoolean(); break
       case "integer": obj = genInteger(obj.min, obj.max, obj.unit); break
       case "floating": obj = genFloat(obj.min, obj.max, obj.decimals, obj.format); break
-      case "position":
-        if (Object.prototype.hasOwnProperty.call(obj, "lat")) obj = genPosition2(obj.lat, obj.long)
-        else obj = genPosition()
-        break
-      case "phone":
-        if (Object.prototype.hasOwnProperty.call(obj, "extension")) obj = genPhone2(obj.extension)
-        else obj = genPhone()
-        break
+      case "position": obj = genPosition(obj.lat, obj.long); break
+      case "phone": obj = genPhone(obj.extension); break
       case "date": obj = genDate(obj.start, obj.end, obj.format); break
       case "loremIpsum": obj = genLorem(obj.count, obj.units); break
       case "random": obj = genRandom(obj.values); break
@@ -340,8 +328,14 @@ float_format
 latitude
   = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
 
+lat_interval
+  = begin_array min:latitude value_separator max:latitude end_array { return {min, max} }
+
 longitude
   = (minus / plus)?("180"(".""0"+)?/(("1"[0-7][0-9])/([1-9]?[0-9]))("."[0-9]+)?) { return parseFloat(text()); }
+
+long_interval
+  = begin_array min:longitude value_separator max:longitude end_array { return {min, max} }
 
 // ----- 7. Strings -----
 
@@ -398,10 +392,10 @@ moustaches
   = "'" ws "{{" ws value:mous_func ws "}}" ws "'" { return value; }
 
 mous_func
-  = "objectId()" { return {  moustaches: "objectId" } }
-  / "guid()" { return { moustaches: "guid" } }
-  / "index()" { return { moustaches: "index" } }
-  / "bool()" { return { moustaches: "bool" } }
+  = "objectId(" ws ")" { return {  moustaches: "objectId" } }
+  / "guid(" ws ")" { return { moustaches: "guid" } }
+  / "index(" ws ")" { return { moustaches: "index" } }
+  / "bool(" ws ")" { return { moustaches: "bool" } }
   / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
     return {
       moustaches: "integer",
@@ -417,18 +411,14 @@ mous_func
       format: others.format
     }
   }
-  / "position()" {
-    return { moustaches: "position" }
-  }
-  / "position(" ws "[" ws min_lat:latitude ws "," max_lat:latitude ws "]" ws "," ws "[" ws min_long:longitude ws "," max_long:longitude ws "]" ws ")" {
+  / "position(" ws limits:(lat:lat_interval "," long:long_interval {return {lat, long} })? ")" {
     return {
       moustaches: "position",
-      lat: {min: min_lat, max: max_lat},
-      long: {min: min_long, max: max_long}
+      lat: !limits ? null : limits.lat,
+      long: !limits ? null : limits.long
     }
   }
-  / "phone()" { return { moustaches: "phone" } }
-  / "phone(" ws extension:(true/false) ws ")" {
+  / "phone(" ws extension:(true/false)? ws ")" {
     return {
       moustaches: "phone",
       extension
