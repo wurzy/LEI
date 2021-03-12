@@ -101,10 +101,10 @@ export default {
 	  	outros: null,
 	  	lista_exemplo: [
 	  		"string",
-	  		32,
+	  		'{{bool()}}',
 	  		{
 	  			elem: 1, 
-                indice: 2, 
+                indice: '{{integer(20,50)}}', 
                 lista_nested: [1,2,3], 
                 range: range(3) 
             }

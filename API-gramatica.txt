@@ -17,7 +17,10 @@ having(x) {prop} - probabilidade x(1-99) de o objeto possuir a propriedade em qu
 
 ---------------------------------------------------------
 
-MOUSTACHES (valores de propriedades de objetos):
+MOUSTACHES:
+
+- valores de propriedades de objetos
+- valores de arrays
 
 '{{objectId()}}' - gera um _id aleatório a la mongo
 '{{guid()}}' - gera um UUID aleatório
@@ -45,9 +48,7 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
-- garantir que uma key não pode ser "____"
-- moustaches em objetos dentro de arrays funcionam?
-- moustaches da data não funciona com argumento de formato
+- otimizar a recursividade e o processamento dos moustaches
 
 - interpolação de strings com moustaches
 - funções como propriedades de objeto
@@ -55,11 +56,6 @@ POR IMPLEMENTAR:
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
 
-'{{freguesia()}}' - dá uma freguesia aleatória
-'{{concelho()}}' - " concelho
-'{{distrito()}}' - " distrito
-'{{concelho(_distrito_)}}' - dá um concelho aleatório do distrito indicado
-'{{freguesia("distrito"/"concelho", nome)}}' - dá uma freguesia aleatório do distrito/concelho indicado
 '{{nome_proprio()}}'
 '{{apelido()}}'
 '{{nome_completo()}}'

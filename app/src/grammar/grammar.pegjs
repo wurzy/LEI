@@ -191,6 +191,13 @@
     var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !(hasGenKey(obj[k]) || hasDBKey(obj[k])))
     objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k]) })
     
+    var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
+    arrKeys.forEach(k => {
+      obj[k].forEach(elem => {
+        if (isObject(elem) && !(hasGenKey(elem) || hasDBKey(elem))) elem = resolveMoustaches(elem)
+      })
+    })
+    
     var genKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasGenKey(obj[k]))
     var dbKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasDBKey(obj[k]))
 
@@ -270,12 +277,12 @@ object
     { return members !== null ? members: {}; }
 
 member
-  = name:key name_separator value:object_value {
+  = name:key name_separator value:value_or_moustache {
       return { name: name, value: value };
     }
   / probability
 
-object_value
+value_or_moustache
   = value / moustaches
 
 // ----- 5. Arrays -----
@@ -283,8 +290,8 @@ object_value
 array
   = begin_array
     values:(
-      head:value
-      tail:(value_separator v:value { return v; })*
+      head:value_or_moustache
+      tail:(value_separator v:value_or_moustache { return v; })*
       { return [head].concat(tail); }
     )?
     end_array
@@ -359,7 +366,8 @@ date_format
   / quotation_mark format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") quotation_mark { return format.join(""); }
 
 key
-  = head:[a-z_] tail:[a-zA-Z0-9_]* { return head.concat(tail.join("")); }
+  = chars:([_]+[a-z][a-zA-Z0-9_]*) { return chars.flat().join("") }
+  / chars:([a-z][a-zA-Z0-9_]*) { return chars.flat().join("") }
 
 char
   = unescaped
