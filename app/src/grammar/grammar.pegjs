@@ -69,11 +69,8 @@
 
   function genBoolean() { return Math.random() < 0.5 }
 
-  function genInteger(min, max) {
-    return Math.floor(Math.random() * (min - max + 1) + max)
-  }
-
-  function genInteger2(min, max, unit) {
+  function genInteger(min, max, unit) {
+    if (!unit) return Math.floor(Math.random() * (min - max + 1) + max)
     return String(Math.floor(Math.random() * (max - min + 1) + min)) + unit
   }
 
@@ -172,10 +169,7 @@
       case "guid": obj = genGuid(); break
       case "index": obj = i; break
       case "bool": obj = genBoolean(); break
-      case "integer":
-        if (Object.prototype.hasOwnProperty.call(obj, "unit")) obj = genInteger2(obj.min, obj.max, obj.unit)
-        else obj = genInteger(obj.min, obj.max)
-        break
+      case "integer": obj = genInteger(obj.min, obj.max, obj.unit); break
       case "floating":
         if (Object.prototype.hasOwnProperty.call(obj, "unit")) obj = genFloat3(obj.min, obj.max, obj.decimals, obj.int_sep, obj.dec_sep, obj.unit)
         else if (Object.prototype.hasOwnProperty.call(obj, "decimals")) obj = genFloat2(obj.min, obj.max, obj.decimals)
@@ -412,13 +406,7 @@ mous_func
   / "guid()" { return { moustaches: "guid" } }
   / "index()" { return { moustaches: "index" } }
   / "bool()" { return { moustaches: "bool" } }
-  / "integer(" ws min:int ws "," ws max:int ws ")" {
-    return {
-      moustaches: "integer",
-      min, max
-    }
-  }
-  / "integer(" ws min:int ws "," ws max:int ws ",\"" ws unit:. ws "\")" {
+  / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
     return {
       moustaches: "integer",
       min, max, unit

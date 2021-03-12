@@ -37,16 +37,3 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
         ]
     }
 ]
-
----------------------------------------------------------------------
-
-DATAS:
-
-[
-	'repeat(3)': {
-        data: '{{date("10/01/2015")}}',
-        data2: '{{date("10/01/2015", "YYYY-MM-DD")}}',
-        data3: '{{date("10/05/2019","10/01/2018")}}'
-        data4: '{{date("10/05/2019","10/01/2018", "MM.DD/AAAA")}}'
-    }
-]
