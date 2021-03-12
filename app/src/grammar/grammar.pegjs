@@ -13,6 +13,20 @@
 
   function hex(x) { return Math.floor(x).toString(16) }
 
+  function getDecimalsCount(min, max) {
+    var decimals = 3; //3 caracteres decimais por predefinição
+    const maxStr = String(max);
+    const minStr = String(min);
+
+    if (minStr.includes('.')) decimals = minStr.split('.')[1].length;
+    if (maxStr.includes('.')) {
+      var maxDecimals = maxStr.split('.')[1].length;
+      if (decimals < maxDecimals) decimals = maxDecimals;
+    }
+
+    return decimals
+  }
+
   function formatNumber(num) {
     var x = num.split('.');
     var x1 = x[0];
@@ -74,33 +88,16 @@
     return String(Math.floor(Math.random() * (max - min + 1) + min)) + unit
   }
 
-  function genFloat(min, max) {
-    var decimals = 3; //3 caracteres decimais por predefinição
-    const maxStr = String(max);
-    const minStr = String(min);
-
-    if (minStr.includes('.')) decimals = minStr.split('.')[1].length;
-    if (maxStr.includes('.')) {
-      var maxDecimals = maxStr.split('.')[1].length;
-      if (decimals < maxDecimals) decimals = maxDecimals;
-    }
-
+  function genFloat(min, max, decimals, format) {
+    decimals = decimals == null ? getDecimalsCount(min,max) : decimals
     var random = min + (max - min) * Math.random();
-    return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
-  }
+    var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
 
-  function genFloat2(min, max, decimals) {
-    var random = min + (max - min) * Math.random()
-    return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
-  }
-
-  function genFloat3(min, max, decimals, int_sep, dec_sep, unit) {
-    var random = min + (max - min) * Math.random()
-    var roundedRandom = String(Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals))
-    var formatted = formatNumber(roundedRandom)
-             
-    var split = formatted.split('.')
-    return split[0].replace(/,/g, int_sep) + dec_sep + split[1] + unit
+    if (format != null) {
+      var split = formatNumber(String(rounded)).split('.')
+      rounded = split[0].replace(/,/g, format.int_sep) + format.dec_sep + split[1] + format.unit
+    }
+    return rounded
   }
 
   function genPosition() {
@@ -170,11 +167,7 @@
       case "index": obj = i; break
       case "bool": obj = genBoolean(); break
       case "integer": obj = genInteger(obj.min, obj.max, obj.unit); break
-      case "floating":
-        if (Object.prototype.hasOwnProperty.call(obj, "unit")) obj = genFloat3(obj.min, obj.max, obj.decimals, obj.int_sep, obj.dec_sep, obj.unit)
-        else if (Object.prototype.hasOwnProperty.call(obj, "decimals")) obj = genFloat2(obj.min, obj.max, obj.decimals)
-        else obj = genFloat(obj.min, obj.max)
-        break
+      case "floating": obj = genFloat(obj.min, obj.max, obj.decimals, obj.format); break
       case "position":
         if (Object.prototype.hasOwnProperty.call(obj, "lat")) obj = genPosition2(obj.lat, obj.long)
         else obj = genPosition()
@@ -341,6 +334,9 @@ plus
 zero
   = "0"
 
+float_format
+  = ws "\"0" int_sep:[^0-9] "0" dec_sep:[^0-9] "00" unit:[^0-9] "\"" ws { return {int_sep, dec_sep, unit} }
+
 latitude
   = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
 
@@ -412,25 +408,13 @@ mous_func
       min, max, unit
     }
   }
-  // gerar float aleatório sem especificação do nr de casas decimais
-  / "floating(" ws min:number ws "," ws max:number ws ")" {
+  / "floating(" ws min:number ws "," ws max:number ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
+    if (!others) others = {decimals: null, format: null}
     return {
       moustaches: "floating",
-      min, max
-    }
-  }
-  // gerar float aleatório com especificação do nr de casas decimais
-  / "floating(" ws min:number ws "," ws max:number ws "," ws decimals:int ws ")" {
-    return {
-      moustaches: "floating",
-      min, max, decimals
-    }
-  }
-  // gerar float aleatório com especificação do nr de casas decimais e formato
-  / "floating(" ws min:number ws "," ws max:number ws "," ws decimals:number ws "," ws "\"0" int_sep:[.,] "0" dec_sep:[.,] "00" unit:. "\"" ws ")" {
-    return {
-      moustaches: "floating",
-      min, max, int_sep, dec_sep, unit, decimals
+      min, max,
+      decimals: others.decimals,
+      format: others.format
     }
   }
   / "position()" {
