@@ -2,7 +2,14 @@
 // ============
 
 {
-  var moustachesKeys = ["objectId","guid","index","bool","integer","floating","position","phone","date","random","loremIpsum","having","missing"]
+  var genKeys = ["objectId","guid","index","bool","integer","floating","position","phone","date","random","loremIpsum","having","missing"]
+  var dbKeys = ["distrito","concelho","freguesia"]
+
+  function isObject(x) { return typeof x==='object' && x!==null && !Array.isArray(x) }
+
+  function hasGenKey(x) { return Object.prototype.hasOwnProperty.call(x,"moustaches") && genKeys.includes(x.moustaches) }
+
+  function hasDBKey(x) { return Object.prototype.hasOwnProperty.call(x,"moustaches") && dbKeys.includes(x.moustaches) }
 
   function hex(x) { return Math.floor(x).toString(16) }
 
@@ -138,12 +145,20 @@
   function genRandom(values) { return values[Math.floor(Math.random() * values.length)] }
 
   function genProbability(type, probability, value, i) {
-    if (type == "missing" && Math.random() > probability) return moustachesSwitch(value, i)
-    else if (type == "having" && Math.random() < probability) return moustachesSwitch(value, i)
+    if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
+      if (genKeys.includes(value.moustaches)) return genSwitch(value, i)
+      else return dbSwitch(value, i)
+    }
     return null
   }
 
-  function moustachesSwitch(obj, i) {
+  async function genDocDB(keyword) {
+    return axios.get('http://localhost:8083/distritos/' + keyword)
+      .then(dados => dados.data[keyword])
+      .catch(e => e)
+  }
+
+  function genSwitch(obj, i) {
     switch (obj.moustaches) {
       case "objectId": obj = genObjectId(); break
       case "guid": obj = genGuid(); break
@@ -176,25 +191,27 @@
     return obj
   }
 
+  async function dbSwitch(obj) {
+    if (Object.keys(obj).length == 1) await genDocDB(obj.moustaches).then(res => {obj = res})
+    //else ...
+
+    return obj
+  }
+
   function resolveMoustaches(obj, i) {
-    var objectKeys = Object.keys(obj).filter(k => 
-          typeof obj[k] === 'object' && 
-          obj[k] !== null && !Array.isArray(obj[k]) &&
-          !(Object.prototype.hasOwnProperty.call(obj[k], "moustaches") &&
-          moustachesKeys.includes(obj[k].moustaches)))
-      
+    //objetos sem propriedade "moustaches" válida
+    var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !(hasGenKey(obj[k]) || hasDBKey(obj[k])))
     objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k]) })
     
-    var keys = Object.keys(obj).filter(k => 
-          typeof obj[k] === 'object' && 
-          obj[k] !== null && 
-          Object.prototype.hasOwnProperty.call(obj[k], "moustaches") &&
-          moustachesKeys.includes(obj[k].moustaches))
+    var genKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasGenKey(obj[k]))
+    var dbKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasDBKey(obj[k]))
 
-    keys.forEach(k => {
-      obj[k] = moustachesSwitch(obj[k], i)
+    genKeys.forEach(k => {
+      obj[k] = genSwitch(obj[k], i)
       if (obj[k] === null) delete obj[k]
     })
+
+    //dbKeys.forEach(...)
 
     return obj
   }
@@ -457,21 +474,9 @@ mous_func
       count, units
     } 
   }
-  /* "distrito()" {
-    Distrito.getRandom()
-      .then(dados => {return dados})
-      .catch(e => {return e})
+  / ("distrito()" / "concelho()" / "freguesia()") {
+    return { moustaches: text().slice(0, -2) }
   }
-  / "concelho()" {
-    Concelho.getRandom()
-      .then(dados => {return dados})
-      .catch(e => {return e})
-  }
-  / "freguesia()" {
-    Freguesia.getRandom()
-      .then(dados => {return dados})
-      .catch(e => {return e})
-  }*/
 
 // ----- 9. Diretivas -----
 
