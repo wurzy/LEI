@@ -32,8 +32,10 @@ MOUSTACHES (valores de propriedades de objetos):
 '{{position([min_lat, max_lat], [min_long, max_long])}}' - gera coordenadas dentro dos intervalos dados
 '{{phone()}}' - gera um número de telemóvel português (sem extensão)
 '{{phone(bool)}}' - gera um número de telemóvel português com extensão (+351), se bool == true
-'{{date("DD/MM/YYYY")}}' - gera uma data aleatória entre a data argumento e hoje
-'{{date("DD/MM/YYYY", "DD/MM/YYYY")}}' - gera uma data aleatória entre as data argumentos
+'{{date(data_init)}}' - gera uma data aleatória entre a data argumento e hoje
+'{{date(data_init, formato)}}' - gera uma data aleatória entre a data argumento e hoje no formato dado
+'{{date(data_init, data_fim)}}' - gera uma data aleatória entre as datas argumentos
+'{{date(data_init, data_fim, formato)}}' - gera uma data aleatória entre a data argumento e hoje no formato dado
 '{{random(arg1,...,argN)}}' - escolhe um dos argumentos aleatoriamente (pode receber inteiros, floats, strings, boleanos e null; mínimo 1 arg)
 '{{lorem(n,"words"/"sentences"/"paragraphs")}}' - gera n palavras/frases/parágrafos lorem ipsum
 
@@ -43,6 +45,8 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
+- garantir que uma key não pode ser "____"
+- moustaches em objetos dentro de arrays funcionam?
 - moustaches da data não funciona com argumento de formato
 
 - interpolação de strings com moustaches

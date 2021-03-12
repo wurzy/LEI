@@ -133,11 +133,7 @@
 
   function genDate(start, end, format) {
     var random = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-    var date = moment(random).format(format.replace(/A/g, "Y").replace(/[^DMY]/g, "/"))
-
-    var dateSpl = date.split(/\//g)
-    var formatSpl = format.split(/[A-Y]+/g)
-    return dateSpl[0] + formatSpl[1] + dateSpl[1] + formatSpl[2] + dateSpl[2]
+    return moment(random).format(format.replace(/A/g, "Y"))
   }
 
   function genLorem(count, units) { return loremIpsum({ count, units }) }
@@ -152,9 +148,21 @@
     return null
   }
 
-  async function genDocDB(keyword) {
+  async function getSimpleDoc(keyword) {
     return axios.get('http://localhost:8083/distritos/' + keyword)
       .then(dados => dados.data[keyword])
+      .catch(e => e)
+  }
+
+  async function getConcelho(distrito) {
+    return axios.get('http://localhost:8083/distritos/concelho/' + distrito)
+      .then(dados => dados.data.concelho)
+      .catch(e => e)
+  }
+
+  async function getFreguesia(keyword, name) {
+    return axios.get('http://localhost:8083/distritos/' + keyword + '/' + name)
+      .then(dados => dados.data.freguesia)
       .catch(e => e)
   }
 
@@ -192,8 +200,13 @@
   }
 
   async function dbSwitch(obj) {
-    if (Object.keys(obj).length == 1) await genDocDB(obj.moustaches).then(res => {obj = res})
-    //else ...
+    if (Object.keys(obj).length == 1) await getSimpleDoc(obj.moustaches).then(res => {obj = res})
+    else {
+      switch (obj.moustaches) {
+        case "concelho": await getConcelho(obj.distrito).then(res => {obj = res}); break
+        case "freguesia": await getFreguesia(obj.keyword, obj.name).then(res => {obj = res}); break
+      }
+    }
 
     return obj
   }
@@ -234,7 +247,7 @@ end_array       = ws "]" ws
 end_object      = ws "}" ws
 name_separator  = ws ":" ws
 value_separator = ws "," ws
-date_separator  = ws "/"/"-"/"." ws
+date_separator  = ws sep:("/" / "-" / ".") ws { return sep }
 
 ws "whitespace" = [ \t\n\r]*
 
@@ -357,9 +370,9 @@ date
   }
 
 date_format
-  = "DD" date_separator "MM" date_separator "AAAA"/"YYYY" { return text(); }
-  / "MM" date_separator "DD" date_separator "AAAA"/"YYYY" { return text(); }
-  / "AAAA"/"YYYY" date_separator "MM" date_separator "DD" { return text(); }
+  = quotation_mark format:("DD" date_separator "MM" date_separator ("AAAA" / "YYYY")) quotation_mark { return format.join(""); }
+  / quotation_mark format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) quotation_mark { return format.join(""); }
+  / quotation_mark format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") quotation_mark { return format.join(""); }
 
 key
   = head:[a-z_] tail:[a-zA-Z0-9_]* { return head.concat(tail.join("")); }
@@ -449,11 +462,10 @@ mous_func
       extension
     }
   }
-  // "date(" ws start:date ws args:(("," ws f:date_format ws { return {format: f} }) / ("," ws e:date ws form:("," ws f:date_format ws {return f})? { return {end: e, format: form} }))? ")" {
   / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
       moustaches: "date",
-      start, 
+      start,
       end: !end ? new Date() : end,
       format: !format ? 'DD/MM/YYYY' : format
     }
@@ -476,6 +488,19 @@ mous_func
   }
   / ("distrito()" / "concelho()" / "freguesia()") {
     return { moustaches: text().slice(0, -2) }
+  }
+  / "concelho(" dist:[a-zA-Z\- ] ")" {
+    return {
+      moustaches: "concelho",
+      distrito: dist.trim()
+    }
+  }
+  / "freguesia(" ws keyword:(([dD][iI][sS][tT][rR][iI][tT][oO])/([cC][oO][nN][cC][eE][lL][hH][oO])) ws "," name:[a-zA-Z\- ] ")" {
+    return {
+      moustaches: "freguesia",
+      keyword: keyword.toLowerCase(), 
+      name
+    }
   }
 
 // ----- 9. Diretivas -----
