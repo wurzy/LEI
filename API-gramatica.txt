@@ -11,7 +11,6 @@ ESTRUTURA DSL:
 RESTRIÇÕES DO PROGRAMA:
 
 - cada propriedade de um objeto tem de ter um nome diferente. Se houver nomes repetidos, a propriedade ficará com o valor do último
-- nenhum objeto pode ter a propriedade "moustaches"
 
 ---------------------------------------------------------
 
@@ -94,7 +93,7 @@ PROGRESSO DESTA SEMANA:
 - aceitar vários repeats seguidos (retornar uma lista com várias coleções diferentes)
 - moustaches para gerar datas aleatórias
 - recursividade infinita no processamento de moustaches (permitir moustaches em qualquer objeto e array)
-- moustaches de acesso a datasets para todos os datasets
+- moustaches de acesso a datasets
 - sistema para definir a linguagem dos datasets
 	- moustaches sempre em inglês
 	- linha inicial no texto a ser processado que indica pt/en
