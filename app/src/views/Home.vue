@@ -61,7 +61,8 @@ export default {
       return {
         parser: parser,
         result: "",
-        code: `[
+        code: `<!LANGUAGE pt>
+[
 	'repeat(3)': {
         _id: '{{objectId()}}',
         guid: '{{guid()}}',

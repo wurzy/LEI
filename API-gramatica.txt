@@ -1,8 +1,17 @@
 ESTRUTURA DSL:
+
+<!LANGUAGE pt/en>
 [
   'repeat(x)': {...}
   (, 'repeat(x)': {...})*
 ]
+
+---------------------------------------------------------
+
+RESTRIÇÕES DO PROGRAMA:
+
+- cada propriedade de um objeto tem de ter um nome diferente. Se houver nomes repetidos, a propriedade ficará com o valor do último
+- nenhum objeto pode ter a propriedade "moustaches"
 
 ---------------------------------------------------------
 
@@ -56,6 +65,11 @@ POR IMPLEMENTAR:
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
 
-'{{nome_proprio()}}'
-'{{apelido()}}'
-'{{nome_completo()}}'
+--------------------------------------------------------
+
+PROGRESSO DESTA SEMANA:
+
+- aceitar vários repeats seguidos (retornar uma lista com várias coleções diferentes)
+- moustaches para gerar datas aleatórias
+- recursividade infinita no processamento de moustaches (permitir moustaches em qualquer objeto e array)
+- moustaches de acesso a datasets para todos os datasets
