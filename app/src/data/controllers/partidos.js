@@ -1,18 +1,18 @@
 import partidosJS from '../datasets/partidos.js';
 const partidos = partidosJS.partidos
 
-const Partidos = {
-    sigla(){
+const ptPoliticalPartiesAPI = {
+    abbreviation(){
         return partidos[Math.floor(Math.random() * partidos.length)].sigla
     },
 
-    partido(){
+    politicalPartyName(){
         return partidos[Math.floor(Math.random() * partidos.length)].partido
     },
 
-    partidoCompleto(){
+    politicalParty(){
         return partidos[Math.floor(Math.random() * partidos.length)] 
     }
 }
 
-export default Partidos
+export default ptPoliticalPartiesAPI

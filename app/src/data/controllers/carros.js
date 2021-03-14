@@ -1,10 +1,10 @@
 import carrosJS from '../datasets/carros.js';
 const carros = carrosJS.carros
 
-const Carros = {
-    marca(){
+const carsAPI = {
+    brand(){
         return carros[Math.floor(Math.random() * carros.length)]
     }
 }
 
-export default Carros
+export default carsAPI

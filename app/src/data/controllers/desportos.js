@@ -1,10 +1,10 @@
 import desportosJS from '../datasets/desportos.js';
 const desportos = desportosJS.desportos
 
-const Desportos = {
-   dia(){
+const sportsAPI = {
+   sport(){
        return desportos[Math.floor(Math.random() * desportos.length)]
    }
 }
 
-export default Desportos
+export default sportsAPI

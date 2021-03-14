@@ -1,10 +1,10 @@
 import religioesJS from '../datasets/religioes.js';
 const religioes = religioesJS.religioes
 
-const Religioes = {
-   religiao(){
+const religionsAPI = {
+   religion(){
        return religioes[Math.floor(Math.random() * religioes.length)]
    }
 }
 
-export default Religioes
+export default religionsAPI
