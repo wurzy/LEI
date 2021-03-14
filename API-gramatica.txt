@@ -79,6 +79,8 @@ POR IMPLEMENTAR:
 
 - otimizar a recursividade e o processamento dos moustaches
 
+- permitir probabilities em arrays
+
 - interpolação de strings com moustaches
 - funções como propriedades de objeto
 

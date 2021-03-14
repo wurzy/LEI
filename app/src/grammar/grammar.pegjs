@@ -270,6 +270,7 @@ generic_key
   ) { return text().slice(0, -2) + 's' }
   / ("country()"
   / "gov_entity()"
+  / "nationality()"
   / "political_party()"
   / "top100_celebrity()"
   / "pt_top100_celebrity()"
