@@ -2,7 +2,7 @@ import entidadesJS from '../datasets/entidade_gov.js';
 const entidades = entidadesJS.entidades_gov
 
 const govEntitiesAPI = {
-    abbreviation(){
+    gov_entity(){
         return entidades[Math.floor(Math.random() * entidades.length)]
     }
 }

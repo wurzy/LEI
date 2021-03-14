@@ -242,13 +242,28 @@ string "string"
   = quotation_mark chars:char* quotation_mark { return chars.join("") }
 
 simple_api_key
-  = api:(
-    key_districts
-  / key_names
+  = api:(districts_key
+  / names_key
+  / generic_key
   ) { return { moustaches: text().slice(0, -2), api, args: [] } }
 
-key_districts = ("district()" / "county()" / "parish()") { return "districts" }
-key_names = ("firstName()" / "surname()" / "fullName()") { return "names" }
+districts_key = ("district()" / "county()" / "parish()") { return "districts" }
+names_key = ("firstName()" / "surname()" / "fullName()") { return "names" }
+generic_key 
+  = ("animal()"
+  / "buzzword()"
+  / "car_brand()"
+  / "continent()"
+  / "sport()"
+  / "brand()"
+  / "religion()"
+  ) { return text().slice(0, -2) + 's' }
+  / ("gov_entity()"
+  / "country()"
+  ) { return text().slice(0, -3) + 'ies' }
+
+pt_political_party_arg
+  = quotation_mark arg:(("name") / ("abbr")) quotation_mark { return arg }
 
 place_name
   = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
@@ -376,6 +391,13 @@ api_moustaches
       moustaches: keyword == "county" ? "parishFromCounty" : "parishFromDistrict",
       api: "districts",
       args: [name]
+    }
+  }
+  / "pt_political_party(" ws arg:( a:pt_political_party_arg {return a} )? ")" {
+    return {
+      moustaches: !arg ? "pt_political_party" : ("pt_political_party_" + arg),
+      api: "ptPoliticalParties",
+      args: []
     }
   }
 

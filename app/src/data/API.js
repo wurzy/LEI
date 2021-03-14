@@ -1,11 +1,11 @@
 import animals from './controllers/animais'
 import buzzwords from './controllers/buzzwords'
-import cars from './controllers/carros'
+import car_brands from './controllers/carros'
 import continents from './controllers/continentes'
 import sports from './controllers/desportos'
 import days from './controllers/dias'
 import districts from './controllers/distritos'
-import govEntities from './controllers/entidade_gov'
+import gov_entities from './controllers/entidade_gov'
 import brands from './controllers/marcas'
 import months from './controllers/meses'
 import names from './controllers/nomes'
@@ -16,12 +16,12 @@ import religions from './controllers/religioes'
 export default {
     animals,
     buzzwords,
-    cars,
+    car_brands,
     continents,
     sports,
     days,
     districts,
-    govEntities,
+    gov_entities,
     brands,
     months,
     names,
