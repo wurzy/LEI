@@ -247,7 +247,7 @@ simple_api_key
   / generic_key
   ) { return { moustaches: text().slice(0, -2), api, args: [] } }
 
-districts_key = ("district()" / "county()" / "parish()") { return "districts" }
+districts_key = ("pt_district()" / "pt_county()" / "pt_parish()") { return "districts" }
 names_key = ("firstName()" / "surname()" / "fullName()") { return "names" }
 generic_key 
   = ("animal()"
@@ -379,16 +379,16 @@ gen_moustaches
   
 api_moustaches
   = simple_api_key
-  / "county(" district:place_name ")" {
+  / "pt_county(" district:place_name ")" {
     return {
-      moustaches: "countyFromDistrict",
+      moustaches: "pt_countyFromDistrict",
       api: "districts",
       args: [district]
     }
   }
-  / "parish(" keyword:place_label "," name:place_name ")" {
+  / "pt_parish(" keyword:place_label "," name:place_name ")" {
     return {
-      moustaches: keyword == "county" ? "parishFromCounty" : "parishFromDistrict",
+      moustaches: keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict",
       api: "districts",
       args: [name]
     }

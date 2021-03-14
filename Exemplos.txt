@@ -40,17 +40,31 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
 
 ---------------------------------------------------------------------
 
+MOUSTACHES DE DATASETS:
+
 <!LANGUAGE pt>
 [
 	'repeat(3)': {
-  		distrito: '{{district()}}',
-  		concelho: '{{county()}}',
-  		concelho2: '{{county("Braga")}}',
-  		freguesia: '{{parish()}}',
-		freguesia2: '{{parish("district","Braga")}}',
-		freguesia3: '{{parish("county","Braga")}}',
+  		distrito: '{{pt_district()}}',
+  		concelho: '{{pt_county()}}',
+  		concelho2: '{{pt_county("Braga")}}',
+  		freguesia: '{{pt_parish()}}',
+		freguesia2: '{{pt_parish("district","Braga")}}',
+		freguesia3: '{{pt_parish("county","Braga")}}',
   		nome_proprio: '{{firstName()}}',
   		apelido: '{{surname()}}',
-  		nome: '{{fullName()}}'
+  		nome: '{{fullName()}}',
+  		animal: '{{animal()}}',
+  		buzzword: '{{buzzword()}}',
+  		car_brand: '{{car_brand()}}',
+  		continent: '{{continent()}}',
+  		sport: '{{sport()}}',
+  		brand: '{{brand()}}',
+  		religion: '{{religion()}}',
+  		gov_entity: '{{gov_entity()}}',
+  		country: '{{country()}}',
+  		partido: '{{pt_political_party()}}',
+  		partido_abbr: '{{pt_political_party("abbr")}}',
+  		partido_nome: '{{pt_political_party("name")}}'
     }
 ]

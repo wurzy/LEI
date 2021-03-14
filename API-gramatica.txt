@@ -51,6 +51,26 @@ MOUSTACHES:
 '{{random(arg1,...,argN)}}' - escolhe um dos argumentos aleatoriamente (pode receber inteiros, floats, strings, boleanos e null; mínimo 1 arg)
 '{{lorem(n,"words"/"sentences"/"paragraphs")}}' - gera n palavras/frases/parágrafos lorem ipsum
 
+'{{pt_district()}}' - distrito pt aleatório
+'{{pt_county()}}' - concelho pt aleatório
+'{{pt_county(district_name)}}' - concelho pt aleatório do distrito indicado
+'{{pt_parish()}}' - freguesia pt aleatória
+'{{pt_parish("district"/"county",name)}}' - freguesia pt aleatória do distrito/concelho indicado
+'{{firstName()}}' - nome próprio aleatório
+'{{surname()}}' - apelido aleatório
+'{{fullName()}}' - nome completo aleatório
+'{{animal()}}' - animal aleatório
+'{{buzzword()}}' - buzzword aleatória
+'{{car_brand()}}' - marca de carro aleatória
+'{{continent()}}' - continente aleatório
+'{{sport()}}' - desporto aleatório
+'{{brand()}}' - marca aleatória
+'{{religion()}}' - religião aleatória
+'{{gov_entity()}}' - organização governamental aleatória
+'{{country()}}' - país aleatório
+'{{pt_political_party()}}' - partido político pt aleatório (abreviação + nome)
+'{{pt_political_party("abbr"/"name")}}' - sigla/nome de um partido político pt aleatório
+
 PS: as funções que levam intervalos de valor funcionam tanto por ordem asc como desc
 
 --------------------------------------------------------
@@ -73,3 +93,7 @@ PROGRESSO DESTA SEMANA:
 - moustaches para gerar datas aleatórias
 - recursividade infinita no processamento de moustaches (permitir moustaches em qualquer objeto e array)
 - moustaches de acesso a datasets para todos os datasets
+- sistema para definir a linguagem dos datasets
+	- moustaches sempre em inglês
+	- linha inicial no texto a ser processado que indica pt/en
+	- datasets pt e en para cada coleção
