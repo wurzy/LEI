@@ -250,20 +250,37 @@ simple_api_key
 districts_key = ("pt_district()" / "pt_county()" / "pt_parish()") { return "districts" }
 names_key = ("firstName()" / "surname()" / "fullName()") { return "names" }
 generic_key 
-  = ("animal()"
+  = ("actor()"
+  / "animal()"
+  / "brand()"
   / "buzzword()"
+  / "capital()"
   / "car_brand()"
   / "continent()"
-  / "sport()"
-  / "brand()"
+  / "cultural_center()"
+  / "hacker()"
+  / "job()"
+  / "musician()"
+  / "pt_politian()"
+  / "pt_public_figure()"
   / "religion()"
+  / "soccer_player()"
+  / "sport()"
+  / "writer()"
   ) { return text().slice(0, -2) + 's' }
-  / ("gov_entity()"
-  / "country()"
+  / ("country()"
+  / "gov_entity()"
+  / "political_party()"
+  / "top100_celebrity()"
+  / "pt_top100_celebrity()"
   ) { return text().slice(0, -3) + 'ies' }
+  / "pt_businessman()" { return text().slice(0, -4) + 'en' }
 
 pt_political_party_arg
   = quotation_mark arg:(("name") / ("abbr")) quotation_mark { return arg }
+
+soccer_club_nationality
+  = quotation_mark arg:(("de") / ("en") / ("es") / ("it") / ("pt")) quotation_mark { return arg }
 
 place_name
   = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
@@ -397,6 +414,13 @@ api_moustaches
     return {
       moustaches: !arg ? "pt_political_party" : ("pt_political_party_" + arg),
       api: "ptPoliticalParties",
+      args: []
+    }
+  }
+  / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
+    return {
+      moustaches: !arg ? "soccer_club" : "soccer_club_from",
+      api: "soccer_clubs",
       args: []
     }
   }
