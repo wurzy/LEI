@@ -1,10 +1,10 @@
 import mesesJS from '../datasets/meses.js';
 const meses = mesesJS.meses
 
-const Meses = {
+const monthsAPI = {
    mes(){
        return meses[Math.floor(Math.random() * meses.length)]
    }
 }
 
-export default Meses
+export default monthsAPI
