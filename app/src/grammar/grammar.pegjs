@@ -131,27 +131,9 @@
   function genProbability(type, probability, value, i) {
     if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
       if (genKeys.includes(value.moustaches)) return genSwitch(value, i)
-      else return dbSwitch(value, i)
+      else return dbSwitch(value)
     }
     return null
-  }
-
-  async function getSimpleDoc(keyword) {
-    return axios.get('http://localhost:8083/distritos/' + keyword)
-      .then(dados => dados.data[keyword])
-      .catch(e => e)
-  }
-
-  async function getConcelho(distrito) {
-    return axios.get('http://localhost:8083/distritos/concelho/' + distrito)
-      .then(dados => dados.data.concelho)
-      .catch(e => e)
-  }
-
-  async function getFreguesia(keyword, name) {
-    return axios.get('http://localhost:8083/distritos/' + keyword + '/' + name)
-      .then(dados => dados.data.freguesia)
-      .catch(e => e)
   }
 
   function genSwitch(obj, i) {
@@ -174,39 +156,52 @@
     return obj
   }
 
-  async function dbSwitch(obj) {
-    if (Object.keys(obj).length == 1) await getSimpleDoc(obj.moustaches).then(res => {obj = res})
-    else {
-      switch (obj.moustaches) {
-        case "concelho": await getConcelho(obj.distrito).then(res => {obj = res}); break
-        case "freguesia": await getFreguesia(obj.keyword, obj.name).then(res => {obj = res}); break
-      }
+  function dbSwitch(obj) {
+    switch (obj.moustaches) {
+      case "distrito": obj = distritosAPI.distrito(); break
+      case "concelho":
+        if (Object.prototype.hasOwnProperty.call(obj,"distrito")) obj = distritosAPI.concelhoDoDistrito(obj.distrito)
+        else obj = distritosAPI.distrito()
+        break
+      case "freguesia":
+        if (Object.prototype.hasOwnProperty.call(obj,"keyword")) {
+          if (obj.keyword == "distrito") obj = distritosAPI.freguesiaDoDistrito(obj.name)
+          else obj = distritosAPI.freguesiaDoConcelho(obj.name)
+        }
+        else obj = distritosAPI.freguesia()
+        break
     }
 
     return obj
   }
 
   function resolveMoustaches(obj, i) {
-    //objetos sem propriedade "moustaches" válida
-    var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !(hasGenKey(obj[k]) || hasDBKey(obj[k])))
-    objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k]) })
-    
-    var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
-    arrKeys.forEach(k => {
-      obj[k].forEach(elem => {
-        if (isObject(elem) && !(hasGenKey(elem) || hasDBKey(elem))) elem = resolveMoustaches(elem)
+    if (Object.prototype.hasOwnProperty.call(obj,"moustaches")) {
+      if (hasGenKey(obj)) obj = genSwitch(obj, i)
+      if (hasDBKey(obj)) obj = dbSwitch(obj)
+    }
+    else {
+      //objetos sem propriedade "moustaches" válida
+      var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !(hasGenKey(obj[k]) || hasDBKey(obj[k])))
+      objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k]) })
+      
+      var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
+      arrKeys.forEach(k => {
+        for (var j = 0; j < obj[k].length; j++) {
+          if (isObject(obj[k][j])) obj[k][j] = resolveMoustaches(obj[k][j])
+        }
       })
-    })
-    
-    var genKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasGenKey(obj[k]))
-    var dbKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasDBKey(obj[k]))
+      
+      var genKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasGenKey(obj[k]))
+      var dbKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasDBKey(obj[k]))
 
-    genKeys.forEach(k => {
-      obj[k] = genSwitch(obj[k], i)
-      if (obj[k] === null) delete obj[k]
-    })
+      genKeys.forEach(k => {
+        obj[k] = genSwitch(obj[k], i)
+        if (obj[k] === null) delete obj[k]
+      })
 
-    //dbKeys.forEach(...)
+      dbKeys.forEach(k => obj[k] = dbSwitch(obj[k]))
+    }
 
     return obj
   }
@@ -349,6 +344,12 @@ long_interval
 string "string"
   = quotation_mark chars:char* quotation_mark { return chars.join(""); }
 
+place_name
+  = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
+
+place_label
+  = ws quotation_mark label:(("distrito") / ("concelho")) quotation_mark ws { return label; }
+
 lorem_string
   = quotation_mark word:"words" quotation_mark { return word; }
   / quotation_mark word:"sentences" quotation_mark { return word; }
@@ -459,13 +460,13 @@ mous_func
   / ("distrito()" / "concelho()" / "freguesia()") {
     return { moustaches: text().slice(0, -2) }
   }
-  / "concelho(" dist:[a-zA-Z\- ] ")" {
+  / "concelho(" distrito:place_name ")" {
     return {
       moustaches: "concelho",
-      distrito: dist.trim()
+      distrito
     }
   }
-  / "freguesia(" ws keyword:(([dD][iI][sS][tT][rR][iI][tT][oO])/([cC][oO][nN][cC][eE][lL][hH][oO])) ws "," name:[a-zA-Z\- ] ")" {
+  / "freguesia(" keyword:place_label "," name:place_name ")" {
     return {
       moustaches: "freguesia",
       keyword: keyword.toLowerCase(), 

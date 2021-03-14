@@ -37,3 +37,16 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
         ]
     }
 ]
+
+---------------------------------------------------------------------
+
+[
+	'repeat(3)': {
+  		distrito: '{{distrito()}}',
+  		concelho: '{{concelho()}}',
+  		concelho2: '{{concelho("Braga")}}',
+  		freguesia: '{{freguesia()}}',
+		freguesia2: '{{freguesia("distrito","Braga")}}',
+		freguesia3: '{{freguesia("concelho","Braga")}}'
+    }
+]
