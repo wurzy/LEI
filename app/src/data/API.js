@@ -1,31 +1,31 @@
-import animalsAPI from './controllers/animais'
-import buzzwordsAPI from './controllers/buzzwords'
-import carsAPI from './controllers/carros'
-import continentsAPI from './controllers/continentes'
-import sportsAPI from './controllers/desportos'
-import daysAPI from './controllers/dias'
-import districtsAPI from './controllers/distritos'
-import govEntitiesAPI from './controllers/entidade_gov'
-import brandsAPI from './controllers/marcas'
-import monthsAPI from './controllers/meses'
-import namesAPI from './controllers/nomes'
-import countriesAPI from './controllers/paises'
-import ptPoliticalPartiesAPI from './controllers/partidos'
-import religionsAPI from './controllers/religioes'
+import animals from './controllers/animais'
+import buzzwords from './controllers/buzzwords'
+import cars from './controllers/carros'
+import continents from './controllers/continentes'
+import sports from './controllers/desportos'
+import days from './controllers/dias'
+import districts from './controllers/distritos'
+import govEntities from './controllers/entidade_gov'
+import brands from './controllers/marcas'
+import months from './controllers/meses'
+import names from './controllers/nomes'
+import countries from './controllers/paises'
+import ptPoliticalParties from './controllers/partidos'
+import religions from './controllers/religioes'
 
 export default {
-    animalsAPI,
-    buzzwordsAPI,
-    carsAPI,
-    continentsAPI,
-    sportsAPI,
-    daysAPI,
-    districtsAPI,
-    govEntitiesAPI,
-    brandsAPI,
-    monthsAPI,
-    namesAPI,
-    countriesAPI,
-    ptPoliticalPartiesAPI,
-    religionsAPI
+    animals,
+    buzzwords,
+    cars,
+    continents,
+    sports,
+    days,
+    districts,
+    govEntities,
+    brands,
+    months,
+    names,
+    countries,
+    ptPoliticalParties,
+    religions
 }
