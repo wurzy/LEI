@@ -3,7 +3,14 @@
 
 {
   var language = "pt" //"pt" or "en", "pt" by default
+  var random_id = "i04e8b563117bc2ed52e02b7"
   var keys = ["objectId","guid","index","boolean","integer","floating","position","phone","date","random","lorem","having","missing"]
+
+  function renameProperty(obj, old_key, new_key) {
+    Object.defineProperty(obj, new_key, Object.getOwnPropertyDescriptor(obj, old_key));
+    delete obj[old_key]
+    return obj
+  }
 
   function isObject(x) { return typeof x==='object' && x!==null && !Array.isArray(x) }
 
@@ -70,17 +77,6 @@
       else obj = callDataAPI(obj)
     }
     else {
-      //objetos sem propriedade "moustaches" válida
-      var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]))
-      objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k]) })
-      
-      var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
-      arrKeys.forEach(k => {
-        for (var j = 0; j < obj[k].length; j++) {
-          if (isObject(obj[k][j])) obj[k][j] = resolveMoustaches(obj[k][j])
-        }
-      })
-      
       var genKeys = [], dbKeys = []
       Object.keys(obj).forEach(k => {
         if (isObject(obj[k]) && hasMoustaches(obj[k])) {
@@ -90,13 +86,25 @@
       })
 
       genKeys.forEach(k => {
-        obj[k] = callGenAPI(obj[k], i)
+        obj[k] = callGenAPI(obj[k],i)
         if (obj[k] === null) delete obj[k]
       })
 
       dbKeys.forEach(k => obj[k] = callDataAPI(obj[k]))
-    }
 
+      //objetos sem propriedade "moustaches" válida
+      var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]))
+      objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k],i) })
+      
+      var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
+      arrKeys.forEach(k => {
+        for (var j = 0; j < obj[k].length; j++) {
+          if (isObject(obj[k][j])) obj[k][j] = resolveMoustaches(obj[k][j],i)
+        }
+      })
+    }
+    
+    if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
     return obj
   }
 
@@ -170,7 +178,8 @@ object
 
 member
   = name:key name_separator value:value_or_moustache {
-      return { name: name, value: value };
+      if (name == "moustaches") name = random_id
+      return { name, value }
     }
   / probability
 
