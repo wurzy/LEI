@@ -177,13 +177,13 @@ object
     { return members !== null ? members: {}; }
 
 member
-  = name:key name_separator value:value_or_moustache {
+  = name:key name_separator value:value_or_moustaches {
       if (name == "moustaches") name = random_id
       return { name, value }
     }
   / probability
 
-value_or_moustache
+value_or_moustaches
   = value / moustaches
 
 // ----- 5. Arrays -----
@@ -191,8 +191,8 @@ value_or_moustache
 array
   = begin_array
     values:(
-      head:value_or_moustache
-      tail:(value_separator v:value_or_moustache { return v; })*
+      head:value_or_moustaches
+      tail:(value_separator v:value_or_moustaches { return v; })*
       { return [head].concat(tail); }
     )?
     end_array

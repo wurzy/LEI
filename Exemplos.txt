@@ -1,5 +1,6 @@
 VÁRIAS COLEÇÕES:
 
+<!LANGUAGE pt>
 [
 	'repeat(3)': {
         _id: '{{objectId()}}',
