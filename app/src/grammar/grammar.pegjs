@@ -52,6 +52,16 @@
     throw new Error("Unable to copy obj! Its type isn't supported.");
   }
 
+  function resolveInterpolation(arr, i) {
+    for (var j = 0; j < arr.length; j++) {
+      if (isObject(arr[j])) {
+        var value = resolveMoustaches(arr[j],i)
+        arr[j] = (isObject(value)) ? JSON.stringify(value) : value
+      }
+    }
+    return arr.join("")
+  }
+
   function probability(type, probability, value, i) {
     if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
       if (hasMoustaches(value)) {
@@ -73,14 +83,16 @@
 
   function resolveMoustaches(obj, i) {
     if (hasMoustaches(obj)) {
-      if (hasGenKey(obj)) obj = callGenAPI(obj, i)
+      if (obj.moustaches == "interpolation") obj = resolveInterpolation(obj.value, i)
+      else if (hasGenKey(obj)) obj = callGenAPI(obj, i)
       else obj = callDataAPI(obj)
     }
     else {
       var genKeys = [], dbKeys = []
       Object.keys(obj).forEach(k => {
         if (isObject(obj[k]) && hasMoustaches(obj[k])) {
-          if (hasGenKey(obj[k])) genKeys.push(k)
+          if (obj[k].moustaches == "interpolation") obj[k] = resolveInterpolation(obj[k].value, i)
+          else if (hasGenKey(obj[k])) genKeys.push(k)
           else dbKeys.push(k)
         }
       })
@@ -188,7 +200,7 @@ member
   / probability
 
 value_or_moustaches
-  = value / moustaches
+  = value / interpolation
 
 // ----- 5. Arrays -----
 
@@ -294,7 +306,7 @@ pt_political_party_arg
   = quotation_mark arg:(("name") / ("abbr")) quotation_mark { return arg }
 
 soccer_club_nationality
-  = quotation_mark arg:(("de") / ("en") / ("es") / ("it") / ("pt")) quotation_mark { return arg }
+  = quotation_mark (("de") / ("en") / ("es") / ("it") / ("pt")) quotation_mark { return text() }
 
 place_name
   = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
@@ -343,14 +355,23 @@ char
 escape = "\\"
 
 quotation_mark = '"'
+apostrophe = "'"
 
 unescaped
   = [^\0-\x1F\x22\x5C]
 
 // ----- 8. Moustaches -----
 
-moustaches
-  = "'" ws "{{" ws value:moustaches_value ws "}}" ws "'" { return value }
+interpolation
+  = apostrophe value:(chars:[^{']+ {return chars.join("")} / "{" curly:after_curly_bracket {return curly})* apostrophe {
+    if (!value.length) return ""
+    else if (value.length == 1) return value[0]
+    else return { moustaches: "interpolation", value }
+  }
+
+after_curly_bracket
+  = "{" ws value:moustaches_value ws "}}" { return value }
+  / char:[^{'] { return "\x7B"+char }
 
 moustaches_value
   = gen_moustaches / api_moustaches
@@ -435,7 +456,7 @@ api_moustaches
     return {
       moustaches: !arg ? "soccer_club" : "soccer_club_from",
       api: "soccer_clubs",
-      args: []
+      args: !arg ? [] : [arg]
     }
   }
 

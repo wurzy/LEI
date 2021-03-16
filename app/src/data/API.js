@@ -24,7 +24,7 @@ import hackers from './controllers/hacker'
 import jobs from './controllers/jobs'
 import musicians from './controllers/musicos'
 import political_parties from './controllers/political_parties'
-import pt_politician from './controllers/politicos_pt'
+import pt_politicians from './controllers/politicos_pt'
 import top100_celebrities from './controllers/top100_famosos'
 import pt_top100_celebrities from './controllers/top100_portugueses'
 
@@ -55,7 +55,7 @@ export default {
     jobs,
     musicians,
     political_parties,
-    pt_politician,
+    pt_politicians,
     top100_celebrities,
     pt_top100_celebrities
 }

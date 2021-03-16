@@ -11,6 +11,7 @@ ESTRUTURA DSL:
 RESTRIÇÕES DO PROGRAMA:
 
 - cada propriedade de um objeto tem de ter um nome diferente. Se houver nomes repetidos, a propriedade ficará com o valor do último
+- '{' não é válido
 
 ---------------------------------------------------------
 
@@ -77,11 +78,15 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
+- pt_politian
+- political_party
+- soccer_club(arg)
+- nacionalidade
+
 - otimizar a recursividade e o processamento dos moustaches
 
 - permitir probabilities em arrays
 
-- interpolação de strings com moustaches
 - funções como propriedades de objeto
 
 - repeat com random - garantir que todos os resultados do random são diferentes
@@ -99,3 +104,9 @@ PROGRESSO DESTA SEMANA:
 	- moustaches sempre em inglês
 	- linha inicial no texto a ser processado que indica pt/en
 	- datasets pt e en para cada coleção
+- interpolação de strings com moustaches
+	- entre plicas pode vir:
+		- string vazia: ''
+		- string: 'bom dia'
+		- moustaches: '{{index()}}'
+		- interpolação: 'texto - {{pt_parish()}}, {{pt_county()}}, {{pt_district()}}'

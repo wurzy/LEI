@@ -23,6 +23,7 @@ VÁRIAS COLEÇÕES:
 
 REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
 
+<!LANGUAGE pt>
 [
 	'repeat(3)': {
         _id: '{{objectId()}}',
@@ -67,5 +68,66 @@ MOUSTACHES DE DATASETS:
   		partido: '{{pt_political_party()}}',
   		partido_abbr: '{{pt_political_party("abbr")}}',
   		partido_nome: '{{pt_political_party("name")}}'
+    }
+]
+
+<!LANGUAGE pt>
+[
+	'repeat(3)': {
+  		distrito: '{{pt_district()}}',
+  		concelho: '{{pt_county()}}',
+  		concelho2: '{{pt_county("Braga")}}',
+  		freguesia: '{{pt_parish()}}',
+		freguesia2: '{{pt_parish("district","Braga")}}',
+		freguesia3: '{{pt_parish("county","Braga")}}',
+  		nome_proprio: '{{firstName()}}',
+  		apelido: '{{surname()}}',
+  		nome: '{{fullName()}}',
+		partido_pt: '{{pt_political_party()}}',
+		partido_pt_abbr: '{{pt_political_party("abbr")}}',
+		partido_pt_nome: '{{pt_political_party("name")}}',
+		ator: '{{actor()}}',
+        animal: '{{animal()}}',
+        marca: '{{brand()}}',
+        buzzword: '{{buzzword()}}',
+        capital: '{{capital()}}',
+        marca_carro: '{{car_brand()}}',
+        continente: '{{continent()}}',
+        centro_cultural: '{{cultural_center()}}',
+        hacker: '{{hacker()}}',
+        emprego: '{{job()}}',
+        musico: '{{musician()}}',
+        figura_publica_pt: '{{pt_public_figure()}}',
+        religiao: '{{religion()}}',
+        futebolista: '{{soccer_player()}}',
+        desporto: '{{sport()}}',
+        escritor: '{{writer()}}',
+  		pais: '{{country()}}',
+  		politico_pt: '{{pt_politian()}}',
+  		entidade_gov: '{{gov_entity()}}',
+  		partido: '{{political_party()}}',
+  		celebridade: '{{top100_celebrity()}}',
+  		celebridade_pt: '{{pt_top100_celebrity()}}',
+  		empresario_pt: '{{pt_businessman()}}',
+  		clube_futebol: '{{soccer_club()}}',
+  		clube_futebol_arg: '{{soccer_club("pt")}}'
+    }
+]
+
+---------------------------------------------------------------------
+
+INTERPOLAÇÃO:
+
+<!LANGUAGE pt>
+[
+	'repeat(3)': {
+  		vazio_plicas: '',
+  		vazio_aspas: "",
+  		string_plicas: 'ola',
+  		string_aspas: "ola",
+        indice: '{{index()}}',
+        interpolacao: '{{integer(100, 999)}} {{pt_parish()}}, {{pt_county()}}, {{pt_district()}}, {{integer(100, 10000)}}',
+  		caso_especial: 'partido: {{pt_political_party()}}',
+  		limit_testing: '   {{integer(100, 999)}}{{pt_parish()}}{ {a{{pt_county()}} {{pt_district()}}'
     }
 ]
