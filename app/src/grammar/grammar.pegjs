@@ -92,6 +92,9 @@
 
       dbKeys.forEach(k => obj[k] = callDataAPI(obj[k]))
 
+      /**********************************************************/
+      //código para iterar objetos e arrays ao construir o modelo
+      
       //objetos sem propriedade "moustaches" válida
       var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]))
       objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k],i) })
@@ -102,6 +105,7 @@
           if (isObject(obj[k][j])) obj[k][j] = resolveMoustaches(obj[k][j],i)
         }
       })
+      /**********************************************************/
     }
     
     if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
@@ -465,10 +469,15 @@ repeat_object_seq
       { return ([head].concat(tail)).flat() }
     )?
     end_array
-    { return values !== null ? values : [] }
+    { 
+      //values -> lista em que cada elem = {dataset: x, model: y}
+      return values !== null ? values : []
+    }
 
 repeat_object
   = size:repeat_signature ws ":" ws obj:object {
+    //var model = generateModel(obj)
+    //return {dataset: repeatArray(size,obj), model: ...}
     return repeatArray(size,obj)
   }
 
