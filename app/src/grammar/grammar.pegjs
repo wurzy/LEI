@@ -2,41 +2,21 @@
 // ============
 
 {
-  var genKeys = ["objectId","guid","index","bool","integer","floating","position","phone","date","random","loremIpsum","having","missing"]
-  var dbKeys = ["distrito","concelho","freguesia"]
+  var language = "pt" //"pt" or "en", "pt" by default
+  var random_id = "i04e8b563117bc2ed52e02b7"
+  var keys = ["objectId","guid","index","boolean","integer","floating","position","phone","date","random","lorem","having","missing"]
+
+  function renameProperty(obj, old_key, new_key) {
+    Object.defineProperty(obj, new_key, Object.getOwnPropertyDescriptor(obj, old_key));
+    delete obj[old_key]
+    return obj
+  }
 
   function isObject(x) { return typeof x==='object' && x!==null && !Array.isArray(x) }
 
-  function hasGenKey(x) { return Object.prototype.hasOwnProperty.call(x,"moustaches") && genKeys.includes(x.moustaches) }
+  function hasMoustaches(x) { return Object.prototype.hasOwnProperty.call(x,"moustaches") }
 
-  function hasDBKey(x) { return Object.prototype.hasOwnProperty.call(x,"moustaches") && dbKeys.includes(x.moustaches) }
-
-  function hex(x) { return Math.floor(x).toString(16) }
-
-  function getDecimalsCount(min, max) {
-    var decimals = 3; //3 caracteres decimais por predefinição
-    const maxStr = String(max);
-    const minStr = String(min);
-
-    if (minStr.includes('.')) decimals = minStr.split('.')[1].length;
-    if (maxStr.includes('.')) {
-      var maxDecimals = maxStr.split('.')[1].length;
-      if (decimals < maxDecimals) decimals = maxDecimals;
-    }
-
-    return decimals
-  }
-
-  function formatNumber(num) {
-    var x = num.split('.');
-    var x1 = x[0];
-    var x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-        x1 = x1.replace( rgx, '$1' + ',' + '$2' );
-    }
-    return x1 + x2;
-  }
+  function hasGenKey(x) { return keys.includes(x.moustaches) }
 
   function clone(obj) {
     var copy;
@@ -72,137 +52,63 @@
     throw new Error("Unable to copy obj! Its type isn't supported.");
   }
 
-  function genObjectId() {
-    return hex(Date.now() / 1000) + ' '.repeat(16).replace(/./g, () => hex(Math.random() * 16))
-  }
-
-  function genGuid() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))
-  }
-
-  function genBoolean() { return Math.random() < 0.5 }
-
-  function genInteger(min, max, unit) {
-    if (!unit) return Math.floor(Math.random() * (min - max + 1) + max)
-    return String(Math.floor(Math.random() * (max - min + 1) + min)) + unit
-  }
-
-  function genFloat(min, max, decimals, format) {
-    decimals = decimals == null ? getDecimalsCount(min,max) : decimals
-    var random = min + (max - min) * Math.random();
-    var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
-
-    if (format != null) {
-      var split = formatNumber(String(rounded)).split('.')
-      rounded = split[0].replace(/,/g, format.int_sep) + format.dec_sep + split[1] + format.unit
-    }
-    return rounded
-  }
-
-  function genPosition(lat, long) {
-    if (!lat) return "(" + genFloat(-90,90,5) + ", " + genFloat(-180,180,5) + ")"
-    else {
-      if (lat.min > lat.max) {var latmax = lat.min; lat.min = lat.max; lat.max = latmax}
-      if (long.min > long.max) {var longmax = long.min; long.min = long.max; long.max = longmax}
-
-      return "(" + genFloat(lat.min, lat.max, 5) + ", " + genFloat(long.min, long.max, 5) + ")"
-    }
-  }
-
-  function genPhone(extension) {
-    var number = "9" + genRandom([1,2,3,6])
-    while (number.length < 11) {
-      if (number.length == 3 || number.length == 7) number += " "
-      else number += (Math.floor(Math.random() * 9) + 1)
-    }
-    return extension ? ("+351 " + number) : number
-  }
-
-  function genDate(start, end, format) {
-    var random = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-    return moment(random).format(format.replace(/A/g, "Y"))
-  }
-
-  function genLorem(count, units) { return loremIpsum({ count, units }) }
-
-  function genRandom(values) { return values[Math.floor(Math.random() * values.length)] }
-
-  function genProbability(type, probability, value, i) {
+  function probability(type, probability, value, i) {
     if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
-      if (genKeys.includes(value.moustaches)) return genSwitch(value, i)
-      else return dbSwitch(value)
+      if (hasMoustaches(value)) {
+        if (keys.includes(value.moustaches)) return callGenAPI(value,i)
+        else return callDataAPI(value)
+      }
+      else return value
     }
     return null
   }
 
-  function genSwitch(obj, i) {
-    switch (obj.moustaches) {
-      case "objectId": obj = genObjectId(); break
-      case "guid": obj = genGuid(); break
-      case "index": obj = i; break
-      case "bool": obj = genBoolean(); break
-      case "integer": obj = genInteger(obj.min, obj.max, obj.unit); break
-      case "floating": obj = genFloat(obj.min, obj.max, obj.decimals, obj.format); break
-      case "position": obj = genPosition(obj.lat, obj.long); break
-      case "phone": obj = genPhone(obj.extension); break
-      case "date": obj = genDate(obj.start, obj.end, obj.format); break
-      case "loremIpsum": obj = genLorem(obj.count, obj.units); break
-      case "random": obj = genRandom(obj.values); break
-      case "missing": obj = genProbability("missing", obj.probability, obj.value, i); break
-      case "having": obj = genProbability("having", obj.probability, obj.value, i); break
-    }
-
-    return obj
+  function callGenAPI(obj, i) {
+    if (["index","missing","having"].includes(obj.moustaches)) obj.args.push(i)
+    if (["missing","having"].includes(obj.moustaches)) return probability(...obj.args)
+    return genAPI[obj.moustaches](...obj.args)
   }
 
-  function dbSwitch(obj) {
-    switch (obj.moustaches) {
-      case "distrito": obj = distritosAPI.distrito(); break
-      case "concelho":
-        if (Object.prototype.hasOwnProperty.call(obj,"distrito")) obj = distritosAPI.concelhoDoDistrito(obj.distrito)
-        else obj = distritosAPI.distrito()
-        break
-      case "freguesia":
-        if (Object.prototype.hasOwnProperty.call(obj,"keyword")) {
-          if (obj.keyword == "distrito") obj = distritosAPI.freguesiaDoDistrito(obj.name)
-          else obj = distritosAPI.freguesiaDoConcelho(obj.name)
-        }
-        else obj = distritosAPI.freguesia()
-        break
-    }
-
-    return obj
-  }
+  function callDataAPI(obj) { return dataAPI[obj.api][obj.moustaches](...obj.args) }
 
   function resolveMoustaches(obj, i) {
-    if (Object.prototype.hasOwnProperty.call(obj,"moustaches")) {
-      if (hasGenKey(obj)) obj = genSwitch(obj, i)
-      if (hasDBKey(obj)) obj = dbSwitch(obj)
+    if (hasMoustaches(obj)) {
+      if (hasGenKey(obj)) obj = callGenAPI(obj, i)
+      else obj = callDataAPI(obj)
     }
     else {
+      var genKeys = [], dbKeys = []
+      Object.keys(obj).forEach(k => {
+        if (isObject(obj[k]) && hasMoustaches(obj[k])) {
+          if (hasGenKey(obj[k])) genKeys.push(k)
+          else dbKeys.push(k)
+        }
+      })
+
+      genKeys.forEach(k => {
+        obj[k] = callGenAPI(obj[k],i)
+        if (obj[k] === null) delete obj[k]
+      })
+
+      dbKeys.forEach(k => obj[k] = callDataAPI(obj[k]))
+
+      /**********************************************************/
+      //código para iterar objetos e arrays ao construir o modelo
+      
       //objetos sem propriedade "moustaches" válida
-      var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !(hasGenKey(obj[k]) || hasDBKey(obj[k])))
-      objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k]) })
+      var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]))
+      objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k],i) })
       
       var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
       arrKeys.forEach(k => {
         for (var j = 0; j < obj[k].length; j++) {
-          if (isObject(obj[k][j])) obj[k][j] = resolveMoustaches(obj[k][j])
+          if (isObject(obj[k][j])) obj[k][j] = resolveMoustaches(obj[k][j],i)
         }
       })
-      
-      var genKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasGenKey(obj[k]))
-      var dbKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasDBKey(obj[k]))
-
-      genKeys.forEach(k => {
-        obj[k] = genSwitch(obj[k], i)
-        if (obj[k] === null) delete obj[k]
-      })
-
-      dbKeys.forEach(k => obj[k] = dbSwitch(obj[k]))
+      /**********************************************************/
     }
-
+    
+    if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
     return obj
   }
 
@@ -216,7 +122,7 @@
 // ----- 2. DSL Grammar -----
 
 DSL_text
-  = ws value:repeat_object_seq ws { return value; }
+  = language value:repeat_object_seq { return value }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -227,6 +133,9 @@ value_separator = ws "," ws
 date_separator  = ws sep:("/" / "-" / ".") ws { return sep }
 
 ws "whitespace" = [ \t\n\r]*
+
+language
+  = ws "<!LANGUAGE " lang:(("pt") / ("en")) ">" ws { return lang }
 
 // ----- 3. Values -----
 
@@ -272,12 +181,13 @@ object
     { return members !== null ? members: {}; }
 
 member
-  = name:key name_separator value:value_or_moustache {
-      return { name: name, value: value };
+  = name:key name_separator value:value_or_moustaches {
+      if (name == "moustaches") name = random_id
+      return { name, value }
     }
   / probability
 
-value_or_moustache
+value_or_moustaches
   = value / moustaches
 
 // ----- 5. Arrays -----
@@ -285,8 +195,8 @@ value_or_moustache
 array
   = begin_array
     values:(
-      head:value_or_moustache
-      tail:(value_separator v:value_or_moustache { return v; })*
+      head:value_or_moustaches
+      tail:(value_separator v:value_or_moustaches { return v; })*
       { return [head].concat(tail); }
     )?
     end_array
@@ -342,13 +252,55 @@ long_interval
 // ----- 7. Strings -----
 
 string "string"
-  = quotation_mark chars:char* quotation_mark { return chars.join(""); }
+  = quotation_mark chars:char* quotation_mark { return chars.join("") }
+
+simple_api_key
+  = api:(districts_key
+  / names_key
+  / generic_key
+  ) { return { moustaches: text().slice(0, -2), api, args: [] } }
+
+districts_key = ("pt_district()" / "pt_county()" / "pt_parish()") { return "districts" }
+names_key = ("firstName()" / "surname()" / "fullName()") { return "names" }
+generic_key 
+  = ("actor()"
+  / "animal()"
+  / "brand()"
+  / "buzzword()"
+  / "capital()"
+  / "car_brand()"
+  / "continent()"
+  / "cultural_center()"
+  / "hacker()"
+  / "job()"
+  / "musician()"
+  / "pt_politian()"
+  / "pt_public_figure()"
+  / "religion()"
+  / "soccer_player()"
+  / "sport()"
+  / "writer()"
+  ) { return text().slice(0, -2) + 's' }
+  / ("country()"
+  / "gov_entity()"
+  / "nationality()"
+  / "political_party()"
+  / "top100_celebrity()"
+  / "pt_top100_celebrity()"
+  ) { return text().slice(0, -3) + 'ies' }
+  / "pt_businessman()" { return text().slice(0, -4) + 'en' }
+
+pt_political_party_arg
+  = quotation_mark arg:(("name") / ("abbr")) quotation_mark { return arg }
+
+soccer_club_nationality
+  = quotation_mark arg:(("de") / ("en") / ("es") / ("it") / ("pt")) quotation_mark { return arg }
 
 place_name
   = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
 
 place_label
-  = ws quotation_mark label:(("distrito") / ("concelho")) quotation_mark ws { return label; }
+  = ws quotation_mark label:(("district") / ("county")) quotation_mark ws { return label; }
 
 lorem_string
   = quotation_mark word:"words" quotation_mark { return word; }
@@ -398,47 +350,45 @@ unescaped
 // ----- 8. Moustaches -----
 
 moustaches
-  = "'" ws "{{" ws value:mous_func ws "}}" ws "'" { return value; }
+  = "'" ws "{{" ws value:moustaches_value ws "}}" ws "'" { return value }
 
-mous_func
-  = "objectId(" ws ")" { return {  moustaches: "objectId" } }
-  / "guid(" ws ")" { return { moustaches: "guid" } }
-  / "index(" ws ")" { return { moustaches: "index" } }
-  / "bool(" ws ")" { return { moustaches: "bool" } }
+moustaches_value
+  = gen_moustaches / api_moustaches
+
+gen_moustaches
+  = "objectId(" ws ")" { return {  moustaches: "objectId", args: [] } }
+  / "guid(" ws ")" { return { moustaches: "guid", args: [] } }
+  / "index(" ws ")" { return { moustaches: "index", args: [] } }
+  / "bool(" ws ")" { return { moustaches: "boolean", args: [] } }
   / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
     return {
       moustaches: "integer",
-      min, max, unit
+      args: [min, max, unit]
     }
   }
   / "floating(" ws min:number ws "," ws max:number ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
     if (!others) others = {decimals: null, format: null}
     return {
       moustaches: "floating",
-      min, max,
-      decimals: others.decimals,
-      format: others.format
+      args: [min, max, others.decimals, others.format]
     }
   }
   / "position(" ws limits:(lat:lat_interval "," long:long_interval {return {lat, long} })? ")" {
     return {
       moustaches: "position",
-      lat: !limits ? null : limits.lat,
-      long: !limits ? null : limits.long
+      args: [!limits ? null : limits.lat, !limits ? null : limits.long]
     }
   }
   / "phone(" ws extension:(true/false)? ws ")" {
     return {
       moustaches: "phone",
-      extension
+      args: [extension]
     }
   }
   / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
       moustaches: "date",
-      start,
-      end: !end ? new Date() : end,
-      format: !format ? 'DD/MM/YYYY' : format
+      args: [start, !end ? new Date() : end, !format ? 'DD/MM/YYYY' : format]
     }
   }
   / "random(" ws values:(
@@ -448,29 +398,44 @@ mous_func
     )? ")" {
       return {
         moustaches: "random",
-        values
+        args: [values]
       }
   }
   / "lorem(" ws count:int ws "," ws units:lorem_string ws ")" {
     return {
-      moustaches: "loremIpsum",
-      count, units
+      moustaches: "lorem",
+      args: [count, units]
     } 
   }
-  / ("distrito()" / "concelho()" / "freguesia()") {
-    return { moustaches: text().slice(0, -2) }
-  }
-  / "concelho(" distrito:place_name ")" {
+  
+api_moustaches
+  = simple_api_key
+  / "pt_county(" district:place_name ")" {
     return {
-      moustaches: "concelho",
-      distrito
+      moustaches: "pt_countyFromDistrict",
+      api: "districts",
+      args: [district]
     }
   }
-  / "freguesia(" keyword:place_label "," name:place_name ")" {
+  / "pt_parish(" keyword:place_label "," name:place_name ")" {
     return {
-      moustaches: "freguesia",
-      keyword: keyword.toLowerCase(), 
-      name
+      moustaches: keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict",
+      api: "districts",
+      args: [name]
+    }
+  }
+  / "pt_political_party(" ws arg:( a:pt_political_party_arg {return a} )? ")" {
+    return {
+      moustaches: !arg ? "pt_political_party" : ("pt_political_party_" + arg),
+      api: "ptPoliticalParties",
+      args: []
+    }
+  }
+  / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
+    return {
+      moustaches: !arg ? "soccer_club" : "soccer_club_from",
+      api: "soccer_clubs",
+      args: []
     }
   }
 
@@ -504,10 +469,15 @@ repeat_object_seq
       { return ([head].concat(tail)).flat() }
     )?
     end_array
-    { return values !== null ? values : [] }
+    { 
+      //values -> lista em que cada elem = {dataset: x, model: y}
+      return values !== null ? values : []
+    }
 
 repeat_object
   = size:repeat_signature ws ":" ws obj:object {
+    //var model = generateModel(obj)
+    //return {dataset: repeatArray(size,obj), model: ...}
     return repeatArray(size,obj)
   }
 
@@ -544,8 +514,7 @@ missing
       name: m.name,
       value: {
         moustaches: "missing",
-        probability: parseInt(prob.join(""))/100,
-        value: m.value
+        args: ["missing", parseInt(prob.join(""))/100, m.value]
       }
     }
   }
@@ -556,8 +525,7 @@ having
       name: m.name,
       value: {
         moustaches: "having",
-        probability: parseInt(prob.join(""))/100,
-        value: m.value
+        args: ["having", parseInt(prob.join(""))/100, m.value]
       }
     }
   }

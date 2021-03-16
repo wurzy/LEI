@@ -2,7 +2,7 @@ import carrosJS from '../datasets/carros.js';
 const carros = carrosJS.carros
 
 const carsAPI = {
-    brand(){
+    car_brand(){
         return carros[Math.floor(Math.random() * carros.length)]
     }
 }

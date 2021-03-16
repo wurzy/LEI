@@ -1,4 +1,6 @@
 ESTRUTURA DSL:
+
+<!LANGUAGE pt/en>
 [
   'repeat(x)': {...}
   (, 'repeat(x)': {...})*
@@ -6,14 +8,20 @@ ESTRUTURA DSL:
 
 ---------------------------------------------------------
 
+RESTRIÇÕES DO PROGRAMA:
+
+- cada propriedade de um objeto tem de ter um nome diferente. Se houver nomes repetidos, a propriedade ficará com o valor do último
+
+---------------------------------------------------------
+
 DIRETIVAS:
 
-range(n) - gera uma lista [0,n[
-range(init,end) - gera uma lista [init,end[; ordem ascendente ou descendente
-[ 'repeat(n)': ... ] - repete o elemento à frente n vezes; o mesmo array pode ter vários repeats seguidos
-[ 'repeat(min,max)': ... ] - repete o elemento à frente entre min a max vezes; o mesmo array pode ter vários repeats seguidos
-missing(x) {prop} - probabilidade x(1-99) de o objeto não possuir a propriedade em questão
-having(x) {prop} - probabilidade x(1-99) de o objeto possuir a propriedade em questão
+range(n) - gera uma lista [0,n[ - ARRAY INTEIROS
+range(init,end) - gera uma lista [init,end[; ordem ascendente ou descendente - ARRAY INTEIROS
+[ 'repeat(n)': ... ] - repete o elemento à frente n vezes; o mesmo array pode ter vários repeats seguidos - ARRAY
+[ 'repeat(min,max)': ... ] - repete o elemento à frente entre min a max vezes; o mesmo array pode ter vários repeats seguidos - ARRAY
+missing(x) {prop} - probabilidade x(1-99) de o objeto não possuir a propriedade em questão - PROP DE DENTRO NOT REQUIRED
+having(x) {prop} - probabilidade x(1-99) de o objeto possuir a propriedade em questão - PROP DE DENTRO NOT REQUIRED
 
 ---------------------------------------------------------
 
@@ -22,25 +30,46 @@ MOUSTACHES:
 - valores de propriedades de objetos
 - valores de arrays
 
-'{{objectId()}}' - gera um _id aleatório a la mongo
-'{{guid()}}' - gera um UUID aleatório
-'{{index()}}' - índice atual no repeat
-'{{bool()}}' - gera um boleano aleatório
-'{{integer(int1,int2)}}' - gera um inteiro aleatório >= int1 e <= int2
-'{{integer(int1,int2,unidades)}}' - gera um inteiro aleatório >= int1 e <= int2 e acrescenta as unidades indicadas
-'{{floating(num1,num2)}}' - gera um float aleatório >= num1 e <= num2 (nr de casas decimais = nr de casas decimais do argumento com mais)
-'{{floating(num1,num2,casas)}}' - gera um float aleatório >= num1 e <= num2 com o nr de casas decimais indicadas
-'{{floating(num1,num2,casas,formato)}}' - gera um float aleatório >= num1 e <= num2 com o nr de casas decimais indicadas no formato dado
-'{{position()}}' - gera coordenadas aleatórias
-'{{position([min_lat, max_lat], [min_long, max_long])}}' - gera coordenadas dentro dos intervalos dados
-'{{phone()}}' - gera um número de telemóvel português (sem extensão)
-'{{phone(bool)}}' - gera um número de telemóvel português com extensão (+351), se bool == true
-'{{date(data_init)}}' - gera uma data aleatória entre a data argumento e hoje
-'{{date(data_init, formato)}}' - gera uma data aleatória entre a data argumento e hoje no formato dado
-'{{date(data_init, data_fim)}}' - gera uma data aleatória entre as datas argumentos
-'{{date(data_init, data_fim, formato)}}' - gera uma data aleatória entre a data argumento e hoje no formato dado
-'{{random(arg1,...,argN)}}' - escolhe um dos argumentos aleatoriamente (pode receber inteiros, floats, strings, boleanos e null; mínimo 1 arg)
-'{{lorem(n,"words"/"sentences"/"paragraphs")}}' - gera n palavras/frases/parágrafos lorem ipsum
+'{{objectId()}}' - gera um _id aleatório a la mongo - STRING
+'{{guid()}}' - gera um UUID aleatório - STRING
+'{{index()}}' - índice atual no repeat - INTEIRO
+'{{bool()}}' - gera um boleano aleatório - BOLEANO
+'{{integer(int1,int2)}}' - gera um inteiro aleatório >= int1 e <= int2 - INTEIRO
+'{{integer(int1,int2,unidades)}}' - gera um inteiro aleatório >= int1 e <= int2 e acrescenta as unidades indicadas - STRING
+'{{floating(num1,num2)}}' - gera um float aleatório >= num1 e <= num2 (nr de casas decimais = nr de casas decimais do argumento com mais) - FLOAT
+'{{floating(num1,num2,casas)}}' - gera um float aleatório >= num1 e <= num2 com o nr de casas decimais indicadas - FLOAT
+'{{floating(num1,num2,casas,formato)}}' - gera um float aleatório >= num1 e <= num2 com o nr de casas decimais indicadas no formato dado - STRING
+'{{position()}}' - gera coordenadas aleatórias - STRING
+'{{position([min_lat, max_lat], [min_long, max_long])}}' - gera coordenadas dentro dos intervalos dados - STRING
+'{{phone()}}' - gera um número de telemóvel português (sem extensão) - STRING
+'{{phone(bool)}}' - gera um número de telemóvel português com extensão (+351), se bool == true - STRING
+'{{date(data_init)}}' - gera uma data aleatória entre a data argumento e hoje - STRING
+'{{date(data_init, formato)}}' - gera uma data aleatória entre a data argumento e hoje no formato dado - STRING
+'{{date(data_init, data_fim)}}' - gera uma data aleatória entre as datas argumentos - STRING
+'{{date(data_init, data_fim, formato)}}' - gera uma data aleatória entre a data argumento e hoje no formato dado - STRING
+'{{random(arg1,...,argN)}}' - escolhe um dos argumentos aleatoriamente (pode receber inteiros, floats, strings, boleanos e null; mínimo 1 arg) - INTEIRO, FLOAT, STRING, BOLEANO, NULL
+'{{lorem(n,"words"/"sentences"/"paragraphs")}}' - gera n palavras/frases/parágrafos lorem ipsum - STRING
+
+TUDO STRING
+'{{pt_district()}}' - distrito pt aleatório
+'{{pt_county()}}' - concelho pt aleatório
+'{{pt_county(district_name)}}' - concelho pt aleatório do distrito indicado
+'{{pt_parish()}}' - freguesia pt aleatória
+'{{pt_parish("district"/"county",name)}}' - freguesia pt aleatória do distrito/concelho indicado
+'{{firstName()}}' - nome próprio aleatório
+'{{surname()}}' - apelido aleatório
+'{{fullName()}}' - nome completo aleatório
+'{{animal()}}' - animal aleatório
+'{{buzzword()}}' - buzzword aleatória
+'{{car_brand()}}' - marca de carro aleatória
+'{{continent()}}' - continente aleatório
+'{{sport()}}' - desporto aleatório
+'{{brand()}}' - marca aleatória
+'{{religion()}}' - religião aleatória
+'{{gov_entity()}}' - organização governamental aleatória
+'{{country()}}' - país aleatório
+'{{pt_political_party()}}' - partido político pt aleatório (abreviação + nome) - OBJETO 2 STRINGS
+'{{pt_political_party("abbr"/"name")}}' - sigla/nome de um partido político pt aleatório
 
 PS: as funções que levam intervalos de valor funcionam tanto por ordem asc como desc
 
@@ -50,12 +79,23 @@ POR IMPLEMENTAR:
 
 - otimizar a recursividade e o processamento dos moustaches
 
+- permitir probabilities em arrays
+
 - interpolação de strings com moustaches
 - funções como propriedades de objeto
 
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
 
-'{{nome_proprio()}}'
-'{{apelido()}}'
-'{{nome_completo()}}'
+--------------------------------------------------------
+
+PROGRESSO DESTA SEMANA:
+
+- aceitar vários repeats seguidos (retornar uma lista com várias coleções diferentes)
+- moustaches para gerar datas aleatórias
+- recursividade infinita no processamento de moustaches (permitir moustaches em qualquer objeto e array)
+- moustaches de acesso a datasets
+- sistema para definir a linguagem dos datasets
+	- moustaches sempre em inglês
+	- linha inicial no texto a ser processado que indica pt/en
+	- datasets pt e en para cada coleção

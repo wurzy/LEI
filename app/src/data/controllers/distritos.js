@@ -2,16 +2,16 @@ import distritosJS from '../datasets/distritos.js';
 const distritos = distritosJS.distritos
 
 const districtsAPI = {
-    district(){
+    pt_district(){
         return distritos[Math.floor(Math.random() * distritos.length)].distrito
     },
 
-    county(){
+    pt_county(){
         const concelhos = distritos[Math.floor(Math.random() * distritos.length)].concelhos
         return concelhos[Math.floor(Math.random() * concelhos.length)].concelho
     },
 
-    countyFromDistrict(distrito){
+    pt_countyFromDistrict(distrito){
         for (let d of distritos){
             if(d.distrito==distrito){
                 return d.concelhos[Math.floor(Math.random() * d.concelhos.length)].concelho
@@ -19,13 +19,13 @@ const districtsAPI = {
         }
     },
 
-    parish(){
+    pt_parish(){
         const concelhos = distritos[Math.floor(Math.random() * distritos.length)].concelhos
         const freguesias = concelhos[Math.floor(Math.random() * concelhos.length)].freguesias
         return freguesias[Math.floor(Math.random() * freguesias.length)]
     },
 
-    parishFromDistrict(distrito){
+    pt_parishFromDistrict(distrito){
         for (let d of distritos){
             if(d.distrito==distrito){
                 const freguesias = d.concelhos[Math.floor(Math.random() * d.concelhos.length)].freguesias
@@ -34,7 +34,7 @@ const districtsAPI = {
         }
     },
 
-    parishFromCounty(concelho){
+    pt_parishFromCounty(concelho){
         for (let d of distritos){
             for (let c of d.concelhos){
                 if(c.concelho==concelho){

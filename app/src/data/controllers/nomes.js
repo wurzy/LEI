@@ -10,7 +10,7 @@ const namesAPI = {
     },
 
     fullName(){
-        return `${this.nomeProprio()} ${this.apelido()}`
+        return `${this.firstName()} ${this.surname()}`
     }
 }
 
