@@ -12,6 +12,21 @@ import names from './controllers/nomes'
 import countries from './controllers/paises'
 import ptPoliticalParties from './controllers/partidos'
 import religions from './controllers/religioes'
+import actors from './controllers/atores'
+import capitals from './controllers/capitais'
+import cultural_centers from './controllers/centro_cultural'
+import soccer_clubs from './controllers/clubes'
+import pt_businessmen from './controllers/empresario_pt'
+import writers from './controllers/escritores'
+import pt_public_figures from './controllers/figura_publica_pt'
+import soccer_players from './controllers/futebolista'
+import hackers from './controllers/hacker'
+import jobs from './controllers/jobs'
+import musicians from './controllers/musicos'
+import political_parties from './controllers/political_parties'
+import pt_politician from './controllers/politicos_pt'
+import top100_celebrities from './controllers/top100_famosos'
+import pt_top100_celebrities from './controllers/top100_portugueses'
 
 export default {
     animals,
@@ -27,5 +42,20 @@ export default {
     names,
     countries,
     ptPoliticalParties,
-    religions
+    religions,
+    actors,
+    capitals,
+    cultural_centers,
+    soccer_clubs,
+    pt_businessmen,
+    writers,
+    pt_public_figures,
+    soccer_players,
+    hackers,
+    jobs,
+    musicians,
+    political_parties,
+    pt_politician,
+    top100_celebrities,
+    pt_top100_celebrities
 }
