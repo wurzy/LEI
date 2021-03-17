@@ -3,7 +3,7 @@
  * @param {String} text 
 */
 function convert(text,parser) {
-    return JSON.stringify(parser.parse(text),null,2)
+    return parser.parse(text)
 }
 
 module.exports = {

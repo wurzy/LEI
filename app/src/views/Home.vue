@@ -141,7 +141,17 @@ export default {
         this.code = newcode
       },
       generate(){
-        this.result = convert(this.code,this.parser)
+
+        var x = convert(this.code,this.parser)
+
+        this.result = JSON.stringify(x[0].dataset,null,2)
+        var y = JSON.stringify(x[0].model,null,2)
+        console.log("O modelo chegou:",y)
+
+        var elem = document.createElement('boas');
+        elem.setAttribute("id","md")
+        elem.setAttribute("modelo",y)
+        document.body.appendChild(elem);
       },
       download(){
         if(this.result == "") {
@@ -155,6 +165,8 @@ export default {
 
           element.style.display = 'none';
           document.body.appendChild(element);
+
+          var a = document.getElementById("md").getAttribute("modelo")
 
           element.click();
 

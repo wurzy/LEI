@@ -1,6 +1,6 @@
 import genAPI from './moustaches'
 import dataAPI from '../data/API'
-
+var striM
 const parser = (function() {
   "use strict";
 
@@ -588,6 +588,42 @@ const parser = (function() {
         peg$c360 = function(size, obj) {
             //var model = generateModel(obj)
             //return {dataset: repeatArray(size,obj), model: ...}
+            let str = `{
+              "kind": "collectionType",
+              "collectionName": "produtos",
+              "info": {
+                "name": "Produto"
+              },
+              "options": {
+                "increments": true,
+                "timestamps": true,
+                "draftAndPublish": true
+              },
+              "attributes": {
+                "titulo": {
+                  "type": "string",
+                  "required": true,
+                  "unique": true
+                },
+                "preco": {
+                  "type": "decimal"
+                },
+                "quantidade": {
+                  "type": "integer"
+                },
+                "descricao": {
+                  "type": "text"
+                },
+                "categorias": {
+                  "via": "produtos",
+                  "collection": "categoria"
+                }
+              }
+            }            
+            `
+            striM=str
+           
+            console.log("Obj: ",obj)
             return repeatArray(size,obj)
           },
         peg$c361 = "repeat",
@@ -6782,7 +6818,12 @@ const parser = (function() {
       function repeatArray(size, obj) {
         var arr = []
         for (var i = 0; i < size; i++) arr.push(resolveMoustaches(clone(obj),i))
-        return arr
+        var ob= {
+          "dataset"  :  arr, 
+          "model"   :  striM
+        }
+        console.log("repeat array:",ob)
+        return ob
       }
 
 
