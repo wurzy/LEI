@@ -40,7 +40,7 @@
 <script>
 import {convert} from '../grammar/convert.js'
 import parser from '../grammar/parser.js'
-
+import axios from 'axios';
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -168,8 +168,22 @@ export default {
 
           var a = document.getElementById("md").getAttribute("modelo")
 
-          element.click();
+          //element.click();
+          var optionAxios = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
 
+          axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
+          .then(dados => {
+             console.log("Modelo criado")
+          })
+          .catch(erro => {
+            console.log(erro)
+            
+          })
+        
           document.body.removeChild(element);
         }
       }
