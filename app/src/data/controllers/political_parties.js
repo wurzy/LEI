@@ -3,39 +3,42 @@ const pparties = politicalPartiesJS.political_parties
 
 const political_partiesAPI = {
    political_party(){
-       return pparties[Math.floor(Math.random() * pparties.length)]
+        var country = pparties[Math.floor(Math.random() * pparties.length)]
+        return country.parties[Math.floor(Math.random() * country.parties.length)]
    },
 
-   political_party_abbreviation(){
-       return pparties[Math.floor(Math.random() * pparties.length)].party_abbr
+   political_party_abbr(){
+        var country = pparties[Math.floor(Math.random() * pparties.length)]
+        return country.parties[Math.floor(Math.random() * country.parties.length)].party_abbr
    },
 
    political_party_name(){
-       return pparties[Math.floor(Math.random() * pparties.length)].party_name
+        var country = pparties[Math.floor(Math.random() * pparties.length)]
+        return country.parties[Math.floor(Math.random() * country.parties.length)].party_name
    },
 
    political_party_from(country){
-       var aux = pparties[Math.floor(Math.random() * pparties.length)]
-       while (aux.country!=country){
-           aux = pparties[Math.floor(Math.random() * pparties.length)]
-       }
-       return aux
+       var countries = pparties.map(r => r.country)
+       var index = countries.findIndex(r => country.toLowerCase() === r.toLowerCase())
+
+       if (index > -1) return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)]
+       else return "Invalid country"
    },
 
-   political_party_abbreviation_from(country){
-       var aux = pparties[Math.floor(Math.random() * pparties.length)]
-       while (aux.country!=country){
-           aux = pparties[Math.floor(Math.random() * pparties.length)]
-       }
-       return aux.party_abbr
+   political_party_from_abbr(country){
+        var countries = pparties.map(r => r.country)
+        var index = countries.findIndex(r => country.toLowerCase() === r.toLowerCase())
+
+        if (index > -1) return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)].party_abbr
+        else return "Invalid country"
     },
     
-    political_party_name_from(country){
-      var aux = pparties[Math.floor(Math.random() * pparties.length)]
-      while (aux.country!=country){
-          aux = pparties[Math.floor(Math.random() * pparties.length)]
-      }
-      return aux.party_name
+    political_party_from_name(country){
+        var countries = pparties.map(r => r.country)
+        var index = countries.findIndex(r => country.toLowerCase() === r.toLowerCase())
+
+        if (index > -1) return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)].party_name
+        else return "Invalid country"
     }
 }
 
