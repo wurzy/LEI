@@ -1,7 +1,7 @@
 export default {
     clubes: [
       {
-        "pais": "Alemanha",
+        "pais": "Germany",
         "clubes": [
           "Borussia Dortmund",
           "Werder Bremen",
@@ -62,7 +62,7 @@ export default {
         ]
       },
       {
-        "pais": "Inglaterra",
+        "pais": "England",
         "clubes": [
           "Aston Villa FC",
           "Liverpool FC",
@@ -111,7 +111,7 @@ export default {
         ]
       },
       {
-        "pais": "Espanha",
+        "pais": "Spain",
         "clubes": [
           "FC Barcelona",
           "Real Sociedad",
@@ -158,7 +158,7 @@ export default {
         ]
       },
       {
-        "pais": "Itália",
+        "pais": "Italy",
         "clubes": [
           "Hellas Verona FC",
           "AC Milan",

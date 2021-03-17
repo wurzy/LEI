@@ -286,7 +286,7 @@ generic_key
   / "hacker()"
   / "job()"
   / "musician()"
-  / "pt_politian()"
+  / "pt_politician()"
   / "pt_public_figure()"
   / "religion()"
   / "soccer_player()"
@@ -302,11 +302,11 @@ generic_key
   ) { return text().slice(0, -3) + 'ies' }
   / "pt_businessman()" { return text().slice(0, -4) + 'en' }
 
-pt_political_party_arg
+pparty_type
   = quotation_mark arg:(("name") / ("abbr")) quotation_mark { return arg }
 
 soccer_club_nationality
-  = quotation_mark (("de") / ("en") / ("es") / ("it") / ("pt")) quotation_mark { return text() }
+  = quotation_mark nat:(([Gg]"ermany") / ([Ee]"ngland") / ([Ss]"pain") / ([Ii]"taly") / ([Pp]"ortugal")) quotation_mark { return nat.join("") }
 
 place_name
   = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
@@ -445,11 +445,28 @@ api_moustaches
       args: [name]
     }
   }
-  / "pt_political_party(" ws arg:( a:pt_political_party_arg {return a} )? ")" {
+  / "pt_political_party(" ws arg:( a:pparty_type {return a} )? ")" {
     return {
       moustaches: !arg ? "pt_political_party" : ("pt_political_party_" + arg),
-      api: "ptPoliticalParties",
+      api: "pt_political_parties",
       args: []
+    }
+  }
+  / "political_party(" args:((ws c:([a-zA-Z]("-"/[ a-zA-Z])*) ws {return [c]})
+                            / (ws a:pparty_type ws {return [a]})
+                            / (ws c:([a-zA-Z]("-"/[ a-zA-Z])*) ws "," ws a:pparty_type ws {return [c,a]}) )? ")" {
+    var moustaches
+    if (!args) moustaches = "political_party"
+    if (args.length == 1) {
+      if (["abbr","name"].includes(args[0])) moustaches = "political_party_" + args[0]
+      else moustaches = "political_party_from"
+    } 
+    else moustaches = "political_party_from_" + args[1]
+
+    return {
+      moustaches,
+      api: "political_parties",
+      args: !args ? [] : [args]
     }
   }
   / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {

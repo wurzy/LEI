@@ -103,14 +103,18 @@ MOUSTACHES DE DATASETS:
         desporto: '{{sport()}}',
         escritor: '{{writer()}}',
   		pais: '{{country()}}',
-  		politico_pt: '{{pt_politian()}}',
+  		politico_pt: '{{pt_politician()}}',
   		entidade_gov: '{{gov_entity()}}',
   		partido: '{{political_party()}}',
+  		partido_abbr: '{{political_party("abbr")}}',
+  		partido_nome: '{{political_party("name")}}',
+  		partido2: '{{political_party("belgium")}}',
   		celebridade: '{{top100_celebrity()}}',
   		celebridade_pt: '{{pt_top100_celebrity()}}',
   		empresario_pt: '{{pt_businessman()}}',
   		clube_futebol: '{{soccer_club()}}',
-  		clube_futebol_arg: '{{soccer_club("pt")}}'
+  		clube_futebol_arg: '{{soccer_club("portugal")}}',
+  		nacionalidade: '{{nationality()}}'
     }
 ]
 
