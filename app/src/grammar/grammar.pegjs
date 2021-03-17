@@ -2,6 +2,7 @@
 // ============
 
 {
+  var striM
   var language = "pt" //"pt" or "en", "pt" by default
   var random_id = "i04e8b563117bc2ed52e02b7"
   var keys = ["objectId","guid","index","boolean","integer","floating","position","phone","date","random","lorem","having","missing"]
@@ -127,7 +128,13 @@
   function repeatArray(size, obj) {
     var arr = []
     for (var i = 0; i < size; i++) arr.push(resolveMoustaches(clone(obj),i))
-    return arr
+
+    var ob= {
+          "dataset"  :  arr, 
+          "model"   :  striM
+        }
+    console.log("repeat array:",ob)
+    return ob
   }
 }
 
@@ -516,6 +523,42 @@ repeat_object
   = size:repeat_signature ws ":" ws obj:object {
     //var model = generateModel(obj)
     //return {dataset: repeatArray(size,obj), model: ...}
+    let str = `{
+              "kind": "collectionType",
+              "collectionName": "produtos",
+              "info": {
+                "name": "Produto"
+              },
+              "options": {
+                "increments": true,
+                "timestamps": true,
+                "draftAndPublish": true
+              },
+              "attributes": {
+                "titulo": {
+                  "type": "string",
+                  "required": true,
+                  "unique": true
+                },
+                "preco": {
+                  "type": "decimal"
+                },
+                "quantidade": {
+                  "type": "integer"
+                },
+                "descricao": {
+                  "type": "text"
+                },
+                "categorias": {
+                  "via": "produtos",
+                  "collection": "categoria"
+                }
+              }
+            }            
+            `
+    striM=str
+           
+    console.log("Obj: ",obj)
     return repeatArray(size,obj)
   }
 

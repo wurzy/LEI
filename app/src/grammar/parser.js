@@ -1,7 +1,7 @@
 import genAPI from './moustaches'
 import dataAPI from '../data/API'
-var striM
-const parser = (function() {
+
+const parser =(function() {
   "use strict";
 
   function peg$subclass(child, parent) {
@@ -627,40 +627,40 @@ const parser = (function() {
             //var model = generateModel(obj)
             //return {dataset: repeatArray(size,obj), model: ...}
             let str = `{
-              "kind": "collectionType",
-              "collectionName": "produtos",
-              "info": {
-                "name": "Produto"
-              },
-              "options": {
-                "increments": true,
-                "timestamps": true,
-                "draftAndPublish": true
-              },
-              "attributes": {
-                "titulo": {
-                  "type": "string",
-                  "required": true,
-                  "unique": true
-                },
-                "preco": {
-                  "type": "decimal"
-                },
-                "quantidade": {
-                  "type": "integer"
-                },
-                "descricao": {
-                  "type": "text"
-                },
-                "categorias": {
-                  "via": "produtos",
-                  "collection": "categoria"
-                }
-              }
-            }            
-            `
+                      "kind": "collectionType",
+                      "collectionName": "produtos",
+                      "info": {
+                        "name": "Produto"
+                      },
+                      "options": {
+                        "increments": true,
+                        "timestamps": true,
+                        "draftAndPublish": true
+                      },
+                      "attributes": {
+                        "titulo": {
+                          "type": "string",
+                          "required": true,
+                          "unique": true
+                        },
+                        "preco": {
+                          "type": "decimal"
+                        },
+                        "quantidade": {
+                          "type": "integer"
+                        },
+                        "descricao": {
+                          "type": "text"
+                        },
+                        "categorias": {
+                          "via": "produtos",
+                          "collection": "categoria"
+                        }
+                      }
+                    }            
+                    `
             striM=str
-           
+                   
             console.log("Obj: ",obj)
             return repeatArray(size,obj)
           },
@@ -7079,6 +7079,7 @@ const parser = (function() {
     }
 
 
+      var striM
       var language = "pt" //"pt" or "en", "pt" by default
       var random_id = "i04e8b563117bc2ed52e02b7"
       var keys = ["objectId","guid","index","boolean","integer","floating","position","phone","date","random","lorem","having","missing"]
@@ -7204,10 +7205,11 @@ const parser = (function() {
       function repeatArray(size, obj) {
         var arr = []
         for (var i = 0; i < size; i++) arr.push(resolveMoustaches(clone(obj),i))
+
         var ob= {
-          "dataset"  :  arr, 
-          "model"   :  striM
-        }
+              "dataset"  :  arr, 
+              "model"   :  striM
+            }
         console.log("repeat array:",ob)
         return ob
       }
@@ -7237,5 +7239,6 @@ const parser = (function() {
     parse:       peg$parse
   };
 })();
+
 
 export default parser
