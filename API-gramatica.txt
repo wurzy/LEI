@@ -78,13 +78,11 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
-- political_party
-	- pparty("Portugal")
-	- pparty("Portugal","abbr")
-	- pparty("Portugal","name")
+- retornar coleções diferentes na mesma lista ou em listas diferentes
 
 - otimizar a recursividade e o processamento dos moustaches
 
+- permitir qualquer coisa em missing/having
 - permitir probabilities em arrays
 
 - funções como propriedades de objeto

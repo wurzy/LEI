@@ -146,7 +146,7 @@ export default {
         this.result = JSON.stringify(generated[0].dataset, null, 2)
         var model = JSON.stringify(generated[0].model, null, 2)
 
-        console.log("O modelo chegou:",model)
+        //console.log("O modelo chegou:",model)
 
         var elem = document.createElement('boas');
         elem.setAttribute("id","md")

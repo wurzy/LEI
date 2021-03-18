@@ -311,7 +311,7 @@ soccer_club_nationality
   = quotation_mark nat:(([Gg]"ermany") / ([Ee]"ngland") / ([Ss]"pain") / ([Ii]"taly") / ([Pp]"ortugal")) quotation_mark { return nat.join("") }
 
 place_name
-  = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
+  = ws quotation_mark chars:([a-zA-Z][a-zA-Z\- ]*) quotation_mark ws { return chars.flat().join("").trim() }
 
 place_label
   = ws quotation_mark label:(("district") / ("county")) quotation_mark ws { return label; }
@@ -454,9 +454,8 @@ api_moustaches
       args: []
     }
   }
-  / "political_party(" args:((ws c:([a-zA-Z]("-"/[ a-zA-Z])*) ws {return [c]})
-                            / (ws a:pparty_type ws {return [a]})
-                            / (ws c:([a-zA-Z]("-"/[ a-zA-Z])*) ws "," ws a:pparty_type ws {return [c,a]}) )? ")" {
+  / "political_party(" args:( (ws t:pparty_type ws {return [t]}) 
+                            / (ws country:place_name ws type:("," ws t:pparty_type ws {return t})? {return type == null ? [country] : [country,type]}))? ")" {
     var moustaches
     if (!args) moustaches = "political_party"
     if (args.length == 1) {
@@ -468,7 +467,7 @@ api_moustaches
     return {
       moustaches,
       api: "political_parties",
-      args: !args ? [] : [args]
+      args: !args ? [] : args
     }
   }
   / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
