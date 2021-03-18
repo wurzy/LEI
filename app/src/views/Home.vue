@@ -141,17 +141,17 @@ export default {
         this.code = newcode
       },
       generate(){
+        var generated = convert(this.code,this.parser)
 
-        var x = convert(this.code,this.parser)
+        this.result = JSON.stringify(generated[0].dataset, null, 2)
+        var model = JSON.stringify(generated[0].model, null, 2)
 
-        this.result = JSON.stringify(x[0].dataset,null,2)
-        var y = JSON.stringify(x[0].model,null,2)
-        console.log("O modelo chegou:",y)
+        console.log("O modelo chegou:",model)
 
         var elem = document.createElement('boas');
         elem.setAttribute("id","md")
-        elem.setAttribute("modelo",y)
-        document.body.appendChild(elem);
+        elem.setAttribute("modelo", model)
+        document.body.appendChild(elem)
       },
       download(){
         if(this.result == "") {
@@ -176,13 +176,8 @@ export default {
           }
 
           axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
-          .then(dados => {
-             console.log("Modelo criado")
-          })
-          .catch(erro => {
-            console.log(erro)
-            
-          })
+            .then(dados => console.log("Modelo criado"))
+            .catch(erro => console.log(erro))
         
           document.body.removeChild(element);
         }

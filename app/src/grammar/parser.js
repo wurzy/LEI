@@ -659,10 +659,8 @@ const parser =(function() {
                       }
                     }            
                     `
-            striM=str
-                   
-            console.log("Obj: ",obj)
-            return repeatArray(size,obj)
+
+            return {dataset: repeatArray(size,obj), model: str}
           },
         peg$c385 = "repeat",
         peg$c386 = peg$literalExpectation("repeat", false),
@@ -7079,7 +7077,6 @@ const parser =(function() {
     }
 
 
-      var striM
       var language = "pt" //"pt" or "en", "pt" by default
       var random_id = "i04e8b563117bc2ed52e02b7"
       var keys = ["objectId","guid","index","boolean","integer","floating","position","phone","date","random","lorem","having","missing"]
@@ -7205,13 +7202,7 @@ const parser =(function() {
       function repeatArray(size, obj) {
         var arr = []
         for (var i = 0; i < size; i++) arr.push(resolveMoustaches(clone(obj),i))
-
-        var ob= {
-              "dataset"  :  arr, 
-              "model"   :  striM
-            }
-        console.log("repeat array:",ob)
-        return ob
+        return arr
       }
 
 
@@ -7239,6 +7230,5 @@ const parser =(function() {
     parse:       peg$parse
   };
 })();
-
 
 export default parser

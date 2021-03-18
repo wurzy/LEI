@@ -34,7 +34,7 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
   				bool: '{{bool()}}',
   				posicao: '{{position()}}'
   			},
-            'repeat(2)': [1,2,3,4],
+            'repeat(2)': [1,'{{index()}',3,4],
             'repeat(4)': "TESTE"
         ]
     }
@@ -43,33 +43,6 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
 ---------------------------------------------------------------------
 
 MOUSTACHES DE DATASETS:
-
-<!LANGUAGE pt>
-[
-	'repeat(3)': {
-  		distrito: '{{pt_district()}}',
-  		concelho: '{{pt_county()}}',
-  		concelho2: '{{pt_county("Braga")}}',
-  		freguesia: '{{pt_parish()}}',
-		freguesia2: '{{pt_parish("district","Braga")}}',
-		freguesia3: '{{pt_parish("county","Braga")}}',
-  		nome_proprio: '{{firstName()}}',
-  		apelido: '{{surname()}}',
-  		nome: '{{fullName()}}',
-  		animal: '{{animal()}}',
-  		buzzword: '{{buzzword()}}',
-  		car_brand: '{{car_brand()}}',
-  		continent: '{{continent()}}',
-  		sport: '{{sport()}}',
-  		brand: '{{brand()}}',
-  		religion: '{{religion()}}',
-  		gov_entity: '{{gov_entity()}}',
-  		country: '{{country()}}',
-  		partido: '{{pt_political_party()}}',
-  		partido_abbr: '{{pt_political_party("abbr")}}',
-  		partido_nome: '{{pt_political_party("name")}}'
-    }
-]
 
 <!LANGUAGE pt>
 [
@@ -98,7 +71,7 @@ MOUSTACHES DE DATASETS:
         emprego: '{{job()}}',
         musico: '{{musician()}}',
         figura_publica_pt: '{{pt_public_figure()}}',
-        religiao: '{{religion()}}',
+        religiao: '{{religion()}}',  
         futebolista: '{{soccer_player()}}',
         desporto: '{{sport()}}',
         escritor: '{{writer()}}',
@@ -108,7 +81,6 @@ MOUSTACHES DE DATASETS:
   		partido: '{{political_party()}}',
   		partido_abbr: '{{political_party("abbr")}}',
   		partido_nome: '{{political_party("name")}}',
-  		partido2: '{{political_party("belgium")}}',
   		celebridade: '{{top100_celebrity()}}',
   		celebridade_pt: '{{pt_top100_celebrity()}}',
   		empresario_pt: '{{pt_businessman()}}',
