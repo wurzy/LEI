@@ -235,7 +235,9 @@ frac
   = decimal_point DIGIT+
 
 int
-  = zero / (digit1_9 DIGIT*) { return parseInt(text()); }
+  = integer:((zero* i:(digit1_9 DIGIT*) {return i}) / (i:zero zero* {return i})) {
+    return parseInt(Array.isArray(integer) ? integer.join("") : integer)
+  }
 
 minus
   = "-"

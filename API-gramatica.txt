@@ -85,8 +85,6 @@ POR IMPLEMENTAR:
 
 - otimizar a recursividade e o processamento dos moustaches
 
-- aceitar zeros à esquerda em numeros
-
 - permitir probabilities em arrays
 
 - funções como propriedades de objeto
