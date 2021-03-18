@@ -52,6 +52,16 @@
     throw new Error("Unable to copy obj! Its type isn't supported.");
   }
 
+  function resolveInterpolation(arr, i) {
+    for (var j = 0; j < arr.length; j++) {
+      if (isObject(arr[j])) {
+        var value = resolveMoustaches(arr[j],i)
+        arr[j] = (isObject(value)) ? JSON.stringify(value) : value
+      }
+    }
+    return arr.join("")
+  }
+
   function probability(type, probability, value, i) {
     if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
       if (hasMoustaches(value)) {
@@ -73,14 +83,16 @@
 
   function resolveMoustaches(obj, i) {
     if (hasMoustaches(obj)) {
-      if (hasGenKey(obj)) obj = callGenAPI(obj, i)
+      if (obj.moustaches == "interpolation") obj = resolveInterpolation(obj.value, i)
+      else if (hasGenKey(obj)) obj = callGenAPI(obj, i)
       else obj = callDataAPI(obj)
     }
     else {
       var genKeys = [], dbKeys = []
       Object.keys(obj).forEach(k => {
         if (isObject(obj[k]) && hasMoustaches(obj[k])) {
-          if (hasGenKey(obj[k])) genKeys.push(k)
+          if (obj[k].moustaches == "interpolation") obj[k] = resolveInterpolation(obj[k].value, i)
+          else if (hasGenKey(obj[k])) genKeys.push(k)
           else dbKeys.push(k)
         }
       })
@@ -188,7 +200,7 @@ member
   / probability
 
 value_or_moustaches
-  = value / moustaches
+  = value / interpolation
 
 // ----- 5. Arrays -----
 
@@ -274,7 +286,7 @@ generic_key
   / "hacker()"
   / "job()"
   / "musician()"
-  / "pt_politian()"
+  / "pt_politician()"
   / "pt_public_figure()"
   / "religion()"
   / "soccer_player()"
@@ -290,11 +302,11 @@ generic_key
   ) { return text().slice(0, -3) + 'ies' }
   / "pt_businessman()" { return text().slice(0, -4) + 'en' }
 
-pt_political_party_arg
+pparty_type
   = quotation_mark arg:(("name") / ("abbr")) quotation_mark { return arg }
 
 soccer_club_nationality
-  = quotation_mark arg:(("de") / ("en") / ("es") / ("it") / ("pt")) quotation_mark { return arg }
+  = quotation_mark nat:(([Gg]"ermany") / ([Ee]"ngland") / ([Ss]"pain") / ([Ii]"taly") / ([Pp]"ortugal")) quotation_mark { return nat.join("") }
 
 place_name
   = ws quotation_mark chars:[a-zA-Z\- ]+ quotation_mark ws { return chars.join("").trim(); }
@@ -343,14 +355,23 @@ char
 escape = "\\"
 
 quotation_mark = '"'
+apostrophe = "'"
 
 unescaped
   = [^\0-\x1F\x22\x5C]
 
 // ----- 8. Moustaches -----
 
-moustaches
-  = "'" ws "{{" ws value:moustaches_value ws "}}" ws "'" { return value }
+interpolation
+  = apostrophe value:(chars:[^{']+ {return chars.join("")} / "{" curly:after_curly_bracket {return curly})* apostrophe {
+    if (!value.length) return ""
+    else if (value.length == 1) return value[0]
+    else return { moustaches: "interpolation", value }
+  }
+
+after_curly_bracket
+  = "{" ws value:moustaches_value ws "}}" { return value }
+  / char:[^{'] { return "\x7B"+char }
 
 moustaches_value
   = gen_moustaches / api_moustaches
@@ -424,18 +445,35 @@ api_moustaches
       args: [name]
     }
   }
-  / "pt_political_party(" ws arg:( a:pt_political_party_arg {return a} )? ")" {
+  / "pt_political_party(" ws arg:( a:pparty_type {return a} )? ")" {
     return {
       moustaches: !arg ? "pt_political_party" : ("pt_political_party_" + arg),
-      api: "ptPoliticalParties",
+      api: "pt_political_parties",
       args: []
+    }
+  }
+  / "political_party(" args:((ws c:([a-zA-Z]("-"/[ a-zA-Z])*) ws {return [c]})
+                            / (ws a:pparty_type ws {return [a]})
+                            / (ws c:([a-zA-Z]("-"/[ a-zA-Z])*) ws "," ws a:pparty_type ws {return [c,a]}) )? ")" {
+    var moustaches
+    if (!args) moustaches = "political_party"
+    if (args.length == 1) {
+      if (["abbr","name"].includes(args[0])) moustaches = "political_party_" + args[0]
+      else moustaches = "political_party_from"
+    } 
+    else moustaches = "political_party_from_" + args[1]
+
+    return {
+      moustaches,
+      api: "political_parties",
+      args: !args ? [] : [args]
     }
   }
   / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
     return {
       moustaches: !arg ? "soccer_club" : "soccer_club_from",
       api: "soccer_clubs",
-      args: []
+      args: !arg ? [] : [arg]
     }
   }
 
@@ -478,7 +516,41 @@ repeat_object
   = size:repeat_signature ws ":" ws obj:object {
     //var model = generateModel(obj)
     //return {dataset: repeatArray(size,obj), model: ...}
-    return repeatArray(size,obj)
+    let str = `{
+              "kind": "collectionType",
+              "collectionName": "produtos",
+              "info": {
+                "name": "Produto"
+              },
+              "options": {
+                "increments": true,
+                "timestamps": true,
+                "draftAndPublish": true
+              },
+              "attributes": {
+                "titulo": {
+                  "type": "string",
+                  "required": true,
+                  "unique": true
+                },
+                "preco": {
+                  "type": "decimal"
+                },
+                "quantidade": {
+                  "type": "integer"
+                },
+                "descricao": {
+                  "type": "text"
+                },
+                "categorias": {
+                  "via": "produtos",
+                  "collection": "categoria"
+                }
+              }
+            }            
+            `
+
+    return {dataset: repeatArray(size,obj), model: str}
   }
 
 repeat_signature

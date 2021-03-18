@@ -23,6 +23,7 @@ VÁRIAS COLEÇÕES:
 
 REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
 
+<!LANGUAGE pt>
 [
 	'repeat(3)': {
         _id: '{{objectId()}}',
@@ -33,7 +34,7 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
   				bool: '{{bool()}}',
   				posicao: '{{position()}}'
   			},
-            'repeat(2)': [1,2,3,4],
+            'repeat(2)': [1,'{{index()}',3,4],
             'repeat(4)': "TESTE"
         ]
     }
@@ -55,17 +56,54 @@ MOUSTACHES DE DATASETS:
   		nome_proprio: '{{firstName()}}',
   		apelido: '{{surname()}}',
   		nome: '{{fullName()}}',
-  		animal: '{{animal()}}',
-  		buzzword: '{{buzzword()}}',
-  		car_brand: '{{car_brand()}}',
-  		continent: '{{continent()}}',
-  		sport: '{{sport()}}',
-  		brand: '{{brand()}}',
-  		religion: '{{religion()}}',
-  		gov_entity: '{{gov_entity()}}',
-  		country: '{{country()}}',
-  		partido: '{{pt_political_party()}}',
-  		partido_abbr: '{{pt_political_party("abbr")}}',
-  		partido_nome: '{{pt_political_party("name")}}'
+		partido_pt: '{{pt_political_party()}}',
+		partido_pt_abbr: '{{pt_political_party("abbr")}}',
+		partido_pt_nome: '{{pt_political_party("name")}}',
+		ator: '{{actor()}}',
+        animal: '{{animal()}}',
+        marca: '{{brand()}}',
+        buzzword: '{{buzzword()}}',
+        capital: '{{capital()}}',
+        marca_carro: '{{car_brand()}}',
+        continente: '{{continent()}}',
+        centro_cultural: '{{cultural_center()}}',
+        hacker: '{{hacker()}}',
+        emprego: '{{job()}}',
+        musico: '{{musician()}}',
+        figura_publica_pt: '{{pt_public_figure()}}',
+        religiao: '{{religion()}}',  
+        futebolista: '{{soccer_player()}}',
+        desporto: '{{sport()}}',
+        escritor: '{{writer()}}',
+  		pais: '{{country()}}',
+  		politico_pt: '{{pt_politician()}}',
+  		entidade_gov: '{{gov_entity()}}',
+  		partido: '{{political_party()}}',
+  		partido_abbr: '{{political_party("abbr")}}',
+  		partido_nome: '{{political_party("name")}}',
+  		celebridade: '{{top100_celebrity()}}',
+  		celebridade_pt: '{{pt_top100_celebrity()}}',
+  		empresario_pt: '{{pt_businessman()}}',
+  		clube_futebol: '{{soccer_club()}}',
+  		clube_futebol_arg: '{{soccer_club("portugal")}}',
+  		nacionalidade: '{{nationality()}}'
+    }
+]
+
+---------------------------------------------------------------------
+
+INTERPOLAÇÃO:
+
+<!LANGUAGE pt>
+[
+	'repeat(3)': {
+  		vazio_plicas: '',
+  		vazio_aspas: "",
+  		string_plicas: 'ola',
+  		string_aspas: "ola",
+        indice: '{{index()}}',
+        interpolacao: '{{integer(100, 999)}} {{pt_parish()}}, {{pt_county()}}, {{pt_district()}}, {{integer(100, 10000)}}',
+  		caso_especial: 'partido: {{pt_political_party()}}',
+  		limit_testing: '   {{integer(100, 999)}}{{pt_parish()}}{ {a{{pt_county()}} {{pt_district()}}'
     }
 ]

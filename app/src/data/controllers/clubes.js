@@ -9,7 +9,7 @@ const soccer_clubsAPI = {
 
    soccer_club_from(country){
        for (let c of clubs){
-           if (c.pais == country){
+           if (c.pais.toLowerCase() === country.toLowerCase()){
                 return c.clubes[Math.floor(Math.random() * c.clubes.length)]
            }
        }

@@ -40,7 +40,7 @@
 <script>
 import {convert} from '../grammar/convert.js'
 import parser from '../grammar/parser.js'
-
+import axios from 'axios';
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -141,7 +141,17 @@ export default {
         this.code = newcode
       },
       generate(){
-        this.result = convert(this.code,this.parser)
+        var generated = convert(this.code,this.parser)
+
+        this.result = JSON.stringify(generated[0].dataset, null, 2)
+        var model = JSON.stringify(generated[0].model, null, 2)
+
+        console.log("O modelo chegou:",model)
+
+        var elem = document.createElement('boas');
+        elem.setAttribute("id","md")
+        elem.setAttribute("modelo", model)
+        document.body.appendChild(elem)
       },
       download(){
         if(this.result == "") {
@@ -156,8 +166,19 @@ export default {
           element.style.display = 'none';
           document.body.appendChild(element);
 
-          element.click();
+          var a = document.getElementById("md").getAttribute("modelo")
 
+          //element.click();
+          var optionAxios = {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+          }
+
+          axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
+            .then(dados => console.log("Modelo criado"))
+            .catch(erro => console.log(erro))
+        
           document.body.removeChild(element);
         }
       }
