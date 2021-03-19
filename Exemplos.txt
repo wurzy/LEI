@@ -1,3 +1,47 @@
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+  		missing(1): {
+        	boleano: 'gerado: {{bool()}}---'
+        },
+	  	string: "boas",
+	  	numero: 93,
+	  	name: {
+	    	first: "Hugo",
+	    	last: "Cardoso",
+            teste: [
+              'repeat(3)': {
+              	prop1: "ola",
+              	prop2: [
+              		'repeat(2)': {
+              			prop_final: "adeus"
+              		}
+				]
+			  }
+            ]
+	  	},
+	  	moustaches: [
+	  		[
+              'repeat(5)': "string"
+            ],
+	  		'{{bool()}}',
+	  		[
+              '{{guid()}}',
+              [
+                '{{guid()}}'
+              ]
+            ]
+    	],
+  		objeto: [
+			'repeat(5)': {
+  				indice_objeto: '{{index()}}'
+  			}
+		]
+    }
+  ]
+}
+
 VÁRIAS COLEÇÕES:
 
 <!LANGUAGE pt>

@@ -62,7 +62,8 @@ export default {
         parser: parser,
         result: "",
         code: `<!LANGUAGE pt>
-[
+{
+  colecao: [
 	'repeat(3)': {
         _id: '{{objectId()}}',
         guid: '{{guid()}}',
@@ -116,7 +117,8 @@ export default {
   			}
 		]
     }
-]`,
+  ]
+}`,
         cmOption: {
           tabSize: 4,
           styleActiveLine: true,
@@ -141,10 +143,17 @@ export default {
         this.code = newcode
       },
       generate(){
+        //generated é um objeto em que o valor de cada prop é {dataset, model}
         var generated = convert(this.code,this.parser)
 
-        this.result = JSON.stringify(generated[0].dataset, null, 2)
-        var model = JSON.stringify(generated[0].model, null, 2)
+        var datasets = {}, models = {}
+        Object.keys(generated).forEach(k => {
+          datasets[k] = generated[k].dataset
+          models[k] = generated[k].models
+        })
+
+        this.result = JSON.stringify(datasets, null, 2)
+        var model = JSON.stringify(models, null, 2)
 
         //console.log("O modelo chegou:",model)
 

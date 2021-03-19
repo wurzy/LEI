@@ -78,17 +78,17 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
-- retornar coleções diferentes na mesma lista ou em listas diferentes
-
-- otimizar a recursividade e o processamento dos moustaches
-
-- permitir qualquer coisa em missing/having
-- permitir probabilities em arrays
+- repeat com random - garantir que todos os resultados do random são diferentes
+	- n repeat >= n random
 
 - funções como propriedades de objeto
 
-- repeat com random - garantir que todos os resultados do random são diferentes
-	- n repeat >= n random
+- lista de erros para apresentar de maneira user-friendly no vue
+- otimizar a recursividade e o processamento dos moustaches
+- repeats diretos de probabilities?
+
+?????
+- permitir probabilities em arrays
 
 --------------------------------------------------------
 
@@ -108,3 +108,8 @@ PROGRESSO DESTA SEMANA:
 		- string: 'bom dia'
 		- moustaches: '{{index()}}'
 		- interpolação: 'texto - {{pt_parish()}}, {{pt_county()}}, {{pt_district()}}'
+
+
+- permitir qualquer tipo em missing/having
+- reestruturar o programa para o formato a la json-server que o professor queria
+- alterar a recursividade do programa de forma a incorporar a construção do modelo sem entrar em ciclos desnecessários

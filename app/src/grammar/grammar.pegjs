@@ -16,6 +16,10 @@
 
   function hasMoustaches(x) { return Object.prototype.hasOwnProperty.call(x,"moustaches") }
 
+  function hasSecretId(x) {
+    return Object.prototype.hasOwnProperty.call(x,"_secretId_") && x._secretId_ == random_id
+  }
+
   function hasGenKey(x) { return keys.includes(x.moustaches) }
 
   function clone(obj) {
@@ -52,27 +56,6 @@
     throw new Error("Unable to copy obj! Its type isn't supported.");
   }
 
-  function resolveInterpolation(arr, i) {
-    for (var j = 0; j < arr.length; j++) {
-      if (isObject(arr[j])) {
-        var value = resolveMoustaches(arr[j],i)
-        arr[j] = (isObject(value)) ? JSON.stringify(value) : value
-      }
-    }
-    return arr.join("")
-  }
-
-  function probability(type, probability, value, i) {
-    if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
-      if (hasMoustaches(value)) {
-        if (keys.includes(value.moustaches)) return callGenAPI(value,i)
-        else return callDataAPI(value)
-      }
-      else return value
-    }
-    return null
-  }
-
   function callGenAPI(obj, i) {
     if (["index","missing","having"].includes(obj.moustaches)) obj.args.push(i)
     if (["missing","having"].includes(obj.moustaches)) return probability(...obj.args)
@@ -81,60 +64,85 @@
 
   function callDataAPI(obj) { return dataAPI[obj.api][obj.moustaches](...obj.args) }
 
+  function resolveInterpolation(arr, i) {
+    for (var j = 0; j < arr.length; j++) {
+      if (isObject(arr[j])) {
+        var value = resolveMoustaches(arr[j], i)
+        arr[j] = (isObject(value)) ? JSON.stringify(value) : value
+      }
+    }
+    return arr.join("")
+  }
+
+  function probability(type, probability, value, i) {
+    if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
+      if (isObject(value)) {
+        if (hasMoustaches(value)) value = resolveMoustaches(value, i)
+        else if (hasSecretId(value)) value = value.dataset
+        else value = resolveObject(value, i)
+      }
+      else if (Array.isArray(value)) value = resolveArray(value, i)
+      return value
+    }
+    return null
+  }
+
   function resolveMoustaches(obj, i) {
-    if (hasMoustaches(obj)) {
-      if (obj.moustaches == "interpolation") obj = resolveInterpolation(obj.value, i)
-      else if (hasGenKey(obj)) obj = callGenAPI(obj, i)
-      else obj = callDataAPI(obj)
-    }
-    else {
-      var genKeys = [], dbKeys = []
-      Object.keys(obj).forEach(k => {
-        if (isObject(obj[k]) && hasMoustaches(obj[k])) {
-          if (obj[k].moustaches == "interpolation") obj[k] = resolveInterpolation(obj[k].value, i)
-          else if (hasGenKey(obj[k])) genKeys.push(k)
-          else dbKeys.push(k)
-        }
-      })
+    if (obj.moustaches == "interpolation") return resolveInterpolation(obj.value, i)
+    else if (hasGenKey(obj)) return callGenAPI(obj, i)
+    else return callDataAPI(obj)
+  }
 
-      genKeys.forEach(k => {
-        obj[k] = callGenAPI(obj[k],i)
+  function resolveArray(arr, i) {
+    for (var j = 0; j < arr.length; j++) {
+      if (isObject(arr[j])) {
+        if (hasMoustaches(arr[j])) arr[j] = resolveMoustaches(arr[j], i)
+        else if (hasSecretId(arr[j])) arr[j] = arr[j].dataset
+        else arr[j] = resolveObject(arr[j], i)
+      }
+      else if (Array.isArray(arr[j])) arr[j] = resolveArray(arr[j], i)
+    }
+
+    return arr
+  }
+
+  function resolveObject(obj, i) {
+    //propriedades do objeto com moustaches
+    Object.keys(obj).forEach(k => {
+      if (isObject(obj[k]) && hasMoustaches(obj[k])) {
+        obj[k] = resolveMoustaches(obj[k], i)
         if (obj[k] === null) delete obj[k]
-      })
-
-      dbKeys.forEach(k => obj[k] = callDataAPI(obj[k]))
-
-      /**********************************************************/
-      //código para iterar objetos e arrays ao construir o modelo
-      
-      //objetos sem propriedade "moustaches" válida
-      var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]))
-      objectKeys.forEach(k => { obj[k] = resolveMoustaches(obj[k],i) })
-      
-      var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
-      arrKeys.forEach(k => {
-        for (var j = 0; j < obj[k].length; j++) {
-          if (isObject(obj[k][j])) obj[k][j] = resolveMoustaches(obj[k][j],i)
-        }
-      })
-      /**********************************************************/
-    }
+      }
+    })
     
+    //objetos sem dataset processado ou propriedade "moustaches" válida
+    var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]) && !hasSecretId(obj[k]))
+    objectKeys.forEach(k => { obj[k] = resolveObject(obj[k],i) })
+    
+    //arrays
+    var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
+    arrKeys.forEach(k => { obj[k] = resolveArray(obj[k], i) })
+    
+    //associar os datasets de repeats aninhados
+    var secretIdKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasSecretId(obj[k]))
+    secretIdKeys.forEach(k => { obj[k] = obj[k].dataset })
+
     if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
     return obj
   }
 
   function repeatArray(size, obj) {
     var arr = []
-    for (var i = 0; i < size; i++) arr.push(resolveMoustaches(clone(obj),i))
-    return arr
+    //var model = generateModel(obj)
+    for (var i = 0; i < size; i++) arr.push(resolveObject(clone(obj),i))
+    return {_secretId_: random_id, dataset: arr, model: "boas"}
   }
 }
 
 // ----- 2. DSL Grammar -----
 
 DSL_text
-  = language value:repeat_object_seq { return value }
+  = language value:object { return value }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -152,14 +160,14 @@ language
 // ----- 3. Values -----
 
 value
-  = false
+  = directive
+  / false
   / null
   / true
   / object
   / array
   / number
   / string
-  / directive
 
 simple_value
   = false
@@ -193,13 +201,13 @@ object
     { return members !== null ? members: {}; }
 
 member
-  = name:key name_separator value:value_or_moustaches {
+  = name:key name_separator value:value_or_interpolation {
       if (name == "moustaches") name = random_id
       return { name, value }
     }
   / probability
 
-value_or_moustaches
+value_or_interpolation
   = value / interpolation
 
 // ----- 5. Arrays -----
@@ -207,8 +215,8 @@ value_or_moustaches
 array
   = begin_array
     values:(
-      head:value_or_moustaches
-      tail:(value_separator v:value_or_moustaches { return v; })*
+      head:value_or_interpolation
+      tail:(value_separator v:value_or_interpolation { return v; })*
       { return [head].concat(tail); }
     )?
     end_array
@@ -481,77 +489,27 @@ api_moustaches
 // ----- 9. Diretivas -----
 
 directive
-  = repeat_any_seq
+  = repeat
   / range
 
-repeat_any_seq
+repeat_seq
   = begin_array
     values:(
-      head:repeat_any
-      tail:(value_separator r:repeat_any { return r })*
+      head:repeat
+      tail:(value_separator r:repeat { return r })*
       { return ([head].concat(tail)).flat() }
     )?
     end_array
     { return values !== null ? values : [] }
 
-repeat_any
-  = size:repeat_signature ws ":" ws val:value {
-    if (typeof val === 'object' && val !== null) return repeatArray(size,val)
-    else return Array(size).fill(val)
-  }
-
-repeat_object_seq
-  = begin_array
-    values:(
-      head:repeat_object
-      tail:(value_separator r:repeat_object { return r })*
-      { return ([head].concat(tail)).flat() }
-    )?
-    end_array
-    { 
-      //values -> lista em que cada elem = {dataset: x, model: y}
-      return values !== null ? values : []
-    }
-
-repeat_object
-  = size:repeat_signature ws ":" ws obj:object {
-    //var model = generateModel(obj)
-    //return {dataset: repeatArray(size,obj), model: ...}
-    let str = `{
-              "kind": "collectionType",
-              "collectionName": "produtos",
-              "info": {
-                "name": "Produto"
-              },
-              "options": {
-                "increments": true,
-                "timestamps": true,
-                "draftAndPublish": true
-              },
-              "attributes": {
-                "titulo": {
-                  "type": "string",
-                  "required": true,
-                  "unique": true
-                },
-                "preco": {
-                  "type": "decimal"
-                },
-                "quantidade": {
-                  "type": "integer"
-                },
-                "descricao": {
-                  "type": "text"
-                },
-                "categorias": {
-                  "via": "produtos",
-                  "collection": "categoria"
-                }
-              }
-            }            
-            `
-
-    return {dataset: repeatArray(size,obj), model: str}
+repeat
+  = begin_array size:repeat_signature ws ":" ws val:value_or_interpolation end_array {
+    if (typeof val === 'object' && val !== null) return repeatArray(size,val) //objetos e arrays
+    else return {
+      _secretId_: random_id,
+      dataset: Array(size).fill(val), 
+      model: "boas"
+    } //tipos primitivos
   }
 
 repeat_signature
@@ -579,26 +537,13 @@ range
     return range
   }
 
-probability = missing / having
-
-missing
-  = "missing(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
+probability
+  = sign:(("missing") / ("having") {return text()}) "(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
     return {
       name: m.name,
       value: {
-        moustaches: "missing",
-        args: ["missing", parseInt(prob.join(""))/100, m.value]
-      }
-    }
-  }
-
-having
-  = "having(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
-    return {
-      name: m.name,
-      value: {
-        moustaches: "having",
-        args: ["having", parseInt(prob.join(""))/100, m.value]
+        moustaches: sign,
+        args: [sign, parseInt(prob.join(""))/100, m.value]
       }
     }
   }
