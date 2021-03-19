@@ -1,5 +1,6 @@
 import genAPI from './moustaches'
 import dataAPI from '../data/API'
+import vm from 'vm'
 
 const parser = (function() {
   "use strict";
@@ -665,8 +666,21 @@ const parser = (function() {
               }
             }
           },
-        peg$c398 = /^[0-9a-f]/i,
-        peg$c399 = peg$classExpectation([["0", "9"], ["a", "f"]], false, true),
+        peg$c398 = "()",
+        peg$c399 = peg$literalExpectation("()", false),
+        peg$c400 = function(name, code) {
+            return {
+              name, 
+              value: {
+                _secretId_: random_id,
+                function: code
+                /* function: "function f() " + code + "\n var result = f()" */
+              }
+            }
+          },
+        peg$c401 = function() { return text().slice(1,-1) },
+        peg$c402 = /^[0-9a-f]/i,
+        peg$c403 = peg$classExpectation([["0", "9"], ["a", "f"]], false, true),
 
         peg$currPos          = 0,
         peg$savedPos         = 0,
@@ -1401,6 +1415,9 @@ const parser = (function() {
       }
       if (s0 === peg$FAILED) {
         s0 = peg$parseprobability();
+        if (s0 === peg$FAILED) {
+          s0 = peg$parsefunction_prop();
+        }
       }
 
       return s0;
@@ -4245,19 +4262,15 @@ const parser = (function() {
         s3 = peg$FAILED;
         if (peg$silentFails === 0) { peg$fail(peg$c278); }
       }
-      if (s3 !== peg$FAILED) {
-        while (s3 !== peg$FAILED) {
-          s2.push(s3);
-          if (peg$c277.test(input.charAt(peg$currPos))) {
-            s3 = input.charAt(peg$currPos);
-            peg$currPos++;
-          } else {
-            s3 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c278); }
-          }
+      while (s3 !== peg$FAILED) {
+        s2.push(s3);
+        if (peg$c277.test(input.charAt(peg$currPos))) {
+          s3 = input.charAt(peg$currPos);
+          peg$currPos++;
+        } else {
+          s3 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c278); }
         }
-      } else {
-        s2 = peg$FAILED;
       }
       if (s2 !== peg$FAILED) {
         if (peg$c279.test(input.charAt(peg$currPos))) {
@@ -4306,52 +4319,6 @@ const parser = (function() {
         s1 = peg$c283(s1);
       }
       s0 = s1;
-      if (s0 === peg$FAILED) {
-        s0 = peg$currPos;
-        s1 = peg$currPos;
-        if (peg$c279.test(input.charAt(peg$currPos))) {
-          s2 = input.charAt(peg$currPos);
-          peg$currPos++;
-        } else {
-          s2 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c280); }
-        }
-        if (s2 !== peg$FAILED) {
-          s3 = [];
-          if (peg$c281.test(input.charAt(peg$currPos))) {
-            s4 = input.charAt(peg$currPos);
-            peg$currPos++;
-          } else {
-            s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c282); }
-          }
-          while (s4 !== peg$FAILED) {
-            s3.push(s4);
-            if (peg$c281.test(input.charAt(peg$currPos))) {
-              s4 = input.charAt(peg$currPos);
-              peg$currPos++;
-            } else {
-              s4 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c282); }
-            }
-          }
-          if (s3 !== peg$FAILED) {
-            s2 = [s2, s3];
-            s1 = s2;
-          } else {
-            peg$currPos = s1;
-            s1 = peg$FAILED;
-          }
-        } else {
-          peg$currPos = s1;
-          s1 = peg$FAILED;
-        }
-        if (s1 !== peg$FAILED) {
-          peg$savedPos = s0;
-          s1 = peg$c283(s1);
-        }
-        s0 = s1;
-      }
 
       return s0;
     }
@@ -6687,6 +6654,167 @@ const parser = (function() {
       return s0;
     }
 
+    function peg$parsefunction_prop() {
+      var s0, s1, s2, s3, s4;
+
+      s0 = peg$currPos;
+      s1 = peg$parsekey();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 2) === peg$c398) {
+          s2 = peg$c398;
+          peg$currPos += 2;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c399); }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parsews();
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsecode();
+            if (s4 !== peg$FAILED) {
+              peg$savedPos = s0;
+              s1 = peg$c400(s1, s4);
+              s0 = s1;
+            } else {
+              peg$currPos = s0;
+              s0 = peg$FAILED;
+            }
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsecode() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$parseCODE_START();
+      if (s1 !== peg$FAILED) {
+        s2 = [];
+        s3 = peg$parsenot_code();
+        if (s3 === peg$FAILED) {
+          s3 = peg$parsecode();
+        }
+        while (s3 !== peg$FAILED) {
+          s2.push(s3);
+          s3 = peg$parsenot_code();
+          if (s3 === peg$FAILED) {
+            s3 = peg$parsecode();
+          }
+        }
+        if (s2 !== peg$FAILED) {
+          s3 = peg$parseCODE_STOP();
+          if (s3 !== peg$FAILED) {
+            peg$savedPos = s0;
+            s1 = peg$c401();
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parsenot_code() {
+      var s0, s1, s2, s3;
+
+      s0 = peg$currPos;
+      s1 = peg$currPos;
+      peg$silentFails++;
+      s2 = peg$parseCODE_START();
+      peg$silentFails--;
+      if (s2 === peg$FAILED) {
+        s1 = void 0;
+      } else {
+        peg$currPos = s1;
+        s1 = peg$FAILED;
+      }
+      if (s1 !== peg$FAILED) {
+        s2 = peg$currPos;
+        peg$silentFails++;
+        s3 = peg$parseCODE_STOP();
+        peg$silentFails--;
+        if (s3 === peg$FAILED) {
+          s2 = void 0;
+        } else {
+          peg$currPos = s2;
+          s2 = peg$FAILED;
+        }
+        if (s2 !== peg$FAILED) {
+          if (input.length > peg$currPos) {
+            s3 = input.charAt(peg$currPos);
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c333); }
+          }
+          if (s3 !== peg$FAILED) {
+            s1 = [s1, s2, s3];
+            s0 = s1;
+          } else {
+            peg$currPos = s0;
+            s0 = peg$FAILED;
+          }
+        } else {
+          peg$currPos = s0;
+          s0 = peg$FAILED;
+        }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+
+      return s0;
+    }
+
+    function peg$parseCODE_START() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 123) {
+        s0 = peg$c3;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c4); }
+      }
+
+      return s0;
+    }
+
+    function peg$parseCODE_STOP() {
+      var s0;
+
+      if (input.charCodeAt(peg$currPos) === 125) {
+        s0 = peg$c7;
+        peg$currPos++;
+      } else {
+        s0 = peg$FAILED;
+        if (peg$silentFails === 0) { peg$fail(peg$c8); }
+      }
+
+      return s0;
+    }
+
     function peg$parseDIGIT() {
       var s0;
 
@@ -6704,12 +6832,12 @@ const parser = (function() {
     function peg$parseHEXDIG() {
       var s0;
 
-      if (peg$c398.test(input.charAt(peg$currPos))) {
+      if (peg$c402.test(input.charAt(peg$currPos))) {
         s0 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c399); }
+        if (peg$silentFails === 0) { peg$fail(peg$c403); }
       }
 
       return s0;
@@ -6733,6 +6861,8 @@ const parser = (function() {
       function hasSecretId(x) {
         return Object.prototype.hasOwnProperty.call(x,"_secretId_") && x._secretId_ == random_id
       }
+
+      function hasFunction(x) { return Object.prototype.hasOwnProperty.call(x,"function") }
 
       function hasGenKey(x) { return keys.includes(x.moustaches) }
 
@@ -6768,6 +6898,14 @@ const parser = (function() {
         }
 
         throw new Error("Unable to copy obj! Its type isn't supported.");
+      }
+
+      function runSandboxCode(code) {
+        /* var context = { x: 2 }
+        vm.createContext(context)
+        vm.runInContext(code, context)
+        return context.result */
+        return new Function(code)()
       }
 
       function callGenAPI(obj, i) {
@@ -6830,18 +6968,22 @@ const parser = (function() {
         })
         
         //objetos sem dataset processado ou propriedade "moustaches" válida
-        var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]) && !hasSecretId(obj[k]))
+        var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasSecretId(obj[k]) && !hasMoustaches(obj[k]))
         objectKeys.forEach(k => { obj[k] = resolveObject(obj[k],i) })
         
         //arrays
         var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
         arrKeys.forEach(k => { obj[k] = resolveArray(obj[k], i) })
+
+        //renomear a possível prop "moustaches" do user para o nome original
+        if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
         
         //associar os datasets de repeats aninhados
         var secretIdKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasSecretId(obj[k]))
-        secretIdKeys.forEach(k => { obj[k] = obj[k].dataset })
+        secretIdKeys.forEach(k => { obj[k] = hasFunction(obj[k]) ? runSandboxCode(obj[k].function) : obj[k].dataset })
 
-        if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
+        //propriedades com código para executar
+
         return obj
       }
 

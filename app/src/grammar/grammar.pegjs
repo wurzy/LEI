@@ -20,6 +20,8 @@
     return Object.prototype.hasOwnProperty.call(x,"_secretId_") && x._secretId_ == random_id
   }
 
+  function hasFunction(x) { return Object.prototype.hasOwnProperty.call(x,"function") }
+
   function hasGenKey(x) { return keys.includes(x.moustaches) }
 
   function clone(obj) {
@@ -54,6 +56,14 @@
     }
 
     throw new Error("Unable to copy obj! Its type isn't supported.");
+  }
+
+  function runSandboxCode(code) {
+    /* var context = { x: 2 }
+    vm.createContext(context)
+    vm.runInContext(code, context)
+    return context.result */
+    return new Function(code)()
   }
 
   function callGenAPI(obj, i) {
@@ -116,18 +126,20 @@
     })
     
     //objetos sem dataset processado ou propriedade "moustaches" válida
-    var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasMoustaches(obj[k]) && !hasSecretId(obj[k]))
+    var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasSecretId(obj[k]) && !hasMoustaches(obj[k]))
     objectKeys.forEach(k => { obj[k] = resolveObject(obj[k],i) })
     
     //arrays
     var arrKeys = Object.keys(obj).filter(k => Array.isArray(obj[k]))
     arrKeys.forEach(k => { obj[k] = resolveArray(obj[k], i) })
+
+    //renomear a possível prop "moustaches" do user para o nome original
+    if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
     
     //associar os datasets de repeats aninhados
     var secretIdKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasSecretId(obj[k]))
-    secretIdKeys.forEach(k => { obj[k] = obj[k].dataset })
+    secretIdKeys.forEach(k => { obj[k] = hasFunction(obj[k]) ? runSandboxCode(obj[k].function) : obj[k].dataset })
 
-    if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
     return obj
   }
 
@@ -205,7 +217,7 @@ member
       if (name == "moustaches") name = random_id
       return { name, value }
     }
-  / probability
+  / probability / function_prop
 
 value_or_interpolation
   = value / interpolation
@@ -340,9 +352,7 @@ date_format
   / quotation_mark format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) quotation_mark { return format.join(""); }
   / quotation_mark format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") quotation_mark { return format.join(""); }
 
-key
-  = chars:([_]+[a-z][a-zA-Z0-9_]*) { return chars.flat().join("") }
-  / chars:([a-z][a-zA-Z0-9_]*) { return chars.flat().join("") }
+key = chars:([_]*[a-z][a-zA-Z0-9_]*) { return chars.flat().join("") }
 
 char
   = unescaped
@@ -547,6 +557,27 @@ probability
       }
     }
   }
+
+
+function_prop
+  = name:key "()" ws code:code {
+    return {
+      name, 
+      value: {
+        _secretId_: random_id,
+        function: code
+        /* function: "function f() " + code + "\n var result = f()" */
+      }
+    }
+  }
+
+code = CODE_START (not_code / code)* CODE_STOP { return text().slice(1,-1) }
+
+not_code = (!CODE_START !CODE_STOP.)
+
+CODE_START = "{"
+
+CODE_STOP = "}"
 
 // ----- Core ABNF Rules -----
 
