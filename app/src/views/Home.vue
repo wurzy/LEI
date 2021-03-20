@@ -183,10 +183,14 @@ export default {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
           }
-
-          axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
-            .then(dados => console.log("Modelo criado"))
-            .catch(erro => console.log(erro))
+          var body = {}
+          body["api"]=document.getElementById('filename').value
+          axios.post('http://localhost:3000/genAPI/',body)
+          .then(dados => console.log("Modelo criado"))
+          .catch(erro => console.log(erro))
+          //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
+          //.then(dados => console.log("Modelo criado"))
+          //.catch(erro => console.log(erro))
         
           document.body.removeChild(element);
         }
