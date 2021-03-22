@@ -78,6 +78,8 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
+-> null de random é apagado na parte sequencial do programa
+
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
 

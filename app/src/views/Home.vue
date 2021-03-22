@@ -146,14 +146,10 @@ export default {
         //generated é um objeto em que o valor de cada prop é {dataset, model}
         var generated = convert(this.code,this.parser)
 
-        var datasets = {}, models = {}
-        Object.keys(generated).forEach(k => {
-          datasets[k] = generated[k].dataset
-          models[k] = generated[k].models
-        })
+        console.log(generated.model)
 
-        this.result = JSON.stringify(datasets, null, 2)
-        var model = JSON.stringify(models, null, 2)
+        this.result = JSON.stringify(generated.value, null, 2)
+        var model = JSON.stringify(generated.model, null, 2)
 
         //console.log("O modelo chegou:",model)
 
@@ -183,10 +179,14 @@ export default {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
           }
-
-          axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
-            .then(dados => console.log("Modelo criado"))
-            .catch(erro => console.log(erro))
+          var body = {}
+          body["api"]=document.getElementById('filename').value
+          axios.post('http://localhost:3000/genAPI/',body)
+          .then(dados => console.log("Modelo criado"))
+          .catch(erro => console.log(erro))
+          //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
+          //.then(dados => console.log("Modelo criado"))
+          //.catch(erro => console.log(erro))
         
           document.body.removeChild(element);
         }

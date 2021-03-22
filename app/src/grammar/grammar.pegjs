@@ -3,7 +3,7 @@
 
 {
   var language = "pt" //"pt" or "en", "pt" by default
-  var random_id = "i04e8b563117bc2ed52e02b7"
+  var random_id = "9cd4ee62-463f-4905-a373-62ecd88c45a4"
   var keys = ["objectId","guid","index","boolean","integer","floating","position","phone","date","random","lorem","having","missing"]
 
   function renameProperty(obj, old_key, new_key) {
@@ -12,12 +12,14 @@
     return obj
   }
 
+  function hasBasicType(x) { return x===null || (typeof x!=='object' && !Array.isArray(x)) }
+
   function isObject(x) { return typeof x==='object' && x!==null && !Array.isArray(x) }
 
   function hasMoustaches(x) { return Object.prototype.hasOwnProperty.call(x,"moustaches") }
 
-  function hasSecretId(x) {
-    return Object.prototype.hasOwnProperty.call(x,"_secretId_") && x._secretId_ == random_id
+  function hasSecretId(x, id) {
+    return Object.prototype.hasOwnProperty.call(x,"_secretId_") && x._secretId_ == id
   }
 
   function hasFunction(x) { return Object.prototype.hasOwnProperty.call(x,"function") }
@@ -88,7 +90,7 @@
     if ((type == "missing" && Math.random() > probability) || (type == "having" && Math.random() < probability)) {
       if (isObject(value)) {
         if (hasMoustaches(value)) value = resolveMoustaches(value, i)
-        else if (hasSecretId(value)) value = value.dataset
+        else if (hasSecretId(value, random_id)) value = value.dataset
         else value = resolveObject(value, i)
       }
       else if (Array.isArray(value)) value = resolveArray(value, i)
@@ -107,7 +109,7 @@
     for (var j = 0; j < arr.length; j++) {
       if (isObject(arr[j])) {
         if (hasMoustaches(arr[j])) arr[j] = resolveMoustaches(arr[j], i)
-        else if (hasSecretId(arr[j])) arr[j] = arr[j].dataset
+        else if (hasSecretId(arr[j], random_id)) arr[j] = arr[j].dataset
         else arr[j] = resolveObject(arr[j], i)
       }
       else if (Array.isArray(arr[j])) arr[j] = resolveArray(arr[j], i)
@@ -118,15 +120,13 @@
 
   function resolveObject(obj, i) {
     //propriedades do objeto com moustaches
-    Object.keys(obj).forEach(k => {
-      if (isObject(obj[k]) && hasMoustaches(obj[k])) {
-        obj[k] = resolveMoustaches(obj[k], i)
-        if (obj[k] === null) delete obj[k]
-      }
+    Object.keys(obj).filter(k => isObject(obj[k]) && hasMoustaches(obj[k])).forEach(k => {
+      obj[k] = resolveMoustaches(obj[k], i)
+      if (obj[k] === null) delete obj[k]
     })
     
     //objetos sem dataset processado ou propriedade "moustaches" válida
-    var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasSecretId(obj[k]) && !hasMoustaches(obj[k]))
+    var objectKeys = Object.keys(obj).filter(k => isObject(obj[k]) && !hasSecretId(obj[k], random_id) && !hasMoustaches(obj[k]))
     objectKeys.forEach(k => { obj[k] = resolveObject(obj[k],i) })
     
     //arrays
@@ -137,7 +137,7 @@
     if (isObject(obj) && random_id in obj) obj = renameProperty(obj, random_id, "moustaches")
     
     //associar os datasets de repeats aninhados
-    var secretIdKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasSecretId(obj[k]))
+    var secretIdKeys = Object.keys(obj).filter(k => isObject(obj[k]) && hasSecretId(obj[k], random_id))
     secretIdKeys.forEach(k => { obj[k] = hasFunction(obj[k]) ? runSandboxCode(obj[k].function) : obj[k].dataset })
 
     return obj
@@ -146,8 +146,8 @@
   function repeatArray(size, obj) {
     var arr = []
     //var model = generateModel(obj)
-    for (var i = 0; i < size; i++) arr.push(resolveObject(clone(obj),i))
-    return {_secretId_: random_id, dataset: arr, model: "boas"}
+    for (var i = 0; i < size; i++) arr.push(resolveObject(clone(obj), i))
+    return arr
   }
 }
 
@@ -182,15 +182,11 @@ value
   / string
 
 simple_value
-  = false
-  / null
-  / true
-  / number
-  / string
+  = val:(false / null / true / number / string) { return val.value }
 
-false = "false" { return false; }
-null  = "null"  { return null;  }
-true  = "true"  { return true;  }
+false = "false" { return {model: {type: Boolean, required: true}, value: false} }
+null  = "null"  { return {model: {type: String, required: false}, value: null} }
+true  = "true"  { return {model: {type: Boolean, required: true}, value: true} }
 
 // ----- 4. Objects -----
 
@@ -210,7 +206,14 @@ object
       }
     )?
     end_object
-    { return members !== null ? members: {}; }
+    {
+      var model = {}
+      for (var prop in members) {
+        model[prop] = members[prop].model
+        members[prop] = members[prop].value
+      }
+      return members !== null ? {model, value: members} : {}
+    }
 
 member
   = name:key name_separator value:value_or_interpolation {
@@ -232,12 +235,22 @@ array
       { return [head].concat(tail); }
     )?
     end_array
-    { return values !== null ? values : []; }
+    {
+      var model = []
+      for (var i = 0; i < values.length; i++) {
+        model.push(values[i].model)
+        values[i] = values[i].value
+      }
+      return values !== null ? {model, value: values} : []
+    }
 
 // ----- 6. Numbers -----
 
 number "number"
-  = minus? int frac? exp? { return parseFloat(text()); }
+  = minus? int frac? exp? { return {model: {type: Number, required: true}, value: parseFloat(text())} }
+
+float_arg
+  = minus? int frac? { return parseFloat(text()); }
 
 decimal_point
   = "."
@@ -286,13 +299,21 @@ long_interval
 // ----- 7. Strings -----
 
 string "string"
-  = quotation_mark chars:char* quotation_mark { return chars.join("") }
+  = quotation_mark chars:char* quotation_mark { return {model: {type: String, required: true}, value: chars.join("")} }
 
 simple_api_key
   = api:(districts_key
   / names_key
   / generic_key
-  ) { return { moustaches: text().slice(0, -2), api, args: [] } }
+  ) {
+    return {
+      model: {type: String, required: true},
+      value: {
+        moustaches: text().slice(0, -2),
+        api, args: []
+      }
+    }
+  }
 
 districts_key = ("pt_district()" / "pt_county()" / "pt_parish()") { return "districts" }
 names_key = ("firstName()" / "surname()" / "fullName()") { return "names" }
@@ -397,39 +418,60 @@ moustaches_value
   = gen_moustaches / api_moustaches
 
 gen_moustaches
-  = "objectId(" ws ")" { return {  moustaches: "objectId", args: [] } }
-  / "guid(" ws ")" { return { moustaches: "guid", args: [] } }
-  / "index(" ws ")" { return { moustaches: "index", args: [] } }
-  / "bool(" ws ")" { return { moustaches: "boolean", args: [] } }
+  = "objectId(" ws ")" { return {model: {type: String, required: true}, value: { moustaches: "objectId", args: [] }} }
+  / "guid(" ws ")" { return {model: {type: String, required: true}, value: { moustaches: "guid", args: [] }} }
+  / "index(" ws ")" { return {model: {type: Number, required: true}, value: { moustaches: "index", args: [] }} }
+  / "bool(" ws ")" { return {model: {type: Boolean, required: true}, value: { moustaches: "boolean", args: [] }} }
   / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
     return {
-      moustaches: "integer",
-      args: [min, max, unit]
+      model: {
+        type: unit === null ? Number : String,
+        required: true
+      }, 
+      value: {
+        moustaches: "integer",
+        args: [min, max, unit]
+      }
     }
   }
-  / "floating(" ws min:number ws "," ws max:number ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
+  / "floating(" ws min:float_arg ws "," ws max:float_arg ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
     if (!others) others = {decimals: null, format: null}
     return {
-      moustaches: "floating",
-      args: [min, max, others.decimals, others.format]
+      model: {
+        type: others.format === null ? Number : String,
+        required: true
+      }, 
+      value: {
+        moustaches: "floating",
+        args: [min, max, others.decimals, others.format]
+      }
     }
   }
   / "position(" ws limits:(lat:lat_interval "," long:long_interval {return {lat, long} })? ")" {
     return {
-      moustaches: "position",
-      args: [!limits ? null : limits.lat, !limits ? null : limits.long]
+      model: {type: String, required: true},
+      value: {
+        moustaches: "position",
+        args: [!limits ? null : limits.lat, !limits ? null : limits.long]
+      }
     }
   }
   / "phone(" ws extension:(true/false)? ws ")" {
     return {
-      moustaches: "phone",
-      args: [extension]
+      model: {type: String, required: true},
+      value: {
+        moustaches: "phone",
+        args: [extension]
+      }
     }
   }
   / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
-      moustaches: "date",
-      args: [start, !end ? new Date() : end, !format ? 'DD/MM/YYYY' : format]
+      model: {type: String, required: true},
+      value: {
+        moustaches: "date",
+        args: [start, !end ? new Date() : end, !format ? 'DD/MM/YYYY' : format]
+      }
     }
   }
   / "random(" ws values:(
@@ -438,14 +480,20 @@ gen_moustaches
       { return [head].concat(tail); }
     )? ")" {
       return {
-        moustaches: "random",
-        args: [values]
+        model: {any: {}, required: true},
+        value: {
+          moustaches: "random",
+          args: [values]
+        }
       }
   }
   / "lorem(" ws count:int ws "," ws units:lorem_string ws ")" {
     return {
-      moustaches: "lorem",
-      args: [count, units]
+      model: {type: String, required: true},
+      value: {
+        moustaches: "lorem",
+        args: [count, units]
+      }
     } 
   }
   
@@ -453,46 +501,79 @@ api_moustaches
   = simple_api_key
   / "pt_county(" district:place_name ")" {
     return {
-      moustaches: "pt_countyFromDistrict",
-      api: "districts",
-      args: [district]
+      model: {type: String, required: true},
+      value: {
+        moustaches: "pt_countyFromDistrict",
+        api: "districts",
+        args: [district]
+      }
     }
   }
   / "pt_parish(" keyword:place_label "," name:place_name ")" {
     return {
-      moustaches: keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict",
-      api: "districts",
-      args: [name]
+      model: {type: String, required: true},
+      value: {
+        moustaches: keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict",
+        api: "districts",
+        args: [name]
+      }
     }
   }
   / "pt_political_party(" ws arg:( a:pparty_type {return a} )? ")" {
     return {
-      moustaches: !arg ? "pt_political_party" : ("pt_political_party_" + arg),
-      api: "pt_political_parties",
-      args: []
+      model: {
+        type: arg === null ? String : {
+          sigla: {type: String, required: true},
+          partido: {type: String, required: true}
+        },
+        required: true
+      },
+      value: {
+        moustaches: !arg ? "pt_political_party" : ("pt_political_party_" + arg),
+        api: "pt_political_parties",
+        args: []
+      }
     }
   }
   / "political_party(" args:( (ws t:pparty_type ws {return [t]}) 
                             / (ws country:place_name ws type:("," ws t:pparty_type ws {return t})? {return type == null ? [country] : [country,type]}))? ")" {
-    var moustaches
+    var moustaches, model = {
+      type: {
+        party_abbr: {type: String, required: true},
+        party_name: {type: String, required: true}
+      }, required: true
+    }
+
     if (!args) moustaches = "political_party"
     if (args.length == 1) {
-      if (["abbr","name"].includes(args[0])) moustaches = "political_party_" + args[0]
+      if (["abbr","name"].includes(args[0])) {
+        moustaches = "political_party_" + args[0]
+        model.type = String
+      }
       else moustaches = "political_party_from"
     } 
-    else moustaches = "political_party_from_" + args[1]
+    else {
+      moustaches = "political_party_from_" + args[1]
+      model.type = String
+    }
 
     return {
-      moustaches,
-      api: "political_parties",
-      args: !args ? [] : args
+      model,
+      value: {
+        moustaches,
+        api: "political_parties",
+        args: !args ? [] : args
+      }
     }
   }
   / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
     return {
-      moustaches: !arg ? "soccer_club" : "soccer_club_from",
-      api: "soccer_clubs",
-      args: !arg ? [] : [arg]
+      model: {type: String, required: true},
+      value: {
+        moustaches: !arg ? "soccer_club" : "soccer_club_from",
+        api: "soccer_clubs",
+        args: !arg ? [] : [arg]
+      }
     }
   }
 
@@ -514,12 +595,11 @@ repeat_seq
 
 repeat
   = begin_array size:repeat_signature ws ":" ws val:value_or_interpolation end_array {
-    if (typeof val === 'object' && val !== null) return repeatArray(size,val) //objetos e arrays
-    else return {
-      _secretId_: random_id,
-      dataset: Array(size).fill(val), 
-      model: "boas"
-    } //tipos primitivos
+    var value, model = val.model
+    if (typeof val === 'object' && val !== null) value = repeatArray(size, val.value) //objetos e arrays
+    else value = Array(size).fill(val) //tipos primitivos
+    
+    return {model, value}
   }
 
 repeat_signature
@@ -532,7 +612,10 @@ repeat_signature
 
 range
   = "range(" ws num:int ws ")" {
-    return [...Array(num).keys()]
+    return {
+      model: {type: [Number], required: true},
+      value: [...Array(num).keys()]
+    }
   }
   / "range(" ws init:int ws "," ws end:int ws ")" {
     var range = []
@@ -544,16 +627,23 @@ range
       for (var j = init; j > end; j--) range.push(j)
     }
 
-    return range
+    return {
+      model: {type: [Number], required: true},
+      value: range
+    }
   }
 
 probability
   = sign:(("missing") / ("having") {return text()}) "(" ws prob:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
+    m.value.model.required = false
     return {
       name: m.name,
       value: {
-        moustaches: sign,
-        args: [sign, parseInt(prob.join(""))/100, m.value]
+        model: m.value.model,
+        value: {
+          moustaches: sign,
+          args: [sign, parseInt(prob.join(""))/100, m.value.value]
+        }
       }
     }
   }
