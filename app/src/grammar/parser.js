@@ -240,7 +240,7 @@ const parser = (function() {
         peg$c54 = peg$classExpectation(["e", "E"], false, false),
         peg$c55 = function(i) {return i},
         peg$c56 = function(integer) {
-            return parseInt(Array.isArray(integer) ? integer.join("") : integer)
+            return parseInt(Array.isArray(integer) ? integer.flat().join("") : integer)
           },
         peg$c57 = "+",
         peg$c58 = peg$literalExpectation("+", false),

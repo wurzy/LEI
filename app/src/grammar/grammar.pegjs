@@ -167,7 +167,7 @@ frac
 
 int
   = integer:((zero* i:(digit1_9 DIGIT*) {return i}) / (i:zero zero* {return i})) {
-    return parseInt(Array.isArray(integer) ? integer.join("") : integer)
+    return parseInt(Array.isArray(integer) ? integer.flat().join("") : integer)
   }
 
 minus
