@@ -146,9 +146,9 @@ export default {
         //generated é um objeto em que o valor de cada prop é {dataset, model}
         var generated = convert(this.code,this.parser)
 
-        console.log(generated.model)
+        console.log(generated)
 
-        this.result = JSON.stringify(generated.value, null, 2)
+        this.result = JSON.stringify(generated.data, null, 2)
         var model = JSON.stringify(generated.model, null, 2)
 
         //console.log("O modelo chegou:",model)

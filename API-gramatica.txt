@@ -78,7 +78,9 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
--> null de random é apagado na parte sequencial do programa
+FALTA:
+-> interpolação
+-> repeats aninhados gerados dados aleatórios dentro de si, mas depois são repetidos igualmente nos repeats de fora
 
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
@@ -86,7 +88,6 @@ POR IMPLEMENTAR:
 - funções como propriedades de objeto
 
 - lista de erros para apresentar de maneira user-friendly no vue
-- otimizar a recursividade e o processamento dos moustaches
 - repeats diretos de probabilities?
 
 ?????
@@ -115,3 +116,73 @@ PROGRESSO DESTA SEMANA:
 - permitir qualquer tipo em missing/having
 - reestruturar o programa para o formato a la json-server que o professor queria
 - alterar a recursividade do programa de forma a incorporar a construção do modelo sem entrar em ciclos desnecessários
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+first: {model: ..., value: ["Hugo","Hugo","Hugo"]},
+last: {model: ..., value: ["Cardoso","Cardoso","Cardoso"]},
+}
+
+{
+model: ...,
+value: [
+		{
+		first: "Hugo",
+		last: "Cardoso"
+		},
+		{
+		first: "Hugo",
+		last: "Cardoso"
+		},
+		{
+		first: "Hugo",
+		last: "Cardoso"
+		}
+	]
+}
+
+
+
+
+
+missing(50): {
+   boleano: '{{bool()}}'
+}
+
+{
+model: ...,
+value: [true,false,true]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
