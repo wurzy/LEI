@@ -7,11 +7,14 @@
       <div class="col-md-3">
         <div class="input-group">
           <div class="input-group-prepend ">
-            <span class="input-group-text" id="basic-addon1">Name</span>
+            <span class="input-group-text" id="basic-addon1">Nome:</span>
           </div>
           <input type="text" class="form-control" id="filename" value="dataset">
           <div class="input-group-append">
             <button class="btn btn-primary" type="button" @click="download">Download</button>
+          </div>
+          <div class="input-group-append">
+            <button class="btn btn-success" type="button" @click="createAPI">Gerar API</button>
           </div>
         </div>
       </div>
@@ -159,6 +162,9 @@ export default {
         elem.setAttribute("id","md")
         elem.setAttribute("modelo", model)
         document.body.appendChild(elem)
+      },
+      createAPI(){
+        console.log("Cunhanz!!!!")
       },
       download(){
         if(this.result == "") {
