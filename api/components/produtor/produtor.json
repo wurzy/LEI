@@ -12,6 +12,11 @@
     },
     "valor": {
       "type": "integer"
+    },
+    "teste": {
+      "type": "component",
+      "repeatable": true,
+      "component": "produtor.teste"
     }
   }
 }
