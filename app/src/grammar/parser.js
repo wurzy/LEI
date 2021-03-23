@@ -175,13 +175,13 @@ const parser = (function() {
         peg$c32 = function(val) { return val.data[0] },
         peg$c33 = "false",
         peg$c34 = peg$literalExpectation("false", false),
-        peg$c35 = function() { return {model: {type: Boolean, required: true}, data: Array(queue_last).fill(false)} },
+        peg$c35 = function() { return {model: {type: Boolean, required: true}, data: Array(queue_prod).fill(false)} },
         peg$c36 = "null",
         peg$c37 = peg$literalExpectation("null", false),
-        peg$c38 = function() { return {model: {type: String, required: false}, data: Array(queue_last).fill(null)} },
+        peg$c38 = function() { return {model: {type: String, required: false}, data: Array(queue_prod).fill(null)} },
         peg$c39 = "true",
         peg$c40 = peg$literalExpectation("true", false),
-        peg$c41 = function() { return {model: {type: Boolean, required: true}, data: Array(queue_last).fill(true)} },
+        peg$c41 = function() { return {model: {type: Boolean, required: true}, data: Array(queue_prod).fill(true)} },
         peg$c42 = function(head, m) { return m; },
         peg$c43 = function(head, tail) {
                 var result = {};
@@ -202,13 +202,13 @@ const parser = (function() {
                 values = members
               }
               else {
-                for (var i = 0; i < queue_last; i++) values.push({})
+                for (var i = 0; i < queue_prod; i++) values.push({})
 
                 for (var prop2 in members) {
                   model.type[prop2] = members[prop2].model
                   var prob = "probability" in members[prop2]
 
-                  for (var j = 0; j < queue_last; j++) {
+                  for (var j = 0; j < queue_prod; j++) {
                     if (!prob || (prob && members[prop2].data[j] !== null)) values[j][prop2] = members[prop2].data[j]
                   }
                 }
@@ -220,11 +220,11 @@ const parser = (function() {
         peg$c47 = function(head, tail) { return [head].concat(tail) },
         peg$c48 = function(arr) {
               var model = {type: [], required: true}, values = []
-              for (var i = 0; i < queue_last; i++) values.push([])
+              for (var i = 0; i < queue_prod; i++) values.push([])
 
               for (var j = 0; j < arr.length; j++) {
                 model.type.push(arr[j].model)
-                for (var k = 0; k < queue_last; k++) values[k].push(arr[j].data[k])
+                for (var k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
               }
 
               return arr !== null ? {model, data: values} : []
@@ -232,7 +232,7 @@ const parser = (function() {
         peg$c49 = peg$otherExpectation("number"),
         peg$c50 = function() {
             var num = parseFloat(text())
-            return {model: {type: Number, required: true}, data: Array(queue_last).fill(num)}
+            return {model: {type: Number, required: true}, data: Array(queue_prod).fill(num)}
           },
         peg$c51 = /^[1-9]/,
         peg$c52 = peg$classExpectation([["1", "9"]], false, false),
@@ -272,7 +272,7 @@ const parser = (function() {
         peg$c84 = peg$otherExpectation("string"),
         peg$c85 = function(chars) {
             var str = chars.join("")
-            return { model: {type: String, required: true}, data: Array(queue_last).fill(str) }
+            return { model: {type: String, required: true}, data: Array(queue_prod).fill(str) }
           },
         peg$c86 = "(",
         peg$c87 = peg$literalExpectation("(", false),
@@ -531,12 +531,18 @@ const parser = (function() {
         peg$c326 = "guid(",
         peg$c327 = peg$literalExpectation("guid(", false),
         peg$c328 = function() { return { model: {type: String, required: true}, data: fillArray("gen", null, "guid", []) } },
-        peg$c329 = "index(",
-        peg$c330 = peg$literalExpectation("index(", false),
-        peg$c331 = function() { return { model: {type: Number, required: true}, data: [...Array(queue_last).keys()] } },
-        peg$c332 = "bool(",
-        peg$c333 = peg$literalExpectation("bool(", false),
-        peg$c334 = function() { return { model: {type: Boolean, required: true}, data: fillArray("gen", null, "boolean", []) } },
+        peg$c329 = "bool(",
+        peg$c330 = peg$literalExpectation("bool(", false),
+        peg$c331 = function() { return { model: {type: Boolean, required: true}, data: fillArray("gen", null, "boolean", []) } },
+        peg$c332 = "index(",
+        peg$c333 = peg$literalExpectation("index(", false),
+        peg$c334 = function() {
+            var queue_last = queue[queue.length-1]
+            return {
+              model: {type: Number, required: true},
+              data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat()
+            }
+          },
         peg$c335 = "integer(",
         peg$c336 = peg$literalExpectation("integer(", false),
         peg$c337 = peg$anyExpectation(),
@@ -674,30 +680,30 @@ const parser = (function() {
             }
           },
         peg$c384 = function(val) {
+            if (queue.length > 1) val.model = {type: Array(num).fill(val.model), required: true}
+            val.data = chunk(val.data, queue[queue.length-1])
+            
             var num = queue.pop()
-            queue_last = queue.length > 0 ? queue[queue.length-1] : null
-
-            if (queue.length > 0) {
-              val.model = {type: Array(num).fill(val.model), required: true}
-              val.data = Array(num).fill(val.data)
-            }
+            queue_prod = !queue.length ? null : (queue_prod/num)
             return val
           },
         peg$c385 = "repeat",
         peg$c386 = peg$literalExpectation("repeat", false),
         peg$c387 = function(min, max) {
             var num = Math.floor(Math.random() * (max - min + 1)) + min
-            queue.push(num); queue_last = num
+            queue_prod = !queue.length ? num : (queue_prod*num)
+            queue.push(num)
           },
         peg$c388 = function(num) {
-            queue.push(num); queue_last = num
+            queue_prod = !queue.length ? num : (queue_prod*num)
+            queue.push(num)
           },
         peg$c389 = "range(",
         peg$c390 = peg$literalExpectation("range(", false),
         peg$c391 = function(num) {
             return {
               model: {type: Array(num).fill({type: Number, required: true}), required: true},
-              data: Array(queue_last).fill([...Array(num).keys()])
+              data: Array(queue_prod).fill([...Array(num).keys()])
             }
           },
         peg$c392 = function(init, end) {
@@ -708,7 +714,7 @@ const parser = (function() {
 
             return {
               model: {type: Array(range.length).fill({type: Number, required: true}), required: true},
-              data: Array(queue_last).fill(range)
+              data: Array(queue_prod).fill(range)
             }
           },
         peg$c393 = "missing",
@@ -719,7 +725,7 @@ const parser = (function() {
         peg$c398 = function(sign, probability, m) {
             var prob = parseInt(probability.join(""))/100, arr = []
 
-            for (var i = 0; i < queue_last; i++) {
+            for (var i = 0; i < queue_prod; i++) {
               var bool = (sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob)
               arr.push(bool ? m.value.data[i] : null)
             }
@@ -4951,9 +4957,9 @@ const parser = (function() {
         }
         if (s0 === peg$FAILED) {
           s0 = peg$currPos;
-          if (input.substr(peg$currPos, 6) === peg$c329) {
+          if (input.substr(peg$currPos, 5) === peg$c329) {
             s1 = peg$c329;
-            peg$currPos += 6;
+            peg$currPos += 5;
           } else {
             s1 = peg$FAILED;
             if (peg$silentFails === 0) { peg$fail(peg$c330); }
@@ -4986,9 +4992,9 @@ const parser = (function() {
           }
           if (s0 === peg$FAILED) {
             s0 = peg$currPos;
-            if (input.substr(peg$currPos, 5) === peg$c332) {
+            if (input.substr(peg$currPos, 6) === peg$c332) {
               s1 = peg$c332;
-              peg$currPos += 5;
+              peg$currPos += 6;
             } else {
               s1 = peg$FAILED;
               if (peg$silentFails === 0) { peg$fail(peg$c333); }
@@ -6866,7 +6872,7 @@ const parser = (function() {
 
       var language = "pt" //"pt" or "en", "pt" by default
       var queue = []
-      var queue_last = null
+      var queue_prod = null
 
       function runSandboxCode(code) {
         /* var context = { x: 2 }
@@ -6888,12 +6894,17 @@ const parser = (function() {
 
       function fillArray(api, sub_api, moustaches, args) {
         var arr = []
-        for (var i = 0; i < queue_last; i++) {
+        for (var i = 0; i < queue_prod; i++) {
           if (api == "gen") arr.push(genAPI[moustaches](...args))
           if (api == "data") arr.push(dataAPI[sub_api][moustaches](...args))
         }
         return arr
       }
+
+      var chunk = (arr, size) =>
+        Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+          arr.slice(i * size, i * size + size)
+        );
 
 
     peg$result = peg$startRuleFunction();

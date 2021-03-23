@@ -4,7 +4,7 @@
 {
   var language = "pt" //"pt" or "en", "pt" by default
   var queue = []
-  var queue_last = null
+  var queue_prod = null
 
   function runSandboxCode(code) {
     /* var context = { x: 2 }
@@ -26,12 +26,17 @@
 
   function fillArray(api, sub_api, moustaches, args) {
     var arr = []
-    for (var i = 0; i < queue_last; i++) {
+    for (var i = 0; i < queue_prod; i++) {
       if (api == "gen") arr.push(genAPI[moustaches](...args))
       if (api == "data") arr.push(dataAPI[sub_api][moustaches](...args))
     }
     return arr
   }
+
+  var chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
 }
 
 // ----- 2. DSL Grammar -----
@@ -67,9 +72,9 @@ value
 simple_value
   = val:(false / null / true / number / string) { return val.data[0] }
 
-false = "false" { return {model: {type: Boolean, required: true}, data: Array(queue_last).fill(false)} }
-null  = "null"  { return {model: {type: String, required: false}, data: Array(queue_last).fill(null)} }
-true  = "true"  { return {model: {type: Boolean, required: true}, data: Array(queue_last).fill(true)} }
+false = "false" { return {model: {type: Boolean, required: true}, data: Array(queue_prod).fill(false)} }
+null  = "null"  { return {model: {type: String, required: false}, data: Array(queue_prod).fill(null)} }
+true  = "true"  { return {model: {type: Boolean, required: true}, data: Array(queue_prod).fill(true)} }
 
 // ----- 4. Objects -----
 
@@ -99,13 +104,13 @@ object
         values = members
       }
       else {
-        for (var i = 0; i < queue_last; i++) values.push({})
+        for (var i = 0; i < queue_prod; i++) values.push({})
 
         for (var prop2 in members) {
           model.type[prop2] = members[prop2].model
           var prob = "probability" in members[prop2]
 
-          for (var j = 0; j < queue_last; j++) {
+          for (var j = 0; j < queue_prod; j++) {
             if (!prob || (prob && members[prop2].data[j] !== null)) values[j][prop2] = members[prop2].data[j]
           }
         }
@@ -132,11 +137,11 @@ array
     end_array
     {
       var model = {type: [], required: true}, values = []
-      for (var i = 0; i < queue_last; i++) values.push([])
+      for (var i = 0; i < queue_prod; i++) values.push([])
 
       for (var j = 0; j < arr.length; j++) {
         model.type.push(arr[j].model)
-        for (var k = 0; k < queue_last; k++) values[k].push(arr[j].data[k])
+        for (var k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
       }
 
       return arr !== null ? {model, data: values} : []
@@ -147,7 +152,7 @@ array
 number "number"
   = minus? int frac? exp? {
     var num = parseFloat(text())
-    return {model: {type: Number, required: true}, data: Array(queue_last).fill(num)}
+    return {model: {type: Number, required: true}, data: Array(queue_prod).fill(num)}
   }
 
 decimal_point
@@ -199,7 +204,7 @@ long_interval
 string "string"
   = quotation_mark chars:char* quotation_mark {
     var str = chars.join("")
-    return { model: {type: String, required: true}, data: Array(queue_last).fill(str) }
+    return { model: {type: String, required: true}, data: Array(queue_prod).fill(str) }
   }
 
 simple_api_key
@@ -315,8 +320,14 @@ moustaches_value
 gen_moustaches
   = "objectId(" ws ")" { return { model: {type: String, required: true}, data: fillArray("gen", null, "objectId", []) } }
   / "guid(" ws ")" { return { model: {type: String, required: true}, data: fillArray("gen", null, "guid", []) } }
-  / "index(" ws ")" { return { model: {type: Number, required: true}, data: [...Array(queue_last).keys()] } }
   / "bool(" ws ")" { return { model: {type: Boolean, required: true}, data: fillArray("gen", null, "boolean", []) } }
+  / "index(" ws ")" {
+    var queue_last = queue[queue.length-1]
+    return {
+      model: {type: Number, required: true},
+      data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat()
+    }
+  }
   / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
     return {
       model: { type: unit === null ? Number : String, required: true }, 
@@ -433,30 +444,30 @@ directive
 
 repeat
   = begin_array repeat_signature ws ":" ws val:value_or_interpolation end_array {
+    if (queue.length > 1) val.model = {type: Array(num).fill(val.model), required: true}
+    val.data = chunk(val.data, queue[queue.length-1])
+    
     var num = queue.pop()
-    queue_last = queue.length > 0 ? queue[queue.length-1] : null
-
-    if (queue.length > 0) {
-      val.model = {type: Array(num).fill(val.model), required: true}
-      val.data = Array(num).fill(val.data)
-    }
+    queue_prod = !queue.length ? null : (queue_prod/num)
     return val
   }
 
 repeat_signature
   = "'" ws "repeat" ws "(" ws min:int ws "," ws max:int ws ")" ws "'" {
     var num = Math.floor(Math.random() * (max - min + 1)) + min
-    queue.push(num); queue_last = num
+    queue_prod = !queue.length ? num : (queue_prod*num)
+    queue.push(num)
   }
   / "'" ws "repeat" ws "(" ws num:int ws ")" ws "'" {
-    queue.push(num); queue_last = num
+    queue_prod = !queue.length ? num : (queue_prod*num)
+    queue.push(num)
   }
 
 range
   = "range(" ws num:int ws ")" {
     return {
       model: {type: Array(num).fill({type: Number, required: true}), required: true},
-      data: Array(queue_last).fill([...Array(num).keys()])
+      data: Array(queue_prod).fill([...Array(num).keys()])
     }
   }
   / "range(" ws init:int ws "," ws end:int ws ")" {
@@ -467,7 +478,7 @@ range
 
     return {
       model: {type: Array(range.length).fill({type: Number, required: true}), required: true},
-      data: Array(queue_last).fill(range)
+      data: Array(queue_prod).fill(range)
     }
   }
 
@@ -475,7 +486,7 @@ probability
   = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
     var prob = parseInt(probability.join(""))/100, arr = []
 
-    for (var i = 0; i < queue_last; i++) {
+    for (var i = 0; i < queue_prod; i++) {
       var bool = (sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob)
       arr.push(bool ? m.value.data[i] : null)
     }
