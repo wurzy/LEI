@@ -37,8 +37,6 @@ function guid() {
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))
 }
 
-function index(i) { return i }
-
 function boolean() { return Math.random() < 0.5 }
 
 function integer(min, max, unit) {
@@ -89,7 +87,6 @@ function random(values) { return values[Math.floor(Math.random() * values.length
 export default {
     objectId,
     guid,
-    index,
     boolean,
     integer,
     floating,

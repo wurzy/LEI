@@ -15,7 +15,7 @@
               	prop1: "ola",
               	prop2: [
               		'repeat(2)': {
-              			prop_final: "adeus"
+              			prop_final: '{{integer(0,200)}}'
               		}
 				]
 			  }
@@ -23,7 +23,7 @@
 	  	},
 	  	moustaches: [
 	  		[
-              'repeat(5)': "string"
+              'repeat(5)': '{{objectId()}}'
             ],
 	  		'{{bool()}}',
 	  		[
@@ -42,26 +42,25 @@
   ]
 }
 
-VÁRIAS COLEÇÕES:
-
 <!LANGUAGE pt>
-[
+{
+  colecao: [
 	'repeat(3)': {
-        _id: '{{objectId()}}',
-        guid: '{{guid()}}',
-  		indice: '{{index()}}'
-    },
-	'repeat(2)': {
-        string: "ola!!",
-        inteiro: '{{integer(30,50)}}'
-    },
-	'repeat(2)': {
-        posicao: '{{position()}}',
-        telemovel: '{{phone()}}',
-        float: '{{floating(10,80)}}',
-        bool: true
+    	ind1: '{{index()}}',
+    	prop1: [
+    		'repeat(2)': {
+    			ind2: '{{index()}}',
+    			prop2: [
+    				'repeat(4)': {
+    					ind3: '{{index()}}',
+    					prop3: '{{integer(0,200)}}'
+    				}
+				]
+			}
+        ]
     }
-]
+  ]
+}
 
 ---------------------------------------------------------------------
 
@@ -77,9 +76,7 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
   			'repeat(3)': {
   				bool: '{{bool()}}',
   				posicao: '{{position()}}'
-  			},
-            'repeat(2)': [1,'{{index()}',3,4],
-            'repeat(4)': "TESTE"
+  			}
         ]
     }
 ]
@@ -89,53 +86,55 @@ REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
 MOUSTACHES DE DATASETS:
 
 <!LANGUAGE pt>
-[
-	'repeat(3)': {
-  		distrito: '{{pt_district()}}',
-  		concelho: '{{pt_county()}}',
-  		concelho2: '{{pt_county("Braga")}}',
-  		freguesia: '{{pt_parish()}}',
-		freguesia2: '{{pt_parish("district","Braga")}}',
-		freguesia3: '{{pt_parish("county","Braga")}}',
-  		nome_proprio: '{{firstName()}}',
-  		apelido: '{{surname()}}',
-  		nome: '{{fullName()}}',
-		partido_pt: '{{pt_political_party()}}',
-		partido_pt_abbr: '{{pt_political_party("abbr")}}',
-		partido_pt_nome: '{{pt_political_party("name")}}',
-		ator: '{{actor()}}',
-        animal: '{{animal()}}',
-        marca: '{{brand()}}',
-        buzzword: '{{buzzword()}}',
-        capital: '{{capital()}}',
-        marca_carro: '{{car_brand()}}',
-        continente: '{{continent()}}',
-        centro_cultural: '{{cultural_center()}}',
-        hacker: '{{hacker()}}',
-        emprego: '{{job()}}',
-        musico: '{{musician()}}',
-        figura_publica_pt: '{{pt_public_figure()}}',
-        religiao: '{{religion()}}',  
-        futebolista: '{{soccer_player()}}',
-        desporto: '{{sport()}}',
-        escritor: '{{writer()}}',
-  		pais: '{{country()}}',
-  		politico_pt: '{{pt_politician()}}',
-  		entidade_gov: '{{gov_entity()}}',
-  		partido: '{{political_party()}}',
-  		partido_abbr: '{{political_party("abbr")}}',
-  		partido_nome: '{{political_party("name")}}',
-		partido2: '{{political_party("Portugal")}}',
-		partido2_abbr: '{{political_party("Portugal","abbr")}}',
-		partido2_nome: '{{political_party("Portugal","name")}}'
-  		celebridade: '{{top100_celebrity()}}',
-  		celebridade_pt: '{{pt_top100_celebrity()}}',
-  		empresario_pt: '{{pt_businessman()}}',
-  		clube_futebol: '{{soccer_club()}}',
-  		clube_futebol_arg: '{{soccer_club("portugal")}}',
-  		nacionalidade: '{{nationality()}}'
-    }
-]
+{
+	colecao: [
+      'repeat(3)': {
+          distrito: '{{pt_district()}}',
+          concelho: '{{pt_county()}}',
+          concelho2: '{{pt_county("Braga")}}',
+          freguesia: '{{pt_parish()}}',
+          freguesia2: '{{pt_parish("district","Braga")}}',
+          freguesia3: '{{pt_parish("county","Braga")}}',
+          nome_proprio: '{{firstName()}}',
+          apelido: '{{surname()}}',
+          nome: '{{fullName()}}',
+          partido_pt: '{{pt_political_party()}}',
+          partido_pt_abbr: '{{pt_political_party("abbr")}}',
+          partido_pt_nome: '{{pt_political_party("name")}}',
+          ator: '{{actor()}}',
+          animal: '{{animal()}}',
+          marca: '{{brand()}}',
+          buzzword: '{{buzzword()}}',
+          capital: '{{capital()}}',
+          marca_carro: '{{car_brand()}}',
+          continente: '{{continent()}}',
+          centro_cultural: '{{cultural_center()}}',
+          hacker: '{{hacker()}}',
+          emprego: '{{job()}}',
+          musico: '{{musician()}}',
+          figura_publica_pt: '{{pt_public_figure()}}',
+          religiao: '{{religion()}}',  
+          futebolista: '{{soccer_player()}}',
+          desporto: '{{sport()}}',
+          escritor: '{{writer()}}',
+          pais: '{{country()}}',
+          politico_pt: '{{pt_politician()}}',
+          entidade_gov: '{{gov_entity()}}',
+          partido: '{{political_party()}}',
+          partido_abbr: '{{political_party("abbr")}}',
+          partido_nome: '{{political_party("name")}}',
+          partido2: '{{political_party("Portugal")}}',
+          partido2_abbr: '{{political_party("Portugal","abbr")}}',
+          partido2_nome: '{{political_party("Portugal","name")}}',
+          celebridade: '{{top100_celebrity()}}',
+          celebridade_pt: '{{pt_top100_celebrity()}}',
+          empresario_pt: '{{pt_businessman()}}',
+          clube_futebol: '{{soccer_club()}}',
+          clube_futebol_arg: '{{soccer_club("portugal")}}',
+          nacionalidade: '{{nationality()}}'
+      }
+	]
+}
 
 ---------------------------------------------------------------------
 
