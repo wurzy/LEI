@@ -78,9 +78,12 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
+- moustaches para dia e mês com o moment
+- planear o pt/en dos datasets
+- gramatica no paper
+
 FALTA:
 -> interpolação
--> repeats aninhados gerados dados aleatórios dentro de si, mas depois são repetidos igualmente nos repeats de fora
 
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random

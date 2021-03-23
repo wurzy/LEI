@@ -3,6 +3,7 @@
 
 {
   var language = "pt" //"pt" or "en", "pt" by default
+  var components = []
   var queue = []
   var queue_prod = null
 
@@ -42,7 +43,7 @@
 // ----- 2. DSL Grammar -----
 
 DSL_text
-  = language value:object { return value }
+  = language value:object { return {dataModel: value, components} }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -96,6 +97,7 @@ object
     end_object
     {
       var model = {type: {}, required: true}, values = []
+      //objeto de nível superior
       if (!queue.length) {
         for (var prop1 in members) {
           model[prop1] = members[prop1].model
@@ -103,6 +105,7 @@ object
         }
         values = members
       }
+      //objetos aninhados (components)
       else {
         for (var i = 0; i < queue_prod; i++) values.push({})
 
@@ -143,6 +146,8 @@ array
         model.type.push(arr[j].model)
         for (var k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
       }
+
+      //criar modelo e dar push para components
 
       return arr !== null ? {model, data: values} : []
     }
@@ -444,8 +449,10 @@ directive
 
 repeat
   = begin_array repeat_signature ws ":" ws val:value_or_interpolation end_array {
-    if (queue.length > 1) val.model = {type: Array(num).fill(val.model), required: true}
-    val.data = chunk(val.data, queue[queue.length-1])
+    if (queue.length > 1) {
+      val.model = {type: Array(num).fill(val.model), required: true}
+      val.data = chunk(val.data, queue[queue.length-1])
+    }
     
     var num = queue.pop()
     queue_prod = !queue.length ? null : (queue_prod/num)
