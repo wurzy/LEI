@@ -1,5 +1,5 @@
 export default {
-    top100_portugueses: [
+    pt_top100_celebrities: [
         "António de Oliveira Salazar",
         "Álvaro Cunhal",
         "Aristides de Sousa Mendes",

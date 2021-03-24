@@ -1,6 +1,6 @@
 export default {
     days: {
-        "pt": ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"],
-        "en": ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+        "pt": ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"],
+        "en": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     }
 }

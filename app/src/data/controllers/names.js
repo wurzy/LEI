@@ -1,17 +1,16 @@
-import nomesJS from '../datasets/names';
-const nomes = nomesJS.nomes
+import namesJS from '../datasets/names';
+const names = namesJS.names
+
 const namesAPI = {
-    firstName(lang){
-        return nomes[Math.floor(Math.random() * nomes.length)].nome
+    firstName(lang) {
+        return names[Math.floor(Math.random() * names.length)].name
     },
 
-    surname(lang){
-        return nomes[Math.floor(Math.random() * nomes.length)].apelido
+    surname(lang) {
+        return names[Math.floor(Math.random() * names.length)].surname
     },
 
-    fullName(lang){
-        return `${this.firstName()} ${this.surname()}`
-    }
+    fullName(lang) { return `${this.firstName()} ${this.surname()}` }
 }
 
 export default namesAPI

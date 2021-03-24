@@ -1,5 +1,5 @@
 export default {
-    top100_famosos: [
+    top100_celebrities: [
         "Sandra Oh",
 		"Indya Moore",
 		"Marlon James",

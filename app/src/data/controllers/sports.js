@@ -1,10 +1,10 @@
-import desportosJS from '../datasets/sports.js';
-const desportos = desportosJS.desportos
+import sportsJS from '../datasets/sports.js';
+const sports = sportsJS.sports
 
 const sportsAPI = {
-   sport(lang){
-       return desportos[Math.floor(Math.random() * desportos.length)]
-   }
+    sport(lang) {
+        return sports[lang][Math.floor(Math.random() * sports[lang].length)]
+    }
 }
 
 export default sportsAPI

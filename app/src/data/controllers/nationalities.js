@@ -1,9 +1,9 @@
-import nacionalidadesJS from '../datasets/nationalities.js';
-const nacionalidades = nacionalidadesJS.nacionalidades
+import nationalitiesJS from '../datasets/nationalities.js';
+const nationalities = nationalitiesJS.nationalities
 
 const nationalitiesAPI = {
-    nationality(lang){
-        return nacionalidades[Math.floor(Math.random() * nacionalidades.length)]
+    nationality(lang) {
+        return nationalities[lang][Math.floor(Math.random() * nationalities[lang].length)]
     }
 }
 

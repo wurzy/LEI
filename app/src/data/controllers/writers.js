@@ -1,10 +1,10 @@
-import escritoresJS from '../datasets/writers.js';
-const escritores = escritoresJS.escritores
+import writersJS from '../datasets/writers.js';
+const writers = writersJS.writers
 
 const writersAPI = {
-   writer(lang){
-       return escritores[Math.floor(Math.random() * escritores.length)]
-   }
+    writer(lang) {
+        return writers[Math.floor(Math.random() * writers.length)]
+    }
 }
 
 export default writersAPI

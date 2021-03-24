@@ -294,7 +294,7 @@ const parser = (function() {
         peg$c94 = peg$literalExpectation("pt_county", false),
         peg$c95 = "pt_parish",
         peg$c96 = peg$literalExpectation("pt_parish", false),
-        peg$c97 = function() { return "districts" },
+        peg$c97 = function() { return "pt_districts" },
         peg$c98 = "firstName",
         peg$c99 = peg$literalExpectation("firstName", false),
         peg$c100 = "surname",
@@ -628,7 +628,7 @@ const parser = (function() {
         peg$c368 = function(district) {
             return {
               model: {type: String, required: true},
-              data: fillArray("data", "districts", "pt_countyFromDistrict", [district])
+              data: fillArray("data", "pt_districts", "pt_countyFromDistrict", [district])
             }
           },
         peg$c369 = "pt_parish(",
@@ -637,7 +637,7 @@ const parser = (function() {
             var moustaches = keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict"
             return {
               model: {type: String, required: true},
-              data: fillArray("data", "districts", moustaches, [name])
+              data: fillArray("data", "pt_districts", moustaches, [name])
             }
           },
         peg$c372 = "pt_political_party(",

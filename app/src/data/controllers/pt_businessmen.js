@@ -1,10 +1,10 @@
-import empresariosJS from '../datasets/pt_businessmen.js';
-const empresarios = empresariosJS.empresarios
+import businessmenJS from '../datasets/pt_businessmen.js';
+const businessmen = businessmenJS.pt_businessmen
 
-const empresariosAPI = {
-   pt_businessman(lang){
-       return empresarios[Math.floor(Math.random() * empresarios.length)]
-   }
+const businessmenAPI = {
+    pt_businessman(lang) {
+        return businessmen[Math.floor(Math.random() * businessmen.length)]
+    }
 }
 
-export default empresariosAPI
+export default businessmenAPI

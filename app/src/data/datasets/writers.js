@@ -1,5 +1,5 @@
 export default {
-    escritores: [
+    writers: [
         "William Shakespeare",
         "Agatha Christie",
         "Barbara Cartland",

@@ -1,5 +1,5 @@
 export default {
-    futebolistas: [
+    soccer_players: [
         "Lionel Messi",
         "Virgil van Dijk",
         "Sadio Mané",

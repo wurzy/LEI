@@ -1,5 +1,5 @@
 export default {
-    politicos: [
+    politicians: [
         "Abel Augusto de Almeida Carneiro",
 		"Abel Lima Baptista",
 		"Abílio Aleixo Curto",

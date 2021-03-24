@@ -1,19 +1,19 @@
-import clubesJS from '../datasets/soccer_clubs.js';
-const clubs = clubesJS.clubes
+import clubsJS from '../datasets/soccer_clubs.js';
+const clubs = clubsJS.soccer_clubs
 
 const soccer_clubsAPI = {
-   soccer_club(lang){
-       const clubArray = clubs[Math.floor(Math.random() * clubs.length)].clubes
-       return clubArray[Math.floor(Math.random() * clubArray.length)]
-   },
+    soccer_club(lang) {
+        const clubArray = clubs[Math.floor(Math.random() * clubs.length)].clubs
+        return clubArray[Math.floor(Math.random() * clubArray.length)]
+    },
 
-   soccer_club_from(lang, country){
-       for (let c of clubs){
-           if (c.pais.toLowerCase() === country.toLowerCase()){
-                return c.clubes[Math.floor(Math.random() * c.clubes.length)]
-           }
-       }
-   }
+    soccer_club_from(lang, country) {
+        for (let c of clubs){
+            if (c.country.toLowerCase() === country.toLowerCase()){
+                    return c.clubs[Math.floor(Math.random() * c.clubs.length)]
+            }
+        }
+    }
 }
 
 export default soccer_clubsAPI

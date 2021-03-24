@@ -210,7 +210,7 @@ simple_api_key
     }
   }
 
-districts_key = ("pt_district" / "pt_county" / "pt_parish") { return "districts" }
+districts_key = ("pt_district" / "pt_county" / "pt_parish") { return "pt_districts" }
 names_key = ("firstName" / "surname" / "fullName") { return "names" }
 generic_key 
   = ("actor"
@@ -388,14 +388,14 @@ api_moustaches
   / "pt_county(" district:place_name ")" {
     return {
       model: {type: String, required: true},
-      data: fillArray("data", "districts", "pt_countyFromDistrict", [district])
+      data: fillArray("data", "pt_districts", "pt_countyFromDistrict", [district])
     }
   }
   / "pt_parish(" keyword:place_label "," name:place_name ")" {
     var moustaches = keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict"
     return {
       model: {type: String, required: true},
-      data: fillArray("data", "districts", moustaches, [name])
+      data: fillArray("data", "pt_districts", moustaches, [name])
     }
   }
   / "pt_political_party(" ws arg:( a:pparty_type {return a} )? ")" {

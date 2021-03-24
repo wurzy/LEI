@@ -1,5 +1,5 @@
 export default {
-    empresarios: [
+    pt_businessmen: [
         "Snu Abecassis",
         "Abel Figueiredo Luís",
         "Adalberto Neiva de Oliveira",

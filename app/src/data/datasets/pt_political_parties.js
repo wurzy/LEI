@@ -1,84 +1,84 @@
 export default {
-  partidos: [
+  parties: [
     {
-      "sigla": "BE",
-      "partido": "Bloco de Esquerda"
+      "abbr": "BE",
+      "name": "Bloco de Esquerda"
     },
     {
-      "sigla": "PCP",
-      "partido": "Partido Comunista Português"
+      "abbr": "PCP",
+      "name": "Partido Comunista Português"
     },
     {
-      "sigla": "PEV",
-      "partido": "Partido Ecologista Os Verdes"
+      "abbr": "PEV",
+      "name": "Partido Ecologista Os Verdes"
     },
     {
-      "sigla": "PS",
-      "partido": "Partido Socialista"
+      "abbr": "PS",
+      "name": "Partido Socialista"
     },
     {
-      "sigla": "PAN",
-      "partido": "Pessoas–Animais–Natureza"
+      "abbr": "PAN",
+      "name": "Pessoas–Animais–Natureza"
     },
     {
-      "sigla": "PSD",
-      "partido": "Partido Social Democrata"
+      "abbr": "PSD",
+      "name": "Partido Social Democrata"
     },
     {
-      "sigla": "IL",
-      "partido": "Iniciativa Liberal"
+      "abbr": "IL",
+      "name": "Iniciativa Liberal"
     },
     {
-      "sigla": "CDS–PP",
-      "partido": " CDS – Partido Popular"
+      "abbr": "CDS–PP",
+      "name": " CDS – Partido Popular"
     },
     {
-      "sigla": "CH",
-      "partido": "CHEGA!"
+      "abbr": "CH",
+      "name": "CHEGA!"
     },
     {
-      "sigla": "L",
-      "partido": "LIVRE"
+      "abbr": "L",
+      "name": "LIVRE"
     },
     {
-      "sigla": "MPT",
-      "partido": "Partido da Terra"
+      "abbr": "MPT",
+      "name": "Partido da Terra"
     },
     {
-      "sigla": "PPM",
-      "partido": "Partido Popular Monárquico"
+      "abbr": "PPM",
+      "name": "Partido Popular Monárquico"
     },
     {
-      "sigla": "ID",
-      "partido": "Intervenção Democrática"
+      "abbr": "ID",
+      "name": "Intervenção Democrática"
     },
     {
-      "sigla": "MDP/CDE",
-      "partido": "Movimento Democrático Português / Comissões Democráticas Eleitorais"
+      "abbr": "MDP/CDE",
+      "name": "Movimento Democrático Português / Comissões Democráticas Eleitorais"
     },
     {
-      "sigla": "UDP",
-      "partido": "União Democrática Popular"
+      "abbr": "UDP",
+      "name": "União Democrática Popular"
     },
     {
-      "sigla": "UEDS",
-      "partido": "União da Esquerda para a Democracia Socialista"
+      "abbr": "UEDS",
+      "name": "União da Esquerda para a Democracia Socialista"
     },
     {
-      "sigla": "ASDI",
-      "partido": "Acção Social Democrata Independente"
+      "abbr": "ASDI",
+      "name": "Acção Social Democrata Independente"
     },
     {
-      "sigla": "PRD",
-      "partido": "Partido Renovador Democrático"
+      "abbr": "PRD",
+      "name": "Partido Renovador Democrático"
     },
     {
-      "sigla": "PSN",
-      "partido": "Partido da Solidariedade Nacional"
+      "abbr": "PSN",
+      "name": "Partido da Solidariedade Nacional"
     },
     {
-      "sigla": "ADIM",
-      "partido": "Associação para a Defesa dos Interesses de Macau"
+      "abbr": "ADIM",
+      "name": "Associação para a Defesa dos Interesses de Macau"
     }
   ]
 }

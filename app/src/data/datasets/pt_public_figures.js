@@ -1,5 +1,5 @@
 export default {
-    figuras_publicas: [
+    public_figures: [
         "Ana Guiomar",
         "Andreia Rodrigues",
         "António Raminhos",

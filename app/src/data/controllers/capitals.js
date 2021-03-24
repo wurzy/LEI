@@ -1,10 +1,10 @@
 import capitalsJS from '../datasets/capitals.js';
-const capitals = capitalsJS.capitais
+const capitals = capitalsJS.capitals
 
-const capitaisAPI = {
+const capitalsAPI = {
     capital(lang) {
         return capitals[Math.floor(Math.random() * capitals.length)]
     }
 }
 
-export default capitaisAPI
+export default capitalsAPI

@@ -1,5 +1,5 @@
 export default {
-    musicos: [
+    musicians: [
         "Adele",
 		"Joey + Rory",
 		"Draaco Aventura",
