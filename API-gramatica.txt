@@ -8,13 +8,6 @@ ESTRUTURA DSL:
 
 ---------------------------------------------------------
 
-RESTRIÇÕES DO PROGRAMA:
-
-- cada propriedade de um objeto tem de ter um nome diferente. Se houver nomes repetidos, a propriedade ficará com o valor do último
-- '{' não é válido
-
----------------------------------------------------------
-
 DIRETIVAS:
 
 range(n) - gera uma lista [0,n[ - ARRAY INTEIROS
@@ -82,9 +75,6 @@ POR IMPLEMENTAR:
 - planear o pt/en dos datasets
 - gramatica no paper
 
-FALTA:
--> interpolação
-
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
 
@@ -100,6 +90,47 @@ FALTA:
 
 PROGRESSO DESTA SEMANA:
 
+- permitir qualquer tipo em missing/having
+- reestruturar o programa para o formato a la json-server que discutimos com o professor
+- otimizar a estrutura da gramática
+- versão inicial das propriedades com código
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - aceitar vários repeats seguidos (retornar uma lista com várias coleções diferentes)
 - moustaches para gerar datas aleatórias
 - recursividade infinita no processamento de moustaches (permitir moustaches em qualquer objeto e array)
@@ -114,78 +145,3 @@ PROGRESSO DESTA SEMANA:
 		- string: 'bom dia'
 		- moustaches: '{{index()}}'
 		- interpolação: 'texto - {{pt_parish()}}, {{pt_county()}}, {{pt_district()}}'
-
-
-- permitir qualquer tipo em missing/having
-- reestruturar o programa para o formato a la json-server que o professor queria
-- alterar a recursividade do programa de forma a incorporar a construção do modelo sem entrar em ciclos desnecessários
-
-
-
-
-
-
-
-
-
-
-
-
-
-{
-first: {model: ..., value: ["Hugo","Hugo","Hugo"]},
-last: {model: ..., value: ["Cardoso","Cardoso","Cardoso"]},
-}
-
-{
-model: ...,
-value: [
-		{
-		first: "Hugo",
-		last: "Cardoso"
-		},
-		{
-		first: "Hugo",
-		last: "Cardoso"
-		},
-		{
-		first: "Hugo",
-		last: "Cardoso"
-		}
-	]
-}
-
-
-
-
-
-missing(50): {
-   boleano: '{{bool()}}'
-}
-
-{
-model: ...,
-value: [true,false,true]
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -96,7 +96,7 @@ object
     )?
     end_object
     {
-      var model = {type: {}, required: true}, values = []
+      var values = [], model = !queue.length ? {} : {type: {}, required: true}
       //objeto de nível superior
       if (!queue.length) {
         for (var prop1 in members) {
@@ -244,7 +244,6 @@ generic_key
   / ("country"
   / "gov_entity"
   / "nationality"
-  / "political_party"
   / "top100_celebrity"
   / "pt_top100_celebrity"
   ) { return text().slice(0, -1) + 'ies' }
@@ -308,16 +307,27 @@ unescaped
 
 // ----- 8. Moustaches -----
 
-interpolation
-  = apostrophe value:(chars:[^{']+ {return chars.join("")} / "{" curly:after_curly_bracket {return curly})* apostrophe {
-    if (!value.length) return ""
-    else if (value.length == 1) return value[0]
-    else return { moustaches: "interpolation", data: value }
+interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe {
+  var model = { type: String, required: true }, data
+
+  if (!val.length) data = Array(queue_prod).fill("")
+  else if (val.length == 1) { model = val[0].model; data = val[0].data }
+  else {
+    val.forEach(obj => { if ("objectType" in obj) obj.data = obj.data.map(el => JSON.stringify(el)) })
+    data = val.reduce((a, o) => (a.push(o.data), a), []).reduce((a, b) => a.map((v, i) => v + b[i]))
   }
 
-after_curly_bracket
-  = "{" ws value:moustaches_value ws "}}" { return value }
-  / char:[^{'] { return "\x7B"+char }
+  return { model, data }
+}
+
+moustaches = moustaches_start v:moustaches_value moustaches_stop { return v }
+
+not_moustaches = (!(moustaches_start / "'").)+ {
+  return { model: {type: String, required: true}, data: Array(queue_prod).fill(text()) }
+}
+
+moustaches_start = "{{"
+moustaches_stop = "}}"
 
 moustaches_value
   = gen_moustaches / api_moustaches
@@ -399,8 +409,9 @@ api_moustaches
   / "pt_political_party(" ws arg:( a:pparty_type {return a} )? ")" {
     var moustaches = !arg ? "pt_political_party" : ("pt_political_party_" + arg)
     return {
+      objectType: arg === null,
       model: {
-        type: arg === null ? String : {
+        type: arg !== null ? String : {
           sigla: {type: String, required: true},
           partido: {type: String, required: true}
         },
@@ -411,7 +422,7 @@ api_moustaches
   }
   / "political_party(" args:( (ws t:pparty_type ws {return [t]}) 
                             / (ws country:place_name ws type:("," ws t:pparty_type ws {return t})? {return type == null ? [country] : [country,type]}))? ")" {
-    var moustaches, model = {
+    var objectType = true, moustaches, model = {
       type: {
         party_abbr: {type: String, required: true},
         party_name: {type: String, required: true}
@@ -419,19 +430,21 @@ api_moustaches
     }
 
     if (!args) moustaches = "political_party"
-    if (args.length == 1) {
+    else if (args.length == 1) {
       if (["abbr","name"].includes(args[0])) {
         moustaches = "political_party_" + args[0]
         model.type = String
+        objectType = false
       }
       else moustaches = "political_party_from"
     } 
     else {
       moustaches = "political_party_from_" + args[1]
       model.type = String
+      objectType = false
     }
 
-    return { model, data: fillArray("data", "political_parties", moustaches, !args ? [] : args) }
+    return { objectType, model, data: fillArray("data", "political_parties", moustaches, !args ? [] : args) }
   }
   / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
     var moustaches = !arg ? "soccer_club" : "soccer_club_from"
@@ -521,7 +534,6 @@ code = CODE_START (not_code / code)* CODE_STOP { return text().slice(1,-1) }
 not_code = (!CODE_START !CODE_STOP.)
 
 CODE_START = "{"
-
 CODE_STOP = "}"
 
 // ----- Core ABNF Rules -----
