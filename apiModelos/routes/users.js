@@ -11,6 +11,8 @@ router.post('/login', passport.authenticate('login-auth'), function(req, res) {
     jwt.sign({
       _id: req.user.user._id,
       email: req.user.user.email,
+      dataRegisto: req.user.user.dataRegisto,
+      dataUltimoAcesso: req.user.user.dataUltimoAcesso,
       sub: 'LEI2021'}, 
       secret,
       {expiresIn: "1y"},
@@ -24,7 +26,7 @@ router.post('/login', passport.authenticate('login-auth'), function(req, res) {
 
 // registo de utilizador
 router.post('/registar', passport.authenticate('signup-auth'), function(req, res) {
-  if (req.user.success) {
+  /*if (req.user.success) {
     jwt.sign({
       _id: req.user.user._id,
       email: req.user.user.email,
@@ -35,6 +37,9 @@ router.post('/registar', passport.authenticate('signup-auth'), function(req, res
         if(e) res.status(500).jsonp({error: "Erro na geração do token: " + e}) 
         else res.status(201).jsonp({token})
     })
+  }*/
+  if (req.user.success) {
+    res.status(201).jsonp(req.user.user) 
   }
   else res.status(500).jsonp({invalidInput: req.user.invalidInput, error: req.user.message}) 
 })
