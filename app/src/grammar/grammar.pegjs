@@ -231,8 +231,10 @@ generic_key
   / "car_brand"
   / "continent"
   / "cultural_center"
+  / "day"
   / "hacker"
   / "job"
+  / "month"
   / "musician"
   / "pt_politician"
   / "pt_public_figure"
@@ -313,7 +315,7 @@ interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe {
   if (!val.length) data = Array(queue_prod).fill("")
   else if (val.length == 1) { model = val[0].model; data = val[0].data }
   else {
-    val.forEach(obj => { if ("objectType" in obj) obj.data = obj.data.map(el => JSON.stringify(el)) })
+    val.forEach(obj => { if ("objectType" in obj && obj.objectType) obj.data = obj.data.map(el => JSON.stringify(el)) })
     data = val.reduce((a, o) => (a.push(o.data), a), []).reduce((a, b) => a.map((v, i) => v + b[i]))
   }
 

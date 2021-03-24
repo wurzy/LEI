@@ -71,7 +71,6 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
-- moustaches para dia e mês com o moment
 - planear o pt/en dos datasets
 - gramatica no paper
 
