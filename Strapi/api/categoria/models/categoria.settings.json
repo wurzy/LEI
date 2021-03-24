@@ -1,0 +1,108 @@
+{
+  "kind": "collectionType",
+  "collectionName": "categorias",
+  "info": {
+    "name": "categoria",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "nome": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "produtos": {
+      "via": "categorias",
+      "collection": "produto",
+      "dominant": true
+    },
+    "valor": {
+      "type": "integer",
+      "private": true,
+      "required": true,
+      "unique": true
+    },
+    "produtor": {
+      "type": "array",
+      "produtor": {
+        "valor3": {
+          "type": "decimal"
+        }
+      }
+    },
+    "valor2": {
+      "type": "biginteger"
+    },
+    "valor3": {
+      "type": "decimal"
+    },
+    "valor4": {
+      "type": "float"
+    },
+    "data": {
+      "type": "date"
+    },
+    "date2": {
+      "type": "datetime"
+    },
+    "date3": {
+      "type": "time"
+    },
+    "bol": {
+      "type": "boolean"
+    },
+    "Rtext": {
+      "type": "richtext"
+    },
+    "email": {
+      "type": "email"
+    },
+    "password": {
+      "type": "password"
+    },
+    "enum": {
+      "type": "enumeration",
+      "enum": [
+        "manha",
+        "tarde",
+        "noite"
+      ]
+    },
+    "multimedia": {
+      "collection": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "singlemedia": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false
+    },
+    "jsonObj": {
+      "type": "json"
+    },
+    "Uid": {
+      "type": "uid"
+    },
+    "textLong": {
+      "type": "text"
+    }
+  }
+}
