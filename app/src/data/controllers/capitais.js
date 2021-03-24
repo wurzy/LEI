@@ -2,7 +2,7 @@ import capitalsJS from '../datasets/capitais.js';
 const capitals = capitalsJS.capitais
 
 const capitaisAPI = {
-   capital(){
+   capital(lang){
        return capitals[Math.floor(Math.random() * capitals.length)]
    }
 }

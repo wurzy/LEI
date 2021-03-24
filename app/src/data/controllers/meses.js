@@ -2,7 +2,7 @@ import mesesJS from '../datasets/meses.js';
 const meses = mesesJS.meses
 
 const monthsAPI = {
-    month(){
+    month(lang){
         return meses[Math.floor(Math.random() * meses.length)]
     }
 }

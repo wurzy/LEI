@@ -2,7 +2,7 @@ import continentesJS from '../datasets/continentes.js';
 const continentes = continentesJS.continentes
 
 const continentsAPI = {
-   continent(){
+   continent(lang){
        return continentes[Math.floor(Math.random() * continentes.length)]
    }
 }

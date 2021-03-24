@@ -15,18 +15,10 @@
     return new Function(code)()
   }
 
-  /* function resolveInterpolation(arr, i) {
-    for (var j = 0; j < arr.length; j++) {
-      if (isObject(arr[j])) {
-        var value = resolveMoustaches(arr[j], i)
-        arr[j] = (isObject(value)) ? JSON.stringify(value) : value
-      }
-    }
-    return arr.join("")
-  }*/
-
   function fillArray(api, sub_api, moustaches, args) {
     var arr = []
+    args.unshift(language)
+    
     for (var i = 0; i < queue_prod; i++) {
       if (api == "gen") arr.push(genAPI[moustaches](...args))
       if (api == "data") arr.push(dataAPI[sub_api][moustaches](...args))
@@ -56,7 +48,7 @@ date_separator  = ws sep:("/" / "-" / ".") ws { return sep }
 ws "whitespace" = [ \t\n\r]*
 
 language
-  = ws "<!LANGUAGE " lang:(("pt") / ("en")) ">" ws { return lang }
+  = ws "<!LANGUAGE " lang:("pt" / "en") ">" ws { language = lang }
 
 // ----- 3. Values -----
 

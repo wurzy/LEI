@@ -2,7 +2,7 @@ import hackerJS from '../datasets/hacker';
 const hackers = hackerJS.hackers
 
 const hackersAPI = {
-   hacker(){
+   hacker(lang){
        return hackers[Math.floor(Math.random() * hackers.length)]
    }
 }

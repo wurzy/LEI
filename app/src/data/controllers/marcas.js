@@ -2,7 +2,7 @@ import marcasJS from '../datasets/marcas.js';
 const marcas = marcasJS.marcas
 
 const brandsAPI = {
-    brand(){
+    brand(lang){
         return marcas[Math.floor(Math.random() * marcas.length)]
     }
 }

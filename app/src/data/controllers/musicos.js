@@ -2,7 +2,7 @@ import musicosJS from '../datasets/musicos';
 const musicos = musicosJS.musicos
 
 const musiciansAPI = {
-   musician(){
+   musician(lang){
        return musicos[Math.floor(Math.random() * musicos.length)]
    }
 }

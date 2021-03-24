@@ -2,7 +2,7 @@ import desportosJS from '../datasets/desportos.js';
 const desportos = desportosJS.desportos
 
 const sportsAPI = {
-   sport(){
+   sport(lang){
        return desportos[Math.floor(Math.random() * desportos.length)]
    }
 }

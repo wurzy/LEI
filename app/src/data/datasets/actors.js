@@ -1,5 +1,5 @@
 export default {
-    atores: [
+    actors: [
         "Catherine Missal",
         "Monica Bellucci",
         "Michael Doven",

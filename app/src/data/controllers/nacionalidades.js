@@ -2,7 +2,7 @@ import nacionalidadesJS from '../datasets/nacionalidades.js';
 const nacionalidades = nacionalidadesJS.nacionalidades
 
 const nationalitiesAPI = {
-    nationality(){
+    nationality(lang){
         return nacionalidades[Math.floor(Math.random() * nacionalidades.length)]
     }
 }

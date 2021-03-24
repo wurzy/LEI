@@ -171,7 +171,7 @@ const parser = (function() {
         peg$c28 = peg$literalExpectation("en", false),
         peg$c29 = ">",
         peg$c30 = peg$literalExpectation(">", false),
-        peg$c31 = function(lang) { return lang },
+        peg$c31 = function(lang) { language = lang },
         peg$c32 = function(val) { return val.data[0] },
         peg$c33 = "false",
         peg$c34 = peg$literalExpectation("false", false),
@@ -6903,18 +6903,10 @@ const parser = (function() {
         return new Function(code)()
       }
 
-      /* function resolveInterpolation(arr, i) {
-        for (var j = 0; j < arr.length; j++) {
-          if (isObject(arr[j])) {
-            var value = resolveMoustaches(arr[j], i)
-            arr[j] = (isObject(value)) ? JSON.stringify(value) : value
-          }
-        }
-        return arr.join("")
-      }*/
-
       function fillArray(api, sub_api, moustaches, args) {
         var arr = []
+        args.unshift(language)
+        
         for (var i = 0; i < queue_prod; i++) {
           if (api == "gen") arr.push(genAPI[moustaches](...args))
           if (api == "data") arr.push(dataAPI[sub_api][moustaches](...args))

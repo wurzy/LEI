@@ -2,7 +2,7 @@ import escritoresJS from '../datasets/escritores.js';
 const escritores = escritoresJS.escritores
 
 const writersAPI = {
-   writer(){
+   writer(lang){
        return escritores[Math.floor(Math.random() * escritores.length)]
    }
 }

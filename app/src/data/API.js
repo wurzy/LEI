@@ -1,5 +1,5 @@
-import actors from './controllers/atores'
-import animals from './controllers/animais'
+import actors from './controllers/actors'
+import animals from './controllers/animals'
 import brands from './controllers/marcas'
 import buzzwords from './controllers/buzzwords'
 import capitals from './controllers/capitais'
