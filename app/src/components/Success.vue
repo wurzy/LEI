@@ -8,7 +8,7 @@
                     <div class="icon-box">
                         <i class="material-icons">&#xE876;</i>
                     </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button @click="refresh" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body text-center">
                     <h4>OK!</h4>	
