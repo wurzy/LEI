@@ -2,7 +2,7 @@ import buzzwordsJS from '../datasets/buzzwords.js';
 const buzzwords = buzzwordsJS.buzzwords
 
 const buzzwordsAPI = {
-    buzzword(lang){
+    buzzword(lang) {
         return buzzwords[lang][Math.floor(Math.random() * buzzwords[lang].length)]
     }
 }

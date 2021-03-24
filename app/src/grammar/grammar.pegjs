@@ -17,11 +17,9 @@
 
   function fillArray(api, sub_api, moustaches, args) {
     var arr = []
-    args.unshift(language)
-    
     for (var i = 0; i < queue_prod; i++) {
       if (api == "gen") arr.push(genAPI[moustaches](...args))
-      if (api == "data") arr.push(dataAPI[sub_api][moustaches](...args))
+      if (api == "data") arr.push(dataAPI[sub_api][moustaches](language, ...args))
     }
     return arr
   }
