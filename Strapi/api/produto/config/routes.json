@@ -2,48 +2,48 @@
   "routes": [
     {
       "method": "GET",
-      "path": "/dataset",
-      "handler": "dataset.find",
+      "path": "/produtos",
+      "handler": "produto.find",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/datasets/count",
-      "handler": "dataset.count",
+      "path": "/produtos/count",
+      "handler": "produto.count",
       "config": {
         "policies": []
       }
     },
     {
       "method": "GET",
-      "path": "/datasets/:id",
-      "handler": "dataset.findOne",
+      "path": "/produtos/:id",
+      "handler": "produto.findOne",
       "config": {
         "policies": []
       }
     },
     {
       "method": "POST",
-      "path": "/datasets",
-      "handler": "dataset.create",
+      "path": "/produtos",
+      "handler": "produto.create",
       "config": {
         "policies": []
       }
     },
     {
       "method": "PUT",
-      "path": "/datasets/:id",
-      "handler": "dataset.update",
+      "path": "/produtos/:id",
+      "handler": "produto.update",
       "config": {
         "policies": []
       }
     },
     {
       "method": "DELETE",
-      "path": "/datasets/:id",
-      "handler": "dataset.delete",
+      "path": "/produtos/:id",
+      "handler": "produto.delete",
       "config": {
         "policies": []
       }

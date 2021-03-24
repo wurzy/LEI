@@ -164,7 +164,23 @@ export default {
         document.body.appendChild(elem)
       },
       createAPI(){
-        console.log("Cunhanz!!!!")
+        //var a = document.getElementById("md").getAttribute("modelo")
+
+        //element.click();
+        //var optionAxios = {
+        //  headers: {
+        //      'Content-Type': 'application/x-www-form-urlencoded'
+        //  }
+        //}
+        var body = {}
+        body["api"]=document.getElementById('filename').value
+        axios.post('http://localhost:3000/genAPI/',body)
+        .then(dados => console.log("Modelo criado"))
+        .catch(erro => console.log(erro))
+        //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
+        //.then(dados => console.log("Modelo criado"))
+        //.catch(erro => console.log(erro))
+        
       },
       download(){
         if(this.result == "") {
@@ -179,22 +195,6 @@ export default {
           element.style.display = 'none';
           document.body.appendChild(element);
 
-          var a = document.getElementById("md").getAttribute("modelo")
-
-          //element.click();
-          var optionAxios = {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-          }
-          var body = {}
-          body["api"]=document.getElementById('filename').value
-          axios.post('http://localhost:3000/genAPI/',body)
-          .then(dados => console.log("Modelo criado"))
-          .catch(erro => console.log(erro))
-          //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
-          //.then(dados => console.log("Modelo criado"))
-          //.catch(erro => console.log(erro))
         
           document.body.removeChild(element);
         }

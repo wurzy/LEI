@@ -64,4 +64,3 @@ You can start by doing:
 
   cd C:\Users\Filipa\Documents\GitHub\LEI\api
   yarn develop
-
