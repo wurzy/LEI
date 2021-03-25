@@ -15,21 +15,11 @@
     return new Function(code)()
   }
 
-  /* function resolveInterpolation(arr, i) {
-    for (var j = 0; j < arr.length; j++) {
-      if (isObject(arr[j])) {
-        var value = resolveMoustaches(arr[j], i)
-        arr[j] = (isObject(value)) ? JSON.stringify(value) : value
-      }
-    }
-    return arr.join("")
-  }*/
-
   function fillArray(api, sub_api, moustaches, args) {
     var arr = []
     for (var i = 0; i < queue_prod; i++) {
       if (api == "gen") arr.push(genAPI[moustaches](...args))
-      if (api == "data") arr.push(dataAPI[sub_api][moustaches](...args))
+      if (api == "data") arr.push(dataAPI[sub_api][moustaches](language, ...args))
     }
     return arr
   }
@@ -56,7 +46,7 @@ date_separator  = ws sep:("/" / "-" / ".") ws { return sep }
 ws "whitespace" = [ \t\n\r]*
 
 language
-  = ws "<!LANGUAGE " lang:(("pt") / ("en")) ">" ws { return lang }
+  = ws "<!LANGUAGE " lang:("pt" / "en") ">" ws { language = lang }
 
 // ----- 3. Values -----
 
@@ -220,7 +210,7 @@ simple_api_key
     }
   }
 
-districts_key = ("pt_district" / "pt_county" / "pt_parish") { return "districts" }
+districts_key = ("pt_district" / "pt_county" / "pt_parish") { return "pt_districts" }
 names_key = ("firstName" / "surname" / "fullName") { return "names" }
 generic_key 
   = ("actor"
@@ -231,8 +221,10 @@ generic_key
   / "car_brand"
   / "continent"
   / "cultural_center"
+  / "day"
   / "hacker"
   / "job"
+  / "month"
   / "musician"
   / "pt_politician"
   / "pt_public_figure"
@@ -313,7 +305,7 @@ interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe {
   if (!val.length) data = Array(queue_prod).fill("")
   else if (val.length == 1) { model = val[0].model; data = val[0].data }
   else {
-    val.forEach(obj => { if ("objectType" in obj) obj.data = obj.data.map(el => JSON.stringify(el)) })
+    val.forEach(obj => { if ("objectType" in obj && obj.objectType) obj.data = obj.data.map(el => JSON.stringify(el)) })
     data = val.reduce((a, o) => (a.push(o.data), a), []).reduce((a, b) => a.map((v, i) => v + b[i]))
   }
 
@@ -396,14 +388,14 @@ api_moustaches
   / "pt_county(" district:place_name ")" {
     return {
       model: {type: String, required: true},
-      data: fillArray("data", "districts", "pt_countyFromDistrict", [district])
+      data: fillArray("data", "pt_districts", "pt_countyFromDistrict", [district])
     }
   }
   / "pt_parish(" keyword:place_label "," name:place_name ")" {
     var moustaches = keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict"
     return {
       model: {type: String, required: true},
-      data: fillArray("data", "districts", moustaches, [name])
+      data: fillArray("data", "pt_districts", moustaches, [name])
     }
   }
   / "pt_political_party(" ws arg:( a:pparty_type {return a} )? ")" {

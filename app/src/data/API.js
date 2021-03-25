@@ -1,33 +1,33 @@
-import actors from './controllers/atores'
-import animals from './controllers/animais'
-import brands from './controllers/marcas'
+import actors from './controllers/actors'
+import animals from './controllers/animals'
+import brands from './controllers/brands'
 import buzzwords from './controllers/buzzwords'
-import capitals from './controllers/capitais'
-import car_brands from './controllers/carros'
-import continents from './controllers/continentes'
-import countries from './controllers/paises'
-import cultural_centers from './controllers/centro_cultural'
-import days from './controllers/dias'
-import districts from './controllers/distritos'
-import gov_entities from './controllers/entidade_gov'
-import hackers from './controllers/hacker'
+import capitals from './controllers/capitals'
+import car_brands from './controllers/cars'
+import continents from './controllers/continents'
+import countries from './controllers/countries'
+import cultural_centers from './controllers/cultural_centers'
+import days from './controllers/days'
+import gov_entities from './controllers/gov_entities'
+import hackers from './controllers/hackers'
 import jobs from './controllers/jobs'
-import months from './controllers/meses'
-import musicians from './controllers/musicos'
-import names from './controllers/nomes'
-import nationalities from './controllers/nacionalidades'
+import months from './controllers/months'
+import musicians from './controllers/musicians'
+import names from './controllers/names'
+import nationalities from './controllers/nationalities'
 import political_parties from './controllers/political_parties'
-import pt_businessmen from './controllers/empresario_pt'
-import pt_political_parties from './controllers/partidos'
-import pt_politicians from './controllers/politicos_pt'
-import pt_public_figures from './controllers/figura_publica_pt'
-import pt_top100_celebrities from './controllers/top100_portugueses'
-import religions from './controllers/religioes'
-import soccer_clubs from './controllers/clubes'
-import soccer_players from './controllers/futebolista'
-import sports from './controllers/desportos'
-import top100_celebrities from './controllers/top100_famosos'
-import writers from './controllers/escritores'
+import pt_businessmen from './controllers/pt_businessmen'
+import pt_districts from './controllers/pt_districts'
+import pt_political_parties from './controllers/pt_political_parties'
+import pt_politicians from './controllers/pt_politicians'
+import pt_public_figures from './controllers/pt_public_figures'
+import pt_top100_celebrities from './controllers/pt_top100_celebrities'
+import religions from './controllers/religions'
+import soccer_clubs from './controllers/soccer_clubs'
+import soccer_players from './controllers/soccer_players'
+import sports from './controllers/sports'
+import top100_celebrities from './controllers/top100_celebrities'
+import writers from './controllers/writers'
 
 export default {
     actors,
@@ -40,7 +40,6 @@ export default {
     countries,
     cultural_centers,
     days,
-    districts,
     gov_entities,
     hackers,
     jobs,
@@ -50,6 +49,7 @@ export default {
     nationalities,
     political_parties,
     pt_businessmen,
+    pt_districts,
     pt_political_parties,
     pt_politicians,
     pt_public_figures,
