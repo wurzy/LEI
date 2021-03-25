@@ -8,18 +8,13 @@
   "options": {
     "increments": true,
     "timestamps": true,
-    "draftAndPublish": true
+    "draftAndPublish": true 
   },
   "attributes": {
     "nome": {
       "type": "string",
       "required": true,
       "unique": true
-    },
-    "produtos": {
-      "via": "categorias",
-      "collection": "produto",
-      "dominant": true
     },
     "valor": {
       "type": "integer",

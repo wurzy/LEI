@@ -131,8 +131,12 @@ export default {
       $("#registar_modal").css("z-index", "1500");
     },
     logout(){
-      localStorage.removeItem('token')
-      this.$router.go(this.$router.currentRoute)
+      axios.post('utilizadores/logout', {token: localStorage.getItem('token')})
+        .then(dados => {
+          localStorage.removeItem('token')
+          this.$router.go(this.$router.currentRoute)
+        })
+        .catch(error => console.log(error))
     }
   }
 };

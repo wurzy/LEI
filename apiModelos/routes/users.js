@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 
 const secret = 'LEI2021_SECRET_!_HASH'
+const Blacklist = require('../controllers/blacklist')
 
 // login de utilizador
 router.post('/login', passport.authenticate('login-auth'), function(req, res) {
@@ -15,7 +16,7 @@ router.post('/login', passport.authenticate('login-auth'), function(req, res) {
       dataUltimoAcesso: req.user.user.dataUltimoAcesso,
       sub: 'LEI2021'}, 
       secret,
-      {expiresIn: "1y"},
+      {expiresIn: "30d"},
       function(e, token) {
         if(e) res.status(500).jsonp({error: "Erro na geração do token: " + e}) 
         else res.status(201).jsonp({token})
@@ -24,20 +25,18 @@ router.post('/login', passport.authenticate('login-auth'), function(req, res) {
   else res.status(500).jsonp({invalidInput: req.user.invalidInput, error: req.user.message}) 
 })
 
+// logout de utilizador
+router.post('/logout', function(req,res){
+  console.log(req.body)
+  const token = req.body.token
+  const dataExp = new Date()
+  Blacklist.inserir({token,dataExp})
+    .then(r => res.status(201).jsonp(r))
+    .catch(e => res.status(500).jsonp(e))
+})
+
 // registo de utilizador
 router.post('/registar', passport.authenticate('signup-auth'), function(req, res) {
-  /*if (req.user.success) {
-    jwt.sign({
-      _id: req.user.user._id,
-      email: req.user.user.email,
-      sub: 'LEI2021'}, 
-      secret,
-      {expiresIn: "1y"},
-      function(e, token) {
-        if(e) res.status(500).jsonp({error: "Erro na geração do token: " + e}) 
-        else res.status(201).jsonp({token})
-    })
-  }*/
   if (req.user.success) {
     res.status(201).jsonp(req.user.user) 
   }
@@ -46,12 +45,16 @@ router.post('/registar', passport.authenticate('signup-auth'), function(req, res
 
 // obter informação contida no token
 router.get('/:token', function(req,res) {
-  jwt.verify(req.params.token,secret,function(e,decoded){
-    if(e){
-      res.status(404).jsonp({error: "O token é inválido: " + e})
-    }
-    else res.status(200).jsonp(decoded)
-  })
+  Blacklist.consultar(req.params.token)
+    .then(dados => { console.log(dados.data); res.status(500).jsonp({error: "Token expirado"})})
+    .catch(error => {
+      jwt.verify(req.params.token,secret,function(e,decoded){
+        if(e){
+          res.status(404).jsonp({error: "O token é inválido: " + e})
+        }
+        else res.status(200).jsonp(decoded)
+      })
+    })
 })
 
 module.exports = router;
