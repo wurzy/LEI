@@ -27,7 +27,6 @@ router.post('/login', passport.authenticate('login-auth'), function(req, res) {
 
 // logout de utilizador
 router.post('/logout', function(req,res){
-  console.log(req.body)
   const token = req.body.token
   const dataExp = new Date()
   Blacklist.inserir({token,dataExp})
