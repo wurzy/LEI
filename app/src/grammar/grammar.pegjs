@@ -63,9 +63,9 @@ value
 simple_value
   = val:(false / null / true / number / string) { return val.data[0] }
 
-false = "false" { return {model: {type: Boolean, required: true}, data: Array(queue_prod).fill(false)} }
-null  = "null"  { return {model: {type: String, required: false}, data: Array(queue_prod).fill(null)} }
-true  = "true"  { return {model: {type: Boolean, required: true}, data: Array(queue_prod).fill(true)} }
+false = "false" { return {model: {"type": "boolean", "required": true}, data: Array(queue_prod).fill(false)} }
+null  = "null"  { return {model: {"type": "string", "required": false, "default": null}, data: Array(queue_prod).fill(null)} }
+true  = "true"  { return {model: {"type": "boolean", "required": true}, data: Array(queue_prod).fill(true)} }
 
 // ----- 4. Objects -----
 
@@ -86,25 +86,35 @@ object
     )?
     end_object
     {
-      var values = [], model = !queue.length ? {} : {type: {}, required: true}
-      //objeto de nível superior
+      var values = [], model = !queue.length ? {} : {"collectionName": {},
+                                                      "info": {"name": {}, "description": ""},
+                                                      "options": {"draftAndPublish": true},
+                                                      "attributes": {} }
+      // Objeto de nível superior - dataset           
       if (!queue.length) {
         for (var prop1 in members) {
           model[prop1] = members[prop1].model
           members[prop1] = members[prop1].data
+
+          model[prop1].collectionName = prop1 + "s"
+          model[prop1].info.name = prop1
+          model[prop1].kind = "collectionType"
         }
         values = members
       }
-      //objetos aninhados (components)
+
+      // Objetos aninhados - components
       else {
         for (var i = 0; i < queue_prod; i++) values.push({})
 
         for (var prop2 in members) {
-          model.type[prop2] = members[prop2].model
+          model.attributes[prop2] = members[prop2].model
+
           var prob = "probability" in members[prop2]
 
           for (var j = 0; j < queue_prod; j++) {
             if (!prob || (prob && members[prop2].data[j] !== null)) values[j][prop2] = members[prop2].data[j]
+
           }
         }
       }
@@ -112,7 +122,34 @@ object
     }
 
 member
-  = name:key name_separator value:value_or_interpolation { return { name, value } }
+  = name:key name_separator value:value_or_interpolation { 
+    
+    // neste if não podem entrar produções "simples" (1) nem a global (dataset) (2), só os components
+      // (1)
+        // para não entrarem produções simples, puseste que têm de ter "attributes" - makes sense
+        // para já, só a dos nomes porque os arrays ainda não tão setup para ter a propriedade attributtes
+      // (2)
+        // no caso das "globais", podem ser detetadas pela propriedade "kind", cujos components não têm
+        // no entanto, esta propriedade só é definida DEPOIS desta função (se tentarmos printar value.model.kind, dá undefined)
+        // aqui está o desafio - se até aqui o component = dataset, como é que no if podemos ter uma condição que os diferencie ?
+
+    // também temos o desafio adicional de aceder aos nomes dos componentes para pôr no name, collectionName, etc.
+
+    if (("attributes" in value.model) /*&& (condição (2))*/) {
+      console.log(value.model.info)
+      
+      value.model.collectionName = "components_" + "nameFixe"  + "s"
+      value.model.info.name = "nameFixe"
+
+      components.push(value.model)
+        
+      // Override - aqui o UID tem que ser o nome da pasta em que os componentes deste dataset estão
+      value.model.attributes = { "type": "component",
+                                "repeatable": false,
+                                "component": "UID_" }
+    }  
+    return { name, value } 
+  }
   / probability / function_prop
 
 value_or_interpolation
@@ -147,7 +184,7 @@ array
 number "number"
   = minus? int frac? exp? {
     var num = parseFloat(text())
-    return {model: {type: Number, required: true}, data: Array(queue_prod).fill(num)}
+    return {model: {"type": (num %1 === 0) "integer" : "float", "required": true}, data: Array(queue_prod).fill(num)}
   }
 
 decimal_point
@@ -205,7 +242,7 @@ string "string"
 simple_api_key
   = api:(districts_key / names_key / generic_key) "(" ws ")" {
     return {
-      model: {type: String, required: true}, 
+      model: {"type": "string", "required": true}, 
       data: fillArray("data", api, text().split("(")[0], [])
     }
   }
@@ -315,7 +352,7 @@ interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe {
 moustaches = moustaches_start v:moustaches_value moustaches_stop { return v }
 
 not_moustaches = (!(moustaches_start / "'").)+ {
-  return { model: {type: String, required: true}, data: Array(queue_prod).fill(text()) }
+  return { model: {"type": "string", "required": true}, data: Array(queue_prod).fill(text()) }
 }
 
 moustaches_start = "{{"
@@ -325,44 +362,44 @@ moustaches_value
   = gen_moustaches / api_moustaches
 
 gen_moustaches
-  = "objectId(" ws ")" { return { model: {type: String, required: true}, data: fillArray("gen", null, "objectId", []) } }
-  / "guid(" ws ")" { return { model: {type: String, required: true}, data: fillArray("gen", null, "guid", []) } }
-  / "bool(" ws ")" { return { model: {type: Boolean, required: true}, data: fillArray("gen", null, "boolean", []) } }
+  = "objectId(" ws ")" { return { model: {"type": "string", "required": true}, data: fillArray("gen", null, "objectId", []) } }
+  / "guid(" ws ")" { return { model: {"type": "string", "required": true}, data: fillArray("gen", null, "guid", []) } }
+  / "bool(" ws ")" { return { model: {"type": "boolean", "required": true}, data: fillArray("gen", null, "boolean", []) } }
   / "index(" ws ")" {
     var queue_last = queue[queue.length-1]
     return {
-      model: {type: Number, required: true},
+      model: {"type": "integer", "required": true}, //Perguntar em que sitios é integer / float e em quais é necessário "type": (num %1 === 0) "integer" : "float"
       data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat()
     }
   }
   / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
     return {
-      model: { type: unit === null ? Number : String, required: true }, 
+      model: {"type": unit === null ? "integer" : "string", "required": true },  
       data: fillArray("gen", null, "integer", [min, max, unit])
     }
   }
   / "floating(" ws min:number ws "," ws max:number ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
     if (!others) others = {decimals: null, format: null}
     return {
-      model: { type: others.format === null ? Number : String, required: true }, 
+      model: {"type": others.format === null ? "integer" : "string", "required": true }, 
       data: fillArray("gen", null, "floating", [min.data[0], max.data[0], others.decimals, others.format])
     }
   }
   / "position(" ws limits:(lat:lat_interval "," long:long_interval {return {lat, long} })? ")" {
     return {
-      model: {type: String, required: true},
+      model: {"type": "string", "required": true},
       data: fillArray("gen", null, "position", [!limits ? null : limits.lat, !limits ? null : limits.long])
     }
   }
   / "phone(" ws extension:(true/false)? ws ")" {
     return {
-      model: {type: String, required: true},
+      model: {"type": "string", "required": true},
       data: fillArray("gen", null, "phone", [extension])
     }
   }
   / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
-      model: {type: String, required: true},
+      model: {"type": "string", "required": true},
       data: fillArray("gen", null, "date", [start, !end ? new Date() : end, !format ? 'DD/MM/YYYY' : format])
     }
   }
@@ -372,13 +409,13 @@ gen_moustaches
       { return [head].concat(tail); }
     )? ")" {
       return {
-        model: {any: {}, required: true},
+        model: {any: {}, "required": true}, // O que é que o any{} significa aqui (talvez json no strapi ?)
         data: fillArray("gen", null, "random", [values])
       }
   }
   / "lorem(" ws count:int ws "," ws units:lorem_string ws ")" {
     return {
-      model: {type: String, required: true},
+      model: {"type": "string", "required": true},
       data: fillArray("gen", null, "lorem", [count, units])
     }
   }
@@ -387,14 +424,14 @@ api_moustaches
   = simple_api_key
   / "pt_county(" district:place_name ")" {
     return {
-      model: {type: String, required: true},
+      model: {"type": "string", "required": true},
       data: fillArray("data", "pt_districts", "pt_countyFromDistrict", [district])
     }
   }
   / "pt_parish(" keyword:place_label "," name:place_name ")" {
     var moustaches = keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict"
     return {
-      model: {type: String, required: true},
+      model: {"type": "string", "required": true},
       data: fillArray("data", "pt_districts", moustaches, [name])
     }
   }
@@ -404,8 +441,8 @@ api_moustaches
       objectType: arg === null,
       model: {
         type: arg !== null ? String : {
-          sigla: {type: String, required: true},
-          partido: {type: String, required: true}
+          sigla: {"type": "string", "required": true},
+          partido: {"type": "string", "required": true}
         },
         required: true
       },
@@ -416,8 +453,8 @@ api_moustaches
                             / (ws country:place_name ws type:("," ws t:pparty_type ws {return t})? {return type == null ? [country] : [country,type]}))? ")" {
     var objectType = true, moustaches, model = {
       type: {
-        party_abbr: {type: String, required: true},
-        party_name: {type: String, required: true}
+        party_abbr: {"type": "string", "required": true},
+        party_name: {"type": "string", "required": true}
       }, required: true
     }
 
@@ -441,7 +478,7 @@ api_moustaches
   / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
     var moustaches = !arg ? "soccer_club" : "soccer_club_from"
     return {
-      model: {type: String, required: true},
+      model: {"type": "string", "required": true},
       data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg])
     }
   }
@@ -478,7 +515,7 @@ repeat_signature
 range
   = "range(" ws num:int ws ")" {
     return {
-      model: {type: Array(num).fill({type: Number, required: true}), required: true},
+      model: {"type": Array(num).fill({"type": (num %1 === 0) "integer" : "float", "required": true}), "required": true}, 
       data: Array(queue_prod).fill([...Array(num).keys()])
     }
   }
@@ -489,7 +526,7 @@ range
     else if (init > end) { for (var j = init; j > end; j--) range.push(j) }
 
     return {
-      model: {type: Array(range.length).fill({type: Number, required: true}), required: true},
+      model: {"type": Array(range.length).fill({"type": (num %1 === 0) "integer" : "float", "required": true}), "required": true},
       data: Array(queue_prod).fill(range)
     }
   }

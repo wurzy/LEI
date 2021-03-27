@@ -193,31 +193,69 @@ const parser = (function() {
                 return result;
               },
         peg$c44 = function(members) {
-              var values = [], model = !queue.length ? {} : {type: {}, required: true}
-              //objeto de nível superior
+              var values = [], model = !queue.length ? {} : {"collectionName": {},
+                                                             "info": {"name": {}, "description": ""},
+                                                             "options": {"draftAndPublish": true},
+                                                             "attributes": {} }
+              // Objeto de nível superior - dataset           
               if (!queue.length) {
                 for (var prop1 in members) {
                   model[prop1] = members[prop1].model
                   members[prop1] = members[prop1].data
+
+                  model[prop1].collectionName = prop1 + "s"
+                  model[prop1].info.name = prop1
+                  model[prop1].kind = "collectionType"
                 }
                 values = members
               }
-              //objetos aninhados (components)
+
+              // Objetos aninhados - components
               else {
                 for (var i = 0; i < queue_prod; i++) values.push({})
 
                 for (var prop2 in members) {
-                  model.type[prop2] = members[prop2].model
+                  model.attributes[prop2] = members[prop2].model
+
                   var prob = "probability" in members[prop2]
 
                   for (var j = 0; j < queue_prod; j++) {
                     if (!prob || (prob && members[prop2].data[j] !== null)) values[j][prop2] = members[prop2].data[j]
+
                   }
                 }
               }
               return members !== null ? {model, data: values} : {}
             },
-        peg$c45 = function(name, value) { return { name, value } },
+        peg$c45 = function(name, value) {
+
+          // neste if não podem entrar produções "simples" (1) nem a global (dataset) (2), só os components
+            // (1)
+              // para não entrarem produções simples, puseste que têm de ter "attributes" - makes sense
+              // para já, só a dos nomes porque os arrays ainda não tão setup para ter a propriedade attributtes
+            // (2)
+              // no caso das "globais", podem ser detetadas pela propriedade "kind", cujos components não têm
+              // no entanto, esta propriedade só é definida DEPOIS desta função (se tentarmos printar value.model.kind, dá undefined)
+              // aqui está o desafio - se até aqui o component = dataset, como é que no if podemos ter uma condição que os diferencie ?
+
+          // também temos o desafio adicional de aceder aos nomes dos componentes para pôr no name, collectionName, etc.
+
+          if (("attributes" in value.model)) {
+            console.log(value.model.info)
+            
+            value.model.collectionName = "components_" + "_" + "nameFixe"  + "s"
+            value.model.info.name = "nameFixe"
+
+            components.push(value.model)
+              
+            // Override - aqui o UID tem que ser o nome da pasta em que os componentes deste dataset estão
+            value.model.attributes = { "type": "component",
+                                        "repeatable": false,
+                                        "component": "UID_" }
+          } 
+          return { name, value } 
+      
+        },
         peg$c46 = function(head, v) { return v },
         peg$c47 = function(head, tail) { return [head].concat(tail) },
         peg$c48 = function(arr) {

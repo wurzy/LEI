@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "Dataset",
+  "info": {
+    "name": "Dataset",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "titulo": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "preco": {
+      "type": "decimal"
+    },
+    "quantidade": {
+      "type": "integer"
+    },
+    "descricao": {
+      "type": "text"
+    },
+    "prod": {
+      "type": "component",
+      "repeatable": false,
+      "component": "produtor.produtor"
+    }
+  }
+}
