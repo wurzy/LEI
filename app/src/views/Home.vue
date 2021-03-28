@@ -72,7 +72,7 @@ export default {
         guid: '{{guid()}}',
   		indice: '{{index()}}',
   		missing(50): {
-        	boleano: '{{bool()}}'
+        	boleano: '{{boolean()}}'
         },
         inteiro_2args: '{{integer(30,70)}}',
         inteiro_3args: '{{integer(100,400,"$")}}',
@@ -106,7 +106,7 @@ export default {
 	  	outros: null,
 	  	lista_exemplo: [
 	  		"string",
-	  		'{{bool()}}',
+	  		'{{boolean()}}',
 	  		{
 	  			elem: 1, 
                 indice: '{{integer(20,50)}}', 

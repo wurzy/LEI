@@ -114,6 +114,56 @@ FUNÇÕES:
   ]
 }
 
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+        teste(gen) {
+  		  return {
+            _id: gen.objectId(),
+            guid: gen.guid(),
+            inteiro_2args: gen.integer(30,70),
+            inteiro_3args: gen.integer(100,400,"$"),
+            float_2args: gen.floating(-180.0451, 180),
+            float_3args: gen.floating(-180.0451, 180, 2),
+            float_4args: gen.floating(1000, 4000, 2, "0,0.00€"),
+            posicao: gen.position(),
+            posicao_com_limites: gen.position([0,30.5],[-50,-25.4]),
+            telemovel: gen.phone(),
+            telemovel_ext: gen.phone(true),
+            data: gen.date("10/01/2015"),
+            data2: gen.date("10/01/2015", "YYYY-MM-DD"),
+            data3: gen.date("10/05/2019","10/01/2018"),
+            data4: gen.date("10/05/2019","10/01/2018", "MM.DD.AAAA"),
+            aleatorio: gen.random("blue", null, true, false, 23, 17.56),
+            lorem_palavras: gen.lorem(3,"words"),
+            lorem_frases: gen.lorem(2,"sentences"),
+            lorem_paragrafos: gen.lorem(1,"paragraphs"),
+            string: "boas",
+            numero: 93,
+            name: {
+                first: "Hugo",
+                last: "Cardoso"
+            },
+            boolean: false,
+            estudante: false,
+            trabalhador: true,
+            outros: null,
+            lista_exemplo: [
+                "string",
+                gen.boolean(),
+                {
+                    elem: 1, 
+                    indice: gen.integer(20,50), 
+                    lista_nested: [1,2,3]
+                }
+            ]
+		  }
+		}
+    }
+  ]
+}
+
 --------------------------------------------------------------------------------------------------------
 
 LIMIT TESTING:
