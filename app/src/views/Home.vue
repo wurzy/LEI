@@ -166,7 +166,7 @@ export default {
       createAPI(){
         //var a = document.getElementById("md").getAttribute("modelo")
 
-        //element.click();
+        //
         //var optionAxios = {
         //  headers: {
         //      'Content-Type': 'application/x-www-form-urlencoded'
@@ -194,8 +194,7 @@ export default {
 
           element.style.display = 'none';
           document.body.appendChild(element);
-
-        
+          element.click();
           document.body.removeChild(element);
         }
       }
