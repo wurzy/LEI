@@ -1,5 +1,6 @@
 <template>
 <div>
+    <Success msg="Registo efetuado com sucesso!" id="register_success_modal"/>
     <div id="registar_modal" class="modal fade">
       <div class="modal-dialog modal-login">
           <div class="modal-content">
@@ -39,6 +40,7 @@
 </template>
 
 <script>
+import Success from './Success.vue';
 import $ from 'jquery';
 import axios from 'axios'
 
@@ -46,6 +48,9 @@ axios.defaults.baseURL = "http://localhost:3000/";
 
 export default {
     name: "Register",
+    components: {
+      Success
+    },
     data() {
         return {
           nome: "",
@@ -62,7 +67,6 @@ export default {
               })
               $("#registar_modal").modal("hide");
               if(res.status==201){
-                console.log("ok")
                 $("#register_success_modal").modal("show");
                 $("#register_success_modal").css("z-index", "1500");
               }

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar/>
+    <Navbar :key="forceUpdateKey" v-on:update="forceUpdate"/>
     <router-view/>
   </div>
 </template>
@@ -9,6 +9,16 @@
 import Navbar from './components/Navbar.vue' 
 export default {
   name: 'App',
+  data() {
+    return {
+      forceUpdateKey: 1
+    }
+  },
+  methods: {
+    forceUpdate(){
+      this.forceUpdateKey++
+    }
+  },
   components:{
     Navbar
   }

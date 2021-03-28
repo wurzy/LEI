@@ -1,5 +1,6 @@
 <template>
 <div>
+    <Success msg="Login efetuado com sucesso!" id="login_success_modal" v-on:login_ok="loggedIn"/>
     <div id="login_modal" class="modal fade">
       <div class="modal-dialog modal-login">
           <div class="modal-content">
@@ -35,6 +36,7 @@
 </template>
 
 <script>
+import Success from './Success.vue';
 import $ from 'jquery';
 import axios from 'axios'
 
@@ -42,6 +44,9 @@ axios.defaults.baseURL = "http://localhost:3000/";
 
 export default {
     name: "Login",
+    components: {
+      Success
+    },
     data() {
         return {
           email: "",
@@ -61,6 +66,10 @@ export default {
                 $("#login_success_modal").css("z-index", "1500");
                 localStorage.setItem('token',res.data.token)
             }
+        },
+        loggedIn: function () {
+          console.log("evento logged_in")
+          this.$emit('logged_in')
         }
     }
 }

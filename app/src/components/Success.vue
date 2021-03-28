@@ -26,7 +26,7 @@ export default {
     props: ['msg', 'id'],
     methods:{
         refresh(){
-            this.$router.go(this.$router.currentRoute)
+			this.$emit('login_ok')
         }
     }
 }
