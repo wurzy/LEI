@@ -1,3 +1,123 @@
+FUNÇÕES:
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+	  	string: "boas",
+	  	numero: 93,
+	  	name: {
+	    	first: '{{firstName()}}',
+	    	last: '{{surname()}}'
+	  	},
+    	boolean: '{{bool()}}',
+        arr: [
+        	'repeat(5)': '{{country()}}'
+        ],
+        teste(gen) {
+          var countries = {
+            country1: gen.country(),
+            country2: this.arr[3]
+          }
+          var integer = gen.integer(50,150)
+          var email = `${this.name.first}.${this.name.last}@email.com`.toLowerCase()
+          var pparty = gen.political_party()
+          return { countries, integer, email, pparty }
+        }
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+        teste(gen) {
+  		  var arr = [1,2,3]
+          return {
+		teste1: gen.integer(50, arr.length),
+		teste2: gen.integer(gen.integer(0,100), gen.integer(100,200))
+	  }
+        }
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+        teste(gen) {
+  		  var country = gen.random("portugal", "belgium", "spain", "italy", "france")
+          var arr = ["portugal", "belgium", "spain", "italy", "france"]
+          return {
+  			teste1: gen.pt_parish("district", gen.pt_district()),
+            teste2: gen.political_party(country),
+            teste3: gen.political_party(arr[ gen.integer(0, arr.length) ])
+		  }
+        }
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+        teste(gen) {
+  		  return {
+            distrito: gen.pt_district(),
+            concelho: gen.pt_county(),
+            concelho2: gen.pt_county("Braga"),
+            freguesia: gen.pt_parish(),
+            freguesia2: gen.pt_parish("district","Braga"),
+            freguesia3: gen.pt_parish("county","Braga"),
+            nome_proprio: gen.firstName(),
+            apelido: gen.surname(),
+            nome: gen.fullName(),
+            ator: gen.actor(),
+            animal: gen.animal(),
+            marca: gen.brand(),
+            buzzword: gen.buzzword(),
+            capital: gen.capital(),
+            marca_carro: gen.car_brand(),
+            continente: gen.continent(),
+            centro_cultural: gen.cultural_center(),
+        	dia: gen.day(),
+            hacker: gen.hacker(),
+            emprego: gen.job(),
+        	mes: gen.month(),
+            musico: gen.musician(),
+            figura_publica_pt: gen.pt_public_figure(),
+            religiao: gen.religion(),  
+            futebolista: gen.soccer_player(),
+            desporto: gen.sport(),
+            escritor: gen.writer(),
+            pais: gen.country(),
+            politico_pt: gen.pt_politician(),
+            entidade_gov: gen.gov_entity(),
+            partido: gen.political_party(),
+            partido_abbr: gen.political_party("abbr"),
+            partido_nome: gen.political_party("name"),
+            partido2: gen.political_party("Portugal"),
+            partido2_abbr: gen.political_party("Portugal","abbr"),
+            partido2_nome: gen.political_party("Portugal","name"),
+            celebridade: gen.top100_celebrity(),
+            celebridade_pt: gen.pt_top100_celebrity(),
+            empresario_pt: gen.pt_businessman(),
+            clube_futebol: gen.soccer_club(),
+            clube_futebol_arg: gen.soccer_club("portugal"),
+            nacionalidade: gen.nationality()
+		  }
+		}
+    }
+  ]
+}
+
+--------------------------------------------------------------------------------------------------------
+
+LIMIT TESTING:
+
 <!LANGUAGE pt>
 {
   colecao: [
@@ -64,25 +184,6 @@
 
 ---------------------------------------------------------------------
 
-REPEAT DE VÁRIAS ESTRUTURAS DE DADOS DIFERENTES NA MESMA LISTA
-
-<!LANGUAGE pt>
-[
-	'repeat(3)': {
-        _id: '{{objectId()}}',
-        guid: '{{guid()}}',
-  		indice: '{{index()}}',
-  		teste: [
-  			'repeat(3)': {
-  				bool: '{{bool()}}',
-  				posicao: '{{position()}}'
-  			}
-        ]
-    }
-]
-
----------------------------------------------------------------------
-
 MOUSTACHES DE DATASETS:
 
 <!LANGUAGE pt>
@@ -98,9 +199,6 @@ MOUSTACHES DE DATASETS:
           nome_proprio: '{{firstName()}}',
           apelido: '{{surname()}}',
           nome: '{{fullName()}}',
-          partido_pt: '{{pt_political_party()}}',
-          partido_pt_abbr: '{{pt_political_party("abbr")}}',
-          partido_pt_nome: '{{pt_political_party("name")}}',
           ator: '{{actor()}}',
           animal: '{{animal()}}',
           marca: '{{brand()}}',

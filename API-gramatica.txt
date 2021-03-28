@@ -71,8 +71,12 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
-- planear o pt/en dos datasets
-- gramatica no paper
+-> floating com formato dá merda porque o formato vai em string em vez de objeto
+-> floating com limites dá merda ao apanhar os argumentos
+-> dates dão merda porque os args vão em string em vez de Date()
+-> gen.bool() dentro de codigo nao funciona mas gen.boolean() sim
+
+-> vai ser preciso uma queue com os nomes dos objetos para fazer colection_names unicos
 
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
@@ -93,9 +97,12 @@ PROGRESSO DESTA SEMANA:
 - reestruturar o programa para o formato a la json-server que discutimos com o professor
 - otimizar a estrutura da gramática
 - versão inicial das propriedades com código
+- suporte pt/en dos datasets
 
 
-
+- exportar modelo
+- exportar bd
+- exportar rotina que importe as bds no strapi
 
 
 

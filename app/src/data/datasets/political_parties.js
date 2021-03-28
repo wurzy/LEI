@@ -564,7 +564,7 @@ political_parties: [
       },
       {
         "party_abbr": "BZNS-NP",
-        "party_name": "Bulgarian Agrarian National Union -- \"Nikola Petkov"
+        "party_name": "Bulgarian Agrarian National Union"
       },
       {
         "party_abbr": "CSD",
@@ -724,7 +724,7 @@ political_parties: [
       },
       {
         "party_abbr": "ZS-AS",
-        "party_name": "Agrarian Union \"Aleksandar Stamboliyski"
+        "party_name": "Agrarian Union"
       }
     ]
   },

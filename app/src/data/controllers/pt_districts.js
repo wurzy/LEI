@@ -12,7 +12,7 @@ const districtsAPI = {
     },
 
     pt_countyFromDistrict(lang, district) {
-        for (let d of districts ){
+        for (let d of districts) {
             if (d.district==district) {
                 return d.counties[Math.floor(Math.random() * d.counties.length)].county
             }

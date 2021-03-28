@@ -4,15 +4,62 @@
 {
   var language = "pt" //"pt" or "en", "pt" by default
   var components = []
+
   var queue = []
   var queue_prod = null
 
-  function runSandboxCode(code) {
-    /* var context = { x: 2 }
-    vm.createContext(context)
-    vm.runInContext(code, context)
-    return context.result */
-    return new Function(code)()
+  function trimArg(arg, marks) {
+    if (arg[0] == '"') {
+      arg = arg.split("\"")[1].trim()
+      return (marks ? `"${arg}"` : arg)
+    }
+    return arg
+  }
+
+  function getApiPath(key, args) {
+    var path = ""
+    var join = args.join(",")
+
+    if (key in genAPI) {
+      if (key == "random") join = '[' + join + ']'
+      path = "genAPI." + key
+    }
+    else if (key == "political_party") {
+      if (args.length == 1) {
+        var arg0 = !args[0].length ? "" : trimArg(args[0], false)
+        if (["abbr","name"].includes(arg0)) { key += "_" + arg0; join = "" }
+        else {
+          key += (!args[0].length ? "" : "_from");
+          join = trimArg(args[0], true)
+        }
+      }
+      else {
+        key += "_from_" + trimArg(args[1], false)
+        join = trimArg(args[0], true)
+      }
+      path = "dataAPI.political_parties." + key
+    }
+    else if (['pt_district','pt_county','pt_parish'].includes(key)) {
+      if (args[0].length > 0) {
+        if (key == "pt_county") { key += "FromDistrict"; join = trimArg(args[0], true) }
+        else {
+          var from = trimArg(args[0], false)
+          key += "From" + from.charAt(0).toUpperCase() + from.slice(1)
+          join = trimArg(args[1], true)
+        }
+      }
+      path = "dataAPI.pt_districts." + key
+    }
+    else if (key == "soccer_club") {
+      path = "dataAPI.soccer_clubs." + key + (!args[0].length ? "" : "_from")
+      if (args[0].length > 0) join = trimArg(args[0], true)
+    }
+    else if (['firstName','surname','fullName'].includes(key)) path = "dataAPI.names." + key
+    else if (key[key.length-1] == 'y' && key != "day") path = `dataAPI.${key.slice(0,-1)+'ies'}.${key}`
+    else if (key.slice(key.length-3) == "man") path = `dataAPI.${key.slice(0,-2)+'en'}.${key}`
+    else path = `dataAPI.${key+'s'}.${key}`
+
+    return {path, args: join}
   }
 
   function fillArray(api, sub_api, moustaches, args) {
@@ -32,8 +79,7 @@
 
 // ----- 2. DSL Grammar -----
 
-DSL_text
-  = language value:object { return {dataModel: value, components} }
+DSL_text = language value:object { return {dataModel: value, components} }
 
 begin_array     = ws "[" ws
 begin_object    = ws "{" ws
@@ -45,8 +91,7 @@ date_separator  = ws sep:("/" / "-" / ".") ws { return sep }
 
 ws "whitespace" = [ \t\n\r]*
 
-language
-  = ws "<!LANGUAGE " lang:("pt" / "en") ">" ws { language = lang }
+language = ws "<!LANGUAGE " lang:("pt" / "en") ">" ws { language = lang }
 
 // ----- 3. Values -----
 
@@ -63,9 +108,9 @@ value
 simple_value
   = val:(false / null / true / number / string) { return val.data[0] }
 
-false = "false" { return {model: {"type": "boolean", "required": true}, data: Array(queue_prod).fill(false)} }
-null  = "null"  { return {model: {"type": "string", "required": false, "default": null}, data: Array(queue_prod).fill(null)} }
-true  = "true"  { return {model: {"type": "boolean", "required": true}, data: Array(queue_prod).fill(true)} }
+false = "false" { return {model: {type: "boolean", required: true}, data: Array(queue_prod).fill(false)} }
+null  = "null"  { return {model: {type: "string", required: false, default: null}, data: Array(queue_prod).fill(null)} }
+true  = "true"  { return {model: {type: "boolean", required: true}, data: Array(queue_prod).fill(true)} }
 
 // ----- 4. Objects -----
 
@@ -86,69 +131,62 @@ object
     )?
     end_object
     {
-      var values = [], model = !queue.length ? {} : {"collectionName": {},
-                                                      "info": {"name": {}, "description": ""},
-                                                      "options": {"draftAndPublish": true},
-                                                      "attributes": {} }
-      // Objeto de nível superior - dataset           
+      var values = [], model = {}
+      var dataModel = !queue.length ? {} : {component: true}
+      
       if (!queue.length) {
-        for (var prop1 in members) {
-          model[prop1] = members[prop1].model
-          members[prop1] = members[prop1].data
-
-          model[prop1].collectionName = prop1 + "s"
-          model[prop1].info.name = prop1
-          model[prop1].kind = "collectionType"
+        for (let p in members) {
+          model[p] = {
+            kind: "collectionType",
+            collectionName: p + 's',
+            info: {name: p},
+            options: {"draftAndPublish": true},
+            attributes: members[p].model.attributes
+          }
+          members[p] = members[p].data
         }
         values = members
       }
-
-      // Objetos aninhados - components
       else {
-        for (var i = 0; i < queue_prod; i++) values.push({})
+        model.attributes = {}
+        for (let i = 0; i < queue_prod; i++) values.push({})
 
-        for (var prop2 in members) {
-          model.attributes[prop2] = members[prop2].model
+        for (let p in members) {
+          model.attributes[p] = members[p].model
+          var prob = "probability" in members[p]
 
-          var prob = "probability" in members[prop2]
-
-          for (var j = 0; j < queue_prod; j++) {
-            if (!prob || (prob && members[prop2].data[j] !== null)) values[j][prop2] = members[prop2].data[j]
-
+          for (let i = 0; i < queue_prod; i++) {
+            if ((prob && members[p].data[i] !== null) || (!prob && !("function" in members[p])))
+              values[i][p] = members[p].data[i]
           }
         }
+
+        Object.keys(members).filter(key => "function" in members[key]).forEach(p => {
+          for (let i = 0; i < queue_prod; i++)
+            values[i][p] = members[p].function({genAPI, dataAPI, local: values[i]})
+        })
       }
-      return members !== null ? {model, data: values} : {}
+      
+      dataModel.data = values
+      dataModel.model = model
+      return members !== null ? dataModel : {}
     }
 
 member
-  = name:key name_separator value:value_or_interpolation { 
-    
-    // neste if não podem entrar produções "simples" (1) nem a global (dataset) (2), só os components
-      // (1)
-        // para não entrarem produções simples, puseste que têm de ter "attributes" - makes sense
-        // para já, só a dos nomes porque os arrays ainda não tão setup para ter a propriedade attributtes
-      // (2)
-        // no caso das "globais", podem ser detetadas pela propriedade "kind", cujos components não têm
-        // no entanto, esta propriedade só é definida DEPOIS desta função (se tentarmos printar value.model.kind, dá undefined)
-        // aqui está o desafio - se até aqui o component = dataset, como é que no if podemos ter uma condição que os diferencie ?
+  = name:key name_separator value:value_or_interpolation {
+    if ("component" in value) {
+      if (queue.length > 0) {
+        value.model.collectionName = "components_" + name  + "s"
+        value.model.info = {name}
+        value.model.options = {"draftAndPublish": true}
 
-    // também temos o desafio adicional de aceder aos nomes dos componentes para pôr no name, collectionName, etc.
+        components.push(lodash.cloneDeep(value.model))
+        value.model = { "type": "component", "repeatable": false, "component": "UID_" }
+      }
 
-    if (("attributes" in value.model) /*&& (condição (2))*/) {
-      console.log(value.model.info)
-      
-      value.model.collectionName = "components_" + "nameFixe"  + "s"
-      value.model.info.name = "nameFixe"
-
-      components.push(value.model)
-        
-      // Override - aqui o UID tem que ser o nome da pasta em que os componentes deste dataset estão
-      value.model.attributes = { "type": "component",
-                                "repeatable": false,
-                                "component": "UID_" }
-    }  
-    return { name, value } 
+      delete value.component
+    }
+    return { name, value }
   }
   / probability / function_prop
 
@@ -167,11 +205,11 @@ array
     end_array
     {
       var model = {type: [], required: true}, values = []
-      for (var i = 0; i < queue_prod; i++) values.push([])
+      for (let i = 0; i < queue_prod; i++) values.push([])
 
-      for (var j = 0; j < arr.length; j++) {
+      for (let j = 0; j < arr.length; j++) {
         model.type.push(arr[j].model)
-        for (var k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
+        for (let k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
       }
 
       //criar modelo e dar push para components
@@ -184,7 +222,7 @@ array
 number "number"
   = minus? int frac? exp? {
     var num = parseFloat(text())
-    return {model: {"type": (num %1 === 0) "integer" : "float", "required": true}, data: Array(queue_prod).fill(num)}
+    return {model: {type: !(num%1) ? "integer" : "float", required: true}, data: Array(queue_prod).fill(num)}
   }
 
 decimal_point
@@ -236,13 +274,13 @@ long_interval
 string "string"
   = quotation_mark chars:char* quotation_mark {
     var str = chars.join("")
-    return { model: {type: String, required: true}, data: Array(queue_prod).fill(str) }
+    return { model: {type: "string", required: true}, data: Array(queue_prod).fill(str) }
   }
 
 simple_api_key
   = api:(districts_key / names_key / generic_key) "(" ws ")" {
     return {
-      model: {"type": "string", "required": true}, 
+      model: {type: "string", required: true}, 
       data: fillArray("data", api, text().split("(")[0], [])
     }
   }
@@ -279,16 +317,16 @@ generic_key
   / "pt_businessman" { return text().slice(0, -2) + 'en' }
 
 pparty_type
-  = quotation_mark arg:(("name") / ("abbr")) quotation_mark { return arg }
+  = ws quotation_mark ws arg:(("name") / ("abbr")) ws quotation_mark ws { return arg }
 
 soccer_club_nationality
-  = quotation_mark nat:(([Gg]"ermany") / ([Ee]"ngland") / ([Ss]"pain") / ([Ii]"taly") / ([Pp]"ortugal")) quotation_mark { return nat.join("") }
+  = ws quotation_mark ws nat:(([Gg]"ermany") / ([Ee]"ngland") / ([Ss]"pain") / ([Ii]"taly") / ([Pp]"ortugal")) ws quotation_mark ws { return nat.join("") }
 
 place_name
-  = ws quotation_mark chars:([a-zA-Z][a-zA-Z\- ]*) quotation_mark ws { return chars.flat().join("").trim() }
+  = ws quotation_mark chars:[^"]* quotation_mark ws { return chars.flat().join("").trim() }
 
 place_label
-  = ws quotation_mark label:(("district") / ("county")) quotation_mark ws { return label; }
+  = ws quotation_mark ws label:(("district") / ("county")) ws quotation_mark ws { return label }
 
 lorem_string
   = quotation_mark word:"words" quotation_mark { return word; }
@@ -306,7 +344,7 @@ date_format
   / quotation_mark format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) quotation_mark { return format.join(""); }
   / quotation_mark format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") quotation_mark { return format.join(""); }
 
-key = chars:([_]*[a-z][a-zA-Z0-9_]*) { return chars.flat().join("") }
+key = chars:([a-zA-Z_][a-zA-Z0-9_]*) { return chars.flat().join("") }
 
 char
   = unescaped
@@ -337,7 +375,7 @@ unescaped
 // ----- 8. Moustaches -----
 
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe {
-  var model = { type: String, required: true }, data
+  var model = { type: "string", required: true }, data
 
   if (!val.length) data = Array(queue_prod).fill("")
   else if (val.length == 1) { model = val[0].model; data = val[0].data }
@@ -349,10 +387,10 @@ interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe {
   return { model, data }
 }
 
-moustaches = moustaches_start v:moustaches_value moustaches_stop { return v }
+moustaches = moustaches_start ws v:moustaches_value ws moustaches_stop { return v }
 
 not_moustaches = (!(moustaches_start / "'").)+ {
-  return { model: {"type": "string", "required": true}, data: Array(queue_prod).fill(text()) }
+  return { model: {type: "string", required: true}, data: Array(queue_prod).fill(text()) }
 }
 
 moustaches_start = "{{"
@@ -362,44 +400,44 @@ moustaches_value
   = gen_moustaches / api_moustaches
 
 gen_moustaches
-  = "objectId(" ws ")" { return { model: {"type": "string", "required": true}, data: fillArray("gen", null, "objectId", []) } }
-  / "guid(" ws ")" { return { model: {"type": "string", "required": true}, data: fillArray("gen", null, "guid", []) } }
-  / "bool(" ws ")" { return { model: {"type": "boolean", "required": true}, data: fillArray("gen", null, "boolean", []) } }
+  = "objectId(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "objectId", []) } }
+  / "guid(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "guid", []) } }
+  / "bool(" ws ")" { return { model: {type: "boolean", required: true}, data: fillArray("gen", null, "boolean", []) } }
   / "index(" ws ")" {
     var queue_last = queue[queue.length-1]
     return {
-      model: {"type": "integer", "required": true}, //Perguntar em que sitios é integer / float e em quais é necessário "type": (num %1 === 0) "integer" : "float"
+      model: {type: "integer", required: true},
       data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat()
     }
   }
   / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
     return {
-      model: {"type": unit === null ? "integer" : "string", "required": true },  
+      model: { type: unit === null ? "integer" : "string", required: true }, 
       data: fillArray("gen", null, "integer", [min, max, unit])
     }
   }
   / "floating(" ws min:number ws "," ws max:number ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
     if (!others) others = {decimals: null, format: null}
     return {
-      model: {"type": others.format === null ? "integer" : "string", "required": true }, 
+      model: { type: others.format === null ? "float" : "string", required: true }, 
       data: fillArray("gen", null, "floating", [min.data[0], max.data[0], others.decimals, others.format])
     }
   }
   / "position(" ws limits:(lat:lat_interval "," long:long_interval {return {lat, long} })? ")" {
     return {
-      model: {"type": "string", "required": true},
+      model: {type: "string", required: true},
       data: fillArray("gen", null, "position", [!limits ? null : limits.lat, !limits ? null : limits.long])
     }
   }
   / "phone(" ws extension:(true/false)? ws ")" {
     return {
-      model: {"type": "string", "required": true},
+      model: {type: "string", required: true},
       data: fillArray("gen", null, "phone", [extension])
     }
   }
   / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
-      model: {"type": "string", "required": true},
+      model: {type: "string", required: true},
       data: fillArray("gen", null, "date", [start, !end ? new Date() : end, !format ? 'DD/MM/YYYY' : format])
     }
   }
@@ -409,13 +447,13 @@ gen_moustaches
       { return [head].concat(tail); }
     )? ")" {
       return {
-        model: {any: {}, "required": true}, // O que é que o any{} significa aqui (talvez json no strapi ?)
+        model: {any: {}, required: true},
         data: fillArray("gen", null, "random", [values])
       }
   }
   / "lorem(" ws count:int ws "," ws units:lorem_string ws ")" {
     return {
-      model: {"type": "string", "required": true},
+      model: {type: "string", required: true},
       data: fillArray("gen", null, "lorem", [count, units])
     }
   }
@@ -424,37 +462,37 @@ api_moustaches
   = simple_api_key
   / "pt_county(" district:place_name ")" {
     return {
-      model: {"type": "string", "required": true},
+      model: {type: "string", required: true},
       data: fillArray("data", "pt_districts", "pt_countyFromDistrict", [district])
     }
   }
   / "pt_parish(" keyword:place_label "," name:place_name ")" {
     var moustaches = keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict"
     return {
-      model: {"type": "string", "required": true},
+      model: {type: "string", required: true},
       data: fillArray("data", "pt_districts", moustaches, [name])
     }
   }
-  / "pt_political_party(" ws arg:( a:pparty_type {return a} )? ")" {
+  / "pt_political_party(" ws arg:pparty_type? ")" {
     var moustaches = !arg ? "pt_political_party" : ("pt_political_party_" + arg)
     return {
       objectType: arg === null,
       model: {
-        type: arg !== null ? String : {
-          sigla: {"type": "string", "required": true},
-          partido: {"type": "string", "required": true}
+        type: arg !== null ? "string" : {
+          sigla: {type: "string", required: true},
+          partido: {type: "string", required: true}
         },
         required: true
       },
       data: fillArray("data", "pt_political_parties", moustaches, [])
     }
   }
-  / "political_party(" args:( (ws t:pparty_type ws {return [t]}) 
-                            / (ws country:place_name ws type:("," ws t:pparty_type ws {return t})? {return type == null ? [country] : [country,type]}))? ")" {
+  / "political_party(" ws args:( t:pparty_type {return [t]}
+                            / (country:place_name type:("," t:pparty_type {return t})? {return type == null ? [country] : [country,type]}))? ")" {
     var objectType = true, moustaches, model = {
       type: {
-        party_abbr: {"type": "string", "required": true},
-        party_name: {"type": "string", "required": true}
+        party_abbr: {type: "string", required: true},
+        party_name: {type: "string", required: true}
       }, required: true
     }
 
@@ -462,23 +500,23 @@ api_moustaches
     else if (args.length == 1) {
       if (["abbr","name"].includes(args[0])) {
         moustaches = "political_party_" + args[0]
-        model.type = String
+        model.type = "string"
         objectType = false
       }
       else moustaches = "political_party_from"
     } 
     else {
       moustaches = "political_party_from_" + args[1]
-      model.type = String
+      model.type = "string"
       objectType = false
     }
 
     return { objectType, model, data: fillArray("data", "political_parties", moustaches, !args ? [] : args) }
   }
-  / "soccer_club(" ws arg:( a:soccer_club_nationality {return a} )? ")" {
+  / "soccer_club(" ws arg:soccer_club_nationality? ")" {
     var moustaches = !arg ? "soccer_club" : "soccer_club_from"
     return {
-      model: {"type": "string", "required": true},
+      model: {type: "string", required: true},
       data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg])
     }
   }
@@ -515,18 +553,18 @@ repeat_signature
 range
   = "range(" ws num:int ws ")" {
     return {
-      model: {"type": Array(num).fill({"type": (num %1 === 0) "integer" : "float", "required": true}), "required": true}, 
+      model: {type: Array(num).fill({type: "integer", required: true}), required: true},
       data: Array(queue_prod).fill([...Array(num).keys()])
     }
   }
   / "range(" ws init:int ws "," ws end:int ws ")" {
     var range = []
 
-    if (init < end) { for (var i = init; i < end; i++) range.push(i) }
-    else if (init > end) { for (var j = init; j > end; j--) range.push(j) }
+    if (init < end) { for (let i = init; i < end; i++) range.push(i) }
+    else if (init > end) { for (let i = init; i > end; i--) range.push(i) }
 
     return {
-      model: {"type": Array(range.length).fill({"type": (num %1 === 0) "integer" : "float", "required": true}), "required": true},
+      model: {type: Array(range.length).fill({type: "integer", required: true}), required: true},
       data: Array(queue_prod).fill(range)
     }
   }
@@ -535,7 +573,7 @@ probability
   = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
     var prob = parseInt(probability.join(""))/100, arr = []
 
-    for (var i = 0; i < queue_prod; i++) {
+    for (let i = 0; i < queue_prod; i++) {
       var bool = (sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob)
       arr.push(bool ? m.value.data[i] : null)
     }
@@ -548,19 +586,44 @@ probability
   }
 
 function_prop
-  = name:key "()" ws code:code {
+  = name:key "(" ws "gen" ws ")" ws code:code {
     return {
-      name, 
-      data: {
-        function: code
-        /* function: "function f() " + code + "\n var result = f()" */
+      name, value: {
+        model: {any: {}, required: true},
+        function: new Function("gen", code)
       }
     }
   }
 
-code = CODE_START (not_code / code)* CODE_STOP { return text().slice(1,-1) }
+code = CODE_START str:(gen_call / local_var / not_code / code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
 
-not_code = (!CODE_START !CODE_STOP.)
+not_code = !CODE_START !CODE_STOP. { return text() }
+
+code_key = key:([a-zA-Z_][a-zA-Z0-9_.]*) { return key.flat().join("") } 
+
+local_var = "this." key:code_key { return "gen.local." + key }
+
+gen_call = "gen." key:code_key ARGS_START args:(gen_call / not_gen_call)* ARGS_STOP {
+    args = args.join("").split(",")
+    
+    var split = [], build = "", i = 0
+    while (i < args.length) {
+      if (!args[i].includes('(')) split.push(args[i++])
+      else {
+        build = ""
+        while (!args[i].includes(')')) build += args[i++] + ','
+        split.push(build + args[i++])
+      }
+    }
+
+    var obj = getApiPath(key, split.map(x => x.trim()))
+    return `gen.${obj.path}(` + (obj.path.includes('dataAPI') ? `"${language}", ` : '') + `${obj.args})`
+  }
+
+not_gen_call = !ARGS_START !ARGS_STOP. { return text() }
+
+ARGS_START = "("
+ARGS_STOP = ")"
 
 CODE_START = "{"
 CODE_STOP = "}"
