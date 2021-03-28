@@ -40,6 +40,7 @@ function guid() {
 function boolean() { return Math.random() < 0.5 }
 
 function integer(min, max, unit) {
+    console.log(unit)
     if (!unit) return Math.floor(Math.random() * (min - max + 1) + max)
     return String(Math.floor(Math.random() * (max - min + 1) + min)) + unit
 }
@@ -75,7 +76,15 @@ function phone(extension) {
     return extension ? ("+351 " + number) : number
 }
 
+function newDate(str) {
+    var split = str.split("/")
+    return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]))
+}
+
 function date(start, end, format) {
+    start = newDate(start)
+    end = !end ? new Date() : newDate(end)
+
     var random = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
     return moment(random).format(format.replace(/A/g, "Y"))
 }

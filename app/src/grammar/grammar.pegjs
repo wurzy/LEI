@@ -9,8 +9,8 @@
   var queue_prod = null
 
   function trimArg(arg, marks) {
-    if (arg[0] == '"') {
-      arg = arg.split("\"")[1].trim()
+    if (arg[0] == '"' || arg[0] == "'") {
+      arg = arg.split(arg[0])[1].trim()
       return (marks ? `"${arg}"` : arg)
     }
     return arg
@@ -21,10 +21,16 @@
     var join = args.join(",")
 
     if (key in genAPI) {
-      if (key == "floating" && args.length == 4) {
-        args[3] = trimArg(args[3], true)
-        join = args.join(",")
+      if (key == "floating" && args.length > 3) {
+        var format = trimArg(args.slice(3, args.length).join(','), true)
+        join = args.slice(0,3).join(',') + ',' + format
       }
+      if (key == "date") {
+        if (args.length == 1) join = [args[0],"null",'"DD/MM/YYYY"'].join(",")
+        if (args.length == 2) join = (/\d/.test(args[1]) ? [args[0],args[1],'"DD/MM/YYYY"'] : [args[0],"null",trimArg(args[1],true)]).join(",")
+        if (args.length == 3) { args[2] = trimArg(args[2],true); join = args.join(",") }
+      }
+      if (key == "lorem") { args[1] = trimArg(args[1],true); join = args.join(",") }
       if (key == "random") join = '[' + join + ']'
       path = "genAPI." + key
     }
@@ -333,20 +339,19 @@ place_label
   = ws quotation_mark ws label:(("district") / ("county")) ws quotation_mark ws { return label }
 
 lorem_string
-  = quotation_mark word:"words" quotation_mark { return word; }
-  / quotation_mark word:"sentences" quotation_mark { return word; }
-  / quotation_mark word:"paragraphs" quotation_mark { return word; }
+  = quotation_mark ws word:"words" ws quotation_mark { return word }
+  / quotation_mark ws word:"sentences" ws quotation_mark { return word }
+  / quotation_mark ws word:"paragraphs" ws quotation_mark { return word }
 
 date
-  = quotation_mark date:((((("0"[1-9]/"1"[0-9]/"2"[0-8])"/"("0"[1-9]/"1"[012]))/(("29"/"30"/"31")"/"("0"[13578]/"1"[02]))/(("29"/"30")"/"("0"[4,6,9]/"11")))"/"("19"/[2-9][0-9])[0-9][0-9])/("29""/""02""/"("19"/[2-9][0-9])("00"/"04"/"08"/"12"/"16"/"20"/"24"/"28"/"32"/"36"/"40"/"44"/"48"/"52"/"56"/"60"/"64"/"68"/"72"/"76"/"80"/"84"/"88"/"92"/"96"))) quotation_mark {
-    var split = date.flat(2).join("").split(/\//)
-    return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]))
+  = quotation_mark ws date:((((("0"[1-9]/"1"[0-9]/"2"[0-8])"/"("0"[1-9]/"1"[012]))/(("29"/"30"/"31")"/"("0"[13578]/"1"[02]))/(("29"/"30")"/"("0"[4,6,9]/"11")))"/"("19"/[2-9][0-9])[0-9][0-9])/("29""/""02""/"("19"/[2-9][0-9])("00"/"04"/"08"/"12"/"16"/"20"/"24"/"28"/"32"/"36"/"40"/"44"/"48"/"52"/"56"/"60"/"64"/"68"/"72"/"76"/"80"/"84"/"88"/"92"/"96"))) ws quotation_mark {
+    return date.flat(2).join("")
   }
 
 date_format
-  = quotation_mark format:("DD" date_separator "MM" date_separator ("AAAA" / "YYYY")) quotation_mark { return format.join(""); }
-  / quotation_mark format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) quotation_mark { return format.join(""); }
-  / quotation_mark format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") quotation_mark { return format.join(""); }
+  = quotation_mark ws format:("DD" date_separator "MM" date_separator ("AAAA" / "YYYY")) ws quotation_mark { return format.join(""); }
+  / quotation_mark ws format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) ws quotation_mark { return format.join(""); }
+  / quotation_mark ws format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") ws quotation_mark { return format.join(""); }
 
 key = chars:([a-zA-Z_][a-zA-Z0-9_]*) { return chars.flat().join("") }
 
@@ -414,7 +419,7 @@ gen_moustaches
       data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat()
     }
   }
-  / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:. quotation_mark {return u})? ")" {
+  / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:[^"]+ quotation_mark {return u})? ")" {
     return {
       model: { type: unit === null ? "integer" : "string", required: true }, 
       data: fillArray("gen", null, "integer", [min, max, unit])
@@ -442,7 +447,7 @@ gen_moustaches
   / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
       model: {type: "string", required: true},
-      data: fillArray("gen", null, "date", [start, !end ? new Date() : end, !format ? 'DD/MM/YYYY' : format])
+      data: fillArray("gen", null, "date", [start, end, !format ? 'DD/MM/YYYY' : format])
     }
   }
   / "random(" ws values:(

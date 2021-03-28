@@ -71,8 +71,6 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
--> dates dão merda porque os args vão em string em vez de Date()
-
 -> geração do dataset também não funciona direito se nao tiver repeats
 
 -> vai ser preciso uma queue com os nomes dos objetos para fazer colection_names unicos
