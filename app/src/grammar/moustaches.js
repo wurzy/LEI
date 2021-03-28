@@ -45,13 +45,13 @@ function integer(min, max, unit) {
 }
 
 function floating(min, max, decimals, format) {
-    decimals = decimals == null ? getDecimalsCount(min,max) : decimals
+    decimals = decimals == undefined ? getDecimalsCount(min,max) : decimals
     var random = min + (max - min) * Math.random();
     var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
 
-    if (format != null) {
+    if (!(format == undefined || format == null)) {
         var split = formatNumber(String(rounded)).split('.')
-        rounded = split[0].replace(/,/g, format.int_sep) + format.dec_sep + split[1] + format.unit
+        rounded = split[0].replace(/,/g, format[1]) + format[3] + split[1] + format[6]
     }
     return rounded
 }
@@ -59,10 +59,10 @@ function floating(min, max, decimals, format) {
 function position(lat, long) {
     if (!lat) return "(" + floating(-90,90,5) + ", " + floating(-180,180,5) + ")"
     else {
-        if (lat.min > lat.max) {var latmax = lat.min; lat.min = lat.max; lat.max = latmax}
-        if (long.min > long.max) {var longmax = long.min; long.min = long.max; long.max = longmax}
+        if (lat[0] > lat[1]) {var latmax = lat[0]; lat[0] = lat[1]; lat[1] = latmax}
+        if (long[0] > long[1]) {var longmax = long[0]; long[0] = long[1]; long[1] = longmax}
 
-        return "(" + floating(lat.min, lat.max, 5) + ", " + floating(long.min, long.max, 5) + ")"
+        return "(" + floating(lat[0], lat[1], 5) + ", " + floating(long[0], long[1], 5) + ")"
     }
 }
 

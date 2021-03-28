@@ -21,6 +21,10 @@
     var join = args.join(",")
 
     if (key in genAPI) {
+      if (key == "floating" && args.length == 4) {
+        args[3] = trimArg(args[3], true)
+        join = args.join(",")
+      }
       if (key == "random") join = '[' + join + ']'
       path = "genAPI." + key
     }
@@ -255,19 +259,19 @@ zero
   = "0"
 
 float_format
-  = ws "\"0" int_sep:[^0-9] "0" dec_sep:[^0-9] "00" unit:[^0-9] "\"" ws { return {int_sep, dec_sep, unit} }
+  = ws quotation_mark ws f:("0" int_sep:[^0-9] "0" dec_sep:[^0-9] "00" unit:[^0-9] { return text() }) ws quotation_mark ws { return f }
 
 latitude
   = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
 
 lat_interval
-  = begin_array min:latitude value_separator max:latitude end_array { return {min, max} }
+  = begin_array min:latitude value_separator max:latitude end_array { return [min, max] }
 
 longitude
   = (minus / plus)?("180"(".""0"+)?/(("1"[0-7][0-9])/([1-9]?[0-9]))("."[0-9]+)?) { return parseFloat(text()); }
 
 long_interval
-  = begin_array min:longitude value_separator max:longitude end_array { return {min, max} }
+  = begin_array min:longitude value_separator max:longitude end_array { return [min, max] }
 
 // ----- 7. Strings -----
 
@@ -402,7 +406,7 @@ moustaches_value
 gen_moustaches
   = "objectId(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "objectId", []) } }
   / "guid(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "guid", []) } }
-  / "bool(" ws ")" { return { model: {type: "boolean", required: true}, data: fillArray("gen", null, "boolean", []) } }
+  / "boolean(" ws ")" { return { model: {type: "boolean", required: true}, data: fillArray("gen", null, "boolean", []) } }
   / "index(" ws ")" {
     var queue_last = queue[queue.length-1]
     return {

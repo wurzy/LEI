@@ -71,23 +71,20 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
--> floating com formato dá merda porque o formato vai em string em vez de objeto
--> floating com limites dá merda ao apanhar os argumentos
 -> dates dão merda porque os args vão em string em vez de Date()
--> gen.bool() dentro de codigo nao funciona mas gen.boolean() sim
+
+-> geração do dataset também não funciona direito se nao tiver repeats
 
 -> vai ser preciso uma queue com os nomes dos objetos para fazer colection_names unicos
+-> gera o modelo direito para um objeto com objetos aninhados sem repeat?
 
 - repeat com random - garantir que todos os resultados do random são diferentes
 	- n repeat >= n random
 
-- funções como propriedades de objeto
+- map, filter, reduce
 
 - lista de erros para apresentar de maneira user-friendly no vue
 - repeats diretos de probabilities?
-
-?????
-- permitir probabilities em arrays
 
 --------------------------------------------------------
 
