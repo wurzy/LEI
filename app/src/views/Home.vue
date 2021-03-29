@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-7">
         <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-5">
         <div class="input-group">
           <div class="input-group-prepend ">
             <span class="input-group-text" id="basic-addon1">Nome:</span>
@@ -15,6 +15,9 @@
           </div>
           <div class="input-group-append">
             <button class="btn btn-success" type="button" @click="createAPI">Gerar API</button>
+          </div>
+          <div class="input-group-append">
+            <button class="btn btn-danger" type="button" @click="downloadAPI">Download API</button>
           </div>
         </div>
       </div>
@@ -163,6 +166,9 @@ export default {
         elem.setAttribute("modelo", model)
         document.body.appendChild(elem)
       },
+      downloadAPI(){
+        console.log("WAPPAPA")
+      },
       createAPI(){
         //var a = document.getElementById("md").getAttribute("modelo")
 
@@ -216,7 +222,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .row {margin-left: -8px; max-width: 100%; margin-bottom: 3px;}
-.col-md-4 {padding-right: 0px;}
+.col-md-5 {padding-right: 0px;}
 .col-md-6 {padding-right: 0px; height: 89vh !important;}
 .vue-codemirror{height:100%}
 </style>
