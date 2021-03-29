@@ -7,6 +7,7 @@ var bcrypt = require('bcrypt')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var modelsRouter = require('./routes/models');
 
 var app = express();
 
@@ -108,6 +109,7 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/utilizadores', usersRouter);
+app.use('/modelos', modelsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
