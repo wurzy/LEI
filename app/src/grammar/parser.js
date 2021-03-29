@@ -204,7 +204,7 @@ const parser = (function() {
                     kind: "collectionType",
                     collectionName: collections[i],
                     info: {name: collections[i++]},
-                    options: {"draftAndPublish": true},
+                    options: {},
                     attributes: members[p].model.attributes
                   }
                   members[p] = members[p].data
@@ -240,7 +240,7 @@ const parser = (function() {
               if (queue.length > 0) {
                 value.model.collectionName = "components_" + name
                 value.model.info = {name}
-                value.model.options = {"draftAndPublish": true}
+                value.model.options = {}
 
                 var i = 1, filename = name
                 var keys = Object.keys(components[cur_collection])
