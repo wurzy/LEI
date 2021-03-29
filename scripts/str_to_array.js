@@ -2,10 +2,10 @@ var str = "Partido do Centro, Partido Popular, Iniciativa Feminista, União Naci
 
 var fs = require('fs');
 
-fs.writeFile('novo_arr.json', JSON.stringify(str.split(", "), null, 2), (err) => {
+/* fs.writeFile('novo_arr.json', JSON.stringify(str.split(", "), null, 2), (err) => {
     if (err) throw err;
     console.log('Data written to file');
-})
+}) */
 
-/* var arr = require('./fix.json')
-console.log(arr.join(', ')) */
+var arr = require('./fix.json')
+console.log(arr.join(', '))

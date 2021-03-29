@@ -6,6 +6,7 @@ PT/EN:
 - cultural_centers
 - days
 - months
+- names
 - nationalities
 - religions
 - sports
@@ -31,9 +32,7 @@ UNIVERSAL (nomes de pessoas e sítios, marcas):
 
 PROBLEMÁTICOS:
 - jobs
-- names
 - political_parties
-- pt_political_parties
 
 
 
