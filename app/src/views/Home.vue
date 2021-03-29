@@ -158,19 +158,29 @@ export default {
 
         this.result = JSON.stringify(generated.dataModel.data, null, 2)
         var model = JSON.stringify(generated.dataModel.model, null, 2)
+        var componentes = JSON.stringify(generated.components, null, 2)
 
-        //console.log("O modelo chegou:",model)
+
+        console.log("Componentes :",componentes)
+
+        console.log("O modelo chegou:",model)
+
+  
 
         var elem = document.createElement('boas');
         elem.setAttribute("id","md")
         elem.setAttribute("modelo", model)
+        elem.setAttribute("componentes", componentes)
+
+
         document.body.appendChild(elem)
       },
       downloadAPI(){
         console.log("WAPPAPA")
       },
       createAPI(){
-        //var a = document.getElementById("md").getAttribute("modelo")
+        var md = document.getElementById("md").getAttribute("modelo")
+        var cp = document.getElementById("md").getAttribute("componentes")
 
         //
         //var optionAxios = {
@@ -179,7 +189,11 @@ export default {
         //  }
         //}
         var body = {}
-        body["api"]=document.getElementById('filename').value
+        body["apiName"]=document.getElementById('filename').value
+        body["model"]=JSON.parse(md)
+        body["componentes"]=JSON.parse(cp)
+
+        //console.log("modelo aquii",JSON.stringify(body, null, 2))
         axios.post('http://localhost:3000/genAPI/',body)
         .then(dados => console.log("Modelo criado"))
         .catch(erro => console.log(erro))

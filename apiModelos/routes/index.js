@@ -4,11 +4,11 @@ const fs = require("fs")
 const fsEx = require('fs-extra')
 
 
-const model = `{
+const model123 = `{
   "kind": "collectionType",
-  "collectionName": "produtos",
+  "collectionName": "Dataset",
   "info": {
-    "name": "Produto",
+    "name": "Dataset",
     "description": ""
   },
   "options": {
@@ -30,10 +30,6 @@ const model = `{
     },
     "descricao": {
       "type": "text"
-    },
-    "categorias": {
-      "collection": "categoria",
-      "via": "produtos"
     },
     "prod": {
       "type": "component",
@@ -88,7 +84,13 @@ module.exports = {};
 
 
 router.post('/genAPI', function(req, res, next) {
-  var apiname = req.body["api"]
+  var mkeys = Object.keys(req.body["model"])
+  var apiname = mkeys[0]
+  var model = JSON.stringify(req.body["model"][`${apiname}`], null, 2)
+
+
+
+  
   fs.mkdir("../api/api/"+apiname, (err) => { 
     if (err) { 
         return console.error(err); 
@@ -102,7 +104,7 @@ router.post('/genAPI', function(req, res, next) {
   "routes": [
     {
       "method": "GET",
-      "path": "/${apiname}",
+      "path": "/${apiname}s",
       "handler": "${apiname}.find",
       "config": {
         "policies": []
@@ -194,6 +196,26 @@ router.post('/genAPI', function(req, res, next) {
     return console.log('Directory created successfully!'); 
   }); 
 
+  var ckeys = Object.keys(req.body["componentes"])
+  var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
+  var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
+  fs.mkdir("../api/components/"+apiname, (err) => { 
+    if (err) { 
+        return console.error(err); 
+    }       
+    console.log("key:"+compKeys[0])
+
+    compKeys.forEach(k => {
+      //console.log("key:"+k)
+      var str =  JSON.stringify(req.body["componentes"][`${ckeys[0]}`][`${k}`], null, 2)
+      //console.log("str:"+str)
+
+      fs.writeFile("../api/components/"+apiname+"/"+k+".json", str, (err) => { 
+        if (err) throw err; 
+      }) 
+    });
+    return console.log('components created successfully!'); 
+  }); 
   //console.log("req.body :"+ apiname)
   // Sync:
   //try {
