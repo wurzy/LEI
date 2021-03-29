@@ -3,6 +3,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
+var bcrypt = require('bcrypt')
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -31,11 +33,15 @@ passport.use('login-auth', new LocalStrategy(
       User.consultar(email)
         .then(dados => {
           const user = dados
-  
           if(!user) { return done(null, {strat: 'login-auth', success: false, invalidInput: 'email', message: 'Combinação inválida de e-mail e/ou password.\n'})}
-          if(password != user.password) { return done(null, {strat: 'login-auth', success: false, invalidInput: 'password', message: 'Combinação inválida de e-mail e/ou password.\n'})}
-          
-          return done(null, {strat: 'login-auth', success: true, user})
+          bcrypt.compare(password, user.password, function(err, result) {
+            if(result) {
+              done(null, {strat: 'login-auth', success: true, user})
+            }
+            else {
+              done(null, {strat: 'login-auth', success: false, invalidInput: 'password', message: 'Combinação inválida de e-mail e/ou password.\n'})
+            }
+          });
         })
         .catch(e => done(e))
       })
@@ -50,11 +56,11 @@ passport.use('signup-auth', new LocalStrategy(
         if (dados) return done(null, {strat: 'signup-auth', success: false, invalidInput: 'email', message: 'Email já se encontra utilizado.\n'})
         else {
           var date = new Date().toISOString().substr(0,19)
-          console.log(date)
-          User.inserir({
+          bcrypt.hash(password, 10, function(err, hash) {
+            User.inserir({
               nome: req.body.nome,
               email: email, 
-              password: password,
+              password: hash,
               dataRegisto: date,
               dataUltimoAcesso: date
             })
@@ -62,6 +68,7 @@ passport.use('signup-auth', new LocalStrategy(
               return done(null, {strat: 'signup-auth', success: true, user: dados})
             })
             .catch(e => done(e))
+          });
         }
       })
       .catch(e => done(e))
