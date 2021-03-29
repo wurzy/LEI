@@ -29,10 +29,15 @@
       "collection": "categoria",
       "via": "produtos"
     },
-    "prod": {
+    "name": {
       "type": "component",
       "repeatable": false,
-      "component": "produtor.produtor"
+      "component": "oi.name"
+    },
+    "cool": {
+      "type": "component",
+      "repeatable": false,
+      "component": "oi.fixe2"
     }
   }
 }
