@@ -2,7 +2,14 @@
   <div>
     <div class="row">
       <div class="col-md-7">
-        <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
+         <div class="input-group">
+          <div class="input-group-append">
+            <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
+          </div>
+          <div class="input-group-append">
+            <input id="saveModelButton" class="btn btn-danger float-left" type="button" value="Guardar Modelo" @click="saveModel" disabled/>
+          </div>
+         </div>
       </div>
       <div class="col-md-5">
         <div class="input-group">
@@ -11,13 +18,13 @@
           </div>
           <input type="text" class="form-control" id="filename" value="dataset">
           <div class="input-group-append">
-            <button class="btn btn-primary" type="button" @click="download">Download</button>
+            <button id="defaultDownloadButton" class="btn btn-primary" disabled type="button" @click="download">Download</button>
           </div>
           <div class="input-group-append">
-            <button class="btn btn-success" type="button" @click="createAPI">Gerar API</button>
+            <button id="generateAPIButton" class="btn btn-success" disabled type="button" @click="createAPI">Gerar API</button>
           </div>
           <div class="input-group-append">
-            <button class="btn btn-danger" type="button" @click="downloadAPI">Download API</button>
+            <button id="downloadAPIButton" class="btn btn-danger" disabled type="button" @click="downloadAPI">Download API</button>
           </div>
         </div>
       </div>
@@ -165,9 +172,16 @@ export default {
         elem.setAttribute("id","md")
         elem.setAttribute("modelo", model)
         document.body.appendChild(elem)
+        document.getElementById("saveModelButton").disabled = false;
+        document.getElementById("defaultDownloadButton").disabled = false;
+        document.getElementById("generateAPIButton").disabled = false;
+        document.getElementById("downloadAPIButton").disabled = false;
       },
       downloadAPI(){
         console.log("WAPPAPA")
+      },
+      saveModel(){
+        console.log("xd modelo is saved pog")
       },
       createAPI(){
         //var a = document.getElementById("md").getAttribute("modelo")
@@ -190,7 +204,7 @@ export default {
       },
       download(){
         if(this.result == "") {
-          alert("Generate a Dataset first.")
+          alert("É necessário gerar um Dataset primeiro.")
         }
         else {
           var element = document.createElement('a');
