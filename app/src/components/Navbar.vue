@@ -1,9 +1,7 @@
 <template>
 <div>
-  <Login />
-  <Register />
-  <Success msg="Registo efetuado com sucesso!" id="register_success_modal"/>
-  <Success msg="Login efetuado com sucesso!" id="login_success_modal"/>
+  <Login v-on:logged_in="loggedIn"/>
+  <Register v-on:register_ok="registerOk" :key="registerKey"/>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
    <div class="container">
@@ -72,7 +70,6 @@
 </template>
 
 <script>
-import Success from './Success.vue';
 import Register from './Register.vue';
 import Login from './Login.vue';
 
@@ -86,13 +83,13 @@ axios.defaults.baseURL = "http://localhost:3000/";
 export default {
   name: "Navbar",
   components: {
-    Success,
     Register,
     Login
   },
   data(){
     return {
-      utilizador: null
+      utilizador: null,
+      registerKey: 1
     }
   },
   computed: {
@@ -134,9 +131,16 @@ export default {
       axios.post('utilizadores/logout', {token: localStorage.getItem('token')})
         .then(dados => {
           localStorage.removeItem('token')
-          this.$router.go(this.$router.currentRoute)
+          this.$emit('update')
         })
         .catch(error => console.log(error))
+    },
+    loggedIn(){
+      console.log("emiti")
+      this.$emit('update')
+    },
+    registerOk(){
+      this.registerKey++
     }
   }
 };
