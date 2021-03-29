@@ -71,17 +71,13 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
--> geração do dataset também não funciona direito se nao tiver repeats
-
--> vai ser preciso uma queue com os nomes dos objetos para fazer colection_names unicos
--> gera o modelo direito para um objeto com objetos aninhados sem repeat?
-
-- repeat com random - garantir que todos os resultados do random são diferentes
-	- n repeat >= n random
+-> restrição: no nível superior é preciso tem um repeat para definir cada coleção
 
 - map, filter, reduce
-
+- datasets pt/en
 - lista de erros para apresentar de maneira user-friendly no vue
+- XML/CSV
+
 - repeats diretos de probabilities?
 
 --------------------------------------------------------

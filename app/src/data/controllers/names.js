@@ -3,14 +3,14 @@ const names = namesJS.names
 
 const namesAPI = {
     firstName(lang) {
-        return names[Math.floor(Math.random() * names.length)].name
+        return names[lang].firstnames[Math.floor(Math.random() * names[lang].firstnames.length)]
     },
 
     surname(lang) {
-        return names[Math.floor(Math.random() * names.length)].surname
+        return names[lang].surnames[Math.floor(Math.random() * names[lang].surnames.length)]
     },
 
-    fullName(lang) { return `${this.firstName()} ${this.surname()}` }
+    fullName(lang) { return `${this.firstName(lang)} ${this.surname(lang)}` }
 }
 
 export default namesAPI
