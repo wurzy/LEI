@@ -3,14 +3,10 @@
 
 {
   var language = "pt" //"pt" or "en", "pt" by default
-  var components = {}
-
-  var collections = []
-  var cur_collection = ""
+  var components = []
 
   var queue = []
-  var uniq_queue = []
-  var queue_prod = 1
+  var queue_prod = null
 
   function trimArg(arg, marks) {
     if (arg[0] == '"' || arg[0] == "'") {
@@ -78,21 +74,10 @@
 
   function fillArray(api, sub_api, moustaches, args) {
     var arr = []
-
-    if (moustaches == "random" && uniq_queue[uniq_queue.length-1]) {
-      for (let i = 0; i < queue_prod; i++) {
-        var rand = genAPI[moustaches](args[0]); arr.push(rand)
-        args[0].splice(args[0].indexOf(rand), 1)
-        if (!args[0].length) break
-      }
+    for (var i = 0; i < queue_prod; i++) {
+      if (api == "gen") arr.push(genAPI[moustaches](...args))
+      if (api == "data") arr.push(dataAPI[sub_api][moustaches](language, ...args))
     }
-    else {
-      for (let i = 0; i < queue_prod; i++) {
-        if (api == "gen") arr.push(genAPI[moustaches](...args))
-        if (api == "data") arr.push(dataAPI[sub_api][moustaches](language, ...args))
-      }
-    }
-
     return arr
   }
 
@@ -160,12 +145,11 @@ object
       var dataModel = !queue.length ? {} : {component: true}
       
       if (!queue.length) {
-        let i = 0
         for (let p in members) {
-          model[collections[i]] = {
+          model[p] = {
             kind: "collectionType",
-            collectionName: collections[i],
-            info: {name: collections[i++]},
+            collectionName: p + 's',
+            info: {name: p},
             options: {},
             attributes: members[p].model.attributes
           }
@@ -199,19 +183,15 @@ object
     }
 
 member
-  = name:member_key name_separator value:value_or_interpolation {
+  = name:key name_separator value:value_or_interpolation {
     if ("component" in value) {
       if (queue.length > 0) {
-        value.model.collectionName = "components_" + name
+        value.model.collectionName = "components_" + name  + "s"
         value.model.info = {name}
         value.model.options = {}
 
-        var i = 1, filename = name
-        var keys = Object.keys(components[cur_collection])
-        while (keys.includes(filename)) filename = name + i++
-
-        components[cur_collection][filename] = lodash.cloneDeep(value.model)
-        value.model = { "type": "component", "repeatable": false, "component": cur_collection + '.' + filename }
+        components.push(lodash.cloneDeep(value.model))
+        value.model = { "type": "component", "repeatable": false, "component": "UID_" }
       }
 
       delete value.component
@@ -373,15 +353,7 @@ date_format
   / quotation_mark ws format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) ws quotation_mark { return format.join(""); }
   / quotation_mark ws format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") ws quotation_mark { return format.join(""); }
 
-member_key = chars:([a-zA-Z_][a-zA-Z0-9_]*) {
-    var key = chars.flat().join("")
-    if (!queue.length) {
-      cur_collection = key + "_" + uuidv4()
-      collections.push(cur_collection)
-      components[cur_collection] = {}
-    }
-    return key
-  }
+key = chars:([a-zA-Z_][a-zA-Z0-9_]*) { return chars.flat().join("") }
 
 char
   = unescaped
@@ -565,28 +537,26 @@ directive
   / range
 
 repeat
-  = begin_array repeat_signature repeat_args ws ":" ws val:value_or_interpolation end_array {
+  = begin_array repeat_signature ws ":" ws val:value_or_interpolation end_array {
     if (queue.length > 1) {
       val.model = {type: Array(num).fill(val.model), required: true}
       val.data = chunk(val.data, queue[queue.length-1])
     }
     
-    var num = queue.pop(); queue_prod /= num
-    if (!queue.length) cur_collection = ""
-    uniq_queue.pop()
-
+    var num = queue.pop()
+    queue_prod = !queue.length ? null : (queue_prod/num)
     return val
   }
 
-repeat_signature = "'" ws "repeat" unique:"_unique"? ws { uniq_queue.push(unique != null) }
-
-repeat_args
-  = "(" ws min:int ws "," ws max:int ws ")" ws "'" {
+repeat_signature
+  = "'" ws "repeat" ws "(" ws min:int ws "," ws max:int ws ")" ws "'" {
     var num = Math.floor(Math.random() * (max - min + 1)) + min
-    queue_prod *= num; queue.push(num)
+    queue_prod = !queue.length ? num : (queue_prod*num)
+    queue.push(num)
   }
-  / "(" ws num:int ws ")" ws "'" {
-    queue_prod *= num; queue.push(num)
+  / "'" ws "repeat" ws "(" ws num:int ws ")" ws "'" {
+    queue_prod = !queue.length ? num : (queue_prod*num)
+    queue.push(num)
   }
 
 range
@@ -625,7 +595,7 @@ probability
   }
 
 function_prop
-  = name:function_key "(" ws "gen" ws ")" ws code:code {
+  = name:key "(" ws "gen" ws ")" ws code:code {
     return {
       name, value: {
         model: {any: {}, required: true},
@@ -633,8 +603,6 @@ function_prop
       }
     }
   }
-  
-function_key = chars:([a-zA-Z_][a-zA-Z0-9_]*) { return chars.flat().join("") }
 
 code = CODE_START str:(gen_call / local_var / not_code / code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
 
