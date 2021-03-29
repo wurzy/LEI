@@ -32,8 +32,8 @@ passport.use('login-auth', new LocalStrategy(
         .then(dados => {
           const user = dados
   
-          if(!user) { return done(null, {strat: 'login-auth', success: false, invalidInput: 'email', message: 'Email inexistente!\n'})}
-          if(password != user.password) { return done(null, {strat: 'login-auth', success: false, invalidInput: 'password', message: 'Password inválida!\n'})}
+          if(!user) { return done(null, {strat: 'login-auth', success: false, invalidInput: 'email', message: 'Combinação inválida de e-mail e/ou password.\n'})}
+          if(password != user.password) { return done(null, {strat: 'login-auth', success: false, invalidInput: 'password', message: 'Combinação inválida de e-mail e/ou password.\n'})}
           
           return done(null, {strat: 'login-auth', success: true, user})
         })
@@ -47,7 +47,7 @@ passport.use('signup-auth', new LocalStrategy(
   (req, email, password, done) => {
     User.consultar(email)
       .then(dados => {
-        if (dados) return done(null, {strat: 'signup-auth', success: false, invalidInput: 'email', message: 'Email já existe!\n'})
+        if (dados) return done(null, {strat: 'signup-auth', success: false, invalidInput: 'email', message: 'Email já se encontra utilizado.\n'})
         else {
           var date = new Date().toISOString().substr(0,19)
           console.log(date)

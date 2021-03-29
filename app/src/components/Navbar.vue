@@ -1,7 +1,7 @@
 <template>
 <div>
   <Login v-on:logged_in="loggedIn"/>
-  <Register />
+  <Register v-on:register_ok="registerOk" :key="registerKey"/>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
    <div class="container">
@@ -88,7 +88,8 @@ export default {
   },
   data(){
     return {
-      utilizador: null
+      utilizador: null,
+      registerKey: 1
     }
   },
   computed: {
@@ -135,7 +136,11 @@ export default {
         .catch(error => console.log(error))
     },
     loggedIn(){
+      console.log("emiti")
       this.$emit('update')
+    },
+    registerOk(){
+      this.registerKey++
     }
   }
 };

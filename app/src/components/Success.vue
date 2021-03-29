@@ -23,10 +23,15 @@
 <script>
 export default {
     name: "Success",
-    props: ['msg', 'id'],
+    props: ['msg', 'id', 'type'],
     methods:{
         refresh(){
-			this.$emit('login_ok')
+			if(this.$props.type=="login"){
+				this.$emit('login_ok')
+			}
+			else {
+				this.$emit('register_ok')
+			}
         }
     }
 }

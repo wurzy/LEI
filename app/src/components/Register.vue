@@ -1,6 +1,6 @@
 <template>
 <div>
-    <Success msg="Registo efetuado com sucesso!" id="register_success_modal"/>
+    <Success type="register" msg="Registo efetuado com sucesso!" id="register_success_modal" v-on:register_ok="registerOk"/>
     <div id="registar_modal" class="modal fade">
       <div class="modal-dialog modal-login">
           <div class="modal-content">
@@ -13,6 +13,7 @@
               </div>
               <div class="modal-body">
                   <form @submit.prevent="handleRegistar">
+                      <div id="inject_error_register"></div>
                       <div class="form-group">
                           <input v-model="nome" type="text" class="form-control" name="nome" placeholder="Nome"
                               required="required">
@@ -60,16 +61,29 @@ export default {
     },
     methods: {
         async handleRegistar(){
-              const res = await axios.post('utilizadores/registar', {
-                nome: this.nome,
-                email: this.email,
-                password: this.password
+          try{
+            const res = await axios.post('utilizadores/registar', {
+              nome: this.nome,
+              email: this.email,
+              password: this.password
               })
-              $("#registar_modal").modal("hide");
-              if(res.status==201){
-                $("#register_success_modal").modal("show");
-                $("#register_success_modal").css("z-index", "1500");
-              }
+            $("#registar_modal").modal("hide");
+            $("#register_success_modal").modal("show");
+            $("#register_success_modal").css("z-index", "1500");
+          }
+          catch(error) {
+            const html=`<div id="remove_register_error" class="form-group">
+                        <span class="form-control border-danger" style="text-align: center; color: black;background-color: #ff8080;">${error.response.data.error}</span>
+                      </div>`
+            const inject = $('#inject_error_register')
+            if(inject.children().length > 0) {
+              $('#remove_register_error').remove()
+            }
+            inject.append(html)
+          }
+        },
+        registerOk() {
+          this.$emit('register_ok')
         }
     }
 }
@@ -173,4 +187,5 @@ export default {
   vertical-align: middle;
   margin-bottom: 200px;
 }
+
 </style>

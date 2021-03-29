@@ -1,6 +1,5 @@
 <template>
 <div>
-    <Success msg="Login efetuado com sucesso!" id="login_success_modal" v-on:login_ok="loggedIn"/>
     <div id="login_modal" class="modal fade">
       <div class="modal-dialog modal-login">
           <div class="modal-content">
@@ -13,6 +12,7 @@
               </div>
               <div class="modal-body">
                   <form @submit.prevent="handleLogin">
+                      <div id="inject_error_login"></div>
                       <div class="form-group">
                           <input v-model="email" type="text" class="form-control" name="email" placeholder="E-mail"
                               required="required">
@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import Success from './Success.vue';
 import $ from 'jquery';
 import axios from 'axios'
 
@@ -44,9 +43,6 @@ axios.defaults.baseURL = "http://localhost:3000/";
 
 export default {
     name: "Login",
-    components: {
-      Success
-    },
     data() {
         return {
           email: "",
@@ -55,21 +51,25 @@ export default {
     },
     methods: {
         async handleLogin(){
+          try{
             const res = await axios.post('utilizadores/login', {
               email: this.email,
               password: this.password
             })
             $("#login_modal").modal("hide");
-            if(res.status==201){
-                console.log("ok")
-                $("#login_success_modal").modal("show");
-                $("#login_success_modal").css("z-index", "1500");
-                localStorage.setItem('token',res.data.token)
+            localStorage.setItem('token',res.data.token)
+            this.$emit('logged_in')
+          }
+          catch(error){
+            const html=`<div id="remove_login_error" class="form-group">
+                        <span class="form-control border-danger" style="text-align: center; color: black;background-color: #ff8080;">${error.response.data.error}</span>
+                      </div>`
+            const inject = $('#inject_error_login')
+            if(inject.children().length > 0) {
+              $('#remove_login_error').remove()
             }
-        },
-        loggedIn: function () {
-          console.log("evento logged_in")
-          this.$emit('logged_in')
+            inject.append(html)
+          }
         }
     }
 }
