@@ -492,7 +492,7 @@ gen_moustaches
       { return [head].concat(tail); }
     )? ")" {
       return {
-        model: {any: {}, required: true},
+        model: {type: "json", required: true},
         data: fillArray("gen", null, "random", [values])
       }
   }
@@ -637,7 +637,7 @@ function_prop
   = name:function_key "(" ws "gen" ws ")" ws code:code {
     return {
       name, value: {
-        model: {any: {}, required: true},
+        model: {type: "json", required: true},
         function: new Function("gen", code)
       }
     }

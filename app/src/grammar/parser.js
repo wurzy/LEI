@@ -637,7 +637,7 @@ const parser = (function() {
         peg$c356 = function(head, tail) { return [head].concat(tail); },
         peg$c357 = function(values) {
               return {
-                model: {any: {}, required: true},
+                model: {type: "json", required: true},
                 data: fillArray("gen", null, "random", [values])
               }
           },
@@ -787,7 +787,7 @@ const parser = (function() {
         peg$c400 = function(name, code) {
             return {
               name, value: {
-                model: {any: {}, required: true},
+                model: {type: "json", required: true},
                 function: new Function("gen", code)
               }
             }
