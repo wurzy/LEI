@@ -194,8 +194,8 @@ const parser = (function() {
                 return result;
               },
         peg$c44 = function(members) {
-              var values = [], model = {}
               var dataModel = !queue.length ? {} : {component: true}
+              var values = [], model = {}
               
               if (!queue.length) {
                 let i = 0
@@ -236,52 +236,27 @@ const parser = (function() {
               return members !== null ? dataModel : {}
             },
         peg$c45 = function(name, value) {
-            if ("component" in value) {
-              if (queue.length > 0) {
-                value.model.collectionName = "components_" + name
-                value.model.info = {name}
-                value.model.options = {}
-
-                var i = 1, filename = name
-                var keys = Object.keys(components[cur_collection])
-                while (keys.includes(filename)) filename = name + i++
-
-                components[cur_collection][filename] = lodash.cloneDeep(value.model)
-                value.model = { "type": "component", "repeatable": false, "component": cur_collection + '.' + filename }
-              }
-
-              delete value.component
-            }
+            value = createComponent(name, value)
             return { name, value }
           },
         peg$c46 = function(head, v) { return v },
         peg$c47 = function(head, tail) { return [head].concat(tail) },
         peg$c48 = function(arr) {  
-            // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
-            var name = "nomeArray" // variável temporária
+              var dataModel = !queue.length ? {} : {component: true}
+              var model = {attributes: {}}, values = []
+              for (let i = 0; i < queue_prod; i++) values.push([])
 
-            var model = {attributes: {}}, values = []
-            model.collectionName = "components_" + name
-            model.info = {name} 
-            model.options= {};
+              for (let j = 0; j < arr.length; j++) {
+                arr[j] = createComponent("elem"+j, arr[j])
+                model.attributes["elem"+j] = arr[j].model
 
-            var i = 1, filename = name
-            var keys = Object.keys(components[cur_collection])
-            while (keys.includes(filename)) filename = name + i++ 
-
-
-            for (let i = 0; i < queue_prod; i++) values.push([])
-
-            for (let j = 0; j < arr.length; j++) {
-              model.attributes["elem"+j] = arr[j].model
-              for (let k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
-            }
-            
-            components[cur_collection][filename] = lodash.cloneDeep(model)
-
-            model = {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename}
-            return arr !== null ? {model, data: values} : []
-          },
+                for (let k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
+              }
+              
+              dataModel.data = values
+              dataModel.model = model
+              return dataModel
+            },
         peg$c49 = peg$otherExpectation("number"),
         peg$c50 = function() {
             var num = parseFloat(text())
@@ -747,15 +722,15 @@ const parser = (function() {
             }
           },
         peg$c379 = function(val) {
-            if (queue.length > 1) { /////////////////////////////////////////////
-              val.model = {attributes: Array(num).fill(val.model), required: true}
+            if (queue.length > 1) { 
+              val.model = {type: Array(num).fill(val.model), required: true}
               val.data = chunk(val.data, queue[queue.length-1])
             }
             
             var num = queue.pop(); queue_prod /= num
             if (!queue.length) cur_collection = ""
             uniq_queue.pop()
-            
+
             return val
           },
         peg$c380 = "repeat",
@@ -772,69 +747,28 @@ const parser = (function() {
           },
         peg$c387 = "range(",
         peg$c388 = peg$literalExpectation("range(", false),
-        peg$c389 = function(num) {
-              //var model = {}, values = []
+        peg$c389 = function(data) {
+              var dataModel = !queue.length ? {} : {component: true}
+              var model = {attributes: {}}
+              for (let i = 0; i < data.length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
 
-              // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
-              var name = "nomeRange" // variável temporária
-
-              var model = {}
-              model.collectionName = "components_" + name
-              model.info = {name} 
-
-              var i = 1, filename = name
-              var keys = Object.keys(components[cur_collection])
-              while (keys.includes(filename)) filename = name + i++ 
-
-              var arrayObj = {}
-              for (let i = 0; i < num; i++) 
-                arrayObj["elem"+i] = {type: "integer", required: true}
-
-              model.attributes = arrayObj;
-              model.options= {};
-              components[cur_collection][filename] = lodash.cloneDeep(model)
-
-              return {
-                model: {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename},
-                data: Array(queue_prod).fill([...Array(num).keys()])
-            }
+              dataModel.data = data
+              dataModel.model = model
+              return dataModel
           },
         peg$c390 = function(init, end) {
-            var range = []
-
-            if (init < end) { for (let i = init; i < end; i++) range.push(i) }
-            else if (init > end) { for (let i = init; i > end; i--) range.push(i) }
-
-            // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
-            var name = "nomeRange" // variável temporária
-
-            var model = {}
-            model.collectionName = "components_" + name
-            model.info = {name} 
-
-            var i = 1, filename = name
-            var keys = Object.keys(components[cur_collection])
-            while (keys.includes(filename)) filename = name + i++ 
-
-            var arrayObj = {}
-            for (let i = 0; i < range.length; i++) 
-              arrayObj["elem"+i] = {type: "integer", required: true}
-
-            model.attributes = arrayObj;
-            model.options= {};
-            components[cur_collection][filename] = lodash.cloneDeep(model)
-
-            return {
-              model: {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename},
-              data: Array(queue_prod).fill(range)
-            }
+              var range = []
+              if (init < end) { for (let i = init; i < end; i++) range.push(i) }
+              else if (init > end) { for (let i = init; i > end; i--) range.push(i) }
+              return range
           },
-        peg$c391 = "missing",
-        peg$c392 = peg$literalExpectation("missing", false),
-        peg$c393 = "having",
-        peg$c394 = peg$literalExpectation("having", false),
-        peg$c395 = function() {return text()},
-        peg$c396 = function(sign, probability, m) {
+        peg$c391 = function(num) { return Array(queue_prod).fill([...Array(num).keys()]) },
+        peg$c392 = "missing",
+        peg$c393 = peg$literalExpectation("missing", false),
+        peg$c394 = "having",
+        peg$c395 = peg$literalExpectation("having", false),
+        peg$c396 = function() {return text()},
+        peg$c397 = function(sign, probability, m) {
             var prob = parseInt(probability.join(""))/100, arr = []
 
             for (let i = 0; i < queue_prod; i++) {
@@ -848,9 +782,9 @@ const parser = (function() {
               value: { probability: true, model: m.value.model, data: arr }
             }
           },
-        peg$c397 = "gen",
-        peg$c398 = peg$literalExpectation("gen", false),
-        peg$c399 = function(name, code) {
+        peg$c398 = "gen",
+        peg$c399 = peg$literalExpectation("gen", false),
+        peg$c400 = function(name, code) {
             return {
               name, value: {
                 model: {any: {}, required: true},
@@ -858,18 +792,18 @@ const parser = (function() {
               }
             }
           },
-        peg$c400 = function(chars) { return chars.flat().join("") },
-        peg$c401 = function(str) { return "\x7B" + str.join("") + "\x7D" },
-        peg$c402 = function() { return text() },
-        peg$c403 = /^[a-zA-Z0-9_.]/,
-        peg$c404 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"], "_", "."], false, false),
-        peg$c405 = function(key) { return key.flat().join("") },
-        peg$c406 = "this.",
-        peg$c407 = peg$literalExpectation("this.", false),
-        peg$c408 = function(key) { return "gen.local." + key },
-        peg$c409 = "gen.",
-        peg$c410 = peg$literalExpectation("gen.", false),
-        peg$c411 = function(key, args) {
+        peg$c401 = function(chars) { return chars.flat().join("") },
+        peg$c402 = function(str) { return "\x7B" + str.join("") + "\x7D" },
+        peg$c403 = function() { return text() },
+        peg$c404 = /^[a-zA-Z0-9_.]/,
+        peg$c405 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"], "_", "."], false, false),
+        peg$c406 = function(key) { return key.flat().join("") },
+        peg$c407 = "this.",
+        peg$c408 = peg$literalExpectation("this.", false),
+        peg$c409 = function(key) { return "gen.local." + key },
+        peg$c410 = "gen.",
+        peg$c411 = peg$literalExpectation("gen.", false),
+        peg$c412 = function(key, args) {
             args = args.join("").split(",")
             
             var split = [], build = "", i = 0
@@ -885,8 +819,8 @@ const parser = (function() {
             var obj = getApiPath(key, split.map(x => x.trim()))
             return `gen.${obj.path}(` + (obj.path.includes('dataAPI') ? `"${language}", ` : '') + `${obj.args})`
           },
-        peg$c412 = /^[0-9a-f]/i,
-        peg$c413 = peg$classExpectation([["0", "9"], ["a", "f"]], false, true),
+        peg$c413 = /^[0-9a-f]/i,
+        peg$c414 = peg$classExpectation([["0", "9"], ["a", "f"]], false, true),
 
         peg$currPos          = 0,
         peg$savedPos         = 0,
@@ -6613,7 +6547,7 @@ const parser = (function() {
     }
 
     function peg$parserange() {
-      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
+      var s0, s1, s2, s3, s4, s5;
 
       s0 = peg$currPos;
       if (input.substr(peg$currPos, 6) === peg$c387) {
@@ -6626,7 +6560,7 @@ const parser = (function() {
       if (s1 !== peg$FAILED) {
         s2 = peg$parsews();
         if (s2 !== peg$FAILED) {
-          s3 = peg$parseint();
+          s3 = peg$parserange_args();
           if (s3 !== peg$FAILED) {
             s4 = peg$parsews();
             if (s4 !== peg$FAILED) {
@@ -6661,67 +6595,33 @@ const parser = (function() {
         peg$currPos = s0;
         s0 = peg$FAILED;
       }
-      if (s0 === peg$FAILED) {
-        s0 = peg$currPos;
-        if (input.substr(peg$currPos, 6) === peg$c387) {
-          s1 = peg$c387;
-          peg$currPos += 6;
-        } else {
-          s1 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c388); }
-        }
-        if (s1 !== peg$FAILED) {
-          s2 = peg$parsews();
-          if (s2 !== peg$FAILED) {
-            s3 = peg$parseint();
-            if (s3 !== peg$FAILED) {
-              s4 = peg$parsews();
-              if (s4 !== peg$FAILED) {
-                if (input.charCodeAt(peg$currPos) === 44) {
-                  s5 = peg$c11;
-                  peg$currPos++;
-                } else {
-                  s5 = peg$FAILED;
-                  if (peg$silentFails === 0) { peg$fail(peg$c12); }
-                }
-                if (s5 !== peg$FAILED) {
-                  s6 = peg$parsews();
-                  if (s6 !== peg$FAILED) {
-                    s7 = peg$parseint();
-                    if (s7 !== peg$FAILED) {
-                      s8 = peg$parsews();
-                      if (s8 !== peg$FAILED) {
-                        if (input.charCodeAt(peg$currPos) === 41) {
-                          s9 = peg$c85;
-                          peg$currPos++;
-                        } else {
-                          s9 = peg$FAILED;
-                          if (peg$silentFails === 0) { peg$fail(peg$c86); }
-                        }
-                        if (s9 !== peg$FAILED) {
-                          peg$savedPos = s0;
-                          s1 = peg$c390(s3, s7);
-                          s0 = s1;
-                        } else {
-                          peg$currPos = s0;
-                          s0 = peg$FAILED;
-                        }
-                      } else {
-                        peg$currPos = s0;
-                        s0 = peg$FAILED;
-                      }
-                    } else {
-                      peg$currPos = s0;
-                      s0 = peg$FAILED;
-                    }
-                  } else {
-                    peg$currPos = s0;
-                    s0 = peg$FAILED;
-                  }
-                } else {
-                  peg$currPos = s0;
-                  s0 = peg$FAILED;
-                }
+
+      return s0;
+    }
+
+    function peg$parserange_args() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parseint();
+      if (s1 !== peg$FAILED) {
+        s2 = peg$parsews();
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 44) {
+            s3 = peg$c11;
+            peg$currPos++;
+          } else {
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c12); }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsews();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parseint();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c390(s1, s5);
+                s0 = s1;
               } else {
                 peg$currPos = s0;
                 s0 = peg$FAILED;
@@ -6738,6 +6638,18 @@ const parser = (function() {
           peg$currPos = s0;
           s0 = peg$FAILED;
         }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
+      }
+      if (s0 === peg$FAILED) {
+        s0 = peg$currPos;
+        s1 = peg$parseint();
+        if (s1 !== peg$FAILED) {
+          peg$savedPos = s0;
+          s1 = peg$c391(s1);
+        }
+        s0 = s1;
       }
 
       return s0;
@@ -6747,25 +6659,25 @@ const parser = (function() {
       var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14;
 
       s0 = peg$currPos;
-      if (input.substr(peg$currPos, 7) === peg$c391) {
-        s1 = peg$c391;
+      if (input.substr(peg$currPos, 7) === peg$c392) {
+        s1 = peg$c392;
         peg$currPos += 7;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c392); }
+        if (peg$silentFails === 0) { peg$fail(peg$c393); }
       }
       if (s1 === peg$FAILED) {
         s1 = peg$currPos;
-        if (input.substr(peg$currPos, 6) === peg$c393) {
-          s2 = peg$c393;
+        if (input.substr(peg$currPos, 6) === peg$c394) {
+          s2 = peg$c394;
           peg$currPos += 6;
         } else {
           s2 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c394); }
+          if (peg$silentFails === 0) { peg$fail(peg$c395); }
         }
         if (s2 !== peg$FAILED) {
           peg$savedPos = s1;
-          s2 = peg$c395();
+          s2 = peg$c396();
         }
         s1 = s2;
       }
@@ -6856,7 +6768,7 @@ const parser = (function() {
                                 }
                                 if (s14 !== peg$FAILED) {
                                   peg$savedPos = s0;
-                                  s1 = peg$c396(s1, s4, s12);
+                                  s1 = peg$c397(s1, s4, s12);
                                   s0 = s1;
                                 } else {
                                   peg$currPos = s0;
@@ -6934,12 +6846,12 @@ const parser = (function() {
         if (s2 !== peg$FAILED) {
           s3 = peg$parsews();
           if (s3 !== peg$FAILED) {
-            if (input.substr(peg$currPos, 3) === peg$c397) {
-              s4 = peg$c397;
+            if (input.substr(peg$currPos, 3) === peg$c398) {
+              s4 = peg$c398;
               peg$currPos += 3;
             } else {
               s4 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c398); }
+              if (peg$silentFails === 0) { peg$fail(peg$c399); }
             }
             if (s4 !== peg$FAILED) {
               s5 = peg$parsews();
@@ -6957,7 +6869,7 @@ const parser = (function() {
                     s8 = peg$parsecode();
                     if (s8 !== peg$FAILED) {
                       peg$savedPos = s0;
-                      s1 = peg$c399(s1, s8);
+                      s1 = peg$c400(s1, s8);
                       s0 = s1;
                     } else {
                       peg$currPos = s0;
@@ -7039,7 +6951,7 @@ const parser = (function() {
       }
       if (s1 !== peg$FAILED) {
         peg$savedPos = s0;
-        s1 = peg$c400(s1);
+        s1 = peg$c401(s1);
       }
       s0 = s1;
 
@@ -7080,7 +6992,7 @@ const parser = (function() {
           s3 = peg$parseCODE_STOP();
           if (s3 !== peg$FAILED) {
             peg$savedPos = s0;
-            s1 = peg$c401(s2);
+            s1 = peg$c402(s2);
             s0 = s1;
           } else {
             peg$currPos = s0;
@@ -7133,7 +7045,7 @@ const parser = (function() {
           }
           if (s3 !== peg$FAILED) {
             peg$savedPos = s0;
-            s1 = peg$c402();
+            s1 = peg$c403();
             s0 = s1;
           } else {
             peg$currPos = s0;
@@ -7165,21 +7077,21 @@ const parser = (function() {
       }
       if (s2 !== peg$FAILED) {
         s3 = [];
-        if (peg$c403.test(input.charAt(peg$currPos))) {
+        if (peg$c404.test(input.charAt(peg$currPos))) {
           s4 = input.charAt(peg$currPos);
           peg$currPos++;
         } else {
           s4 = peg$FAILED;
-          if (peg$silentFails === 0) { peg$fail(peg$c404); }
+          if (peg$silentFails === 0) { peg$fail(peg$c405); }
         }
         while (s4 !== peg$FAILED) {
           s3.push(s4);
-          if (peg$c403.test(input.charAt(peg$currPos))) {
+          if (peg$c404.test(input.charAt(peg$currPos))) {
             s4 = input.charAt(peg$currPos);
             peg$currPos++;
           } else {
             s4 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c404); }
+            if (peg$silentFails === 0) { peg$fail(peg$c405); }
           }
         }
         if (s3 !== peg$FAILED) {
@@ -7195,7 +7107,7 @@ const parser = (function() {
       }
       if (s1 !== peg$FAILED) {
         peg$savedPos = s0;
-        s1 = peg$c405(s1);
+        s1 = peg$c406(s1);
       }
       s0 = s1;
 
@@ -7206,18 +7118,18 @@ const parser = (function() {
       var s0, s1, s2;
 
       s0 = peg$currPos;
-      if (input.substr(peg$currPos, 5) === peg$c406) {
-        s1 = peg$c406;
+      if (input.substr(peg$currPos, 5) === peg$c407) {
+        s1 = peg$c407;
         peg$currPos += 5;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c407); }
+        if (peg$silentFails === 0) { peg$fail(peg$c408); }
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parsecode_key();
         if (s2 !== peg$FAILED) {
           peg$savedPos = s0;
-          s1 = peg$c408(s2);
+          s1 = peg$c409(s2);
           s0 = s1;
         } else {
           peg$currPos = s0;
@@ -7235,12 +7147,12 @@ const parser = (function() {
       var s0, s1, s2, s3, s4, s5;
 
       s0 = peg$currPos;
-      if (input.substr(peg$currPos, 4) === peg$c409) {
-        s1 = peg$c409;
+      if (input.substr(peg$currPos, 4) === peg$c410) {
+        s1 = peg$c410;
         peg$currPos += 4;
       } else {
         s1 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c410); }
+        if (peg$silentFails === 0) { peg$fail(peg$c411); }
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parsecode_key();
@@ -7263,7 +7175,7 @@ const parser = (function() {
               s5 = peg$parseARGS_STOP();
               if (s5 !== peg$FAILED) {
                 peg$savedPos = s0;
-                s1 = peg$c411(s2, s4);
+                s1 = peg$c412(s2, s4);
                 s0 = s1;
               } else {
                 peg$currPos = s0;
@@ -7324,7 +7236,7 @@ const parser = (function() {
           }
           if (s3 !== peg$FAILED) {
             peg$savedPos = s0;
-            s1 = peg$c402();
+            s1 = peg$c403();
             s0 = s1;
           } else {
             peg$currPos = s0;
@@ -7415,12 +7327,12 @@ const parser = (function() {
     function peg$parseHEXDIG() {
       var s0;
 
-      if (peg$c412.test(input.charAt(peg$currPos))) {
+      if (peg$c413.test(input.charAt(peg$currPos))) {
         s0 = input.charAt(peg$currPos);
         peg$currPos++;
       } else {
         s0 = peg$FAILED;
-        if (peg$silentFails === 0) { peg$fail(peg$c413); }
+        if (peg$silentFails === 0) { peg$fail(peg$c414); }
       }
 
       return s0;
@@ -7499,6 +7411,26 @@ const parser = (function() {
         else path = `dataAPI.${key+'s'}.${key}`
 
         return {path, args: join}
+      }
+
+      function createComponent(name, value) {
+        if ("component" in value) {
+          if (queue.length > 0) {
+            value.model.collectionName = "components_" + name
+            value.model.info = {name}
+            value.model.options = {}
+
+            var i = 1, filename = name
+            var keys = Object.keys(components[cur_collection])
+            while (keys.includes(filename)) filename = name + i++
+
+            components[cur_collection][filename] = lodash.cloneDeep(value.model)
+            value.model = { "type": "component", "repeatable": false, "component": cur_collection + '.' + filename }
+          }
+
+          delete value.component
+        }
+        return value
       }
 
       function fillArray(api, sub_api, moustaches, args) {

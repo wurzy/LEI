@@ -35,9 +35,6 @@ PROBLEMÁTICOS:
 - political_parties
 
 
-
-
-
 <!LANGUAGE pt>
 {
 	colecao: [

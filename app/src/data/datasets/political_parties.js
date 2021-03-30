@@ -4340,7 +4340,7 @@ political_parties: [
       },
       {
         "party_abbr": "UTL",
-        "party_name": "Peoples Union \"For Just Lithuania"
+        "party_name": "Peoples Union -- For Just Lithuania"
       },
       {
         "party_abbr": "Zp",
@@ -4634,7 +4634,7 @@ political_parties: [
       },
       {
         "party_abbr": "PPA",
-        "party_name": "Political Party \"Alternative"
+        "party_name": "Political Party -- Alternative"
       },
       {
         "party_abbr": "PS",
@@ -4804,7 +4804,7 @@ political_parties: [
       },
       {
         "party_abbr": "CU",
-        "party_name": "ChristianUnion"
+        "party_name": "Christian Union"
       },
       {
         "party_abbr": "D66",
@@ -4832,7 +4832,7 @@ political_parties: [
       },
       {
         "party_abbr": "GL",
-        "party_name": "GreenLeft"
+        "party_name": "Green Left"
       },
       {
         "party_abbr": "GPV",
@@ -4864,7 +4864,7 @@ political_parties: [
       },
       {
         "party_abbr": "LSP",
-        "party_name": "Liberal State Party \"The Freedom League"
+        "party_name": "Liberal State Party -- The Freedom League"
       },
       {
         "party_abbr": "LU",
