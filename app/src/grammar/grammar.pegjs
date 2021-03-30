@@ -283,6 +283,8 @@ int
     return parseInt(Array.isArray(integer) ? integer.flat().join("") : integer)
   }
 
+int_neg = minus? int { return parseInt(text()) }
+
 minus
   = "-"
 
@@ -455,7 +457,7 @@ gen_moustaches
       data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat()
     }
   }
-  / "integer(" ws min:int ws "," ws max:int ws unit:("," quotation_mark u:[^"]+ quotation_mark {return u})? ")" {
+  / "integer(" ws min:int_neg ws "," ws max:int_neg ws unit:("," quotation_mark u:[^"]+ quotation_mark {return u})? ")" {
     return {
       model: { type: unit === null ? "integer" : "string", required: true }, 
       data: fillArray("gen", null, "integer", [min, max, unit])
@@ -589,33 +591,38 @@ repeat
 repeat_signature = "'" ws "repeat" unique:"_unique"? ws { uniq_queue.push(unique != null) }
 
 repeat_args
-  = "(" ws min:int ws "," ws max:int ws ")" ws "'" {
-    var num = Math.floor(Math.random() * (max - min + 1)) + min
-    queue_prod *= num; queue.push(num)
-  }
-  / "(" ws num:int ws ")" ws "'" {
+  = "(" ws min:int ws max:("," ws m:int ws { return m })? ")" ws "'" {
+    var num = max === null ? min : Math.floor(Math.random() * (max - min + 1)) + min
     queue_prod *= num; queue.push(num)
   }
 
 range
   = "range(" ws data:range_args ws ")" {
-      var dataModel = !queue.length ? {} : {component: true}
-      var model = {attributes: {}}
-      for (let i = 0; i < data.length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
+    var dataModel = !queue.length ? {} : {component: true}
+    var model = {attributes: {}}
+    for (let i = 0; i < data.length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
 
-      dataModel.data = data
-      dataModel.model = model
-      return dataModel
+    dataModel.data = data
+    dataModel.model = model
+    return dataModel
   }
 
 range_args
-  = init:int ws "," ws end:int {
-      var range = []
-      if (init < end) { for (let i = init; i < end; i++) range.push(i) }
-      else if (init > end) { for (let i = init; i > end; i--) range.push(i) }
-      return range
+  = init:int_neg args:(ws "," ws end:int_neg step:(ws "," ws s:int_neg { return s })? { return {end, step}})? {
+    var end, step, range = []
+
+    if (!args) {
+      end = init; init = 0
+      step = init < end ? 1 : -1
+    }
+    else {
+      end = args.end
+      step = args.step === null ? (init < end ? 1 : -1) : args.step
+    }
+
+    for (let i = init; (init < end) ? i < end : i > end; i += step) range.push(i)
+    return Array(queue_prod).fill(range)
   }
-  / num:int { return Array(queue_prod).fill([...Array(num).keys()]) }
 
 probability
   = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
