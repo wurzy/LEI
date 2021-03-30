@@ -256,19 +256,32 @@ const parser = (function() {
           },
         peg$c46 = function(head, v) { return v },
         peg$c47 = function(head, tail) { return [head].concat(tail) },
-        peg$c48 = function(arr) {
-              var model = {type: [], required: true}, values = []
-              for (let i = 0; i < queue_prod; i++) values.push([])
+        peg$c48 = function(arr) {  
+            // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
+            var name = "nomeArray" // variável temporária
 
-              for (let j = 0; j < arr.length; j++) {
-                model.type.push(arr[j].model)
-                for (let k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
-              }
+            var model = {attributes: {}}, values = []
+            model.collectionName = "components_" + name
+            model.info = {name} 
+            model.options= {};
 
-              //criar modelo e dar push para components
+            var i = 1, filename = name
+            var keys = Object.keys(components[cur_collection])
+            while (keys.includes(filename)) filename = name + i++ 
 
-              return arr !== null ? {model, data: values} : []
-            },
+
+            for (let i = 0; i < queue_prod; i++) values.push([])
+
+            for (let j = 0; j < arr.length; j++) {
+              model.attributes["elem"+j] = arr[j].model
+              for (let k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
+            }
+            
+            components[cur_collection][filename] = lodash.cloneDeep(model)
+
+            model = {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename}
+            return arr !== null ? {model, data: values} : []
+          },
         peg$c49 = peg$otherExpectation("number"),
         peg$c50 = function() {
             var num = parseFloat(text())
@@ -734,8 +747,8 @@ const parser = (function() {
             }
           },
         peg$c379 = function(val) {
-            if (queue.length > 1) {
-              val.model = {type: Array(num).fill(val.model), required: true}
+            if (queue.length > 1) { /////////////////////////////////////////////
+              val.model = {attributes: Array(num).fill(val.model), required: true}
               val.data = chunk(val.data, queue[queue.length-1])
             }
             
@@ -760,9 +773,30 @@ const parser = (function() {
         peg$c387 = "range(",
         peg$c388 = peg$literalExpectation("range(", false),
         peg$c389 = function(num) {
-            return {
-              model: {type: Array(num).fill({type: "integer", required: true}), required: true},
-              data: Array(queue_prod).fill([...Array(num).keys()])
+              //var model = {}, values = []
+
+              // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
+              var name = "nomeRange" // variável temporária
+
+              var model = {}
+              model.collectionName = "components_" + name
+              model.info = {name} 
+
+              var i = 1, filename = name
+              var keys = Object.keys(components[cur_collection])
+              while (keys.includes(filename)) filename = name + i++ 
+
+              var arrayObj = {}
+              for (let i = 0; i < num; i++) 
+                arrayObj["elem"+i] = {type: "integer", required: true}
+
+              model.attributes = arrayObj;
+              model.options= {};
+              components[cur_collection][filename] = lodash.cloneDeep(model)
+
+              return {
+                model: {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename},
+                data: Array(queue_prod).fill([...Array(num).keys()])
             }
           },
         peg$c390 = function(init, end) {
@@ -771,8 +805,27 @@ const parser = (function() {
             if (init < end) { for (let i = init; i < end; i++) range.push(i) }
             else if (init > end) { for (let i = init; i > end; i--) range.push(i) }
 
+            // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
+            var name = "nomeRange" // variável temporária
+
+            var model = {}
+            model.collectionName = "components_" + name
+            model.info = {name} 
+
+            var i = 1, filename = name
+            var keys = Object.keys(components[cur_collection])
+            while (keys.includes(filename)) filename = name + i++ 
+
+            var arrayObj = {}
+            for (let i = 0; i < range.length; i++) 
+              arrayObj["elem"+i] = {type: "integer", required: true}
+
+            model.attributes = arrayObj;
+            model.options= {};
+            components[cur_collection][filename] = lodash.cloneDeep(model)
+
             return {
-              model: {type: Array(range.length).fill({type: "integer", required: true}), required: true},
+              model: {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename},
               data: Array(queue_prod).fill(range)
             }
           },

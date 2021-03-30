@@ -233,17 +233,30 @@ array
       { return [head].concat(tail) }
     )?
     end_array
-    {
-      var model = {type: [], required: true}, values = []
+    {  
+      // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
+      var name = "nomeArray" // variável temporária
+
+      var model = {attributes: {}}, values = []
+      model.collectionName = "components_" + name
+      model.info = {name} 
+      model.options= {};
+
+      var i = 1, filename = name
+      var keys = Object.keys(components[cur_collection])
+      while (keys.includes(filename)) filename = name + i++ 
+
+
       for (let i = 0; i < queue_prod; i++) values.push([])
 
       for (let j = 0; j < arr.length; j++) {
-        model.type.push(arr[j].model)
+        model.attributes["elem"+j] = arr[j].model
         for (let k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
       }
+      
+      components[cur_collection][filename] = lodash.cloneDeep(model)
 
-      //criar modelo e dar push para components
-
+      model = {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename}
       return arr !== null ? {model, data: values} : []
     }
 
@@ -566,7 +579,7 @@ directive
 
 repeat
   = begin_array repeat_signature repeat_args ws ":" ws val:value_or_interpolation end_array {
-    if (queue.length > 1) {
+    if (queue.length > 1) { 
       val.model = {type: Array(num).fill(val.model), required: true}
       val.data = chunk(val.data, queue[queue.length-1])
     }
@@ -591,20 +604,60 @@ repeat_args
 
 range
   = "range(" ws num:int ws ")" {
-    return {
-      model: {type: Array(num).fill({type: "integer", required: true}), required: true},
-      data: Array(queue_prod).fill([...Array(num).keys()])
+      //var model = {}, values = []
+
+      // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
+      var name = "nomeRange" // variável temporária
+
+      var model = {}
+      model.collectionName = "components_" + name
+      model.info = {name} 
+
+      var i = 1, filename = name
+      var keys = Object.keys(components[cur_collection])
+      while (keys.includes(filename)) filename = name + i++ 
+
+      var arrayObj = {}
+      for (let i = 0; i < num; i++) 
+        arrayObj["elem"+i] = {type: "integer", required: true}
+
+      model.attributes = arrayObj;
+      model.options= {};
+      components[cur_collection][filename] = lodash.cloneDeep(model)
+
+      return {
+        model: {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename},
+        data: Array(queue_prod).fill([...Array(num).keys()])
     }
   }
   / "range(" ws init:int ws "," ws end:int ws ")" {
-    var range = []
+      var range = []
 
-    if (init < end) { for (let i = init; i < end; i++) range.push(i) }
-    else if (init > end) { for (let i = init; i > end; i--) range.push(i) }
+      if (init < end) { for (let i = init; i < end; i++) range.push(i) }
+      else if (init > end) { for (let i = init; i > end; i--) range.push(i) }
 
-    return {
-      model: {type: Array(range.length).fill({type: "integer", required: true}), required: true},
-      data: Array(queue_prod).fill(range)
+      // Precisamos de receber o nome (ou construir esta parte num nível acima somehow)
+      var name = "nomeRange" // variável temporária
+
+      var model = {}
+      model.collectionName = "components_" + name
+      model.info = {name} 
+
+      var i = 1, filename = name
+      var keys = Object.keys(components[cur_collection])
+      while (keys.includes(filename)) filename = name + i++ 
+
+      var arrayObj = {}
+      for (let i = 0; i < range.length; i++) 
+        arrayObj["elem"+i] = {type: "integer", required: true}
+
+      model.attributes = arrayObj;
+      model.options= {};
+      components[cur_collection][filename] = lodash.cloneDeep(model)
+
+      return {
+        model: {"type": "component", "repeatable": false, "component": cur_collection + '.' + filename},
+        data: Array(queue_prod).fill(range)
     }
   }
 
