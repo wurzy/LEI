@@ -2,7 +2,8 @@ var express = require('express');
 var router = express.Router();
 const fs = require("fs")
 const fsEx = require('fs-extra')
-
+const AdmZip = require('adm-zip')
+const archiver = require('archiver');
 
 const model123 = `{
   "kind": "collectionType",
@@ -82,13 +83,99 @@ module.exports = {};
 //
 //});
 
+router.get('/download/:id', function(req, res, next) {
+ 
+  console.log(req.params.id)
+  try {
+    //const output = fs.createWriteStream("./api-"+req.params.id+".zip");
+    const archive = archiver('zip', {
+      zlib: { level: 9 } // Sets the compression level.
+    });
+    // listen for all archive data to be written
+    // 'close' event is fired only when a file descriptor is involved
+    archive.on('close', function() {
+      console.log(archive.pointer() + ' total bytes');
+      console.log('archiver has been finalized and the output file descriptor has closed.');
+      
+    });
+    
+    // This event is fired when the data source is drained no matter what was the data source.
+    // It is not part of this library but rather from the NodeJS Stream API.
+    // @see: https://nodejs.org/api/stream.html#stream_event_end
+    archive.on('end', function() {
+      console.log('Data has been drained');
+      res.end()
+    });
+
+    archive.on('warning', function(err) {
+      if (err.code === 'ENOENT') {
+        console.log('ENOENT')
+      } else {
+        throw err;
+      }
+    });
+    archive.on('error', function(err) {
+      throw err;
+    });
+
+    archive.pipe(res);
+
+    if (fs.existsSync('../api/api/'+req.params.id) && fs.existsSync('../api/components/'+req.params.id)) {
+      archive.append(fs.createReadStream("../Strapi.zip"), { name: 'Strapi.zip' });
+      archive.directory('../api/api/'+req.params.id,'api/'+req.params.id);
+      archive.directory('../api/components/'+req.params.id,'components/'+req.params.id);
+
+      archive.finalize();
+
+      res.writeHead(200, {
+        "Content-Type": "application/zip",
+        "Content-Disposition": `attachment; filename=${req.params.id}.zip`,
+      })
+    } else {
+      res.writeHead(500, {
+        "Content-Type": 'text/html'
+      })
+      res.end()
+    }
+    
+  } catch (error) {
+    res.writeHead(500, {
+      "Content-Type": 'text/html'
+    })
+    res.end()
+    return  console.error("Erro a zipar "+error); 
+  }
+});
+
+/*//var zip = new AdmZip()
+  //zip.addLocalFolder("./teste")
+  //zip.writeZip("./testezipado.zip");
+  console.log(req.params.id)
+  try {
+    var zip1 = new AdmZip("../Strapi.zip")
+    console.log("1"); 
+    zip1.addLocalFolder("../api/api/"+req.params.id,"/api/"+req.params.id)
+    console.log("2"); 
+    zip1.addLocalFolder("../api/components/"+req.params.id,"/components/"+req.params.id)
+    console.log("3"); 
+    zip1.writeZip("./api-"+req.params.id+".zip");
+    //var buffer = zip1.toBuffer()
+    console.log("4"); 
+
+    //fs.writeFileSync("./api-"+req.params.id+".zip", buffer);
+    console.log("5"); 
+
+    return  console.log("zipado"); 
+
+    //res.writeHead(200, {
+    //  "Content-Type": "application/zip",
+    //  "Content-Disposition": `attachment; filename=${filename}.zip`,
+    //})*/
 
 router.post('/genAPI', function(req, res, next) {
   var mkeys = Object.keys(req.body["model"])
   var apiname = mkeys[0]
   var model = JSON.stringify(req.body["model"][`${apiname}`], null, 2)
-
-
 
   
   fs.mkdir("../api/api/"+apiname, (err) => { 
@@ -199,6 +286,7 @@ router.post('/genAPI', function(req, res, next) {
   var ckeys = Object.keys(req.body["componentes"])
   var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
   var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
+
   fs.mkdir("../api/components/"+apiname, (err) => { 
     if (err) { 
         return console.error(err); 
@@ -206,9 +294,7 @@ router.post('/genAPI', function(req, res, next) {
     console.log("key:"+compKeys[0])
 
     compKeys.forEach(k => {
-      //console.log("key:"+k)
       var str =  JSON.stringify(req.body["componentes"][`${ckeys[0]}`][`${k}`], null, 2)
-      //console.log("str:"+str)
 
       fs.writeFile("../api/components/"+apiname+"/"+k+".json", str, (err) => { 
         if (err) throw err; 

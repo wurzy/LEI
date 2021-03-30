@@ -164,21 +164,31 @@ export default {
         console.log(generated)
 
         this.result = JSON.stringify(generated.dataModel.data, null, 2)
+
         var model = JSON.stringify(generated.dataModel.model, null, 2)
         var componentes = JSON.stringify(generated.components, null, 2)
 
-
         console.log("Componentes :",componentes)
-
         console.log("O modelo chegou:",model)
-
-  
-
+        
+        var mkeys = Object.keys(generated.dataModel.model)
+        var ckeys = Object.keys(generated.components)
+        
         var elem = document.createElement('boas');
         elem.setAttribute("id","md")
-        elem.setAttribute("modelo", model)
-        elem.setAttribute("componentes", componentes)
+        elem.setAttribute("colname", mkeys[0])
 
+        elem.setAttribute("mkeys",mkeys.length)
+        elem.setAttribute("ckeys",ckeys.length)
+        var i;
+
+        for (i = 0; i < mkeys.length; i++) {
+          elem.setAttribute("modelo", model)
+        }
+
+        for (i = 0; i < ckeys.length; i++) {
+          elem.setAttribute("componentes", componentes)
+        }
 
         document.body.appendChild(elem)
         document.getElementById("saveModelButton").disabled = false;
@@ -186,7 +196,13 @@ export default {
         document.getElementById("generateAPIButton").disabled = false;
       },
       downloadAPI(){
-        console.log("WAPPAPA")
+        var cname = document.getElementById("md").getAttribute("colname")
+        console.log("collection name:"+cname)
+
+        //var id = "colecao_c400bb89-41a0-4a94-80de-a0f29100afc9"
+        axios.get('http://localhost:3000/download/'+cname)
+        .then(dados => console.log("Zip criado"))
+        .catch(erro => console.log(erro))
       },
       saveModel(){
         console.log("xd modelo is saved pog")
@@ -195,12 +211,7 @@ export default {
         var md = document.getElementById("md").getAttribute("modelo")
         var cp = document.getElementById("md").getAttribute("componentes")
 
-        //
-        //var optionAxios = {
-        //  headers: {
-        //      'Content-Type': 'application/x-www-form-urlencoded'
-        //  }
-        //}
+      
         var body = {}
         body["apiName"]=document.getElementById('filename').value
         body["model"]=JSON.parse(md)
@@ -210,6 +221,8 @@ export default {
         axios.post('http://localhost:3000/genAPI/',body)
         .then(dados => console.log("Modelo criado"))
         .catch(erro => console.log(erro))
+
+        
         //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
         //.then(dados => console.log("Modelo criado"))
         //.catch(erro => console.log(erro))

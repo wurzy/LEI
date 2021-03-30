@@ -84,11 +84,9 @@ POR IMPLEMENTAR:
 
 PROGRESSO DESTA SEMANA:
 
-- permitir qualquer tipo em missing/having
-- reestruturar o programa para o formato a la json-server que discutimos com o professor
-- otimizar a estrutura da gramática
-- versão inicial das propriedades com código
-- suporte pt/en dos datasets
+- funções
+- randoms com garantia de não repetir elementos
+- modelo de strapi com a filipa
 
 
 - exportar modelo
@@ -142,3 +140,9 @@ PROGRESSO DESTA SEMANA:
 		- string: 'bom dia'
 		- moustaches: '{{index()}}'
 		- interpolação: 'texto - {{pt_parish()}}, {{pt_county()}}, {{pt_district()}}'
+
+- permitir qualquer tipo em missing/having
+- reestruturar o programa para o formato a la json-server que discutimos com o professor
+- otimizar a estrutura da gramática
+- versão inicial das propriedades com código
+- suporte pt/en dos datasets
