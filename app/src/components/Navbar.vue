@@ -13,43 +13,54 @@
       <ul class="navbar-nav ml-auto">
         <div v-if="isHome">
           <li class="nav-item active">
-            <a class="nav-link" href="/">Gerar
+            <a class="nav-link" href="/"><font-awesome-icon icon="download"/> Gerar
               <span class="sr-only">(current)</span>
             </a>
           </li>
         </div>
         <div v-else>
           <li class="nav-item">
-            <a class="nav-link" href="/">Gerar</a>
+            <a class="nav-link" href="/"><font-awesome-icon icon="download"/> Gerar</a>
           </li>
         </div>
         <div v-if="isDocumentation">
           <li class="nav-item active">
-            <a class="nav-link" href="documentation">Documentação
+            <a class="nav-link" href="documentacao"><font-awesome-icon icon="file-alt"/> Documentação
               <span class="sr-only">(current)</span>
             </a>
           </li>
         </div>
         <div v-else>
           <li class="nav-item">
-            <a class="nav-link" href="documentation">Documentação</a>
+            <a class="nav-link" href="documentacao"><font-awesome-icon icon="file-alt"/> Documentação</a>
           </li>
         </div>
         <div v-if="isAbout">
           <li class="nav-item active">
-            <a class="nav-link" href="about">Sobre
+            <a class="nav-link" href="sobre"><font-awesome-icon icon="university"/> Sobre
               <span class="sr-only">(current)</span>
             </a>
           </li>
         </div>
         <div v-else>
           <li class="nav-item">
-            <a class="nav-link" href="about">Sobre</a>
+            <a class="nav-link" href="sobre"><font-awesome-icon icon="university"/> Sobre</a>
           </li>
         </div>
         <div>
           <li v-if="isLoggedIn" class="nav-item">
-            <a href="#" class="nav-link" @click="logout">Logout</a>
+            <div class="dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropDownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               <font-awesome-icon icon="user-alt"/> {{utilizador.nome}}
+              </a>
+
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="#"><font-awesome-icon icon="wrench"/> Definições</a>
+                <a class="dropdown-item" href="meusmodelos"><font-awesome-icon icon="save"/> Modelos Guardados</a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item" @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</a>
+              </div>
+            </div>
           </li>
         </div>
         <div>
@@ -88,7 +99,7 @@ export default {
   },
   data(){
     return {
-      utilizador: null,
+      utilizador: { type: Object, default: () => ({}) },
       registerKey: 1
     }
   },
@@ -111,8 +122,8 @@ export default {
     console.log("render")
     if(token){
       const res = await axios.get('utilizadores/' + localStorage.getItem('token'))
+      localStorage.setItem('user', JSON.stringify(res.data))
       this.utilizador = res.data
-      console.log(res.data)
     }
     else {
       console.log("not logged in")

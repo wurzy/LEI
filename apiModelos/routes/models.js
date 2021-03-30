@@ -6,7 +6,7 @@ const secret = 'LEI2021_SECRET_!_HASH'
 const Model = require('../controllers/model')
 
 function unveilToken(token){  
-    token = token.split(" ")[1]
+    token = token.split(" ")[1] // Bearer ey341...
     var t = null;
     
     jwt.verify(token,secret,function(e,decoded){
@@ -69,7 +69,6 @@ router.post('/visibilidade/:id', function(req,res){
     var token = unveilToken(req.headers.authorization)
     Model.consultar(req.params.id)
         .then(dados => {
-            console.log(dados.user != token._id)
             if(!token || dados.user != token._id) forbidden(res)
             else {
                 Model.alterarVisibilidade(req.params.id, req.body.visibilidade)

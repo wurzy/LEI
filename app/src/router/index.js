@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Documentation from '../views/Documentation.vue'
+import UserModels from '../views/UserModels.vue'
 
 Vue.use(VueRouter)
 
@@ -12,7 +13,7 @@ const routes = [
     component: Home
   },
   {
-    path: '/about',
+    path: '/sobre',
     name: 'About',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -20,7 +21,12 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/documentation',
+    path: '/meusmodelos',
+    name: 'UserModels',
+    component: UserModels
+  },
+  {
+    path: '/documentacao',
     name: 'Documentation',
     component: Documentation
   },

@@ -184,7 +184,6 @@ export default {
         document.getElementById("saveModelButton").disabled = false;
         document.getElementById("defaultDownloadButton").disabled = false;
         document.getElementById("generateAPIButton").disabled = false;
-        document.getElementById("downloadAPIButton").disabled = false;
       },
       downloadAPI(){
         console.log("WAPPAPA")
@@ -214,7 +213,7 @@ export default {
         //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
         //.then(dados => console.log("Modelo criado"))
         //.catch(erro => console.log(erro))
-        
+        document.getElementById("downloadAPIButton").disabled = false;
       },
       download(){
         if(this.result == "") {

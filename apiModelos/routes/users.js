@@ -11,6 +11,7 @@ router.post('/login', passport.authenticate('login-auth'), function(req, res) {
   if (req.user.success) {
     jwt.sign({
       _id: req.user.user._id,
+      nome: req.user.user.nome,
       email: req.user.user.email,
       dataRegisto: req.user.user.dataRegisto,
       dataUltimoAcesso: req.user.user.dataUltimoAcesso,
