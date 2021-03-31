@@ -92,6 +92,18 @@ function lorem(count, units) { return loremIpsum({ count, units }) }
 
 function random(values) { return values[Math.floor(Math.random() * values.length)] }
 
+function range(init, end, step) {
+    if (end == null) {
+      end = init; init = 0
+      step = init < end ? 1 : -1
+    }
+    else if (step == null) step = init < end ? 1 : -1
+
+    var range = []
+    for (let i = init; (init < end) ? i < end : i > end; i += step) range.push(i)
+    return range
+}
+
 export default {
     objectId,
     guid,
@@ -102,5 +114,6 @@ export default {
     phone,
     date,
     lorem,
-    random
+    random,
+    range
 }

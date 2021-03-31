@@ -87,6 +87,7 @@ PROGRESSO DESTA SEMANA:
 - funções
 - randoms com garantia de não repetir elementos
 - modelo de strapi com a filipa
+- range a la Python
 
 
 - exportar modelo

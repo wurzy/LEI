@@ -120,10 +120,10 @@ router.get('/download/:id', function(req, res, next) {
 
     archive.pipe(res);
 
-    if (fs.existsSync('../api/api/'+req.params.id) && fs.existsSync('../api/components/'+req.params.id)) {
+    if (fs.existsSync('../StrapiAPI/api/'+req.params.id) && fs.existsSync('../StrapiAPI/components/'+req.params.id)) {
       archive.append(fs.createReadStream("../Strapi.zip"), { name: 'Strapi.zip' });
-      archive.directory('../api/api/'+req.params.id,'api/'+req.params.id);
-      archive.directory('../api/components/'+req.params.id,'components/'+req.params.id);
+      archive.directory('../StrapiAPI/api/'+req.params.id,'api/'+req.params.id);
+      archive.directory('../StrapiAPI/components/'+req.params.id,'components/'+req.params.id);
 
       archive.finalize();
 
@@ -132,18 +132,12 @@ router.get('/download/:id', function(req, res, next) {
         "Content-Disposition": `attachment; filename=${req.params.id}.zip`,
       })
     } else {
-      res.writeHead(500, {
-        "Content-Type": 'text/html'
-      })
-      res.end()
+      res.status(500).jsonp({erro : "API não existente"})
     }
     
   } catch (error) {
-    res.writeHead(500, {
-      "Content-Type": 'text/html'
-    })
-    res.end()
-    return  console.error("Erro a zipar "+error); 
+      res.status(500).jsonp({erro : "Erro ao zipar"})
+      
   }
 });
 
@@ -178,11 +172,11 @@ router.post('/genAPI', function(req, res, next) {
   var model = JSON.stringify(req.body["model"][`${apiname}`], null, 2)
 
   
-  fs.mkdir("../api/api/"+apiname, (err) => { 
+  fs.mkdir("../StrapiAPI/api/"+apiname, (err) => { 
     if (err) { 
         return console.error(err); 
     }
-    fs.mkdir("../api/api/"+apiname+"/config", (err) => { 
+    fs.mkdir("../StrapiAPI/api/"+apiname+"/config", (err) => { 
       if (err) { 
           return console.error(err); 
       }
@@ -240,40 +234,40 @@ router.post('/genAPI', function(req, res, next) {
   ]
 }`
 
-      fs.writeFile("../api/api/"+apiname+"/config/routes.json", data, (err) => { 
+      fs.writeFile("../StrapiAPI/api/"+apiname+"/config/routes.json", data, (err) => { 
           if (err) throw err; 
       }) 
       return console.log('Config created successfully!'); 
     });  
 
-    fs.mkdir("../api/api/"+apiname+"/controllers", (err) => { 
+    fs.mkdir("../StrapiAPI/api/"+apiname+"/controllers", (err) => { 
       if (err) { 
           return console.error(err); 
       } 
-      fs.writeFile("../api/api/"+apiname+"/controllers/"+apiname+".js", strContro, (err) => { 
+      fs.writeFile("../StrapiAPI/api/"+apiname+"/controllers/"+apiname+".js", strContro, (err) => { 
         if (err) throw err; 
       })  
       return console.log('controllers created successfully!'); 
     }); 
 
-    fs.mkdir("../api/api/"+apiname+"/models", (err) => { 
+    fs.mkdir("../StrapiAPI/api/"+apiname+"/models", (err) => { 
       if (err) { 
           return console.error(err); 
       } 
-      fs.writeFile("../api/api/"+apiname+"/models/"+apiname+".js", strModels, (err) => { 
+      fs.writeFile("../StrapiAPI/api/"+apiname+"/models/"+apiname+".js", strModels, (err) => { 
         if (err) throw err; 
       })  
-      fs.writeFile("../api/api/"+apiname+"/models/"+apiname+".settings.json", model, (err) => { 
+      fs.writeFile("../StrapiAPI/api/"+apiname+"/models/"+apiname+".settings.json", model, (err) => { 
         if (err) throw err; 
       })
       return console.log('models created successfully!'); 
     }); 
 
-    fs.mkdir("../api/api/"+apiname+"/services", (err) => { 
+    fs.mkdir("../StrapiAPI/api/"+apiname+"/services", (err) => { 
       if (err) { 
           return console.error(err); 
       } 
-      fs.writeFile("../api/api/"+apiname+"/services/"+apiname+".js", strServices, (err) => { 
+      fs.writeFile("../StrapiAPI/api/"+apiname+"/services/"+apiname+".js", strServices, (err) => { 
         if (err) throw err; 
       }) 
        
@@ -287,7 +281,7 @@ router.post('/genAPI', function(req, res, next) {
   var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
   var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
 
-  fs.mkdir("../api/components/"+apiname, (err) => { 
+  fs.mkdir("../StrapiAPI/components/"+apiname, (err) => { 
     if (err) { 
         return console.error(err); 
     }       
@@ -296,7 +290,7 @@ router.post('/genAPI', function(req, res, next) {
     compKeys.forEach(k => {
       var str =  JSON.stringify(req.body["componentes"][`${ckeys[0]}`][`${k}`], null, 2)
 
-      fs.writeFile("../api/components/"+apiname+"/"+k+".json", str, (err) => { 
+      fs.writeFile("../StrapiAPI/components/"+apiname+"/"+k+".json", str, (err) => { 
         if (err) throw err; 
       }) 
     });

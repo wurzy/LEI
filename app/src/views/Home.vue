@@ -102,8 +102,8 @@ export default {
         lorem_frases: '{{lorem(2,"sentences")}}',
         lorem_paragrafos: '{{lorem(1,"paragraphs")}}',
 	  	range: range(5),
-        range_asc: range(10,15),
-        range_desc: range(15,10),
+        range_asc: range(1,15,3),
+        range_desc: range(15,-50,-7),
 	  	string: "boas",
 	  	numero: 93,
 	  	name: {
@@ -121,7 +121,7 @@ export default {
 	  			elem: 1, 
                 indice: '{{integer(20,50)}}', 
                 lista_nested: [1,2,3], 
-                range: range(3) 
+                range: range(-5) 
             }
     	],
   		objeto: [
@@ -161,15 +161,11 @@ export default {
 
         //generated.components
         //generated.dataModel.model
-        console.log(generated)
 
         this.result = JSON.stringify(generated.dataModel.data, null, 2)
 
         var model = JSON.stringify(generated.dataModel.model, null, 2)
         var componentes = JSON.stringify(generated.components, null, 2)
-
-        console.log("Componentes :",componentes)
-        console.log("O modelo chegou:",model)
         
         var mkeys = Object.keys(generated.dataModel.model)
         var ckeys = Object.keys(generated.components)
