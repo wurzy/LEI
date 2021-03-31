@@ -1,0 +1,13 @@
+{
+  "attributes": {
+    "x": {
+      "type": "boolean",
+      "required": true
+    }
+  },
+  "collectionName": "components_bolas",
+  "info": {
+    "name": "bolas"
+  },
+  "options": {}
+}

@@ -5,47 +5,57 @@
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
    <div class="container">
-    <a class="navbar-brand" href="/">Gerador de Datasets</a>
+    <router-link to="/" class="navbar-brand">
+      Gerador de Datasets
+    </router-link>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
         <div v-if="isHome">
-          <li class="nav-item active">
-            <a class="nav-link" href="/"><font-awesome-icon icon="download"/> Gerar
-              <span class="sr-only">(current)</span>
-            </a>
-          </li>
+          <router-link to="/" class="nav-link" >
+            <li class="nav-item active">
+              <font-awesome-icon icon="download"/> Gerar<span class="sr-only">(current)</span>
+            </li>
+          </router-link>
         </div>
         <div v-else>
-          <li class="nav-item">
-            <a class="nav-link" href="/"><font-awesome-icon icon="download"/> Gerar</a>
-          </li>
+          <router-link to="/" class="nav-link" >
+            <li class="nav-item">
+              <font-awesome-icon icon="download"/> Gerar
+            </li>
+          </router-link>
         </div>
         <div v-if="isDocumentation">
-          <li class="nav-item active">
-            <a class="nav-link" href="documentacao"><font-awesome-icon icon="file-alt"/> Documentação
+          <router-link to="documentacao" class="nav-link">
+            <li class="nav-item active">
+              <font-awesome-icon icon="file-alt"/> Documentação
               <span class="sr-only">(current)</span>
-            </a>
-          </li>
+            </li>
+          </router-link>
         </div>
         <div v-else>
-          <li class="nav-item">
-            <a class="nav-link" href="documentacao"><font-awesome-icon icon="file-alt"/> Documentação</a>
-          </li>
+          <router-link to="documentacao" class="nav-link">
+            <li class="nav-item">
+              <font-awesome-icon icon="file-alt"/> Documentação
+            </li>
+          </router-link>
         </div>
         <div v-if="isAbout">
-          <li class="nav-item active">
-            <a class="nav-link" href="sobre"><font-awesome-icon icon="university"/> Sobre
+          <router-link to="sobre" class="nav-link">
+            <li class="nav-item active">
+              <font-awesome-icon icon="university"/> Sobre
               <span class="sr-only">(current)</span>
-            </a>
-          </li>
+            </li>
+          </router-link>
         </div>
         <div v-else>
-          <li class="nav-item">
-            <a class="nav-link" href="sobre"><font-awesome-icon icon="university"/> Sobre</a>
-          </li>
+          <router-link to="sobre" class="nav-link">
+            <li class="nav-item">
+              <font-awesome-icon icon="university"/> Sobre
+            </li>
+          </router-link>
         </div>
         <div>
           <li v-if="isLoggedIn" class="nav-item">
@@ -56,7 +66,7 @@
 
               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" href="#"><font-awesome-icon icon="wrench"/> Definições</a>
-                <a class="dropdown-item" href="meusmodelos"><font-awesome-icon icon="save"/> Modelos Guardados</a>
+                <router-link class="dropdown-item" to="meusmodelos"><font-awesome-icon icon="save"/> Modelos Guardados</router-link>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item" @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</a>
               </div>

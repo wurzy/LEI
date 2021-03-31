@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480s",
+      "handler": "colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480s/count",
+      "handler": "colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480s/:id",
+      "handler": "colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480s",
+      "handler": "colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480s/:id",
+      "handler": "colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480s/:id",
+      "handler": "colecao_4e018513-08fa-4b2a-8f5a-4fbbb7095480.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}
