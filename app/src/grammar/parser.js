@@ -704,7 +704,6 @@ const parser = (function() {
         peg$c359 = function(val) {
             if (queue.length > 1) { 
               val.model = {type: Array(num).fill(val.model), required: true}
-              console.log(val.data)
               val.data = chunk(val.data, queue[queue.length-1])
             }
             

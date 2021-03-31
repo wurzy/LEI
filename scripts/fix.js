@@ -7937,7 +7937,7 @@ fs.writeFile('fix.json', JSON.stringify(a, null, 2), (err) => {
     if (err) throw err;
     console.log('Data written to file');
 }); */
-var obj = {outros: null}
-console.log(obj["outros"] == undefined)
+var obj = {outros: null, boas: "ola"}
+console.log({...obj, ui: true})
 
 //console.log("França".normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase())
