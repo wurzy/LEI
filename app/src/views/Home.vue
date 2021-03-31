@@ -45,7 +45,7 @@
                 @input="onCmCodeChange"
         />
       </div>
-      <div class="col-md-6 col-md-offset-2">
+      <div class="col-md-6 col-md-offset-2 stretcher">
         <codemirror
                 ref="output"
                 :value="result"
@@ -84,7 +84,6 @@ export default {
       return {
         output_format: "JSON",
         parser: parser,
-        output_format: "XML",
         result: "",
         code: `<!LANGUAGE pt>
 {
@@ -186,7 +185,6 @@ export default {
       },
       toggleConversionType(arg){
         this.output_format = arg
-        console.log(this.output_format)
       },
       generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
