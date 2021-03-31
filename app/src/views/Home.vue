@@ -1,17 +1,24 @@
 <template>
   <div>
     <div class="row">
-      <div class="col-md-7">
-         <div class="input-group">
-          <div class="input-group-append">
-            <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="input-group" style="margin-left: -5px">
+            <div class="input-group-append">
+              <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
+            </div>
+            <div class="input-group-append">
+              <input id="saveModelButton" class="btn btn-danger float-left" type="button" value="Guardar Modelo" @click="saveModel" disabled/>
+            </div>
+            </div>
           </div>
-          <div class="input-group-append">
-            <input id="saveModelButton" class="btn btn-danger float-left" type="button" value="Guardar Modelo" @click="saveModel" disabled/>
+          <div class="col-md-6">
+            <ButtonGroup @toggleConversionType="toggleConversionType"/>
           </div>
-         </div>
+        </div>
       </div>
-      <div class="col-md-5">
+      <div class="col-md-6">
         <div class="input-group">
           <div class="input-group-prepend ">
             <span class="input-group-text" id="basic-addon1">Nome:</span>
@@ -30,7 +37,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-6 stretcher">
         <codemirror 
                 ref="input"
                 :value= "code"
@@ -52,6 +59,7 @@
 
 <script>
 import {convert} from '../grammar/convert.js'
+import ButtonGroup from '../components/ButtonGroup'
 import parser from '../grammar/parser.js'
 import axios from 'axios';
 import 'bootstrap'
@@ -67,11 +75,12 @@ import 'codemirror/mode/javascript/javascript.js'
 
 export default {
   name: 'Home',
-  props: {
-    msg: String
+  components: {
+    ButtonGroup
   },
   data() {
       return {
+        output_format: "JSON",
         parser: parser,
         result: "",
         code: `<!LANGUAGE pt>
@@ -154,6 +163,10 @@ export default {
     methods: {
       onCmCodeChange(newcode){
         this.code = newcode
+      },
+      toggleConversionType(arg){
+        this.output_format = arg
+        console.log(this.output_format)
       },
       generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
@@ -258,7 +271,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .row {margin-left: -8px; max-width: 100%; margin-bottom: 3px;}
-.col-md-5 {padding-right: 0px;}
-.col-md-6 {padding-right: 0px; height: 89vh !important;}
-.vue-codemirror{height:100%}
+.col-md-6 {padding-right: 0px;}
+.stretcher {padding-right: 0px; height: 89vh !important;}
+.vue-codemirror{height:100%;}
 </style>

@@ -32,7 +32,6 @@
 
 <script>
 import axios from 'axios'
-import $ from 'jquery';
 
 import "codemirror/theme/dracula.css";
 import 'codemirror/keymap/sublime'
