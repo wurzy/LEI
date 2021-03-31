@@ -1,7 +1,7 @@
 export default {
     soccer_clubs: [
       {
-        "country": "Germany",
+        "country": ["germany", "alemanha"],
         "clubs": [
           "Borussia Dortmund",
           "Werder Bremen",
@@ -62,7 +62,7 @@ export default {
         ]
       },
       {
-        "country": "England",
+        "country": ["england", "inglaterra"],
         "clubs": [
           "Aston Villa FC",
           "Liverpool FC",
@@ -111,7 +111,7 @@ export default {
         ]
       },
       {
-        "country": "Spain",
+        "country": ["spain", "espanha"],
         "clubs": [
           "FC Barcelona",
           "Real Sociedad",
@@ -158,7 +158,7 @@ export default {
         ]
       },
       {
-        "country": "Italy",
+        "country": ["italy","italia"],
         "clubs": [
           "Hellas Verona FC",
           "AC Milan",
@@ -183,7 +183,7 @@ export default {
         ]
       },
       {
-        "country": "Portugal",
+        "country": ["portugal"],
         "clubs": [
           "FC Porto",
           "SL Benfica",

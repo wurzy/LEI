@@ -41,7 +41,7 @@
         <codemirror 
                 ref="input"
                 :value= "code"
-                :options="cmOption"
+                :options="cmInput"
                 @input="onCmCodeChange"
         />
       </div>
@@ -49,7 +49,7 @@
         <codemirror
                 ref="output"
                 :value="result"
-                :options="cmOption"
+                :options="cmOutput"
         />
       </div>
     </div>
@@ -62,12 +62,14 @@ import {convert} from '../grammar/convert.js'
 import ButtonGroup from '../components/ButtonGroup'
 import parser from '../grammar/parser.js'
 import axios from 'axios';
+import { jsonToXml } from '../grammar/jsonToXML.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import "codemirror/theme/dracula.css";
 import 'codemirror/keymap/sublime'
 import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/mode/xml/xml.js'
 
 //import 'codemirror/addon/hint/javascript-hint.js';
 //import 'codemirror/addon/hint/show-hint.css';
@@ -82,6 +84,7 @@ export default {
       return {
         output_format: "JSON",
         parser: parser,
+        output_format: "XML",
         result: "",
         code: `<!LANGUAGE pt>
 {
@@ -141,15 +144,32 @@ export default {
     }
   ]
 }`,
-        cmOption: {
+        cmInput: {
           tabSize: 4,
           styleActiveLine: true,
           lineNumbers: true,
           line: true,
           foldGutter: true,
           styleSelectedText: true,
-          mode: 'text/javascript',
           keyMap: "sublime",
+          mode: 'text/javascript',
+          matchBrackets: true,
+          showCursorWhenSelecting: true,
+          theme: "dracula",
+          extraKeys: { "Ctrl": "autocomplete" },
+          hintOptions:{
+            completeSingle: false
+          }
+        },
+        cmOutput: {
+          tabSize: 4,
+          styleActiveLine: true,
+          lineNumbers: true,
+          line: true,
+          foldGutter: true,
+          styleSelectedText: true,
+          keyMap: "sublime",
+          mode: 'text/javascript',
           matchBrackets: true,
           showCursorWhenSelecting: true,
           theme: "dracula",
@@ -171,11 +191,20 @@ export default {
       generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
         var generated = convert(this.code,this.parser)
-
-        //generated.components
-        //generated.dataModel.model
-
-        this.result = JSON.stringify(generated.dataModel.data, null, 2)
+        console.log(generated.dataModel.data)
+        
+        if (this.output_format == "JSON") {
+          this.cmOutput.mode = 'text/javascript'
+          this.result = JSON.stringify(generated.dataModel.data, null, 2)
+        }
+        if (this.output_format == "XML") {
+          this.cmOutput.mode = 'text/xml'
+          this.result = jsonToXml(generated.dataModel.data)
+        }
+        /* if (output_format == "CSV") {
+          this.result = jsonToCsv(generated.dataModel.data)
+          this.cmOutput.mode == 'text/csv'
+        } */
 
         var model = JSON.stringify(generated.dataModel.model, null, 2)
         var componentes = JSON.stringify(generated.components, null, 2)

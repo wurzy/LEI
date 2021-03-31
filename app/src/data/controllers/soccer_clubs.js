@@ -8,9 +8,10 @@ const soccer_clubsAPI = {
     },
 
     soccer_club_from(lang, country) {
-        for (let c of clubs){
-            if (c.country.toLowerCase() === country.toLowerCase()){
-                    return c.clubs[Math.floor(Math.random() * c.clubs.length)]
+        country = country.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+        for (let c of clubs) {
+            for (let i = 0; i < c.country.length; i++) {
+                if (c.country[i] == country) return c.clubs[Math.floor(Math.random() * c.clubs.length)]
             }
         }
     }

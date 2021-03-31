@@ -103,11 +103,17 @@
   function fillArray(api, sub_api, moustaches, args) {
     var arr = []
 
-    if (moustaches == "random" && uniq_queue[uniq_queue.length-1]) {
+    if (moustaches == "random" && uniq_queue[uniq_queue.length-1] != null) {
       for (let i = 0; i < queue_prod; i++) {
-        var rand = genAPI[moustaches](args[0]); arr.push(rand)
-        args[0].splice(args[0].indexOf(rand), 1)
-        if (!args[0].length) break
+        var arg = lodash.cloneDeep(args[0])
+        var elem = []
+
+        for (let j = 0; j < uniq_queue[uniq_queue.length-1]; j++) {
+          var rand = genAPI[moustaches](arg); elem.push(rand)
+          arg.splice(arg.indexOf(rand), 1)
+          if (!arg.length) break
+        }
+        arr.push(elem)
       }
     }
     else {
@@ -363,10 +369,7 @@ generic_key
 pparty_type
   = ws quotation_mark ws arg:(("name") / ("abbr")) ws quotation_mark ws { return arg }
 
-soccer_club_nationality
-  = ws quotation_mark ws nat:(([Gg]"ermany") / ([Ee]"ngland") / ([Ss]"pain") / ([Ii]"taly") / ([Pp]"ortugal")) ws quotation_mark ws { return nat.join("") }
-
-place_name
+string_arg
   = ws quotation_mark chars:[^"]* quotation_mark ws { return chars.flat().join("").trim() }
 
 place_label
@@ -511,13 +514,13 @@ gen_moustaches
   
 api_moustaches
   = simple_api_key
-  / "pt_county(" district:place_name ")" {
+  / "pt_county(" district:string_arg ")" {
     return {
       model: {type: "string", required: true},
       data: fillArray("data", "pt_districts", "pt_countyFromDistrict", [district])
     }
   }
-  / "pt_parish(" keyword:place_label "," name:place_name ")" {
+  / "pt_parish(" keyword:place_label "," name:string_arg ")" {
     var moustaches = keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict"
     return {
       model: {type: "string", required: true},
@@ -539,7 +542,7 @@ api_moustaches
     }
   }
   / "political_party(" ws args:( t:pparty_type {return [t]}
-                            / (country:place_name type:("," t:pparty_type {return t})? {return type == null ? [country] : [country,type]}))? ")" {
+                            / (country:string_arg type:("," t:pparty_type {return t})? {return type == null ? [country] : [country,type]}))? ")" {
     var objectType = true, moustaches, model = {
       type: {
         party_abbr: {type: "string", required: true},
@@ -564,11 +567,11 @@ api_moustaches
 
     return { objectType, model, data: fillArray("data", "political_parties", moustaches, !args ? [] : args) }
   }
-  / "soccer_club(" ws arg:soccer_club_nationality? ")" {
+  / "soccer_club(" ws arg:string_arg? ")" {
     var moustaches = !arg ? "soccer_club" : "soccer_club_from"
     return {
       model: {type: "string", required: true},
-      data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg])
+      data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg.toLowerCase()])
     }
   }
 
@@ -579,7 +582,7 @@ directive
   / range
 
 repeat
-  = begin_array repeat_signature repeat_args ws ":" ws val:value_or_interpolation end_array {
+  = begin_array repeat_signature ws ":" ws val:value_or_interpolation end_array {
     if (queue.length > 1) { 
       val.model = {type: Array(num).fill(val.model), required: true}
       val.data = chunk(val.data, queue[queue.length-1])
@@ -592,11 +595,10 @@ repeat
     return val
   }
 
-repeat_signature = "'" ws "repeat" unique:"_unique"? ws { uniq_queue.push(unique != null) }
-
-repeat_args
-  = "(" ws min:int ws max:("," ws m:int ws { return m })? ")" ws "'" {
+repeat_signature 
+  = "'" ws "repeat" unique:"_unique"? "(" ws min:int ws max:("," ws m:int ws { return m })? ")" ws "'" {
     var num = max === null ? min : Math.floor(Math.random() * (max - min + 1)) + min
+    uniq_queue.push(unique != null ? num : null)
     queue_prod *= num; queue.push(num)
   }
 
