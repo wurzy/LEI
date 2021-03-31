@@ -54,12 +54,14 @@
 import {convert} from '../grammar/convert.js'
 import parser from '../grammar/parser.js'
 import axios from 'axios';
+import { jsonToXml } from '../grammar/jsonToXML.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import "codemirror/theme/dracula.css";
 import 'codemirror/keymap/sublime'
 import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/mode/xml/xml.js'
 
 //import 'codemirror/addon/hint/javascript-hint.js';
 //import 'codemirror/addon/hint/show-hint.css';
@@ -161,8 +163,10 @@ export default {
 
         //generated.components
         //generated.dataModel.model
+        console.log(generated.dataModel.data)
+        this.result = jsonToXml(generated.dataModel.data)
 
-        this.result = JSON.stringify(generated.dataModel.data, null, 2)
+        //this.result = JSON.stringify(generated.dataModel.data, null, 2)
 
         var model = JSON.stringify(generated.dataModel.model, null, 2)
         var componentes = JSON.stringify(generated.components, null, 2)

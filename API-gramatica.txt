@@ -74,7 +74,6 @@ POR IMPLEMENTAR:
 -> restrição: no nível superior é preciso tem um repeat para definir cada coleção
 
 - map, filter, reduce
-- datasets pt/en
 - lista de erros para apresentar de maneira user-friendly no vue
 - XML/CSV
 
@@ -83,16 +82,6 @@ POR IMPLEMENTAR:
 --------------------------------------------------------
 
 PROGRESSO DESTA SEMANA:
-
-- funções
-- randoms com garantia de não repetir elementos
-- modelo de strapi com a filipa
-- range a la Python
-
-
-- exportar modelo
-- exportar bd
-- exportar rotina que importe as bds no strapi
 
 
 
@@ -147,3 +136,9 @@ PROGRESSO DESTA SEMANA:
 - otimizar a estrutura da gramática
 - versão inicial das propriedades com código
 - suporte pt/en dos datasets
+
+- range a la Python
+- datasets pt/en
+- funções
+- randoms com garantia de não repetir elementos
+- modelo de strapi com a filipa

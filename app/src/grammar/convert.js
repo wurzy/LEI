@@ -6,6 +6,4 @@ function convert(text,parser) {
     return parser.parse(text)
 }
 
-module.exports = {
-    convert
-}
+module.exports = { convert }

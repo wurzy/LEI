@@ -99,8 +99,7 @@ var novo = {
       "Partido Popular Cristão [Daens]",
       "Partido Popular Cristão Flamengo | Democratas Cristãos e Flamengos",
       "Democratas Cristãos",
-      "Belgas",
-      "Levantem-se!",
+      "Belgas, Levantem-se!",
       "Ecologistas Confederados para a Organização das Lutas Originais",
       "Frente Democrática Francófona",
       "Frente Nacional",
@@ -110,8 +109,7 @@ var novo = {
       "Partido Comunista",
       "Partido Popular Flamengo Católico",
       "Listas Católicas",
-      "Lista Dedecker | Libertária",
-      "Direto",
+      "Lista Dedecker | Libertária, Direta, Democrática",
       "Partido Liberal",
       "Movimento Cidadão para a Mudança",
       "Movimento Reformista",
@@ -125,7 +123,7 @@ var novo = {
       "Partido da Liberdade e do Progresso | Partido Liberal e Democrático Flamengo",
       "Partido Popular",
       "Reformistas Radicais Lutando por uma Sociedade Verdadeira",
-      "Rally da Valônia",
+      "Rally da Valónia",
       "Partido Rexist",
       "Respeito pelo Trabalho",
       "Partido Socialista",
@@ -153,8 +151,7 @@ var novo = {
       "Alternativa Democrática para a República",
       "Sim, Bulgária!",
       "Movimento do Dia de George",
-      "Democratas pela Responsabilidade",
-      "Solidariedade e Tolerância",
+      "Democratas pela Responsabilidade, Solidariedade e Tolerância",
       "Partido Democrático",
       "Movimento pelos Direitos e Liberdades",
       "Democratas por uma Bulgária Forte",
@@ -1599,7 +1596,6 @@ var novo = {
       "Partido da Juventude",
       "Partido da Democracia Popular",
       "Partido Democrático Popular",
-      "Partido Democrata Popular",
       "Partido Iyi",
       "Partido Nacionalista Democrático",
       "Partido da Acção Nacional",
@@ -1612,7 +1608,7 @@ var novo = {
 
 var arr = [
     {
-      "country": "Australia",
+      "country": ["australia"],
       "parties": [
         {
           "party_abbr": "ACP-V",
@@ -1801,7 +1797,7 @@ var arr = [
       ]
     },
     {
-      "country": "Austria",
+      "country": ["austria"],
       "parties": [
         {
           "party_abbr": "ALO",
@@ -1954,7 +1950,7 @@ var arr = [
       ]
     },
     {
-      "country": "Belgium",
+      "country": ["belgium", "belgica"],
       "parties": [
         {
           "party_abbr": "AGL-Gr",
@@ -2135,7 +2131,7 @@ var arr = [
       ]
     },
     {
-      "country": "Bulgaria",
+      "country": ["bulgaria"],
       "parties": [
         {
           "party_abbr": "ABV",
@@ -2340,7 +2336,7 @@ var arr = [
       ]
     },
     {
-      "country": "Canada",
+      "country": ["canada"],
       "parties": [
         {
           "party_abbr": "BPC",
@@ -2425,7 +2421,7 @@ var arr = [
       ]
     },
     {
-      "country": "Switzerland",
+      "country": ["switzerland", "suica"],
       "parties": [
         {
           "party_abbr": "BDP",
@@ -2550,7 +2546,7 @@ var arr = [
       ]
     },
     {
-      "country": "Cyprus",
+      "country": ["cyprus", "chipre"],
       "parties": [
         {
           "party_abbr": "ADISOK",
@@ -2659,7 +2655,7 @@ var arr = [
       ]
     },
     {
-      "country": "Czech Republic",
+      "country": ["czech republic", "republica checa"],
       "parties": [
         {
           "party_abbr": "ANO",
@@ -2836,7 +2832,7 @@ var arr = [
       ]
     },
     {
-      "country": "Germany",
+      "country": ["germany", "alemanha"],
       "parties": [
         {
           "party_abbr": "AfD",
@@ -3057,7 +3053,7 @@ var arr = [
       ]
     },
     {
-      "country": "Denmark",
+      "country": ["denmark", "dinamarca"],
       "parties": [
         {
           "party_abbr": "A",
@@ -3214,7 +3210,7 @@ var arr = [
       ]
     },
     {
-      "country": "Spain",
+      "country": ["spain", "espanha"],
       "parties": [
         {
           "party_abbr": "AIC",
@@ -3419,7 +3415,7 @@ var arr = [
       ]
     },
     {
-      "country": "Estonia",
+      "country": ["estonia"],
       "parties": [
         {
           "party_abbr": "E200",
@@ -3576,7 +3572,7 @@ var arr = [
       ]
     },
     {
-      "country": "Finland",
+      "country": ["finland", "finlandia"],
       "parties": [
         {
           "party_abbr": "AS",
@@ -3709,7 +3705,7 @@ var arr = [
       ]
     },
     {
-      "country": "France",
+      "country": ["france", "franca"],
       "parties": [
         {
           "party_abbr": "AC",
@@ -3978,7 +3974,7 @@ var arr = [
       ]
     },
     {
-      "country": "United Kingdom",
+      "country": ["united kingdom", "reino unido", "england", "inglaterra"],
       "parties": [
         {
           "party_abbr": "APoNI",
@@ -4159,7 +4155,7 @@ var arr = [
       ]
     },
     {
-      "country": "Greece",
+      "country": ["greece", "grecia"],
       "parties": [
         {
           "party_abbr": "AASA",
@@ -4336,7 +4332,7 @@ var arr = [
       ]
     },
     {
-      "country": "Croatia",
+      "country": ["croatia", "croacia"],
       "parties": [
         {
           "party_abbr": "AM",
@@ -4497,7 +4493,7 @@ var arr = [
       ]
     },
     {
-      "country": "Hungary",
+      "country": ["hungary", "hungria"],
       "parties": [
         {
           "party_abbr": "ASZ",
@@ -4590,7 +4586,7 @@ var arr = [
       ]
     },
     {
-      "country": "Ireland",
+      "country": ["ireland", "irlanda"],
       "parties": [
         {
           "party_abbr": "A",
@@ -4747,7 +4743,7 @@ var arr = [
       ]
     },
     {
-      "country": "Iceland",
+      "country": ["iceland", "islandia"],
       "parties": [
         {
           "party_abbr": "A",
@@ -4908,7 +4904,7 @@ var arr = [
       ]
     },
     {
-      "country": "Israel",
+      "country": ["israel"],
       "parties": [
         {
           "party_abbr": "AE",
@@ -5265,7 +5261,7 @@ var arr = [
       ]
     },
     {
-      "country": "Italy",
+      "country": ["italy", "italia"],
       "parties": [
         {
           "party_abbr": "+EU",
@@ -5606,7 +5602,7 @@ var arr = [
       ]
     },
     {
-      "country": "Japan",
+      "country": ["japan", "japao"],
       "parties": [
         {
           "party_abbr": "CoP",
@@ -5763,7 +5759,7 @@ var arr = [
       ]
     },
     {
-      "country": "Lithuania",
+      "country": ["lithuania", "lituania"],
       "parties": [
         {
           "party_abbr": "DK",
@@ -5960,7 +5956,7 @@ var arr = [
       ]
     },
     {
-      "country": "Luxembourg",
+      "country": ["luxembourg", "luxemburgo"],
       "parties": [
         {
           "party_abbr": "AR|ADR",
@@ -6105,7 +6101,7 @@ var arr = [
       ]
     },
     {
-      "country": "Latvia",
+      "country": ["latvia", "letonia"],
       "parties": [
         {
           "party_abbr": "DCP",
@@ -6310,7 +6306,7 @@ var arr = [
       ]
     },
     {
-      "country": "Malta",
+      "country": ["malta"],
       "parties": [
         {
           "party_abbr": "AD",
@@ -6367,7 +6363,7 @@ var arr = [
       ]
     },
     {
-      "country": "Netherlands",
+      "country": ["netherlands", "paises baixos"],
       "parties": [
         {
           "party_abbr": "50+",
@@ -6564,7 +6560,7 @@ var arr = [
       ]
     },
     {
-      "country": "Norway",
+      "country": ["norway", "noruega"],
       "parties": [
         {
           "party_abbr": "A",
@@ -6661,7 +6657,7 @@ var arr = [
       ]
     },
     {
-      "country": "New Zealand",
+      "country": ["new zealand", "nova zelandia"],
       "parties": [
         {
           "party_abbr": "A",
@@ -6786,7 +6782,7 @@ var arr = [
       ]
     },
     {
-      "country": "Poland",
+      "country": ["poland", "polonia"],
       "parties": [
         {
           "party_abbr": "AWS",
@@ -6999,7 +6995,7 @@ var arr = [
       ]
     },
     {
-      "country": "Portugal",
+      "country": ["portugal"],
       "parties": [
         {
           "party_abbr": "A",
@@ -7136,7 +7132,7 @@ var arr = [
       ]
     },
     {
-      "country": "Romania",
+      "country": ["romania", "romenia"],
       "parties": [
         {
           "party_abbr": "ALDE",
@@ -7321,7 +7317,7 @@ var arr = [
       ]
     },
     {
-      "country": "Slovakia",
+      "country": ["slovakia", "eslovaquia"],
       "parties": [
         {
           "party_abbr": "KDZP",
@@ -7554,7 +7550,7 @@ var arr = [
       ]
     },
     {
-      "country": "Slovenia",
+      "country": ["slovenia", "eslovenia"],
       "parties": [
         {
           "party_abbr": "AS",
@@ -7743,7 +7739,7 @@ var arr = [
       ]
     },
     {
-      "country": "Sweden",
+      "country": ["sweden", "suecia"],
       "parties": [
         {
           "party_abbr": "C",
@@ -7840,7 +7836,7 @@ var arr = [
       ]
     },
     {
-      "country": "Turkey",
+      "country": ["turkey", "turquia"],
       "parties": [
         {
           "party_abbr": "AKP",
@@ -7910,16 +7906,38 @@ var arr = [
     }
   ]
 
-var a = {}
+var a = []
+var i = 0
+/* for (var prop in novo) console.log(novo[prop].length)
+console.log("--------------------------")
+arr.forEach(b => console.log(b.parties.length)) */
+/* for (var prop in novo) {
+    var part = []
+    var j = 0
+    arr[i].parties.forEach(p => {
+      part.push({
+        party_abbr: p.party_abbr,
+        party_name: {
+          pt: novo[prop][j++],
+          en: p.party_name
+        }
+      })
+    })
+      a.push({
+        country: arr[i].country,
+        parties: part
+      })
+      i++
+      //a[b.country] = b.parties.map(a => a.party_name);
+}
 
-arr.forEach(b => {
-    a[b.country].party_abbr = b.
-    a[b.country] = b.parties.map(a => a.party_name);
-})
+console.log(JSON.stringify(a))
 
-console.log(a)
-
-/* fs.writeFile('fix.json', JSON.stringify(obj, null, 2), (err) => {
+fs.writeFile('fix.json', JSON.stringify(a, null, 2), (err) => {
     if (err) throw err;
     console.log('Data written to file');
 }); */
+var obj = {outros: null}
+console.log(obj["outros"] == undefined)
+
+//console.log("França".normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase())
