@@ -750,7 +750,7 @@ const parser = (function() {
             var dataModel = !queue.length ? {} : {component: true}
             var model = {attributes: {}}
             for (let i = 0; i < data.length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
-            
+
             dataModel.data = data
             dataModel.model = model
             return dataModel
@@ -758,19 +758,9 @@ const parser = (function() {
         peg$c391 = function(init, end, s) { return s },
         peg$c392 = function(init, end, step) { return {end, step}},
         peg$c393 = function(init, args) {
-            var end, step, range = []
-
-            if (!args) {
-              end = init; init = 0
-              step = init < end ? 1 : -1
-            }
-            else {
-              end = args.end
-              step = args.step === null ? (init < end ? 1 : -1) : args.step
-            }
-
-            for (let i = init; (init < end) ? i < end : i > end; i += step) range.push(i)
-            return Array(queue_prod).fill(range)
+            var end = !args ? null : args.end
+            var step = (!args || args.step == null) ? null : args.step
+            return fillArray("gen", null, "range", [init, end, step])
           },
         peg$c394 = "missing",
         peg$c395 = peg$literalExpectation("missing", false),
@@ -7399,6 +7389,10 @@ const parser = (function() {
           }
           if (key == "lorem") { args[1] = trimArg(args[1],true); join = args.join(",") }
           if (key == "random") join = '[' + join + ']'
+          if (key == "range") {
+            if (args.length == 1) join = [args[0],"null","null"].join(",")
+            if (args.length == 2) join = [args[0],args[1],"null"].join(",")
+          }
           path = "genAPI." + key
         }
         else if (key == "political_party") {

@@ -36,6 +36,10 @@
       }
       if (key == "lorem") { args[1] = trimArg(args[1],true); join = args.join(",") }
       if (key == "random") join = '[' + join + ']'
+      if (key == "range") {
+        if (args.length == 1) join = [args[0],"null","null"].join(",")
+        if (args.length == 2) join = [args[0],args[1],"null"].join(",")
+      }
       path = "genAPI." + key
     }
     else if (key == "political_party") {
@@ -609,19 +613,9 @@ range
 
 range_args
   = init:int_neg args:(ws "," ws end:int_neg step:(ws "," ws s:int_neg { return s })? { return {end, step}})? {
-    var end, step, range = []
-
-    if (!args) {
-      end = init; init = 0
-      step = init < end ? 1 : -1
-    }
-    else {
-      end = args.end
-      step = args.step === null ? (init < end ? 1 : -1) : args.step
-    }
-
-    for (let i = init; (init < end) ? i < end : i > end; i += step) range.push(i)
-    return Array(queue_prod).fill(range)
+    var end = !args ? null : args.end
+    var step = (!args || args.step == null) ? null : args.step
+    return fillArray("gen", null, "range", [init, end, step])
   }
 
 probability
