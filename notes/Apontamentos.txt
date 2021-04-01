@@ -6,3 +6,19 @@ npm run serve
 
 COMANDOS VUE UTEIS
 <router-link to="About">about</router-link>
+
+
+TODO LIST
+
+///FIXES///
+- Colocar a blacklist a remover tokens expirados;
+- Meter tokens na parte do cunha
+- Meter como variaveis a parte do cunha em vez de html injections
+- Meter o guardar modelos funcional
+- Tirar a projeçao das componentes dos modelos
+
+///NEW///
+(https://stackoverflow.com/questions/55420366/vuetify-css-crushes-bootstrap-css)
+- Paginaçao nos modelos gravados
+- Lista de modelos
+- Paginaçao na lista de modelos
