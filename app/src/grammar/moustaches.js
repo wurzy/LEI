@@ -40,18 +40,21 @@ function guid() {
 function boolean() { return Math.random() < 0.5 }
 
 function integer(min, max, unit) {
-    if (!unit) return Math.floor(Math.random() * (min - max + 1) + max)
-    return String(Math.floor(Math.random() * (max - min + 1) + min)) + unit
+    var rand = Math.floor(Math.random() * (min - max + 1) + max)
+    return unit == null ? rand : (rand + unit)
 }
 
 function floating(min, max, decimals, format) {
     decimals = decimals == undefined ? getDecimalsCount(min,max) : decimals
     var random = min + (max - min) * Math.random();
     var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
-
+  
     if (!(format == undefined || format == null)) {
         var split = formatNumber(String(rounded)).split('.')
-        rounded = split[0].replace(/,/g, format[1]) + format[3] + split[1] + format[6]
+        rounded = split[0].replace(/,/g, format[1])
+  
+        if (split[1] != undefined) rounded += format[3] + split[1] 
+        if (format.length == 7) rounded += format[6]
     }
     return rounded
 }

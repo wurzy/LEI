@@ -1,7943 +1,5636 @@
-var fs = require('fs');
-var arr = require('./fix.json')
-
-var novo = {
-    "Australia": [
-      "Partido Nacional Australiano (Vic)",
-      "Democratas Australianos",
-      "Verdes Australianos",
-      "Partido Trabalhista Australiano",
-      "Partido da Austrália",
-      "Aliança",
-      "Partido Democrático Cristão",
-      "Partido Liberal da Comunidade",
-      "Partido Nacional do País (Qld)",
-      "Partido Comunista da Austrália",
-      "Partido Progressista do País (Vic)",
-      "Partido Liberal do País",
-      "Partido Trabalhista Democrático",
-      "Comité de Emergência (SA)",
-      "Partido da Família Primeiro",
-      "Agricultores e Colonos (NSW)",
-      "Partido do Comércio Livre",
-      "Partido Nacionalista Independente",
-      "Partido Protecionista Independente (Vic)",
-      "UAP Independente (NSW)",
-      "Partido Australiano de Katter",
-      "Liga Liberal e Rural",
-      "Partido do País Liberal (Vic)",
-      "Partido Liberal Democrático (Nova Gales do Sul)",
-      "Partido Trabalhista de Lang",
-      "Partido Nacional Liberal de Queensland",
-      "Partido Liberal",
-      "Partido Liberal da Austrália",
-      "Partido Nacionalista da Austrália",
-      "Partido Nacionalista",
-      "Partido Nacional (País) | Partido Nacional da Austrália",
-      "Partido Nacionalista e Agricultores (NSW)",
-      "Partido Nacional Trabalhista",
-      "Equipa do Nick Xenophon",
-      "Partido de Nação Única",
-      "Um Parlamento pela Austrália",
-      "Partido Protecionista",
-      "Partido Palmer United",
-      "Partido do País de Queensland",
-      "Partido do Crédito Social",
-      "Partido do Trabalho Estatal (NSW)",
-      "Partido dos Serviços da Austrália",
-      "Partido da Austrália Unida",
-      "Partido do País Vitoriano",
-      "União dos Agricultores Vitorianos",
-      "Partido Oeste-Australiano"
-    ],
-    "Austria": [
-      "Lista Alternativa da Áustria",
-      "Democratas Centristas",
-      "Aliança pelo Futuro da Áustria",
-      "Aliança Social Cristã (Lista de Karl Habsburg)",
-      "Democratas-Alemães",
-      "Partido Progressivo Democrático",
-      "Nacionais-Alemães",
-      "Partido Socialista Nacional dos Trabalhadores",
-      "Os Independentes -- Lista de Lugner",
-      "Partido do Povo Alemão",
-      "Retirada da UE, Democracia Direta, Neutralidade",
-      "Partido da Liberdade da Áustria",
-      "Fórum dos Cidadãos Áustria",
-      "Grande Partido do Povo Alemão",
-      "Partido Alemão da Liberdade e Ordem",
-      "O Meu Voto Conta!",
-      "Os Verdes -- Alternativa Verde",
-      "Bloco de Pátria",
-      "Associação de Agricultores da Caríntia",
-      "Partido Comunista da Áustria",
-      "Federação Rural",
-      "Fórum Liberal",
-      "Lista de Hans-Peter Martin",
-      "Iniciativa dos cidadãos para a Manutenção da Neutralidade",
-      "Partido Democrata Nacional",
-      "NEOS -- A Nova Áustria",
-      "No -- Iniciativa dos Cidadões contra a Adesão à UE",
-      "Partido do Povo Austríaco",
-      "JETZT -- Lista de Pilz",
-      "Os Conservadores da Reforma",
-      "Partido dos Agricultores da Estíria",
-      "Partido Social-Democrata da Áustria",
-      "Checoslovacos",
-      "Equipa Stronach",
-      "Udeverband, Associação contra a Corrupção",
-      "Verdes Unidos Áustria",
-      "Bloco económico"
-    ],
-    "Belgium": [
-      "Agalev -- Verde",
-      "Partido Socialista Belga",
-      "Partido Trabalhista Belga",
-      "Dissidentes Católicos",
-      "Democratas-Cristãos e Flamengos / Nova Aliança Flamenga",
-      "Partido Social Cristão",
-      "Partido Popular Cristão [Daens]",
-      "Partido Popular Cristão Flamengo | Democratas Cristãos e Flamengos",
-      "Democratas Cristãos",
-      "Belgas, Levantem-se!",
-      "Ecologistas Confederados para a Organização das Lutas Originais",
-      "Frente Democrática Francófona",
-      "Frente Nacional",
-      "Partido da Frente | União Nacional Flamenga",
-      "Cartel de Liberais e Socialistas",
-      "Partido Católico",
-      "Partido Comunista",
-      "Partido Popular Flamengo Católico",
-      "Listas Católicas",
-      "Lista Dedecker | Libertária, Direta, Democrática",
-      "Partido Liberal",
-      "Movimento Cidadão para a Mudança",
-      "Movimento Reformista",
-      "Nova Aliança Flamenga",
-      "Partido dos Trabalhadores da Bélgica",
-      "Partido Liberal [Região de Bruxelas]",
-      "Partido Liberal Reformista",
-      "Partido Socialista [Francófono]",
-      "Partido Socialista Cristão Francófono -- Centro Humanista Democrático",
-      "Partido Social Cristão Francófono e Partido Popular Cristão Flamengo",
-      "Partido da Liberdade e do Progresso | Partido Liberal e Democrático Flamengo",
-      "Partido Popular",
-      "Reformistas Radicais Lutando por uma Sociedade Verdadeira",
-      "Rally da Valónia",
-      "Partido Rexist",
-      "Respeito pelo Trabalho",
-      "Partido Socialista",
-      "Partido Socialista Diferente / Partido Social Liberal",
-      "Espírito",
-      "União Democrática Belga",
-      "Vivos",
-      "Bloco Flamengo",
-      "União Popular",
-      "Envelhecendo em Dignidade"
-    ],
-    "Bulgaria": [
-      "Alternativa para o Renascimento da Bulgária",
-      "Ataque",
-      "Bloco Empresarial Búlgaro",
-      "Bulgária Sem Censura",
-      "Coligação Euro-Esquerda",
-      "Movimento dos Cidadãos da Bulgária",
-      "Partido Radical Nacional Búlgaro",
-      "União Popular Búlgara",
-      "Partido Socialista Búlgaro",
-      "União Nacional Agrária Búlgara",
-      "Liberdade de Centro e Dignidade",
-      "Movimento 21",
-      "Alternativa Democrática para a República",
-      "Sim, Bulgária!",
-      "Movimento do Dia de George",
-      "Democratas pela Responsabilidade, Solidariedade e Tolerância",
-      "Partido Democrático",
-      "Movimento pelos Direitos e Liberdades",
-      "Democratas por uma Bulgária Forte",
-      "Euroroma",
-      "Confederação do Reino da Bulgária",
-      "Cidadãos para o Desenvolvimento Europeu da Bulgária",
-      "Voz Popular",
-      "Independentes -- Mincho Kuminev",
-      "Partido Comunista da Bulgária",
-      "Coligação da Rosa",
-      "Coligação Simeão II",
-      "Coligação para a Bulgária | Esquerda Democrática",
-      "Lider",
-      "Movimento Nacional Simeão II",
-      "Frente Nacional para a Salvação da Bulgária",
-      "Novos Tempos",
-      "Forças Democráticas Unidas",
-      "União para Tzar [Simeão II]",
-      "Partido dos Social-Democratas Búlgaros",
-      "Clube Político \"Ecoglasnost\"",
-      "União Patriótica",
-      "Renascimento",
-      "Bloco Reformador",
-      "Ordem, Legalidade e Justiça",
-      "União das Forças Democráticas",
-      "União das Forças Democráticas -- Liberal",
-      "União das Forças Democráticas -- Centro",
-      "Coligação Azul",
-      "União \"Nova Escolha\"",
-      "IMRO -- Movimento Nacional Búlgaro",
-      "Vontade",
-      "União Popular Agrária",
-      "Partido Verde da Bulgária",
-      "União Agrária"
-    ],
-    "Canada": [
-      "Bloc Populaire Canadien",
-      "Bloc Quebec",
-      "Federação Cooperativa da Comunidade | Novo Partido Democrático",
-      "Partido Conservador do Canadá",
-      "Partido Comunista (Trabalhista-Progressivo)",
-      "Partido Verde do Canadá",
-      "Partido Trabalhista",
-      "Partido Liberal-Progressivo",
-      "Partido Liberal-Laboral",
-      "Partido Liberal do Canadá",
-      "Partido Nacional do Canadá",
-      "Partido Conservador Progressivo do Canadá",
-      "Partido Popular do Canadá",
-      "Partido Progressista do Canadá",
-      "Partido do Rinoceronte",
-      "Partido da Reconstrução do Canadá",
-      "Partido da Reforma do Canadá",
-      "Rally Social de Crédito",
-      "Partido do Crédito Social do Canadá",
-      "União dos Eleitores"
-    ],
-    "Switzerland": [
-      "Partido Democrático Conservador da Suíça",
-      "Movimento dos Jovens Camponeses",
-      "Partido Social Cristão",
-      "Grupo Democrático",
-      "União Democrática Federal da Suíça",
-      "Acordo Jura",
-      "Partido dos Povos Protestantes",
-      "Partido Democrático Radical",
-      "Grupos Feministas e Verdes-Alternativos",
-      "Partido Automóvel | Partido da Liberdade da Suíça",
-      "Partido Liberal Verde",
-      "Sociedade Grutli",
-      "Verdes",
-      "Comité Herbert Maeder",
-      "Partido Conservador Católico / Partido Popular Democrata-Cristão",
-      "Partido Liberal Socialista",
-      "Partido Liberal da Suíça",
-      "Liga do Ticino",
-      "Aliança dos Independentes",
-      "Movimento dos Cidadãos de Genebra",
-      "Ação Nacional -- Democratas Suíços",
-      "Organizações Progressistas da Suíça",
-      "Partido Socialista Autónomo",
-      "Partido Suíço do Trabalho",
-      "Movimento Republicano",
-      "Solidariedade",
-      "Partido Social-Democrata da Suíça",
-      "Partido do Povo Suíço",
-      "União Nacional",
-      "Vigilantes"
-    ],
-    "Cyprus": [
-      "Movimento de Renovação Socialista Democrática",
-      "Movimento de Luta Democrática",
-      "Partido Progressista dos Trabalhadores",
-      "Partido Democrata",
-      "Rally Democrático",
-      "Alinhamento Democrático",
-      "Democratas Unidos",
-      "Movimento para a Social Democracia EDEK",
-      "Partido Europeu",
-      "Frente Popular Nacional",
-      "Centro da União",
-      "Pela Europa",
-      "Grego",
-      "Independente -- Levante Sener",
-      "Movimento Cidadão Livre",
-      "Partido Animal de Chipre",
-      "Movimento Solidariedade",
-      "Movimento Ecológico e Ambiental",
-      "Partido Liberal",
-      "Mensagem de Esperança",
-      "Nova Frente Democrática",
-      "Novos Horizontes",
-      "Frente Militante Pancypriot",
-      "Aliança dos Cidadãos",
-      "Turco",
-      "Movimento Jasmim"
-    ],
-    "Czech Republic": [
-      "Acção de Cidadãos Insatisfeitos",
-      "Sim, Vamos Trolar o Parlamento Europeu",
-      "Partido Nacional Social(ista) Checo",
-      "Partido Social Democrático Checo",
-      "Partido dos Trabalhadores da Justiça Social",
-      "União Democrática",
-      "Pensionistas para uma vida segura",
-      "Partido Democrático Europeu",
-      "Voz",
-      "Movimento para a Democracia Autónoma -- Sociedade para a Morávia e Silésia",
-      "Movimento pela Justiça Social",
-      "Clube de Membros Não-Partidários Comprometidos",
-      "Partido Democrata Cristão",
-      "União Democrata Cristã - Partido Popular",
-      "Partido Comunista da Checoslováquia",
-      "Partido Comunista da Boémia e Morávia",
-      "Bloco de Esquerda",
-      "LIDEM -- Democratas Liberais",
-      "União Social Liberal",
-      "Iniciativa Independente",
-      "Independente",
-      "Aliança Cívica Democrática",
-      "Partido Democrático Cívico",
-      "Fórum Cívico",
-      "Movimento Cívico | Democratas Livres",
-      "Bloco de Direita",
-      "Partido dos Piratas Checos",
-      "Soberania -- Bloco de Jana Bobosikova",
-      "Bloco Livre",
-      "Partido Checoslovaco dos Empresários, Comerciantes e Agricultores",
-      "SNK -- Democratas Europeus",
-      "Freedom and Direct Democracy -- Tomio Okamura",
-      "Partido dos Direitos Cívicos -- Zemanovci",
-      "Partido dos Amigos da Cerveja",
-      "Comício para a República -- Partido Republicano da Checoslováquia",
-      "Partido dos Cidadãos Livres",
-      "Presidentes de Câmara e Independentes",
-      "Partido Verde",
-      "Aliança dos Agricultores e do Campo",
-      "Tradição Responsabilidade Prosperidade 09",
-      "Alvorada da Democracia Directa",
-      "União da Liberdade",
-      "Assuntos Públicos"
-    ],
-    "Germany": [
-      "Alternativa para a Alemanha",
-      "Aliança 90 / Verdes -- Movimento dos Cidadãos",
-      "Aliança 90 / Verdes",
-      "Liga dos Camponeses da Baviera",
-      "Confederação de Cidadãos Livres -- Ofensiva para a Alemanha",
-      "Federação Rural de Baden",
-      "Partido da Baviera",
-      "Partido do Povo da Baviera",
-      "Associação de Agricultores e Viticultores",
-      "União Cristã Democrática",
-      "União Cristã Democrática / União Social Cristã",
-      "Grupo de Trabalhadores Nacional Cristão",
-      "Partido Cristão-Nacional dos Camponeses e Agricultores",
-      "União Social Cristã",
-      "Serviço Social Cristão do Povo",
-      "Partido dos Agricultores Alemães",
-      "Partido Democrata Alemão",
-      "União Alemã de Paz",
-      "Partido Germano-Hanoveriano",
-      "Partido Nacional do Povo Alemão",
-      "Partido Alemão",
-      "Partido do Reich Alemão",
-      "Partido Social Alemão",
-      "Partido do Povo Alemão",
-      "União do Povo Alemão",
-      "Partido do Centro",
-      "Partido Democrata Livre",
-      "Partido das Pessoas Livres",
-      "Votantes Livres",
-      "Partido Familiar da Alemanha",
-      "Aliança de Paz",
-      "Bloco Totalmente Alemão / Liga dos Expulsos e Privados de Direitos",
-      "Partido Totalmente Alemão",
-      "Partido do Povo Totalmente Alemão",
-      "Os Cinzentos -- Panteras Cinzentas",
-      "Federação de Agricultores de Hesse",
-      "Partido Comunista da Alemanha",
-      "Partido Conservador dos Povos",
-      "Federação Rural da Turíngia",
-      "Partido Nacional Democrático",
-      "Partido Nacional Socialista dos Trabalhadores Alemães",
-      "Partido Democrático Ecológico",
-      "O PARTIDO",
-      "PDS | A Esquerda",
-      "Partido dos Piratas Alemães",
-      "Os Republicanos",
-      "Camponeses Saxões",
-      "Partido Social Democrata da Alemanha",
-      "Partido de Proteção Animal",
-      "Partido Social Democrata Independente da Alemanha",
-      "Partido do Reich pelos Direitos Cívicos e Deflação",
-      "Trabalho e Justiça Social -- A Alternativa Eleitoral",
-      "Liga para a Reconstrução Económica",
-      "Partido Económico"
-    ],
-    "Denmark": [
-      "A Alternativa",
-      "Solidariedade (Gronelândia)",
-      "Partido dos Agricultores",
-      "Democratas do Centro",
-      "Partido dos Povos Dinamarqueses",
-      "Partido Comunista da Dinamarca",
-      "Partido Nacional Socialista dos Trabalhadores da Dinamarca",
-      "União Dinamarquesa",
-      "Partido dos Independentes",
-      "Partido da Indústria",
-      "Aliança Vermelha-Verde",
-      "Partido do Povo (Ilhas Faroé)",
-      "Curso Comum",
-      "Movimento Popular contra a UE",
-      "Partido do Progresso",
-      "Gronelândia e Ilhas Faroé",
-      "Verdes",
-      "Comunidade do Povo",
-      "Partido Social Democrata (Ilhas Faroé)",
-      "Movimento de Junho",
-      "Conservadores",
-      "Partido do Povo Cristão",
-      "Centro Liberal",
-      "Liberais moderados",
-      "A Nova Direita",
-      "Nova Aliança Liberal",
-      "Cooperação Nacional",
-      "Partido da Justiça",
-      "Partido Social Liberal Dinamarquês",
-      "Partido Socialista dos Povos",
-      "Linha Dura",
-      "Partido de Schleswig",
-      "Partido da União (Ilhas Faroé)",
-      "Sociais-Democratas",
-      "Para a Frente (Gronelândia)",
-      "República (Ilhas Faroé)",
-      "Partido Liberal",
-      "Socialistas de Esquerda"
-    ],
-    "Spain": [
-      "Grupo das Ilhas Canárias",
-      "Partido da Aliança Popular",
-      "Lista Ruiz-Mateos",
-      "Bloco Nacionalista Galego",
-      "Sim",
-      "Coligação Europeia-Nacionalista",
-      "Conselho Aragonês",
-      "Coligação Canária",
-      "Convergência Democrática | Juntos pela Catalunha",
-      "Centro Democrático e Social",
-      "Pela Europa dos Povos",
-      "Candidatura à Unidade Popular",
-      "Confederação dos Verdes",
-      "Convergência e União",
-      "Cidadãos -- Partido da Cidadania",
-      "Compromisso | A la Valenciana",
-      "Solidariedade Basca",
-      "Em Comum Podemos",
-      "Coligação Eleitoral da Equipa Democrática Cristã",
-      "Esquerda Basca",
-      "País Basco Único",
-      "En Masse | Grupo Comum da Esquerda",
-      "A Europa do Povo -- Os Verdes",
-      "Esquerda Republicana da Catalunha",
-      "Equo",
-      "Gente Unida",
-      "Iniciativa pelos Verdes da Catalunha",
-      "Iniciativa Internacionalista -- Solidariedade entre os Povos",
-      "Esquerda dos Povos",
-      "Ecologistas Verdes",
-      "Navarra Suma",
-      "Nós podemos",
-      "Partido Andaluz",
-      "Partido Animalista Contra os Maus-tratos aos Animais",
-      "Partido Regionalista Aragonês",
-      "Partido Comunista | Esquerda Unida",
-      "Partido Popular Democrático",
-      "Partido Liberal",
-      "Partido Nacionalista Basco",
-      "Partido Socialista Espanhol dos Trabalhadores",
-      "Partido Socialista do Povo",
-      "Partido do Trabalho de Espanha",
-      "Partido dos Trabalhadores de Espanha -- Unidade Comunista",
-      "União do Centro Democrático",
-      "União do Centro e da Democracia Cristã da Catalunha",
-      "União Nacional",
-      "Unidos, Podemos",
-      "União, Progresso e Democracia",
-      "União Valenciana",
-      "Voz"
-    ],
-    "Estonia": [
-      "Estónia 200",
-      "Partido Empreendedor Estónio",
-      "Verdes Estónios",
-      "Verdes Estónios -- 1991",
-      "Partido do Centro da Estónia",
-      "Democratas Cristãos Estonianos",
-      "Partido da Coligação Estoniana",
-      "Cidadãos Estonianos",
-      "Riqueza da Vida",
-      "União do País Estoniano",
-      "Partido do Centro Rural da Estónia",
-      "União dos Reformados Estonianos",
-      "Partido Estoniano dos Reformados e das Famílias",
-      "Partido Res Publica",
-      "Partido da Independência Nacional da Estónia",
-      "União do Povo da Estónia / Partido Popular Conservador",
-      "Partido da Reforma Estoniana",
-      "Partido Azul Estoniano -- Democratas",
-      "Partido dos Agricultores Estonianos",
-      "Partido Livre",
-      "Partido de Esquerda Estónio",
-      "União Pro Patria",
-      "Independente -- Dimitri Klenski",
-      "Independente -- Indrek Tarand",
-      "Independente -- Martin Helme",
-      "Independente -- Raimond Kaljulaid",
-      "Independente -- Silver Meikar",
-      "Independente -- Tanel Talve",
-      "União de Pro Patria e Res Publica",
-      "Partido da Constituição - Partido Popular Unificado da Estónia",
-      "União dos Agricultores",
-      "Frente Popular",
-      "Partido da Coligação Nacional | Pro Patria",
-      "Partido Social Democrata | Moderados",
-      "Monarquistas Independentes",
-      "Futura Estónia | Independência",
-      "Partido Russo na Estónia",
-      "Partido Popular dos Republicanos e Conservadores"
-    ],
-    "Finland": [
-      "Coligação Aland",
-      "União Democrática | Aliança de Esquerda",
-      "Alternativa Democrática",
-      "Partido Ecológico",
-      "Movimento Popular Patriótico",
-      "Democratas-Cristãos",
-      "Partido do Centro",
-      "Partido Nacional Progressista | Partido Popular Liberal [Finlandês]",
-      "Partido da Coligação Nacional",
-      "Partido do Povo",
-      "Movimento Agora",
-      "Jovens Finlandeses",
-      "Partido dos Pequenos Agricultores e da População Rural",
-      "Partido Popular Constitucional",
-      "Partido Pirata Finlandês",
-      "Partido do Povo Sueco",
-      "Grupo da Reforma",
-      "Partido dos Reformados Finlandeses",
-      "Partido Comunista da Finlândia (Unidade)",
-      "Partido da Unidade do Povo Finlandês",
-      "Sindicato dos Trabalhadores Cristãos da Finlândia",
-      "Partido Finlandês -- Velhos Finlandeses",
-      "Partido dos Pequenos Agricultores Finlandeses",
-      "Partido Finlandês | Verdadeiros Finlandeses",
-      "Partido Social-Democrata da Finlândia",
-      "Esquerda Sueca",
-      "Liga Social Democrata dos Trabalhadores e Pequenos Portadores",
-      "Nova Alternativa | Reforma Azul",
-      "Movimento Anti-UE",
-      "Liga Verde",
-      "Liga Liberal",
-      "Liga pela Finlândia Livre"
-    ],
-    "France": [
-      "Aliança Centrista",
-      "Ação Popular Liberal",
-      "Aliança do Ultramar",
-      "Ação Republicana e Social",
-      "Conservadores",
-      "Centro Democrático",
-      "Centro Democracia e Progresso",
-      "Centro dos Sociais-Democratas",
-      "Centro Nacional dos Independentes e Camponeses [Conservadores]",
-      "Caça, Pesca, Natureza, Tradição",
-      "Centro-Direita",
-      "Centro-Esquerda",
-      "Emerge República | Emerge França",
-      "França não Curvada",
-      "Frente Nacional",
-      "Gaullistas",
-      "Esquerda democrática e republicana",
-      "Geração de Ecologia",
-      "Generation.s, O Movimento",
-      "Independentes do Ultramar",
-      "Republicanos Independentes | Democracia Liberal",
-      "Liga Comunista Revolucionária",
-      "A Luta dos Trabalhadores",
-      "Movimento de Cidadãos",
-      "Movimento pela França",
-      "Movimento para a Independência da Martinica",
-      "Movimento Republicano Nacional",
-      "Partido da Maioria Presidencial",
-      "Movimento dos Reformadores",
-      "Movimento Republicano Popular",
-      "Novo Centro",
-      "Partido Animalista",
-      "Partido Comunista Francês",
-      "Partido Popular Democrático",
-      "Partido das Novas Forças",
-      "Partido Socialista Radical",
-      "Partido Radical da Esquerda",
-      "Conservadores",
-      "Partido Socialista",
-      "Partido Socialista Francês",
-      "Partido Socialista Unificado",
-      "Partido Socialista de França -- União Jean Jaures",
-      "Partido da Unidade Proletária",
-      "Rally Democrático Africano",
-      "A República Em Frente!",
-      "O Rally das Esquerdas Republicanas",
-      "Radicais Independentes",
-      "Republicanos Progressivos",
-      "Rally pela França",
-      "Rally pela República",
-      "RPR/UDF Lista Ligada",
-      "Partido Socialista Republicano",
-      "Republicanos",
-      "Republicano de Esquerda",
-      "Socialistas Independentes",
-      "Aliança dos Três Partidos -- Terceira Força",
-      "União para a Quinta República",
-      "União para a Defesa dos Comerciantes e Artesãos -- Poujadistas",
-      "União para a Democracia Francesa | Movimento Democrático",
-      "União dos Democratas e Independentes",
-      "União Democrática e Socialista da Resistência",
-      "União das Forças Democráticas",
-      "União por um Movimento Popular | Os Republicanos",
-      "União Republicana Popular",
-      "União Republicana",
-      "Verdes"
-    ],
-    "United Kingdom": [
-      "Partido da Aliança da Irlanda do Norte",
-      "Partido Nacional Britânico",
-      "Partido do Brexit",
-      "Constitucionalista",
-      "Conservadores e Liberais Nacionais",
-      "Partido Cristão -- Aliança dos Povos Cristãos em Inglaterra",
-      "Partido Comunista da Grã-Bretanha",
-      "Mudança Reino Unido",
-      "Trabalho da Coligação",
-      "Coligação Liberal",
-      "Conservadores",
-      "Conservadores",
-      "Partido Democrático Unionista",
-      "Democratas ingleses",
-      "Partido Conservador Pró-Euro",
-      "Partido Verde",
-      "Uma Independência da Europa",
-      "Liberal Independente",
-      "Partido Trabalhista Independente",
-      "Trabalho",
-      "Liberais",
-      "Partido Nacionalista",
-      "Partido Nacional Democrático e Trabalhista",
-      "Frente Nacional",
-      "Organização Nacional do Trabalho",
-      "Partido Liberal Nacional",
-      "NO2EU -- Sim à Democracia",
-      "Partido Nacional",
-      "Nacional",
-      "Plaid Cymru",
-      "Respeito -- A Coligação da Unidade",
-      "Partido do Referendo",
-      "Partido Trabalhista Republicano",
-      "Partido Social Democrata e Trabalhista",
-      "Partido Social Democrata",
-      "Sinn Fein",
-      "Partido Socialista Trabalhista",
-      "Partido Nacional Escocês",
-      "Unidade",
-      "Partido da Independência do Reino Unido",
-      "Partido Popular Unionista Ulster",
-      "Partido Unionista Ulster",
-      "Coligação Unionista Unida Ulster",
-      "Partido Vanguarda Sindicalista Progressivo"
-    ],
-    "Greece": [
-      "Frente da Esquerda Anticapitalista Grega",
-      "Gregos independentes",
-      "Democracia Cristã",
-      "Ação -- Aliança Liberal",
-      "Renovação Democrática",
-      "Movimento Social Democrático",
-      "Esquerda Democrática",
-      "Aliança Democrática",
-      "Recriar a Grécia",
-      "Grécia, a Outra Via",
-      "Esquerda Democrática Unida",
-      "União Nacional Democrática",
-      "União do Centro Democrático",
-      "Movimento Ecológico Democrático Grego",
-      "Cidadãos Europeus Gregos",
-      "União de Centristas",
-      "Solução Grega",
-      "Alinhamento Nacional",
-      "União Política Nacional",
-      "União para a Pátria e o Povo",
-      "Listas Muçulmanas Independentes",
-      "Partido do Socialismo Democrático",
-      "Partido Comunista da Grécia (Interior)",
-      "Partido dos Caçadores Gregos",
-      "Partido Liberal",
-      "Movimento dos Socialistas Democratas",
-      "Partido Comunista da Grécia",
-      "Partido dos Novos Liberais",
-      "Partido Progressivo",
-      "Rally Ortodoxo Popular",
-      "Unidade Popular | Curso da Liberdade",
-      "Associação dos Povos -- Manhã Dourada",
-      "Frente de Desobediência Realista Europeia [MeRa25]",
-      "Nova Democracia",
-      "Ecologistas Alternativos",
-      "Os Liberais",
-      "Verdes Ecologistas",
-      "Movimento Socialista Panhellénico",
-      "Frente Panhellénica Macedónica",
-      "Primavera Política",
-      "Coligação da Esquerda",
-      "Coalizão da Esquerda Radical",
-      "O rio"
-    ],
-    "Croatia": [
-      "Ação Juvenil",
-      "Centro Democrático",
-      "Bloco Croata",
-      "Partido Croata dos Camponeses Democratas",
-      "Aliança Croata Democrática da Eslavónia e Baranja",
-      "União Democrática Croata",
-      "Partido Cívico Croata",
-      "Trabalhistas Croatas -- Partido Trabalhista",
-      "Partido do Povo Croata -- Democratas Liberais",
-      "Partido do Povo Croata",
-      "Partido Social Liberal Croata",
-      "Partido do Povo do Camponês Croata",
-      "Partido Croata dos Direitos",
-      "Partido Croata de Direita de 1861",
-      "Partido Croata dos Direitos -- Dr. Ante Starcevic",
-      "Partido Croata dos Camponeses",
-      "Partido Croata dos Reformados",
-      "Crescimento Croata",
-      "Lista Independente -- PhD Ivan Grubisic",
-      "Independente -- Mislav Kolakusic",
-      "Independente -- Marijana Petir",
-      "Assembleia Democrática Istriana",
-      "Partido dos Democratas Liberais",
-      "Partido Liberal",
-      "Milan Bandic 365 -- O Partido do Trabalho e da Solidariedade",
-      "Ponte das Listas Independentes",
-      "Independentes pela Croácia",
-      "Partido do Povo -- Reformistas",
-      "Desenvolvimento Sustentável da Croácia",
-      "Inteligentemente",
-      "Aliança de Primorje-Gorski",
-      "Partido Pirata Croata",
-      "Partido da Ação Democrática da Croácia",
-      "Partido Sérvio Democrático Independente",
-      "Partido Social-Democrata da Croácia",
-      "Partido de Anti-Corrupção, Desenvolvimento e Transparência",
-      "Partido Democrático de Zagorje",
-      "Verdes Juntos",
-      "Escudo Humano"
-    ],
-    "Hungary": [
-      "Aliança Agrária",
-      "Coligação Democrática",
-      "Juntos -- Partido por uma Nova Era",
-      "Partido dos Pequenos Portadores Independentes",
-      "Fidesz -- Partido Cívico Húngaro / Partido Popular Democrata-Cristão",
-      "Fidesz -- União Cívica Húngara",
-      "Coligação das Eleições Patrióticas",
-      "Movimento Jobbik para uma Hungria Melhor",
-      "Partido Popular Democrata-Cristão",
-      "Partido Republicano",
-      "A Política Pode Ser Diferente",
-      "Fórum Democrático Húngaro",
-      "Movimento Nossa Pátria",
-      "Partido Húngaro da Justiça e Vida",
-      "Partido Húngaro do Cão de Duas Caudas",
-      "Movimento Momentum",
-      "Partido dos Trabalhadores Húngaros",
-      "Partido Socialista Húngaro",
-      "Partido Social Democrata",
-      "Diálogo para a Hungria",
-      "Aliança dos Democratas Livres",
-      "Partido dos Empresários"
-    ],
-    "Ireland": [
-      "Aontu",
-      "Grupo Empresarial e Profissional",
-      "Sociedade dos Gaels",
-      "Associação Progressiva da Cortiça",
-      "Partido Republicano",
-      "Partido do Solo",
-      "Solidariedade -- As Pessoas Antes do Lucro",
-      "Democracia Direta Irlanda",
-      "Esquerda Democrática",
-      "Sociais-Democratas",
-      "Partido Socialista Democrático",
-      "Fianna Fáil",
-      "Fine Gael (Família dos Irlandeses)",
-      "Partido dos Agricultores",
-      "Partido Verde",
-      "Bloco Anti-H",
-      "Independente -- Luke Flanagan",
-      "Independente -- Marian Harkin",
-      "Independente -- Nessa Childers",
-      "Independente -- Pat Cox",
-      "Independente -- Thomas (TJ) Maher",
-      "Aliança Independente",
-      "Independentes pela Mudança",
-      "Independente - Fianna Fail",
-      "Liga Irlandesa dos Trabalhadores",
-      "Partido Trabalhista",
-      "Irlanda Libertas",
-      "Partido do Centro Nacional",
-      "Partido Nacional do Trabalho",
-      "Partido da Liga Nacional",
-      "Partido Nacional",
-      "Democratas Progressivos Nacionais",
-      "Aliança das Pessoas Antes do Lucro",
-      "Democratas Progressivos",
-      "Irlanda Renua",
-      "Sinn Fein",
-      "Partido dos Trabalhadores - Sinn Fein",
-      "Partido Socialista"
-    ],
-    "Iceland": [
-      "Partido Social Democrata",
-      "Aliança do Povo",
-      "Movimento Cívico -- O Movimento",
-      "Futuro Brilhante",
-      "Aliança dos Sociais-Democratas",
-      "Partido dos Agricultores",
-      "Partido dos Cidadãos -- 1987",
-      "Alvorada -- Organização de Justiça, Equidade e Democracia",
-      "Partido Progressivo",
-      "Partido Liberal",
-      "Partido das Famílias",
-      "Partido Humanista",
-      "Partido da Candidatura",
-      "Partido Liberal",
-      "Partido do Povo",
-      "Liberais",
-      "Movimento Esquerda-Verde",
-      "Partido Direita-Verde do Povo",
-      "Partido da Regra Doméstica",
-      "Partido Democrático da Islândia",
-      "Movimento Islandês -- País Vivo",
-      "Aliança das Mulheres",
-      "Partido Comunista",
-      "Partido Republicano",
-      "Partido do Centro",
-      "Sociedade Debatente dos Sociais-Democratas",
-      "Partido Pirata",
-      "Arco-íris",
-      "Partido Socialista Unido",
-      "Aliança Social Democrática",
-      "União dos Liberais e Esquerdistas",
-      "Partido da Independência",
-      "Partido da Independência -- 1907",
-      "Associação para a Igualdade e Justiça",
-      "Movimento Popular",
-      "Partido Nacional",
-      "Partido de Preservação Nacional",
-      "Partido da Riqueza Comum",
-      "Renascimento"
-    ],
-    "Israel": [
-      "Uma Nação",
-      "União de Israel",
-      "Unidade Trabalhista",
-      "Folha Verde",
-      "Nação inteira",
-      "Futuro",
-      "Assembleia Nacional Democrática",
-      "A Terceira Via",
-      "Estandarte da Torá",
-      "Flatto-Sharon",
-      "Ponte",
-      "Ponte",
-      "Pensionistas de Israel",
-      "Frente Religiosa Unida",
-      "Frente Religiosa da Torá",
-      "Associação Iemenita",
-      "Partido da Resiliência de Israel",
-      "Agricultura e Desenvolvimento",
-      "União Nacional -Tkuma",
-      "Trabalhadores Mizrachi",
-      "Sia'at Ha'Atzma'ut",
-      "O Movimento",
-      "Herut -- O Movimento Nacional",
-      "Partido da Liberdade",
-      "Azul e Branco",
-      "Progresso e Desenvolvimento",
-      "Assim",
-      "Para a frente",
-      "Progresso e Trabalho",
-      "Todos nós",
-      "A Consolidação",
-      "Liberais Independentes",
-      "Pátria",
-      "Novo Partido Liberal",
-      "Partido Progressivo",
-      "Partido Democrático Árabe",
-      "Partido Religioso Nacional",
-      "Partido Unido dos Trabalhadores",
-      "Alinhamento | Trabalho",
-      "Centro Livre",
-      "Meimad",
-      "Energia",
-      "Partido do Centro",
-      "Partido Liberal",
-      "Partido Comunista | Moked | Sheli",
-      "Centro Espiritual",
-      "Património",
-      "Coragem",
-      "Força para Israel",
-      "Este Mundo -- Nova Força",
-      "Trabalhadores da Agudat Israel",
-      "Lista Árabe para Beduínos e Aldeões",
-      "Lista Árabe Unida -- 1977",
-      "Lista Democrática para Árabes Israelitas",
-      "Lista Democrática de Nazaré",
-      "Lista Nacional",
-      "Lista Árabe Unida",
-      "Lista de Trabalhadores Israelitas",
-      "Movimento pelos Direitos Civis e pela Paz",
-      "Lista de Combatentes",
-      "Lista Progressiva pela Paz",
-      "Nova Lista Comunista | Frente Democrática",
-      "Cooperação e Irmandade",
-      "Sephardim e Comunidades Orientais",
-      "Paz-Zion",
-      "Guardas da Torá de Sfarad",
-      "Mudança",
-      "Movimento Democrático pela Mudança",
-      "Movimento pela Renovação do Sionismo Social",
-      "Movimento Árabe pela Renovação",
-      "Movimento pelo Património de Israel",
-      "Renascimento",
-      "Telem",
-      "Momentum",
-      "Cruzamento",
-      "Organização Sionista Internacional das Mulheres",
-      "Certo",
-      "Há um Futuro",
-      "Israel é a Nossa Casa",
-      "Israel pela Imigração",
-      "Novo Direito",
-      "Judaísmo da Torá Unida",
-      "Juntos",
-      "Juntos",
-      "Os Verdes",
-      "Missão",
-      "Zehut",
-      "Sionistas Gerais"
-    ],
-    "Italy": [
-      "Mais Europa",
-      "Aliança Democrática",
-      "Italianos Associativos no Estrangeiro",
-      "Autonomia Liberdade Democracia",
-      "Aliança Nacional",
-      "Alternativa Social Mussolini",
-      "Centro Democrata-Cristão",
-      "Centro Democrata-Cristão / Democratas-Cristãos Unidos",
-      "Centro Democrático",
-      "Concentração Democrática Republicana",
-      "Democratas-Cristãos Unidos",
-      "Cristãos Sociais",
-      "Centro-Direita",
-      "Centro-Esquerda",
-      "Democratas-Cristãos",
-      "Democracia Cristã pelas Autonomias",
-      "Democracia Europeia",
-      "Lista Dini -- Renovação Italiana",
-      "Democracia é Liberdade -- A Margarida",
-      "Democracia Proletária",
-      "Democratas de Esquerda",
-      "Vai Itália -- O Povo da Liberdade",
-      "Futuro e Liberdade para Itália",
-      "Frente do Homem Comum",
-      "Irmãos da Itália -- Centro-Direita Nacional",
-      "Listas Verdes",
-      "Federação dos Verdes",
-      "Federalismo",
-      "Parar o Declínio",
-      "Democracia",
-      "Itália Viva",
-      "Itália de Valores",
-      "Liga de Ação do Sul",
-      "Democratas Liberais",
-      "Liga Lombard",
-      "Liga do Norte",
-      "Lista por Trieste",
-      "A União-Prodi",
-      "Liga Veneta",
-      "Movimento das Cinco Estrelas",
-      "Movimento pela Independência da Sicília",
-      "Movimento dos Republicanos Europeus",
-      "Fiamma Tricolore",
-      "Movimento Social Italiano",
-      "Movimento para a Autonomia",
-      "Novo Centro-Direita | Alternativa Popular",
-      "Novo PSI",
-      "Partido da Ação",
-      "Primeiro-ministro",
-      "Partido Comunista",
-      "Partido Democrata",
-      "Partido Democrático Italiano da Unidade Monárquica",
-      "Pólo Liberal Democrático",
-      "Partido Liberal Italiano",
-      "Partido Monarquista Popular",
-      "Partido Nacional Monarquista",
-      "Partido Nacional dos Reformados",
-      "Partido dos Reformados",
-      "Partido do Povo Italiano",
-      "Partido da Refundação Comunista",
-      "Partido Republicano",
-      "Pacto de Segni",
-      "Partido da Ação Sardenho",
-      "Partido Socialista Democrático Italiano",
-      "Partido Socialista Italiano",
-      "Partido Socialista da Unidade Proletária",
-      "Partido Agrário",
-      "Partido dos Comunistas Italianos",
-      "Partido da Unidade Proletária",
-      "Partido Popular por Prodi",
-      "Partido dos Socialistas Democratas Italianos",
-      "Radicais",
-      "Movimento para a Democracia -- A Rede",
-      "Esquerda",
-      "Escolha Cívica",
-      "Partido dos Povos do Tirol do Sul",
-      "União / Centro",
-      "União Democrática",
-      "União dos Democratas para a Europa",
-      "União dos Democratas Republicanos",
-      "União Sul-Americana de Emigrantes Italianos",
-      "União Valdotaniana",
-      "União Democrática do Centro",
-      "Verdes Arco-Íris"
-    ],
-    "Japan": [
-      "Partido Cooperativo",
-      "Partido Democrático",
-      "Partido Democrático do Japão",
-      "Partido da Reforma Democrática",
-      "Partido Socialista Democrático",
-      "Clube dos Independentes",
-      "Partido Comunista do Japão",
-      "Partido Democrático do Japão",
-      "Partido Liberal do Japão",
-      "Partido do Novo Japão",
-      "Partido da Renovação do Japão",
-      "Partido da Restauração do Japão",
-      "Partido Socialista do Japão",
-      "Partido Komeito",
-      "Partido Democrático Constitucional do Japão",
-      "Partido Liberal Democrático",
-      "Partido dos Agricultores Trabalhistas",
-      "Liga Liberal",
-      "Partido Liberal",
-      "Partido Liberal (Hatoyama)",
-      "Partido Socialista da Ala Esquerda",
-      "Novo Partido Conservador",
-      "Partido Cooperativo Nacional",
-      "Partido da Nova Fronteira",
-      "Novo Clube Liberal",
-      "Novo Partido Daichi",
-      "Novo Partido Nippon",
-      "Novo Partido Sakigake",
-      "Partido pelas Gerações Futuras",
-      "Partido da Esperança",
-      "Partido da Vida do Povo em Primeiro Lugar",
-      "Novo Partido Popular",
-      "Paz e Reforma",
-      "Partido Socialista da Ala Direita",
-      "Federação Democrática Socialista",
-      "Partido da Reforma Social",
-      "Partido de Amanhã do Japão",
-      "A Sua Festa"
-    ],
-    "Lithuania": [
-      "O Caminho da Coragem",
-      "Partido Trabalhista",
-      "Jovem Lituânia",
-      "PEC -- Chuva de Ausra Maldeikiene",
-      "PEC -- Salto Decisivo",
-      "PEC -- Movimento do Presidente Rolandas Paksas",
-      "PEC -- A Forte Lituânia na Europa Unida",
-      "PEC -- Vytautas Radzvilas: Recuperar o Estado!",
-      "União Cristã Democrática",
-      "União Social Conservadora Cristã",
-      "Partido do Centro Lituano",
-      "União Central da Lituânia",
-      "Partido Trabalhista Democrático da Lituânia",
-      "Partido Democrático Lituano",
-      "Democratas Cristãos Lituanos",
-      "Partido Comunista da Lituânia",
-      "Liga da Liberdade Lituana",
-      "Ação Eleitoral dos Polacos da Lituânia",
-      "União da Liberdade Lituana (Liberais)",
-      "União da Liberdade Lituana",
-      "Partido das Mulheres Lituanas -- Novo Partido Democrático",
-      "Partido da Liberdade",
-      "União dos Prisioneiros e Deportados Políticos Lituanos",
-      "Movimento dos Liberais da República da Lituânia",
-      "União Lituana Russa",
-      "Partido Social Democrata do Trabalho da Lituânia",
-      "Partido Social-Democrata Lituano",
-      "Partido Social-Democrata Lituano -- 1989",
-      "Aliança das Minorias Nacionais Lituanas",
-      "Lista da União Nacional Lituana",
-      "Partido Lituano da Economia",
-      "União Camponesa Lituana",
-      "Partido Camponês Lituano",
-      "Partido Verde Lituano",
-      "União Liberal e do Centro",
-      " Fação Unida da União Liberal e do Centro e Partido da Ressurreição das Nações",
-      "Nova União (Liberais Sociais)",
-      "Partido Democrático Cívico",
-      "Frente Popular Socialista",
-      "SIM -- Renascimento e Perspectiva da Pátria",
-      "Movimento Nacional de Progresso",
-      "Partido Nacional da Ressurreição",
-      "União Nacional",
-      "Partido Comunista Lituano na Plataforma do CPSU",
-      "Ordem e Justiça -- Partido Liberal Democrático",
-      "Partido do Progresso Nacional",
-      "União Popular -- Só para a Lituânia",
-      "Partido Samogício"
-    ],
-    "Luxembourg": [
-      "Pensões do Comité de Acção | Partido da Reforma Democrática Alternativa",
-      "Partido dos Agricultores e da Classe Média",
-      "Lista dos Cidadãos",
-      "Partido Social Cristão do Povo",
-      "A Esquerda",
-      "Partido Democrata",
-      "Lista Democrática",
-      "Partido Popular Independente",
-      "Iniciativa Ecológica de Esquerda Verde",
-      "Grupo para a Soberania Luxemburguesa",
-      "Os Verdes",
-      "Partido Comunista do Luxemburgo",
-      "Liga Liberal",
-      "Partido Socialista dos Trabalhadores do Luxemburgo",
-      "Liberais de esquerda",
-      "Movimento Popular Independente",
-      "Movimento Nacional",
-      "Partido Nacional Independente",
-      "União Nacional Independente",
-      "Lista Livre de Camponeses, Classes Médias e Trabalhadores",
-      "Partido da Direita",
-      "Partido Democrático Progressivo do Norte",
-      "Partido Independente da Classe Média",
-      "Partido pela Democracia Plena",
-      "Independentes do Oriente",
-      "Partido Liberal",
-      "Partido Liberal Radical",
-      "Partido Pirata do Luxemburgo",
-      "Esquerda Radical / Partido Radical",
-      "Partido Radical (Marcel Cahen)",
-      "Partido Socialista Radical",
-      "Partido Social Democrata",
-      "Lista de Jean Gremling -- Socialistas Independentes",
-      "Volt Luxembourg",
-      "Conscritos coagidos"
-    ],
-    "Latvia": [
-      "Partido do Centro Democrático",
-      "Partido Democrático Saimnieks",
-      "Novos Democratas",
-      "Novo Partido Conservador",
-      "Nova Era",
-      "Partido Nova Era",
-      "Partido Conservador",
-      "União Cristã Democrática",
-      "Movimento Para!",
-      "A quem pertence o Estado?",
-      "Igualdade de Direitos",
-      "Para o Desenvolvimento da Letónia",
-      "Caminho Letão",
-      "Luz de Latgale",
-      "Partido Comunista da Letónia",
-      "Partido Letão dos Cidadãos Russos",
-      "Movimento de Independência Nacional da Letónia",
-      "O Primeiro Partido da Letónia",
-      "Primeiro Partido da Letónia / Partido da Via Letã",
-      "Associação Letã de Regiões",
-      "Partido Social Democrata dos Trabalhadores da Letónia",
-      "Partido Socialista da Letónia",
-      "Frente Popular da Letónia",
-      "Partido da Unidade Letã",
-      "União dos Agricultores da Letónia",
-      "Partido Verde da Letónia",
-      "Sindicato dos Agricultores da Letónia",
-      "Libertas.lv",
-      "Associação Política do Partido dos Desprivilegiados e da Independência da Letónia",
-      "Aliança Nacional / Pela Pátria e Liberdade / LNNK",
-      "Para a Letónia do Coração",
-      "O Progressivo",
-      "Para os Direitos Humanos numa Letónia Unida",
-      "Por uma Boa Letónia",
-      "Partido Político -- Alternativa",
-      "União Cívica",
-      "Partido da Reforma",
-      "Harmonia",
-      "Sociedade para Outras Políticas",
-      "Partido Social Democrata do Bem-Estar Social",
-      "Partido Social Democrata",
-      "Pela Pátria e Liberdade",
-      "Movimento Popular pela Letónia -- Partido Siegerista",
-      "Partido Popular",
-      "União Política de Economistas",
-      "Partido da Harmonia Nacional",
-      "Unidade",
-      "Tudo Pela Letónia!",
-      "Unidos pela Letónia",
-      "União Verde e de Agricultores"
-    ],
-    "Malta": [
-      "Alternativa Democrática",
-      "Partido da Acção Democrática",
-      "Partido Gozo",
-      "Imperium Europa",
-      "Partido Jones",
-      "Partido dos Trabalhadores de Malta",
-      "Partido Democrata",
-      "Partido Nacionalista Democrático",
-      "Partido Cristão dos Trabalhadores",
-      "Partido Constitucionalista",
-      "Partido Constitucionalista Progressivo",
-      "Partido Trabalhista de Malta",
-      "Partido Nacionalista"
-    ],
-    "Netherlands": [
-      "50PLUS",
-      "União Geral dos Seniores | Partido dos Seniores Unidos",
-      "Partido Anti-Revolucionário",
-      "Liga dos Liberais Livres",
-      "Partido dos Agricultores",
-      "Democratas do Centro",
-      "Apelo Democrata-Cristão",
-      "União Cristã Democrática",
-      "União Histórica Cristã",
-      "Partido do Centro",
-      "Partido Comunista dos Países Baixos",
-      "União Cristã",
-      "Democratas 66",
-      "Pense",
-      "Socialistas Democratas 70",
-      "Liga Económica",
-      "Europa Transparente",
-      "Fórum para a Democracia",
-      "Esquerda Verde",
-      "Liga Política Reformada",
-      "Os Verdes",
-      "Novo Partido do Estado Reformado",
-      "Partido Nacional Católico",
-      "Partido dos Povos Católicos",
-      "Países Baixos Habitáveis",
-      "Lista Fortuyn",
-      "Partido Liberal do Estado -- A Liga da Liberdade",
-      "União Liberal",
-      "Partido do Meio",
-      "Partido Médio para a Cidade e o País",
-      "Movimento Nacional Socialista nos Países Baixos",
-      "Plattelandersbond | Partido dos Agricultores Nacionais, Horticultores e da Classe Média",
-      "Partido Político Radical",
-      "Partido Socialista Pacifista",
-      "Partido pela Liberdade",
-      "Partido Trabalhista",
-      "Partido pelos Animais",
-      "Partido Católico Romano",
-      "Partido do Povo Católico Romano",
-      "Federação Política Reformadora",
-      "Partido Socialista Revolucionário",
-      "Federação Política Reformadora / Liga Política Reformada / Partido Político Reformado",
-      "Partido Social Democrata dos Trabalhadores",
-      "Partido da Reforma Política",
-      "Partido Socialista",
-      "Liga Democrática de Pensamento Livre",
-      "Volt Netherlands",
-      "Partido Popular para a Liberdade e Democracia"
-    ],
-    "Norway": [
-      "Partido Teetotaler",
-      "Partido Popular Liberal",
-      "Partido Trabalhista Norueguês",
-      "Partido Popular Radical",
-      "Partido da Esquerda Liberal",
-      "Conservadores das Listas Eleitorais",
-      "Partido do Progresso",
-      "Partido Conservador",
-      "Movimento de Resistência",
-      "Partido Costeiro",
-      "Partido Democrata-Cristão",
-      "Partido Verde",
-      "Partido Liberal Moderado",
-      "Partido Comunista da Noruega",
-      "Encontro Nacional",
-      "Partido Social Democrata do Trabalho da Noruega",
-      "Partido dos Reformados",
-      "Aliança Eleitoral Vermelha",
-      "Partido Popular Socialista",
-      "Partido Socialista de Esquerda",
-      "Partido da Sociedade",
-      "Partido do Centro",
-      "Partido Liberal da Noruega"
-    ],
-    "New Zealand": [
-      "Aliança",
-      "ACT Nova Zelândia",
-      "Partido Aotearoa Legalizar Cannabis",
-      "Partido Democrata-Cristão / Futura Nova Zelândia",
-      "Partido do Património Cristão da Nova Zelândia",
-      "Partido Conservador da Nova Zelândia",
-      "Partido Comunista da Nova Zelândia",
-      "Partido do País",
-      "Partido Trabalhista Democrático",
-      "Partido Democrata",
-      "Partido Verde",
-      "Partido Trabalhista",
-      "Partido Maori",
-      "Mana Party",
-      "Novo Partido Conservador",
-      "Novo Partido Trabalhista",
-      "Partido Nacional",
-      "Primeiro Partido da Nova Zelândia",
-      "Partido Liberal da Nova Zelândia",
-      "Partido da Nova Zelândia",
-      "Recreação ao Ar Livre na Nova Zelândia",
-      "Partido Progressivo",
-      "Movimento Ratana",
-      "Partido da Reforma",
-      "Crédito Social | Partido Democrático",
-      "Partido Social Democrata",
-      "Partido das Oportunidades",
-      "Futuro Unido da Nova Zelândia",
-      "Nova Zelândia Unida",
-      "Partido dos Valores"
-    ],
-    "Poland": [
-      "Acção Eleitoral Solidária",
-      "Bloco Não-Partidário de Apoio às Reformas",
-      "Democracia Cristã",
-      "Democrático | Liberdade | União",
-      "Iniciativa pela Polónia",
-      "Kukiz'15",
-      "Congresso Liberal Democrático",
-      "Coligação para a Renovação da República -- Liberdade e Esperança",
-      "Partido Nacional dos Reformados e Aposentados",
-      "Acordo Nacional de Pensionistas e Reformados da República da Polónia",
-      "Confederação para a Polónia Independente",
-      "Libertas Poland",
-      "Liga das Famílias Polacas",
-      "Esquerda Junta",
-      "Esquerda e Democratas",
-      "Minoria alemã",
-      "Moderno",
-      "Democrático Nacional Cristão -- Bloco pela Polónia",
-      "Comité Nacional dos Eleitores",
-      "Acordo do Centro",
-      "Partido dos Democratas-Cristãos",
-      "Acordo dos Camponeses",
-      "Plataforma Cívica",
-      "Programa Económico Polaco [Grande Cerveja]",
-      "Polónia Juntos | Acordo",
-      "Partido do Povo Polaco",
-      "Os Verdes",
-      "Partido Polaco dos Trabalhadores Unidos",
-      "União Ocidental Polaca",
-      "Direito e Justiça",
-      "A Polónia é o Mais Importante",
-      "Partido da Direita da República",
-      "Movimento para a Autonomia Silesiana",
-      "Movimento Católico-Nacional",
-      "Movimento Nacional",
-      "Movimento para a Reconstrução da Polónia",
-      "O seu Movimento (Palikot's)",
-      "Partido Juntos",
-      "Movimento pela República",
-      "Solidarnosc",
-      "Partido Democrata",
-      "A Democracia Social da Polónia",
-      "Aliança de Esquerda Democrática",
-      "Polónia Unida",
-      "Auto-Defesa da República da Polónia",
-      "Solidariedade Laboral",
-      "Sindicato do Trabalho",
-      "União Política Real | Congresso da Nova Direita",
-      "Primavera",
-      "Partido X",
-      "União Nacional Cristã",
-      "Partido Popular Unido"
-    ],
-    "Portugal": [
-      "Aliança",
-      "Aliança Democrática",
-      "Aliança Popular Unida",
-      "Sociais-Democratas Independentes",
-      "Bloco de Esquerda",
-      "Centro Democrático e Social -- Partido Popular",
-      "Coligação Democrática Unificada",
-      "Chega!",
-      "Frente Socialista do Povo",
-      "Intervenção Democrática",
-      "Iniciativa Liberal",
-      "Livre",
-      "Movimento Democrático",
-      "Movimento Esperança para Portugal",
-      "Movimento de Esquerda Socialista",
-      "Partido da Terra",
-      "Nós, os Cidadãos!",
-      "Partido dos Animais e da Natureza",
-      "Partido Comunista Português",
-      "Partido Comunista dos Trabalhadores Portugueses / Movimento Reorganizativo do Partido do Proletariado",
-      "Partido Democrata-Cristão",
-      "Partido Republicano Democrático",
-      "Partido Ecológico -- Verdes",
-      "Partido dos Trabalhadores da Unidade Socialista",
-      "Partido Monarquista Popular",
-      "Partido da Renovação Democrática",
-      "Partido Socialista",
-      "Partido Social Democrata",
-      "Partido Nacional de Solidariedade",
-      "Partido Socialista Revolucionário",
-      "Reformistas",
-      "União Democrática Popular",
-      "União de Esquerda para a Democracia Socialista"
-    ],
-    "Romania": [
-      "Aliança dos Liberais e Democratas",
-      "Aliança pela Unidade dos Romenos",
-      "Aliança pela Roménia",
-      "Convenção Democrática Romena",
-      "Força Cívica",
-      "Grupo Democrático do Centro",
-      "Independente -- Gregoriana Carmen Tudoran",
-      "Independente -- George-Nicolae Simion",
-      "Independente -- Mircea Diaconu",
-      "Independente -- Peter Costea",
-      "Partido Liberal Reformista",
-      "Movimento Ecológico Romeno",
-      "Partido da Aliança Cívica",
-      "Partido Alternativo da Roménia",
-      "Partido Conservador",
-      "Partido Democrata",
-      "Partido Liberal Democrático",
-      "Partido Agrário Democrático da Roménia",
-      "Partido Ecologista Romeno",
-      "Partido da Iniciativa Nacional",
-      "Partido Liberal / Convenção Democrática",
-      "Partido Liberal Democrático",
-      "Partido do Movimento Popular",
-      "Partido da Nova Geração -- Democrático Cristão",
-      "Partido Liberal Nacional",
-      "Partido Nacional Liberal Campeanu",
-      "Partido Liberal Nacional -- Convenção Democrática",
-      "Partido Nacional Democrata-Cristão dos Camponeses",
-      "Partido Popular -- Dan Diaconescu",
-      "Partido dos Reformados da Roménia",
-      "Partido da Grande Roménia",
-      "PRO Roménia",
-      "Partido da Roménia Unida",
-      "Partido Socialista",
-      "Partido Social Democrata",
-      "Partido Social Democrata Romeno",
-      "Partido Socialista do Trabalho",
-      "Partido Socialista dos Trabalhadores Romeno",
-      "Partido Socialista Democrático Romeno",
-      "Partido da Unidade Nacional da Roménia",
-      "Partido Republicano",
-      "Partido dos Roma",
-      "União Democrática dos Húngaros na Roménia",
-      "União Nacional para o Progresso da Roménia",
-      "União Salvar a Roménia"
-    ],
-    "Slovakia": [
-      "Democracia Cristã - Vida e Prosperidade",
-      "99 Por Cento -- Voz Cívica",
-      "Aliança dos Democratas",
-      "Aliança do Novo Cidadão",
-      "Partido Democrata",
-      "União Democrática",
-      "Boa Escolha",
-      "Movimento pela Democracia",
-      "Movimento por uma Eslováquia Democrática",
-      "Movimento por uma Czechia e Eslováquia Próspera",
-      "Movimento Democrático Cristão",
-      "Partido Comunista da Eslováquia",
-      "União Social Cristã",
-      "União Cristã",
-      "Partido Popular A Nossa Eslováquia",
-      "União do Povo -- Partido Liberal",
-      "Most-Hid",
-      "Coligação Húngara",
-      "Movimento Democrático Cristão Húngaro",
-      "Partido Cívico Húngaro",
-      "Bela Eslováquia",
-      "Partido Nacional Democrático",
-      "Nova Maioria",
-      "Nova Eslováquia",
-      "Nação e Justiça -- O Nosso Partido",
-      "Partido Conservador Cívico",
-      "Pessoas comuns e independentes",
-      "Eslováquia Progressiva",
-      "Real Partido Nacional Eslovaco",
-      "Direito e Justiça",
-      "Rede",
-      "Coexistência",
-      "Alternativa Social Democrática",
-      "Coligação Democrática Eslovaca",
-      "União Democrática e Cristã Eslovaca -- Partido Democrático",
-      "Partido da Esquerda Democrática",
-      "Partido da Esquerda Democrática -- 2005",
-      "Partido Social Democrata da Eslováquia",
-      "Fórum Livre",
-      "Partido Nacional Eslovaco",
-      "Partido da Compreensão Cívica",
-      "Partido contra a Corrupção, pela Ordem, Trabalho e Dinheiro de todos os Cidadãos Decentes",
-      "JUNTOS -- Democracia Cívica",
-      "Aliança dos Agricultores e do Campo",
-      "Somos família -- Boris Kollar",
-      "Partido da Liberdade",
-      "Escolha comum",
-      "Partido Verde -- 1992",
-      "Partido Verde",
-      "Liberdade e Solidariedade",
-      "Direcção -- Social Democracia",
-      "Partido TIP -- Criamos Outra Política",
-      "Pátria",
-      "Público contra a Violência",
-      "Pelo Povo",
-      "Associação dos Trabalhadores da Eslováquia",
-      "Mudança a partir do Fundo, DU"
-    ],
-    "Slovenia": [
-      "Eslovénia activa",
-      "Bom País",
-      "Oposição Democrática da Eslovénia",
-      "Lista Cívica",
-      "Liga Nacional",
-      "Partido Democrata",
-      "Lista Verde Cívica",
-      "Partido Democrático dos Reformados da Eslovénia",
-      "A voz das mulheres eslovenas",
-      "Independente -- Jelko Kacin",
-      "Iniciativa para o Socialismo Democrático",
-      "Comunidade Nacional Italiana",
-      "Socialistas Cristãos",
-      "A Esquerda",
-      "Democracia Liberal da Eslovénia",
-      "Partido Liberal Democrático da Eslovénia",
-      "Partido Árvore da Lima",
-      "Lista de Marjan Sarec",
-      "Lista de Zoran Jankovic -- Eslovénia Positiva",
-      "Comunidade Nacional Húngara",
-      "Partido Nacional Democrático",
-      "Nova Eslovénia -- Partido do Povo Cristão",
-      "Partido Pirata Esloveno",
-      "Vamos Unir-nos",
-      "Solidariedade",
-      "Partido Democrático Esloveno",
-      "União Democrática Eslovena",
-      "Fórum Esloveno",
-      "Partido do Povo Esloveno",
-      "Partido de Miro Cerar",
-      "Partido da Juventude da Eslovénia",
-      "Partido da Independência",
-      "Partido Nacional Esloveno",
-      "A Eslovénia é Nossa",
-      "Artesãos Eslovenos e Partido Empresarial",
-      "Partido Liberal Esloveno",
-      "Trabalho de Sonho",
-      "Partido Socialista da Eslovénia",
-      "Partido para o Desenvolvimento Sustentável da Eslovénia",
-      "Eu Acredito",
-      "Liga para a Igualdade dos Cidadãos",
-      "Lista Unida -- Social-Democratas",
-      "Verdes da Eslovénia",
-      "Aliança de Alenka Bratusek",
-      "A Sério",
-      "Esquerda Unida"
-    ],
-    "Sweden": [
-      "Partido do Centro",
-      "Partido Popular",
-      "Iniciativa Feminista",
-      "União Nacional dos Agricultores",
-      "Lista de Junho",
-      "Democratas Cristãos",
-      "Partido Moderado",
-      "Verdes",
-      "Coligação dos Cidadãos",
-      "Partidos do Meio",
-      "Partido Nacional [Liga Eleitoral Geral]",
-      "Nova Democracia",
-      "Partido Pirata",
-      "Sociais-Democratas",
-      "Democratas da Suécia",
-      "Lista Sarajevo",
-      "Partido Comunista da Suécia [Hoglund]",
-      "Partido Liberal da Suécia",
-      "Partido Socialista",
-      "Partido de Interesse do Cidadão Sueco",
-      "Partido Social Democrata da Suécia -- 1921",
-      "Partido de Esquerda (Comunistas)",
-      "Partido Socialista de Esquerda"
-    ],
-    "Turkey": [
-      "Partido da Justiça e Desenvolvimento",
-      "Partido da Pátria",
-      "Partido da Grande União",
-      "Partido da Esquerda Democrática",
-      "Partido da Turquia Democrática",
-      "Partido da Direita",
-      "Partido da Juventude",
-      "Partido da Democracia Popular",
-      "Partido Democrático Popular",
-      "Partido Iyi",
-      "Partido Nacionalista Democrático",
-      "Partido da Acção Nacional",
-      "Partido do Bem-Estar (Virtude)",
-      "Partido Populista Social Democrata | Partido Republicano Popular",
-      "Partido Felicity",
-      "Partido da Nova Turquia"
-    ]
-  }
-
 var arr = [
-    {
-      "country": ["australia"],
-      "parties": [
-        {
-          "party_abbr": "ACP-V",
-          "party_name": "Australian Country Party (Vic)"
-        },
-        {
-          "party_abbr": "AD",
-          "party_name": "Australian Democrats"
-        },
-        {
-          "party_abbr": "AG",
-          "party_name": "Australian Greens"
-        },
-        {
-          "party_abbr": "ALP",
-          "party_name": "Australian Labor Party"
-        },
-        {
-          "party_abbr": "AP",
-          "party_name": "Australia Party"
-        },
-        {
-          "party_abbr": "C",
-          "party_name": "Coalition"
-        },
-        {
-          "party_abbr": "CDP",
-          "party_name": "Christian Democratic Party"
-        },
-        {
-          "party_abbr": "CLP",
-          "party_name": "Commonwealth Liberal Party"
-        },
-        {
-          "party_abbr": "CN-QLD",
-          "party_name": "Country-National Party (Qld)"
-        },
-        {
-          "party_abbr": "CPA",
-          "party_name": "Communist Party of Australia"
-        },
-        {
-          "party_abbr": "CPP-V",
-          "party_name": "Country Progressive Party (Vic)"
-        },
-        {
-          "party_abbr": "CouLP",
-          "party_name": "Country Liberal Party"
-        },
-        {
-          "party_abbr": "DLP",
-          "party_name": "Democratic Labour Party"
-        },
-        {
-          "party_abbr": "EC-SA",
-          "party_name": "Emergency Committee (SA)"
-        },
-        {
-          "party_abbr": "FFP",
-          "party_name": "Family First Party"
-        },
-        {
-          "party_abbr": "FS-NSW",
-          "party_name": "Farmers and Settlers (NSW)"
-        },
-        {
-          "party_abbr": "FTP",
-          "party_name": "Free Trade Party"
-        },
-        {
-          "party_abbr": "INAT",
-          "party_name": "Independet Nationalist"
-        },
-        {
-          "party_abbr": "IPP-V",
-          "party_name": "Independent Protectionist Party (Vic)"
-        },
-        {
-          "party_abbr": "IUAP-NSW",
-          "party_name": "Independent UAP (NSW)"
-        },
-        {
-          "party_abbr": "Katter",
-          "party_name": "Katter's Australian Party"
-        },
-        {
-          "party_abbr": "LCL",
-          "party_name": "Liberal and Country League"
-        },
-        {
-          "party_abbr": "LCP-V",
-          "party_name": "Liberal Country Party (Vic)"
-        },
-        {
-          "party_abbr": "LD-NSW",
-          "party_name": "Liberal Democratic Party (New South Wales)"
-        },
-        {
-          "party_abbr": "LLP",
-          "party_name": "Lang Labour Party"
-        },
-        {
-          "party_abbr": "LNPQ",
-          "party_name": "Liberal National Party of Queensland"
-        },
-        {
-          "party_abbr": "LP",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "LPA",
-          "party_name": "Liberal Party of Australia"
-        },
-        {
-          "party_abbr": "NAT",
-          "party_name": "Nationalist Party of Australia"
-        },
-        {
-          "party_abbr": "NAT-WA",
-          "party_name": "Nationalist"
-        },
-        {
-          "party_abbr": "NCP|NPA",
-          "party_name": "National (Country) Party | National Party of Australia"
-        },
-        {
-          "party_abbr": "NF-NSW",
-          "party_name": "Nationalist and Farmers (NSW)"
-        },
-        {
-          "party_abbr": "NL",
-          "party_name": "National Labor"
-        },
-        {
-          "party_abbr": "NXT",
-          "party_name": "Nick Xenophon Team"
-        },
-        {
-          "party_abbr": "ONP",
-          "party_name": "One Nation Party"
-        },
-        {
-          "party_abbr": "OPA",
-          "party_name": "One Parliament for Australia"
-        },
-        {
-          "party_abbr": "PP",
-          "party_name": "Protectionist Party"
-        },
-        {
-          "party_abbr": "PUP",
-          "party_name": "Palmer United Party"
-        },
-        {
-          "party_abbr": "QC",
-          "party_name": "Queensland Country Party"
-        },
-        {
-          "party_abbr": "SCP",
-          "party_name": "Social Credit Party"
-        },
-        {
-          "party_abbr": "SL-NSW",
-          "party_name": "State Labor Party (NSW)"
-        },
-        {
-          "party_abbr": "SPA",
-          "party_name": "Services Party of Australia"
-        },
-        {
-          "party_abbr": "UAP",
-          "party_name": "United Australia Party"
-        },
-        {
-          "party_abbr": "VCP",
-          "party_name": "Victorian Country Party"
-        },
-        {
-          "party_abbr": "VFU-V",
-          "party_name": "Victorian Farmers' Union"
-        },
-        {
-          "party_abbr": "WAP",
-          "party_name": "Western Australian Party"
-        }
-      ]
-    },
-    {
-      "country": ["austria"],
-      "parties": [
-        {
-          "party_abbr": "ALO",
-          "party_name": "Alternative List Austria"
-        },
-        {
-          "party_abbr": "BD",
-          "party_name": "Centrist Democrats"
-        },
-        {
-          "party_abbr": "BZO",
-          "party_name": "Alliance for the Future of Austria"
-        },
-        {
-          "party_abbr": "CSA",
-          "party_name": "Christian Social Alliance (Karl Habsburg List)"
-        },
-        {
-          "party_abbr": "DD",
-          "party_name": "German-Democrats"
-        },
-        {
-          "party_abbr": "DFP",
-          "party_name": "Democratic Progressive Party"
-        },
-        {
-          "party_abbr": "DNP",
-          "party_name": "German-Nationals"
-        },
-        {
-          "party_abbr": "DNSAP",
-          "party_name": "National Socialist Workers' Party"
-        },
-        {
-          "party_abbr": "DU",
-          "party_name": "The Independents -- Lugner's List"
-        },
-        {
-          "party_abbr": "DVP",
-          "party_name": "German People's Party"
-        },
-        {
-          "party_abbr": "EU-STOP",
-          "party_name": "EU Withdrawal, Direct Democracy, Neutrality"
-        },
-        {
-          "party_abbr": "FPO",
-          "party_name": "Freedom Party of Austria"
-        },
-        {
-          "party_abbr": "Fritz",
-          "party_name": "The Citizens' Forum Austria"
-        },
-        {
-          "party_abbr": "GDVP",
-          "party_name": "Greater German People's Party"
-        },
-        {
-          "party_abbr": "GFOP",
-          "party_name": "German Freedom and Order Party"
-        },
-        {
-          "party_abbr": "GILT",
-          "party_name": "My Vote Counts!"
-        },
-        {
-          "party_abbr": "Gruene",
-          "party_name": "The Greens -- The Green Alternative"
-        },
-        {
-          "party_abbr": "HB",
-          "party_name": "Homeland Block"
-        },
-        {
-          "party_abbr": "KB",
-          "party_name": "Carinthian Farmers' Association"
-        },
-        {
-          "party_abbr": "KPO",
-          "party_name": "Communist Party of Austria"
-        },
-        {
-          "party_abbr": "L",
-          "party_name": "Rural Federation"
-        },
-        {
-          "party_abbr": "LIF",
-          "party_name": "Liberal Forum"
-        },
-        {
-          "party_abbr": "Martin",
-          "party_name": "Hans-Peter Martin's List"
-        },
-        {
-          "party_abbr": "N",
-          "party_name": "Citizens' Initiative for the retention of neutrality"
-        },
-        {
-          "party_abbr": "NDP",
-          "party_name": "National Democratic Party"
-        },
-        {
-          "party_abbr": "NEOS",
-          "party_name": "NEOS -- The New Austria"
-        },
-        {
-          "party_abbr": "Nein",
-          "party_name": "No -- Citizens' Initiative against EU membership"
-        },
-        {
-          "party_abbr": "OVP",
-          "party_name": "Austrian People's Party"
-        },
-        {
-          "party_abbr": "PILZ",
-          "party_name": "JETZT -- Pilz List"
-        },
-        {
-          "party_abbr": "REKOS",
-          "party_name": "The Reform Conservatives"
-        },
-        {
-          "party_abbr": "SBP",
-          "party_name": "Styrian Farmers' Party"
-        },
-        {
-          "party_abbr": "SPO",
-          "party_name": "Social Democratic Party of Austria"
-        },
-        {
-          "party_abbr": "T",
-          "party_name": "Czechoslovakians"
-        },
-        {
-          "party_abbr": "TS",
-          "party_name": "Team Stronach"
-        },
-        {
-          "party_abbr": "UV",
-          "party_name": "Udeverband, Association against Corruption"
-        },
-        {
-          "party_abbr": "VGO",
-          "party_name": "United Greens Austria"
-        },
-        {
-          "party_abbr": "WB",
-          "party_name": "Economic bloc"
-        }
-      ]
-    },
-    {
-      "country": ["belgium", "belgica"],
-      "parties": [
-        {
-          "party_abbr": "AGL-Gr",
-          "party_name": "Agalev -- Green"
-        },
-        {
-          "party_abbr": "BSP-PSB",
-          "party_name": "Belgian Socialist Party"
-        },
-        {
-          "party_abbr": "BWP-POB",
-          "party_name": "Belgian Labour Party"
-        },
-        {
-          "party_abbr": "CD",
-          "party_name": "Catholic Dissidents"
-        },
-        {
-          "party_abbr": "CD+NVA",
-          "party_name": "Christian-Democrat and Flemish / New Flemish Alliance"
-        },
-        {
-          "party_abbr": "CSP",
-          "party_name": "Christian Social Party"
-        },
-        {
-          "party_abbr": "CV",
-          "party_name": "Christian Peoples' Party [Daens]"
-        },
-        {
-          "party_abbr": "CVP|CD&V",
-          "party_name": "Flemish Christian Peoples Party | Christian Democrats & Flemish"
-        },
-        {
-          "party_abbr": "DC",
-          "party_name": "Christian Democrats"
-        },
-        {
-          "party_abbr": "DLB",
-          "party_name": "Belgians, Rise Up!"
-        },
-        {
-          "party_abbr": "Ecolo",
-          "party_name": "Confederated ecologists for the organisation of original struggles"
-        },
-        {
-          "party_abbr": "FDF",
-          "party_name": "Francophone Democratic Front"
-        },
-        {
-          "party_abbr": "FN",
-          "party_name": "National Front"
-        },
-        {
-          "party_abbr": "FP|VNV",
-          "party_name": "Front Party | Flemish National Union"
-        },
-        {
-          "party_abbr": "KLS",
-          "party_name": "Cartel of Liberals and Socialists"
-        },
-        {
-          "party_abbr": "KP-PC",
-          "party_name": "Catholic Party"
-        },
-        {
-          "party_abbr": "KPB-PCB",
-          "party_name": "Communist Party"
-        },
-        {
-          "party_abbr": "KVV",
-          "party_name": "Catholic Flemish People's Party"
-        },
-        {
-          "party_abbr": "LC",
-          "party_name": "Catholics Lists"
-        },
-        {
-          "party_abbr": "LD|LDD",
-          "party_name": "List Dedecker | Libertarian, Direct, Democratic"
-        },
-        {
-          "party_abbr": "LP-PL",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "MCC",
-          "party_name": "Citizens' Movement for Change"
-        },
-        {
-          "party_abbr": "MR",
-          "party_name": "Reformist Movement"
-        },
-        {
-          "party_abbr": "N-VA",
-          "party_name": "New Flemish Alliance"
-        },
-        {
-          "party_abbr": "PA-PTB",
-          "party_name": "Workers' Party of Belgium"
-        },
-        {
-          "party_abbr": "PL(B)",
-          "party_name": "Liberal Party [Brussels Region]"
-        },
-        {
-          "party_abbr": "PRL",
-          "party_name": "Liberal Reformist Party"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Socialist Party [Francophone]"
-        },
-        {
-          "party_abbr": "PSC-CDH",
-          "party_name": "Francophone Christian Social Party -- Humanist Democratic Centre"
-        },
-        {
-          "party_abbr": "PSC-CVP",
-          "party_name": "Francophone Christian Social Party and Flemish Christian People's Party"
-        },
-        {
-          "party_abbr": "PVV|VLD",
-          "party_name": "Party of Liberty and Progress | Flemish Liberals and Democrats"
-        },
-        {
-          "party_abbr": "Pp",
-          "party_name": "People's Party"
-        },
-        {
-          "party_abbr": "ROSSEM",
-          "party_name": "Radical Reformers Fighting for an Upright Society"
-        },
-        {
-          "party_abbr": "RW",
-          "party_name": "Walloon Rally"
-        },
-        {
-          "party_abbr": "Rex",
-          "party_name": "Rexist Party"
-        },
-        {
-          "party_abbr": "RvA-UpD",
-          "party_name": "Respect for Labour"
-        },
-        {
-          "party_abbr": "SP",
-          "party_name": "Socialist Party"
-        },
-        {
-          "party_abbr": "SPa+Spi",
-          "party_name": "Socialist Party Different / Social Liberal Party"
-        },
-        {
-          "party_abbr": "Spirit",
-          "party_name": "Spirit"
-        },
-        {
-          "party_abbr": "UDB",
-          "party_name": "Belgian Democratic Union"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Alive"
-        },
-        {
-          "party_abbr": "VB",
-          "party_name": "Flemish Block"
-        },
-        {
-          "party_abbr": "VU",
-          "party_name": "People's Union"
-        },
-        {
-          "party_abbr": "WOW",
-          "party_name": "Growing Old in Dignity"
-        }
-      ]
-    },
-    {
-      "country": ["bulgaria"],
-      "parties": [
-        {
-          "party_abbr": "ABV",
-          "party_name": "Alternative for Bulgarian Revival"
-        },
-        {
-          "party_abbr": "Ataka",
-          "party_name": "Attack"
-        },
-        {
-          "party_abbr": "BBB",
-          "party_name": "Bulgarian Business Bloc"
-        },
-        {
-          "party_abbr": "BBZ",
-          "party_name": "Bulgaria Without Censorship"
-        },
-        {
-          "party_abbr": "BE",
-          "party_name": "Euro-Left Coalition"
-        },
-        {
-          "party_abbr": "BNG",
-          "party_name": "Bulgaria for Citizens Movement"
-        },
-        {
-          "party_abbr": "BNRP",
-          "party_name": "Bulgarian National Radical Party"
-        },
-        {
-          "party_abbr": "BNS",
-          "party_name": "Bulgarian People's Union"
-        },
-        {
-          "party_abbr": "BSP",
-          "party_name": "Bulgarian Socialist Party"
-        },
-        {
-          "party_abbr": "BZNS-NP",
-          "party_name": "Bulgarian Agrarian National Union"
-        },
-        {
-          "party_abbr": "CSD",
-          "party_name": "Center-Freedom and Dignity"
-        },
-        {
-          "party_abbr": "D21",
-          "party_name": "Movement 21"
-        },
-        {
-          "party_abbr": "DAR",
-          "party_name": "Democratic Alternative for the Republic"
-        },
-        {
-          "party_abbr": "DB",
-          "party_name": "Yes, Bulgaria!"
-        },
-        {
-          "party_abbr": "DG",
-          "party_name": "George's Day Movement"
-        },
-        {
-          "party_abbr": "DOST",
-          "party_name": "Democrats for Responsibility, Solidarity and Tolerance"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "DPS",
-          "party_name": "Movement for Rights and Freedoms"
-        },
-        {
-          "party_abbr": "DSB",
-          "party_name": "Democrats for a Strong Bulgaria"
-        },
-        {
-          "party_abbr": "ER",
-          "party_name": "Euroroma"
-        },
-        {
-          "party_abbr": "FTB",
-          "party_name": "Kingdom of Bulgaria Confederation"
-        },
-        {
-          "party_abbr": "GERB",
-          "party_name": "Citizens for European Development of Bulgaria"
-        },
-        {
-          "party_abbr": "GN",
-          "party_name": "People's Voice"
-        },
-        {
-          "party_abbr": "I-MK",
-          "party_name": "Independent -- Mincho Kuminev"
-        },
-        {
-          "party_abbr": "KPB",
-          "party_name": "Communist Party of Bulgaria"
-        },
-        {
-          "party_abbr": "KR",
-          "party_name": "Coalition of the Rose"
-        },
-        {
-          "party_abbr": "KSII",
-          "party_name": "Simeon II Coalition"
-        },
-        {
-          "party_abbr": "KzB|DL",
-          "party_name": "Coalition for Bulgaria | Democratic Left"
-        },
-        {
-          "party_abbr": "Lider",
-          "party_name": "Lider"
-        },
-        {
-          "party_abbr": "NDSV",
-          "party_name": "National Movement Simeon II"
-        },
-        {
-          "party_abbr": "NFSB",
-          "party_name": "National Front for the Salvation of Bulgaria"
-        },
-        {
-          "party_abbr": "NV",
-          "party_name": "New Times"
-        },
-        {
-          "party_abbr": "ODS",
-          "party_name": "United Democratic Forces"
-        },
-        {
-          "party_abbr": "OT-SII",
-          "party_name": "Union for Tzar [Simeon II]"
-        },
-        {
-          "party_abbr": "PBSD",
-          "party_name": "Party of Bulgarian Social Democrats"
-        },
-        {
-          "party_abbr": "PKE",
-          "party_name": "Political Club \"Ecoglasnost"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Patriotic Union"
-        },
-        {
-          "party_abbr": "R",
-          "party_name": "Revival"
-        },
-        {
-          "party_abbr": "RB",
-          "party_name": "Reformist Bloc"
-        },
-        {
-          "party_abbr": "RZS",
-          "party_name": "Order, Lawfulness and Justice"
-        },
-        {
-          "party_abbr": "SDS",
-          "party_name": "Union of Democratic Forces"
-        },
-        {
-          "party_abbr": "SDS-l",
-          "party_name": "Union of Democratic Forces -- Liberal"
-        },
-        {
-          "party_abbr": "SDS-ts",
-          "party_name": "Union of Democratic Forces -- Centre"
-        },
-        {
-          "party_abbr": "SK",
-          "party_name": "Blue Coalition"
-        },
-        {
-          "party_abbr": "SNI",
-          "party_name": "New Choice\" Union"
-        },
-        {
-          "party_abbr": "VMRO",
-          "party_name": "IMRO -- Bulgarian National Movement"
-        },
-        {
-          "party_abbr": "Volya",
-          "party_name": "Will"
-        },
-        {
-          "party_abbr": "ZNS",
-          "party_name": "Agrarian People's Union"
-        },
-        {
-          "party_abbr": "ZP",
-          "party_name": "Green Party of Bulgaria"
-        },
-        {
-          "party_abbr": "ZS-AS",
-          "party_name": "Agrarian Union"
-        }
-      ]
-    },
-    {
-      "country": ["canada"],
-      "parties": [
-        {
-          "party_abbr": "BPC",
-          "party_name": "Bloc Populaire Canadien"
-        },
-        {
-          "party_abbr": "BQ",
-          "party_name": "Quebec Bloc"
-        },
-        {
-          "party_abbr": "CCF|NDP",
-          "party_name": "Co-operative Commonwealth Federation | New Democratic Party"
-        },
-        {
-          "party_abbr": "CPC",
-          "party_name": "Conservative Party of Canada"
-        },
-        {
-          "party_abbr": "CP|LPP",
-          "party_name": "Communist (Labour-Progressive) Party"
-        },
-        {
-          "party_abbr": "GPC",
-          "party_name": "Green Party of Canada"
-        },
-        {
-          "party_abbr": "L",
-          "party_name": "Labour Party"
-        },
-        {
-          "party_abbr": "L-P",
-          "party_name": "Liberal-Progressive"
-        },
-        {
-          "party_abbr": "LL",
-          "party_name": "Liberal-Labour"
-        },
-        {
-          "party_abbr": "LP",
-          "party_name": "Liberal Party of Canada"
-        },
-        {
-          "party_abbr": "NPC",
-          "party_name": "National Party of Canada"
-        },
-        {
-          "party_abbr": "PCP",
-          "party_name": "Progressive Conservative Party of Canada"
-        },
-        {
-          "party_abbr": "PP",
-          "party_name": "People's Party of Canada"
-        },
-        {
-          "party_abbr": "PPC",
-          "party_name": "Progressive Party of Canada"
-        },
-        {
-          "party_abbr": "PR",
-          "party_name": "Rhinoceros Party"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Reconstruction Party of Canada"
-        },
-        {
-          "party_abbr": "RPC",
-          "party_name": "Reform Party of Canada"
-        },
-        {
-          "party_abbr": "SCR",
-          "party_name": "Social Credit Rally"
-        },
-        {
-          "party_abbr": "SSC",
-          "party_name": "Social Credit Party of Canada"
-        },
-        {
-          "party_abbr": "UE",
-          "party_name": "Union of Electors"
-        }
-      ]
-    },
-    {
-      "country": ["switzerland", "suica"],
-      "parties": [
-        {
-          "party_abbr": "BDP",
-          "party_name": "Conservative Democratic Party of Switzerland"
-        },
-        {
-          "party_abbr": "BHB",
-          "party_name": "Young Peasants Movement"
-        },
-        {
-          "party_abbr": "CsP-PCS",
-          "party_name": "Christian Social Party"
-        },
-        {
-          "party_abbr": "DG",
-          "party_name": "Democratic Group"
-        },
-        {
-          "party_abbr": "EDU-UDF",
-          "party_name": "Federal Democratic Union of Switzerland"
-        },
-        {
-          "party_abbr": "EJ",
-          "party_name": "Agreement Jura"
-        },
-        {
-          "party_abbr": "EVP-PEP",
-          "party_name": "Protestant Peoples Party"
-        },
-        {
-          "party_abbr": "FDP-PRD",
-          "party_name": "Radical Democratic Party"
-        },
-        {
-          "party_abbr": "FGr-ASF",
-          "party_name": "Feminists and Green-Alternative Groups"
-        },
-        {
-          "party_abbr": "FPS",
-          "party_name": "Automobile Party | Freedom Party of Switzerland"
-        },
-        {
-          "party_abbr": "GPL-PVL",
-          "party_name": "Green Liberal Party"
-        },
-        {
-          "party_abbr": "GV",
-          "party_name": "Grutli Society"
-        },
-        {
-          "party_abbr": "Grue",
-          "party_name": "Greens"
-        },
-        {
-          "party_abbr": "KHM",
-          "party_name": "Committee Herbert Maeder"
-        },
-        {
-          "party_abbr": "KK/CVP",
-          "party_name": "Catholic Conservative / Christian Democratic Peoples Party"
-        },
-        {
-          "party_abbr": "LF/PEB",
-          "party_name": "Liberal Socialist Party"
-        },
-        {
-          "party_abbr": "LPS",
-          "party_name": "Liberal Party of Switzerland"
-        },
-        {
-          "party_abbr": "LdT",
-          "party_name": "Ticino League"
-        },
-        {
-          "party_abbr": "LdU-ADI",
-          "party_name": "Independents Alliance"
-        },
-        {
-          "party_abbr": "MCR",
-          "party_name": "Geneva Citizens' Movement"
-        },
-        {
-          "party_abbr": "NA|SD",
-          "party_name": "National Action -- Swiss Democrats"
-        },
-        {
-          "party_abbr": "POCH",
-          "party_name": "Progressive Organisations of Switzerland"
-        },
-        {
-          "party_abbr": "PSA",
-          "party_name": "Autonomous Socialist Party"
-        },
-        {
-          "party_abbr": "PdA",
-          "party_name": "Swiss Party of Labour"
-        },
-        {
-          "party_abbr": "RB",
-          "party_name": "Republican Movement"
-        },
-        {
-          "party_abbr": "S",
-          "party_name": "Solidarity"
-        },
-        {
-          "party_abbr": "SP-PS",
-          "party_name": "Social Democratic Party of Switzerland"
-        },
-        {
-          "party_abbr": "SVP-UDC",
-          "party_name": "Swiss People's Party"
-        },
-        {
-          "party_abbr": "UDE",
-          "party_name": "National Union"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Vigilants"
-        }
-      ]
-    },
-    {
-      "country": ["cyprus", "chipre"],
-      "parties": [
-        {
-          "party_abbr": "ADISOK",
-          "party_name": "Democratic Socialist Renewal Movement"
-        },
-        {
-          "party_abbr": "ADK",
-          "party_name": "Fighting Democratic Movement"
-        },
-        {
-          "party_abbr": "AKEL",
-          "party_name": "Progressive Party of Working People"
-        },
-        {
-          "party_abbr": "DIKO",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "DISY",
-          "party_name": "Democratic Rally"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "Democratic Alignment"
-        },
-        {
-          "party_abbr": "ED",
-          "party_name": "United Democrats"
-        },
-        {
-          "party_abbr": "EDEK",
-          "party_name": "Movement for Social Democracy EDEK"
-        },
-        {
-          "party_abbr": "EK",
-          "party_name": "European Party"
-        },
-        {
-          "party_abbr": "ELAM",
-          "party_name": "National Popular Front"
-        },
-        {
-          "party_abbr": "EnKe",
-          "party_name": "Union Centre"
-        },
-        {
-          "party_abbr": "GTE",
-          "party_name": "For Europe"
-        },
-        {
-          "party_abbr": "Greek",
-          "party_name": "Greek"
-        },
-        {
-          "party_abbr": "I-SL",
-          "party_name": "Independent -- Sener Levent"
-        },
-        {
-          "party_abbr": "KEP",
-          "party_name": "Free Citizens Movement"
-        },
-        {
-          "party_abbr": "KGTZTK",
-          "party_name": "Animal Party Cyprus"
-        },
-        {
-          "party_abbr": "KINHMA",
-          "party_name": "Solidarity Movement"
-        },
-        {
-          "party_abbr": "KOP",
-          "party_name": "Ecological and Environmental Movement"
-        },
-        {
-          "party_abbr": "LP",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "ME",
-          "party_name": "Message of Hope"
-        },
-        {
-          "party_abbr": "NEDEPA",
-          "party_name": "New Democratic Front"
-        },
-        {
-          "party_abbr": "NO",
-          "party_name": "New Horizons"
-        },
-        {
-          "party_abbr": "PAME",
-          "party_name": "Pancypriot Militant Front"
-        },
-        {
-          "party_abbr": "SYM",
-          "party_name": "Citizen's Alliance"
-        },
-        {
-          "party_abbr": "Turkish",
-          "party_name": "Turkish"
-        },
-        {
-          "party_abbr": "YH",
-          "party_name": "Jasmine Movement"
-        }
-      ]
-    },
-    {
-      "country": ["czech republic", "republica checa"],
-      "parties": [
-        {
-          "party_abbr": "ANO",
-          "party_name": "Action of Dissatisfied Citizens"
-        },
-        {
-          "party_abbr": "ANO-VE",
-          "party_name": "Yes, We Will Troll the Euro-Parliament"
-        },
-        {
-          "party_abbr": "CNSP",
-          "party_name": "Czech National Social(ist) Party"
-        },
-        {
-          "party_abbr": "CSSD",
-          "party_name": "Czech Social Democratic Party"
-        },
-        {
-          "party_abbr": "DSSS",
-          "party_name": "Workers' Party of Social Justice"
-        },
-        {
-          "party_abbr": "DU",
-          "party_name": "Democratic Union"
-        },
-        {
-          "party_abbr": "DZJ",
-          "party_name": "Pensioners for a Secure Living"
-        },
-        {
-          "party_abbr": "EDS",
-          "party_name": "European Democratic Party"
-        },
-        {
-          "party_abbr": "H",
-          "party_name": "Voice"
-        },
-        {
-          "party_abbr": "HSD-SMS",
-          "party_name": "Movement for Self-Governing Democracy -- Society for Moravia and Silesia"
-        },
-        {
-          "party_abbr": "HSS",
-          "party_name": "Movement for Social Justice"
-        },
-        {
-          "party_abbr": "KAN",
-          "party_name": "Club of committed Non-Party Members"
-        },
-        {
-          "party_abbr": "KDS",
-          "party_name": "Christian Democratic Party"
-        },
-        {
-          "party_abbr": "KDU-CSL",
-          "party_name": "Christian Democratic Union -- People's Party"
-        },
-        {
-          "party_abbr": "KSC",
-          "party_name": "Communist Party of Czechoslovakia"
-        },
-        {
-          "party_abbr": "KSCM",
-          "party_name": "Communist Party of Bohemia and Moravia"
-        },
-        {
-          "party_abbr": "LB",
-          "party_name": "Left Bloc"
-        },
-        {
-          "party_abbr": "LIDEM",
-          "party_name": "LIDEM -- Liberal Democrats"
-        },
-        {
-          "party_abbr": "LSU",
-          "party_name": "Liberal Social Union"
-        },
-        {
-          "party_abbr": "NEI",
-          "party_name": "Independent Initiative"
-        },
-        {
-          "party_abbr": "Ne",
-          "party_name": "Independent"
-        },
-        {
-          "party_abbr": "ODA",
-          "party_name": "Civic Democratic Alliance"
-        },
-        {
-          "party_abbr": "ODS",
-          "party_name": "Civic Democratic Party"
-        },
-        {
-          "party_abbr": "OF",
-          "party_name": "Civic Forum"
-        },
-        {
-          "party_abbr": "OH|SD",
-          "party_name": "Civic Movement | Free Democrats"
-        },
-        {
-          "party_abbr": "PB",
-          "party_name": "Right Bloc"
-        },
-        {
-          "party_abbr": "Pi",
-          "party_name": "Czech Pirate Party"
-        },
-        {
-          "party_abbr": "S-JB",
-          "party_name": "Sovereignty -- Jana Bobosikova Bloc"
-        },
-        {
-          "party_abbr": "SB",
-          "party_name": "Free Bloc"
-        },
-        {
-          "party_abbr": "SCPZR",
-          "party_name": "Czechoslovak Businessmen's, Traders' and Farmers' Party"
-        },
-        {
-          "party_abbr": "SNK-ED",
-          "party_name": "SNK European Democrats"
-        },
-        {
-          "party_abbr": "SPD",
-          "party_name": "Freedom and Direct Democracy Tomio Okamura"
-        },
-        {
-          "party_abbr": "SPOZ",
-          "party_name": "Party of Civic Rights -- Zemanovci"
-        },
-        {
-          "party_abbr": "SPP",
-          "party_name": "Party of the Friends of Beer"
-        },
-        {
-          "party_abbr": "SPR-RSC",
-          "party_name": "Rally for the Republic -- Republican Party of Czechoslovakia"
-        },
-        {
-          "party_abbr": "SSO",
-          "party_name": "Party of Free Citizens"
-        },
-        {
-          "party_abbr": "STAN",
-          "party_name": "Mayors and Independents"
-        },
-        {
-          "party_abbr": "SZ",
-          "party_name": "Green Party"
-        },
-        {
-          "party_abbr": "SZV",
-          "party_name": "Alliance of Farmers and the Countryside"
-        },
-        {
-          "party_abbr": "TOP09",
-          "party_name": "Tradition Responsibility Prosperity 09"
-        },
-        {
-          "party_abbr": "UPD",
-          "party_name": "Dawn of Direct Democracy"
-        },
-        {
-          "party_abbr": "US",
-          "party_name": "Freedom Union"
-        },
-        {
-          "party_abbr": "VV",
-          "party_name": "Public Affairs"
-        }
-      ]
-    },
-    {
-      "country": ["germany", "alemanha"],
-      "parties": [
-        {
-          "party_abbr": "AfD",
-          "party_name": "Alternative for Germany"
-        },
-        {
-          "party_abbr": "B90/Gr",
-          "party_name": "Alliance 90 / Greens -- Citizens' Movement"
-        },
-        {
-          "party_abbr": "B90/Gru",
-          "party_name": "Alliance 90 / Greens"
-        },
-        {
-          "party_abbr": "BBB",
-          "party_name": "Bavarian Peasants' League"
-        },
-        {
-          "party_abbr": "BFB",
-          "party_name": "Confederation of free citizens -- Offensive for Germany"
-        },
-        {
-          "party_abbr": "BLB",
-          "party_name": "Baden Rural Federation"
-        },
-        {
-          "party_abbr": "BP",
-          "party_name": "Bavarian Party"
-        },
-        {
-          "party_abbr": "BVP",
-          "party_name": "Bavarian People's Party"
-        },
-        {
-          "party_abbr": "BWB",
-          "party_name": "Farmers' and winegrowers' association"
-        },
-        {
-          "party_abbr": "CDU",
-          "party_name": "Christian Democratic Union"
-        },
-        {
-          "party_abbr": "CDU+CSU",
-          "party_name": "Christian Democratic Union / Christian Social Union"
-        },
-        {
-          "party_abbr": "CNAG",
-          "party_name": "Christian National Working Group"
-        },
-        {
-          "party_abbr": "CNBL",
-          "party_name": "Christian-National Peasants' and Farmers' Party"
-        },
-        {
-          "party_abbr": "CSU",
-          "party_name": "Christian Social Union"
-        },
-        {
-          "party_abbr": "CSVD",
-          "party_name": "Christian Social People's Service"
-        },
-        {
-          "party_abbr": "DBP",
-          "party_name": "German Farmers' Party"
-        },
-        {
-          "party_abbr": "DDP",
-          "party_name": "German Democratic Party"
-        },
-        {
-          "party_abbr": "DFU",
-          "party_name": "German Peace Union"
-        },
-        {
-          "party_abbr": "DHP",
-          "party_name": "German-Hanoverian Party"
-        },
-        {
-          "party_abbr": "DNVP",
-          "party_name": "German National People's Party"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "German Party"
-        },
-        {
-          "party_abbr": "DRP",
-          "party_name": "German Reich Party"
-        },
-        {
-          "party_abbr": "DSP",
-          "party_name": "German Social Party"
-        },
-        {
-          "party_abbr": "DVP",
-          "party_name": "German People's Party"
-        },
-        {
-          "party_abbr": "DVU",
-          "party_name": "German People's Union"
-        },
-        {
-          "party_abbr": "DZ",
-          "party_name": "Centre Party"
-        },
-        {
-          "party_abbr": "FDP",
-          "party_name": "Free Democratic Party"
-        },
-        {
-          "party_abbr": "FVP",
-          "party_name": "Free People's Party"
-        },
-        {
-          "party_abbr": "FW",
-          "party_name": "Free Voters"
-        },
-        {
-          "party_abbr": "Fam",
-          "party_name": "Family Party of Germany"
-        },
-        {
-          "party_abbr": "Fr",
-          "party_name": "Peace alliance"
-        },
-        {
-          "party_abbr": "GB/BHE",
-          "party_name": "All-German Bloc / League of Expellees and Deprived of Rights"
-        },
-        {
-          "party_abbr": "GDP",
-          "party_name": "All-German Party"
-        },
-        {
-          "party_abbr": "GVP",
-          "party_name": "All-German People's Party"
-        },
-        {
-          "party_abbr": "Grau",
-          "party_name": "The Grays -- Gray Panthers"
-        },
-        {
-          "party_abbr": "HBB",
-          "party_name": "Hessian Farmers' Federation"
-        },
-        {
-          "party_abbr": "KPD",
-          "party_name": "Communist Party of Germany"
-        },
-        {
-          "party_abbr": "KVP",
-          "party_name": "Conservative Peoples' Party"
-        },
-        {
-          "party_abbr": "LBT",
-          "party_name": "Rural Federation Thuringia"
-        },
-        {
-          "party_abbr": "NPD",
-          "party_name": "National Democratic Party"
-        },
-        {
-          "party_abbr": "NSDAP",
-          "party_name": "National Socialist German Workers' Party"
-        },
-        {
-          "party_abbr": "ODP",
-          "party_name": "Ecological Democratic Party"
-        },
-        {
-          "party_abbr": "PARTEI",
-          "party_name": "The PARTY"
-        },
-        {
-          "party_abbr": "PDS|Li",
-          "party_name": "PDS | The Left"
-        },
-        {
-          "party_abbr": "Pi",
-          "party_name": "German Pirate Party"
-        },
-        {
-          "party_abbr": "Rep",
-          "party_name": "The Republicans"
-        },
-        {
-          "party_abbr": "SLV",
-          "party_name": "Saxon Peasants"
-        },
-        {
-          "party_abbr": "SPD",
-          "party_name": "Social Democratic Party of Germany"
-        },
-        {
-          "party_abbr": "Tier",
-          "party_name": "Animal Protection Party"
-        },
-        {
-          "party_abbr": "USPD",
-          "party_name": "Independent Social Democratic Party of Germany"
-        },
-        {
-          "party_abbr": "VRP",
-          "party_name": "Reich Party for Civil Rights and Deflation"
-        },
-        {
-          "party_abbr": "WASG",
-          "party_name": "Labour and Social Justice -- The Electoral Alternative"
-        },
-        {
-          "party_abbr": "WAV",
-          "party_name": "Economic Reconstruction League"
-        },
-        {
-          "party_abbr": "WP",
-          "party_name": "Economic Party"
-        }
-      ]
-    },
-    {
-      "country": ["denmark", "dinamarca"],
-      "parties": [
-        {
-          "party_abbr": "A",
-          "party_name": "The Alternative"
-        },
-        {
-          "party_abbr": "At",
-          "party_name": "Solidarity (Greenland)"
-        },
-        {
-          "party_abbr": "Bo",
-          "party_name": "Farmers' Party"
-        },
-        {
-          "party_abbr": "CD",
-          "party_name": "Centre Democrats"
-        },
-        {
-          "party_abbr": "DF",
-          "party_name": "Danish Peoples Party"
-        },
-        {
-          "party_abbr": "DKP",
-          "party_name": "Communist Party of Denmark"
-        },
-        {
-          "party_abbr": "DNSAP",
-          "party_name": "National Socialist Workers' Party of Denmark"
-        },
-        {
-          "party_abbr": "DS",
-          "party_name": "Danish Union"
-        },
-        {
-          "party_abbr": "DU",
-          "party_name": "Independents Party"
-        },
-        {
-          "party_abbr": "EP",
-          "party_name": "Industry Party"
-        },
-        {
-          "party_abbr": "En-O",
-          "party_name": "Red-Green Alliance"
-        },
-        {
-          "party_abbr": "FF",
-          "party_name": "People's Party (Faroe Islands)"
-        },
-        {
-          "party_abbr": "FK",
-          "party_name": "Common Course"
-        },
-        {
-          "party_abbr": "Fobe",
-          "party_name": "People's Movement against the EU"
-        },
-        {
-          "party_abbr": "FrP",
-          "party_name": "Progress Party"
-        },
-        {
-          "party_abbr": "GrFa",
-          "party_name": "Greenland and Faroe Islands"
-        },
-        {
-          "party_abbr": "Gron",
-          "party_name": "Greens"
-        },
-        {
-          "party_abbr": "IA",
-          "party_name": "Community of the People"
-        },
-        {
-          "party_abbr": "Jf",
-          "party_name": "Social Democratic Party (Faroe Islands)"
-        },
-        {
-          "party_abbr": "JuBe",
-          "party_name": "June Movement"
-        },
-        {
-          "party_abbr": "KF",
-          "party_name": "Conservatives"
-        },
-        {
-          "party_abbr": "KrF",
-          "party_name": "Christian People's Party"
-        },
-        {
-          "party_abbr": "LC",
-          "party_name": "Liberal Centre"
-        },
-        {
-          "party_abbr": "MV",
-          "party_name": "Moderate Liberals"
-        },
-        {
-          "party_abbr": "NB",
-          "party_name": "The New Right"
-        },
-        {
-          "party_abbr": "NLA",
-          "party_name": "New-Liberal Alliance"
-        },
-        {
-          "party_abbr": "NS",
-          "party_name": "National Cooperation"
-        },
-        {
-          "party_abbr": "RF",
-          "party_name": "Justice Party"
-        },
-        {
-          "party_abbr": "RV",
-          "party_name": "Danish Social Liberal Party"
-        },
-        {
-          "party_abbr": "SF",
-          "party_name": "Socialist Peoples Party"
-        },
-        {
-          "party_abbr": "SK",
-          "party_name": "Hard Line"
-        },
-        {
-          "party_abbr": "SP",
-          "party_name": "Schleswig Party"
-        },
-        {
-          "party_abbr": "Sbf",
-          "party_name": "Union Party (Faroe Islands)"
-        },
-        {
-          "party_abbr": "Sd",
-          "party_name": "Social Democrats"
-        },
-        {
-          "party_abbr": "Si",
-          "party_name": "Forward (Greenland)"
-        },
-        {
-          "party_abbr": "T",
-          "party_name": "Republic (Faroe Islands)"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "VS",
-          "party_name": "Left Socialists"
-        }
-      ]
-    },
-    {
-      "country": ["spain", "espanha"],
-      "parties": [
-        {
-          "party_abbr": "AIC",
-          "party_name": "Canary Islands Group"
-        },
-        {
-          "party_abbr": "AP-P",
-          "party_name": "People's Alliance-Party"
-        },
-        {
-          "party_abbr": "ARM",
-          "party_name": "Ruiz-Mateos List"
-        },
-        {
-          "party_abbr": "BNG",
-          "party_name": "Galician Nationalist Bloc"
-        },
-        {
-          "party_abbr": "Bai",
-          "party_name": "Yes"
-        },
-        {
-          "party_abbr": "C-NE",
-          "party_name": "European-Nationalist Coalition"
-        },
-        {
-          "party_abbr": "CA",
-          "party_name": "Aragonese Council"
-        },
-        {
-          "party_abbr": "CC",
-          "party_name": "Canary Coalition"
-        },
-        {
-          "party_abbr": "CDC|JxCat",
-          "party_name": "Democratic Convergence | Together for Catalonia"
-        },
-        {
-          "party_abbr": "CDS",
-          "party_name": "Democratic and Social Centre"
-        },
-        {
-          "party_abbr": "CEP",
-          "party_name": "For the Europe of the Peoples"
-        },
-        {
-          "party_abbr": "CUP",
-          "party_name": "Popular Unity Candidacy"
-        },
-        {
-          "party_abbr": "CV",
-          "party_name": "Confederation of the Greens"
-        },
-        {
-          "party_abbr": "CiU",
-          "party_name": "Convergence and Union"
-        },
-        {
-          "party_abbr": "Cs",
-          "party_name": "Citizens -- Party of the Citizenry"
-        },
-        {
-          "party_abbr": "C|AV",
-          "party_name": "Compromise | A la valenciana"
-        },
-        {
-          "party_abbr": "EA",
-          "party_name": "Basque Solidarity"
-        },
-        {
-          "party_abbr": "ECP",
-          "party_name": "In Common We Can"
-        },
-        {
-          "party_abbr": "EDC",
-          "party_name": "Electoral Coalition of Christian Democratic Team"
-        },
-        {
-          "party_abbr": "EE",
-          "party_name": "Basque Left"
-        },
-        {
-          "party_abbr": "EHB",
-          "party_name": "Basque Country Unite"
-        },
-        {
-          "party_abbr": "EM|GCE",
-          "party_name": "En Masse | Common Group of the Left"
-        },
-        {
-          "party_abbr": "EP-V",
-          "party_name": "Europe of the People -- The Greens"
-        },
-        {
-          "party_abbr": "ERC",
-          "party_name": "Republican Left of Catalonia"
-        },
-        {
-          "party_abbr": "Equo",
-          "party_name": "Equo"
-        },
-        {
-          "party_abbr": "HB",
-          "party_name": "United People"
-        },
-        {
-          "party_abbr": "ICV",
-          "party_name": "Initiative for Catalonia Greens"
-        },
-        {
-          "party_abbr": "II-SP",
-          "party_name": "Internationalist Initiative -- Solidarity between Peoples"
-        },
-        {
-          "party_abbr": "IP",
-          "party_name": "Left of the Peoples"
-        },
-        {
-          "party_abbr": "LVE",
-          "party_name": "Greens Ecologists"
-        },
-        {
-          "party_abbr": "NA+",
-          "party_name": "Sum Navarre"
-        },
-        {
-          "party_abbr": "P",
-          "party_name": "We Can"
-        },
-        {
-          "party_abbr": "PA",
-          "party_name": "Andalusian Party"
-        },
-        {
-          "party_abbr": "PACMA",
-          "party_name": "Animalist Party Against Mistreatment to Animals"
-        },
-        {
-          "party_abbr": "PAR",
-          "party_name": "Aragonese Regionalist Party"
-        },
-        {
-          "party_abbr": "PCE|IU",
-          "party_name": "Communist Party | United Left"
-        },
-        {
-          "party_abbr": "PDP",
-          "party_name": "Popular Democratic Party"
-        },
-        {
-          "party_abbr": "PL",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "PNV",
-          "party_name": "Basque Nationalist Party"
-        },
-        {
-          "party_abbr": "PSOE",
-          "party_name": "Spanish Socialist Workers Party"
-        },
-        {
-          "party_abbr": "PSP",
-          "party_name": "People's Socialist Party"
-        },
-        {
-          "party_abbr": "PTE",
-          "party_name": "Party of Labour of Spain"
-        },
-        {
-          "party_abbr": "PTE-UC",
-          "party_name": "Workers' Party of Spain -- Communist Unity"
-        },
-        {
-          "party_abbr": "UCD",
-          "party_name": "Union of the Democratic Centre"
-        },
-        {
-          "party_abbr": "UCDCC",
-          "party_name": "Union of Centre and Christian Democracy of Catalonia"
-        },
-        {
-          "party_abbr": "UN",
-          "party_name": "National Union"
-        },
-        {
-          "party_abbr": "UP",
-          "party_name": "United We Can"
-        },
-        {
-          "party_abbr": "UPyD",
-          "party_name": "Union, Progress and Democracy"
-        },
-        {
-          "party_abbr": "UV",
-          "party_name": "Valencian Union"
-        },
-        {
-          "party_abbr": "Vox",
-          "party_name": "Voice"
-        }
-      ]
-    },
-    {
-      "country": ["estonia"],
-      "parties": [
-        {
-          "party_abbr": "E200",
-          "party_name": "Estonia 200"
-        },
-        {
-          "party_abbr": "EEE",
-          "party_name": "Estonian Entrepreneur Party"
-        },
-        {
-          "party_abbr": "EER",
-          "party_name": "Estonian Greens"
-        },
-        {
-          "party_abbr": "EER-91",
-          "party_name": "Estonian Greens -- 1991"
-        },
-        {
-          "party_abbr": "EK",
-          "party_name": "Estonian Centre Party"
-        },
-        {
-          "party_abbr": "EKD",
-          "party_name": "Estonian Christian Democrats"
-        },
-        {
-          "party_abbr": "EKK",
-          "party_name": "Estonian Coalition Party"
-        },
-        {
-          "party_abbr": "EKo",
-          "party_name": "Estonian Citizens"
-        },
-        {
-          "party_abbr": "ELE",
-          "party_name": "Richness of Life"
-        },
-        {
-          "party_abbr": "EM",
-          "party_name": "Estonian Country Union"
-        },
-        {
-          "party_abbr": "EMK",
-          "party_name": "Estonian Rural Centre Party"
-        },
-        {
-          "party_abbr": "EPL",
-          "party_name": "Estonian Pensioners' Union"
-        },
-        {
-          "party_abbr": "EPPE",
-          "party_name": "Estonian Party of Pensioners and Families"
-        },
-        {
-          "party_abbr": "ERP",
-          "party_name": "Res Publica Party"
-        },
-        {
-          "party_abbr": "ERSP",
-          "party_name": "Estonian National Independence Party"
-        },
-        {
-          "party_abbr": "ERa/EKR",
-          "party_name": "People's Union of Estonia / Conservative People's Party"
-        },
-        {
-          "party_abbr": "ERe",
-          "party_name": "Estonian Reform Party"
-        },
-        {
-          "party_abbr": "ESE-D",
-          "party_name": "Estonian Blue Party -- Democrats"
-        },
-        {
-          "party_abbr": "ETE",
-          "party_name": "Estonian Farmers Party"
-        },
-        {
-          "party_abbr": "EV",
-          "party_name": "Free Party"
-        },
-        {
-          "party_abbr": "EVP",
-          "party_name": "Estonian Left Party"
-        },
-        {
-          "party_abbr": "I",
-          "party_name": "Pro Patria Union"
-        },
-        {
-          "party_abbr": "I-DK",
-          "party_name": "Independent -- Dimitri Klenski"
-        },
-        {
-          "party_abbr": "I-IT",
-          "party_name": "Independent -- Indrek Tarand"
-        },
-        {
-          "party_abbr": "I-MH",
-          "party_name": "Independent -- Martin Helme"
-        },
-        {
-          "party_abbr": "I-RK",
-          "party_name": "Independent -- Raimond Kaljulaid"
-        },
-        {
-          "party_abbr": "I-SM",
-          "party_name": "Independent -- Silver Meikar"
-        },
-        {
-          "party_abbr": "I-TT",
-          "party_name": "Independent -- Tanel Talve"
-        },
-        {
-          "party_abbr": "IRL",
-          "party_name": "Union of Pro Patria and Res Publica"
-        },
-        {
-          "party_abbr": "K-EUR",
-          "party_name": "Constitution Party -- Estonian United People's Party"
-        },
-        {
-          "party_abbr": "PK",
-          "party_name": "Union of Farmers"
-        },
-        {
-          "party_abbr": "R",
-          "party_name": "Popular Front"
-        },
-        {
-          "party_abbr": "RKI",
-          "party_name": "National Coalition Party \"Pro Patria"
-        },
-        {
-          "party_abbr": "SDE|M",
-          "party_name": "Social Democratic Party | Moderates"
-        },
-        {
-          "party_abbr": "SK",
-          "party_name": "Independent Royalists"
-        },
-        {
-          "party_abbr": "TEE",
-          "party_name": "Future Estonia | Independence"
-        },
-        {
-          "party_abbr": "VEE",
-          "party_name": "Russian Party in Estonia"
-        },
-        {
-          "party_abbr": "VKR",
-          "party_name": "People's Party of Republicans and Conservatives"
-        }
-      ]
-    },
-    {
-      "country": ["finland", "finlandia"],
-      "parties": [
-        {
-          "party_abbr": "AS",
-          "party_name": "Aland Coalition"
-        },
-        {
-          "party_abbr": "DL|VAS",
-          "party_name": "Democratic Union | Left Alliance"
-        },
-        {
-          "party_abbr": "Deva",
-          "party_name": "Democratic Alternative"
-        },
-        {
-          "party_abbr": "Eko",
-          "party_name": "Ecological Party"
-        },
-        {
-          "party_abbr": "IK",
-          "party_name": "Patriotic People's Movement"
-        },
-        {
-          "party_abbr": "KD",
-          "party_name": "Christian Democrats"
-        },
-        {
-          "party_abbr": "KESK",
-          "party_name": "Centre Party"
-        },
-        {
-          "party_abbr": "KE|SLK",
-          "party_name": "National Progressive Party | [Finnish] Liberal People's Party"
-        },
-        {
-          "party_abbr": "KOK",
-          "party_name": "National Coalition Party"
-        },
-        {
-          "party_abbr": "Ka",
-          "party_name": "People's Party"
-        },
-        {
-          "party_abbr": "LN",
-          "party_name": "Movement Now"
-        },
-        {
-          "party_abbr": "NSP",
-          "party_name": "Young Finns"
-        },
-        {
-          "party_abbr": "PMP",
-          "party_name": "Party of Smallholders and Rural People"
-        },
-        {
-          "party_abbr": "POP",
-          "party_name": "Constitutional People's Party"
-        },
-        {
-          "party_abbr": "Pi",
-          "party_name": "Pirate Party Finland"
-        },
-        {
-          "party_abbr": "RKP-SFP",
-          "party_name": "Swedish People's Party"
-        },
-        {
-          "party_abbr": "Rt",
-          "party_name": "Reform Group"
-        },
-        {
-          "party_abbr": "SEP",
-          "party_name": "Finnish Pensioners Party"
-        },
-        {
-          "party_abbr": "SKP-Y",
-          "party_name": "Communist  Party of Finland (Unity)"
-        },
-        {
-          "party_abbr": "SKYP",
-          "party_name": "Finnish People's Unity Party"
-        },
-        {
-          "party_abbr": "SKrTL",
-          "party_name": "Christian Workers' Union of Finland"
-        },
-        {
-          "party_abbr": "SP-V",
-          "party_name": "Finnish Party -- Old Finns"
-        },
-        {
-          "party_abbr": "SPP",
-          "party_name": "Finnish Small Farmers' Party"
-        },
-        {
-          "party_abbr": "SP|P",
-          "party_name": "Finnish Party | True Finns"
-        },
-        {
-          "party_abbr": "SSDP",
-          "party_name": "Social Democratic Party of Finland"
-        },
-        {
-          "party_abbr": "SV",
-          "party_name": "Swedish Left"
-        },
-        {
-          "party_abbr": "TPSL",
-          "party_name": "Social Democratic League of Workers and Smallholders"
-        },
-        {
-          "party_abbr": "UV|SIN",
-          "party_name": "New Alternative | Blue Reform"
-        },
-        {
-          "party_abbr": "VEU",
-          "party_name": "Anti-EU Movement"
-        },
-        {
-          "party_abbr": "VIHR",
-          "party_name": "Green League"
-        },
-        {
-          "party_abbr": "VL",
-          "party_name": "Liberal League"
-        },
-        {
-          "party_abbr": "VSL",
-          "party_name": "League for Free Finland"
-        }
-      ]
-    },
-    {
-      "country": ["france", "franca"],
-      "parties": [
-        {
-          "party_abbr": "AC",
-          "party_name": "Centrist Alliance"
-        },
-        {
-          "party_abbr": "ALP",
-          "party_name": "Liberal People's Action"
-        },
-        {
-          "party_abbr": "AO",
-          "party_name": "Alliance of the Overseas"
-        },
-        {
-          "party_abbr": "ARS",
-          "party_name": "Republican and Social Action"
-        },
-        {
-          "party_abbr": "C",
-          "party_name": "Conservatives"
-        },
-        {
-          "party_abbr": "CD",
-          "party_name": "Democratic Centre"
-        },
-        {
-          "party_abbr": "CDP",
-          "party_name": "Centre Democracy and Progress"
-        },
-        {
-          "party_abbr": "CDS",
-          "party_name": "Centre of Social Democrats"
-        },
-        {
-          "party_abbr": "CNIP",
-          "party_name": "National Centre of Independents and Peasants [Conservatives]"
-        },
-        {
-          "party_abbr": "CPNT",
-          "party_name": "Hunting, Fishing, Nature, Tradition"
-        },
-        {
-          "party_abbr": "CeD",
-          "party_name": "Centre Right"
-        },
-        {
-          "party_abbr": "CeG",
-          "party_name": "Centre Left"
-        },
-        {
-          "party_abbr": "DLR|DLF",
-          "party_name": "Republic Arise | France Arise"
-        },
-        {
-          "party_abbr": "FI",
-          "party_name": "Unbowed France"
-        },
-        {
-          "party_abbr": "FN",
-          "party_name": "National Front"
-        },
-        {
-          "party_abbr": "G",
-          "party_name": "Gaullists"
-        },
-        {
-          "party_abbr": "GDR",
-          "party_name": "Democratic and Republican Left"
-        },
-        {
-          "party_abbr": "GE",
-          "party_name": "Ecology Generation"
-        },
-        {
-          "party_abbr": "Gs",
-          "party_name": "Generation.s, the movement"
-        },
-        {
-          "party_abbr": "IOM",
-          "party_name": "Overseas Independents"
-        },
-        {
-          "party_abbr": "IR|DL",
-          "party_name": "Independent Republicans | Liberal Democracy"
-        },
-        {
-          "party_abbr": "LCR",
-          "party_name": "Revolutionary Communist League"
-        },
-        {
-          "party_abbr": "LO",
-          "party_name": "Workers' Struggle"
-        },
-        {
-          "party_abbr": "MDC",
-          "party_name": "Citizens' Movement"
-        },
-        {
-          "party_abbr": "MF",
-          "party_name": "Movement for France"
-        },
-        {
-          "party_abbr": "MIM",
-          "party_name": "Martinican Independence Movement"
-        },
-        {
-          "party_abbr": "MNR",
-          "party_name": "National Republican Movement"
-        },
-        {
-          "party_abbr": "MP",
-          "party_name": "Party of Presidential Majority"
-        },
-        {
-          "party_abbr": "MR",
-          "party_name": "Reformers Movement"
-        },
-        {
-          "party_abbr": "MRP",
-          "party_name": "Popular Republican Movement"
-        },
-        {
-          "party_abbr": "NC",
-          "party_name": "New Centre"
-        },
-        {
-          "party_abbr": "PA",
-          "party_name": "Animalist Party"
-        },
-        {
-          "party_abbr": "PCF",
-          "party_name": "French Communist Party"
-        },
-        {
-          "party_abbr": "PDP",
-          "party_name": "Popular Democratic Party"
-        },
-        {
-          "party_abbr": "PFN",
-          "party_name": "Party of New Forces"
-        },
-        {
-          "party_abbr": "PR",
-          "party_name": "Radical Socialist Party"
-        },
-        {
-          "party_abbr": "PRG",
-          "party_name": "Radical Party of the Left"
-        },
-        {
-          "party_abbr": "PRL",
-          "party_name": "Conservatives"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Socialist Party"
-        },
-        {
-          "party_abbr": "PSF",
-          "party_name": "French Socialist Party"
-        },
-        {
-          "party_abbr": "PSU",
-          "party_name": "Unified Socialist Party"
-        },
-        {
-          "party_abbr": "PSdF",
-          "party_name": "Socialist Party of France -- Jean Jaures Union"
-        },
-        {
-          "party_abbr": "PUP",
-          "party_name": "Proletarian Unity Party"
-        },
-        {
-          "party_abbr": "RDA",
-          "party_name": "African Democratic Rally"
-        },
-        {
-          "party_abbr": "REM",
-          "party_name": "The Republic Onwards!"
-        },
-        {
-          "party_abbr": "RGR",
-          "party_name": "Rally of Republican Lefts"
-        },
-        {
-          "party_abbr": "RI",
-          "party_name": "Independent Radicals"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Progressive Republicans"
-        },
-        {
-          "party_abbr": "RPF",
-          "party_name": "Rally for France"
-        },
-        {
-          "party_abbr": "RPR",
-          "party_name": "Rally for the Republic"
-        },
-        {
-          "party_abbr": "RPR+UDF",
-          "party_name": "RPR/UDF connected list"
-        },
-        {
-          "party_abbr": "RS",
-          "party_name": "Republican Socialist Party"
-        },
-        {
-          "party_abbr": "Rep",
-          "party_name": "Republicans"
-        },
-        {
-          "party_abbr": "RepG",
-          "party_name": "Left Republican"
-        },
-        {
-          "party_abbr": "SI",
-          "party_name": "Independent Socialists"
-        },
-        {
-          "party_abbr": "TPA",
-          "party_name": "Three Parties Alliance -- Third Force"
-        },
-        {
-          "party_abbr": "U5R",
-          "party_name": "Union for the fifth republic"
-        },
-        {
-          "party_abbr": "UDCA",
-          "party_name": "Union for the Defence of Traders and Artisans -- Poujadists"
-        },
-        {
-          "party_abbr": "UDF|MD",
-          "party_name": "Union for French Democracy | Democratic Movement"
-        },
-        {
-          "party_abbr": "UDI",
-          "party_name": "Union of Democrats and Independents"
-        },
-        {
-          "party_abbr": "UDSR",
-          "party_name": "Democratic and Socialist Union of the Resistance"
-        },
-        {
-          "party_abbr": "UFD",
-          "party_name": "Union of Democratic Forces"
-        },
-        {
-          "party_abbr": "UMP|LR",
-          "party_name": "Union for a Popular Movement | The Republicans"
-        },
-        {
-          "party_abbr": "UPR",
-          "party_name": "Popular Republican Union"
-        },
-        {
-          "party_abbr": "UR",
-          "party_name": "Republican Union"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Greens"
-        }
-      ]
-    },
-    {
-      "country": ["united kingdom", "reino unido", "england", "inglaterra"],
-      "parties": [
-        {
-          "party_abbr": "APoNI",
-          "party_name": "Alliance Party of Northern Ireland"
-        },
-        {
-          "party_abbr": "BNP",
-          "party_name": "British National Party"
-        },
-        {
-          "party_abbr": "BP",
-          "party_name": "Brexit Party"
-        },
-        {
-          "party_abbr": "C",
-          "party_name": "Constitutionalist"
-        },
-        {
-          "party_abbr": "CNL",
-          "party_name": "Conservatives and National Liberals"
-        },
-        {
-          "party_abbr": "CP",
-          "party_name": "The Christian Party -- Christian Peoples Alliance in England"
-        },
-        {
-          "party_abbr": "CPGB",
-          "party_name": "Communist Party of Great Britain"
-        },
-        {
-          "party_abbr": "CUK",
-          "party_name": "Change UK"
-        },
-        {
-          "party_abbr": "CoLab",
-          "party_name": "Coalition Labour"
-        },
-        {
-          "party_abbr": "CoLib",
-          "party_name": "Coalition Liberal"
-        },
-        {
-          "party_abbr": "Con",
-          "party_name": "Conservatives"
-        },
-        {
-          "party_abbr": "Con-18",
-          "party_name": "Conservatives"
-        },
-        {
-          "party_abbr": "DUP",
-          "party_name": "Democratic Unionist Party"
-        },
-        {
-          "party_abbr": "ED",
-          "party_name": "English Democrats"
-        },
-        {
-          "party_abbr": "EuCon",
-          "party_name": "Pro-Euro Conservative Party"
-        },
-        {
-          "party_abbr": "GP",
-          "party_name": "Green Party"
-        },
-        {
-          "party_abbr": "IE",
-          "party_name": "An Independence from Europe"
-        },
-        {
-          "party_abbr": "IL",
-          "party_name": "Independent Liberal"
-        },
-        {
-          "party_abbr": "ILP",
-          "party_name": "Independent Labour Party"
-        },
-        {
-          "party_abbr": "Lab",
-          "party_name": "Labour"
-        },
-        {
-          "party_abbr": "Lib",
-          "party_name": "Liberals"
-        },
-        {
-          "party_abbr": "N",
-          "party_name": "Nationalist Party"
-        },
-        {
-          "party_abbr": "NDP",
-          "party_name": "National Democratic and Labour Party"
-        },
-        {
-          "party_abbr": "NF",
-          "party_name": "National Front"
-        },
-        {
-          "party_abbr": "NLO",
-          "party_name": "National Labour Organisation"
-        },
-        {
-          "party_abbr": "NLP",
-          "party_name": "National Liberal Party"
-        },
-        {
-          "party_abbr": "NO2EU",
-          "party_name": "NO2EU -- Yes to Democracy"
-        },
-        {
-          "party_abbr": "NP",
-          "party_name": "National Party"
-        },
-        {
-          "party_abbr": "Na",
-          "party_name": "National"
-        },
-        {
-          "party_abbr": "Plaid",
-          "party_name": "Plaid Cymru"
-        },
-        {
-          "party_abbr": "R",
-          "party_name": "Respect -- The Unity Coalition"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Referendum Party"
-        },
-        {
-          "party_abbr": "RepLP",
-          "party_name": "Republican Labour Party"
-        },
-        {
-          "party_abbr": "SDLP",
-          "party_name": "Social Democratic and Labour Party"
-        },
-        {
-          "party_abbr": "SDP",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "SF",
-          "party_name": "Sinn Fein"
-        },
-        {
-          "party_abbr": "SLP",
-          "party_name": "Socialist Labour Party"
-        },
-        {
-          "party_abbr": "SNP",
-          "party_name": "Scottish National Party"
-        },
-        {
-          "party_abbr": "U",
-          "party_name": "Unity"
-        },
-        {
-          "party_abbr": "UKIP",
-          "party_name": "United Kingdom Independence Party"
-        },
-        {
-          "party_abbr": "UPUP",
-          "party_name": "Ulster Popular Unionist Party"
-        },
-        {
-          "party_abbr": "UUP",
-          "party_name": "Ulster Unionist Party"
-        },
-        {
-          "party_abbr": "UUUC",
-          "party_name": "United Ulster Unionist Coalition"
-        },
-        {
-          "party_abbr": "VUPP",
-          "party_name": "Vanguard Unionist Progressive Party"
-        }
-      ]
-    },
-    {
-      "country": ["greece", "grecia"],
-      "parties": [
-        {
-          "party_abbr": "AASA",
-          "party_name": "Front of the Greek Anticapitalist Left"
-        },
-        {
-          "party_abbr": "ANEL",
-          "party_name": "Independent Greeks"
-        },
-        {
-          "party_abbr": "CD",
-          "party_name": "Christian Democracy"
-        },
-        {
-          "party_abbr": "D-FS",
-          "party_name": "Action -- Liberal Alliance"
-        },
-        {
-          "party_abbr": "DIANA",
-          "party_name": "Democratic Renewal"
-        },
-        {
-          "party_abbr": "DIKKI",
-          "party_name": "Democratic Social Movement"
-        },
-        {
-          "party_abbr": "DIMAR",
-          "party_name": "Democratic Left"
-        },
-        {
-          "party_abbr": "DISY",
-          "party_name": "Democratic Alliance"
-        },
-        {
-          "party_abbr": "DX",
-          "party_name": "Recreate Greece"
-        },
-        {
-          "party_abbr": "E-OAD",
-          "party_name": "Greece, the Other Way"
-        },
-        {
-          "party_abbr": "EDA",
-          "party_name": "United Democratic Left"
-        },
-        {
-          "party_abbr": "EDE",
-          "party_name": "National Democratic Union"
-        },
-        {
-          "party_abbr": "EDIK",
-          "party_name": "Union of the Democratic Centre"
-        },
-        {
-          "party_abbr": "EDOK",
-          "party_name": "Greek Democratic Ecological Movement"
-        },
-        {
-          "party_abbr": "EEP",
-          "party_name": "Greek European Citizens"
-        },
-        {
-          "party_abbr": "EK",
-          "party_name": "Union of Centrists"
-        },
-        {
-          "party_abbr": "EL",
-          "party_name": "Greek Solution"
-        },
-        {
-          "party_abbr": "EP",
-          "party_name": "National Alignment"
-        },
-        {
-          "party_abbr": "EPEN",
-          "party_name": "National Political Union"
-        },
-        {
-          "party_abbr": "EPL",
-          "party_name": "Union for the Homeland and the People"
-        },
-        {
-          "party_abbr": "Emp",
-          "party_name": "Independent Muslim Lists"
-        },
-        {
-          "party_abbr": "KDS",
-          "party_name": "Party of Democratic Socialism"
-        },
-        {
-          "party_abbr": "KEE(I)",
-          "party_name": "Communist Party of Greece (Interior)"
-        },
-        {
-          "party_abbr": "KEK",
-          "party_name": "Party of Greek Hunters"
-        },
-        {
-          "party_abbr": "KF",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "KIDISO",
-          "party_name": "Movement of Democratic Socialists"
-        },
-        {
-          "party_abbr": "KKE",
-          "party_name": "Communist Party of Greece"
-        },
-        {
-          "party_abbr": "KN",
-          "party_name": "Party of New Liberals"
-        },
-        {
-          "party_abbr": "KP",
-          "party_name": "Progressive Party"
-        },
-        {
-          "party_abbr": "LAOS",
-          "party_name": "Popular Orthodox Rally"
-        },
-        {
-          "party_abbr": "LE|PE",
-          "party_name": "Popular Unity | Course of Freedom"
-        },
-        {
-          "party_abbr": "LS-CA",
-          "party_name": "Peoples Association -- Golden Dawn"
-        },
-        {
-          "party_abbr": "MR25",
-          "party_name": "European Realistic Disobedience Front [MeRa25]"
-        },
-        {
-          "party_abbr": "ND",
-          "party_name": "New Democracy"
-        },
-        {
-          "party_abbr": "OE",
-          "party_name": "Alternative Ecologists"
-        },
-        {
-          "party_abbr": "OF",
-          "party_name": "The Liberals"
-        },
-        {
-          "party_abbr": "OP",
-          "party_name": "Ecologist Greens"
-        },
-        {
-          "party_abbr": "PASOK",
-          "party_name": "Panhellenic Socialist Movement"
-        },
-        {
-          "party_abbr": "PMM",
-          "party_name": "Panhellenic Macedonian Front"
-        },
-        {
-          "party_abbr": "POLAN",
-          "party_name": "Political Spring"
-        },
-        {
-          "party_abbr": "SYN",
-          "party_name": "Coalition of the Left"
-        },
-        {
-          "party_abbr": "SYRIZA",
-          "party_name": "Coalition of the Radical Left"
-        },
-        {
-          "party_abbr": "TP",
-          "party_name": "The River"
-        }
-      ]
-    },
-    {
-      "country": ["croatia", "croacia"],
-      "parties": [
-        {
-          "party_abbr": "AM",
-          "party_name": "Youth Action"
-        },
-        {
-          "party_abbr": "DC",
-          "party_name": "Democratic Centre"
-        },
-        {
-          "party_abbr": "HB",
-          "party_name": "Croatian Bloc"
-        },
-        {
-          "party_abbr": "HDSS",
-          "party_name": "Croatian Democratic Peasant Party"
-        },
-        {
-          "party_abbr": "HDSSB",
-          "party_name": "Croatian Democratic Alliance of Slavonia and Baranja"
-        },
-        {
-          "party_abbr": "HDZ",
-          "party_name": "Croatian Democratic Union"
-        },
-        {
-          "party_abbr": "HGS",
-          "party_name": "Croatian Civic Party"
-        },
-        {
-          "party_abbr": "HL-LR",
-          "party_name": "Croatian Labourists -- Labour Party"
-        },
-        {
-          "party_abbr": "HNS",
-          "party_name": "Croatian People's Party -- Liberal Democrats"
-        },
-        {
-          "party_abbr": "HPS",
-          "party_name": "Croatian People's Party"
-        },
-        {
-          "party_abbr": "HSLS",
-          "party_name": "Croatian Social Liberal Party"
-        },
-        {
-          "party_abbr": "HSNS",
-          "party_name": "Croatian Peasant's People's Party"
-        },
-        {
-          "party_abbr": "HSP",
-          "party_name": "Croatian Party of Rights"
-        },
-        {
-          "party_abbr": "HSP-1861",
-          "party_name": "Croatian Party of Right of 1861"
-        },
-        {
-          "party_abbr": "HSP-AS",
-          "party_name": "Croatian Party of Rights -- Dr. Ante Starcevic"
-        },
-        {
-          "party_abbr": "HSS",
-          "party_name": "Croatian Peasant Party"
-        },
-        {
-          "party_abbr": "HSU",
-          "party_name": "Croatian Party of Pensioners"
-        },
-        {
-          "party_abbr": "Hrast",
-          "party_name": "Croatian Growth"
-        },
-        {
-          "party_abbr": "I-IG",
-          "party_name": "Independent List -- PhD Ivan Grubisic"
-        },
-        {
-          "party_abbr": "I-MK",
-          "party_name": "Independent -- Mislav Kolakusic"
-        },
-        {
-          "party_abbr": "I-MP",
-          "party_name": "Independent -- Marijana Petir"
-        },
-        {
-          "party_abbr": "IDS",
-          "party_name": "Istrian Democratic Assembly"
-        },
-        {
-          "party_abbr": "LIBRA",
-          "party_name": "Party of Liberal Democrats"
-        },
-        {
-          "party_abbr": "LS",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "MB",
-          "party_name": "Milan Bandic 365 -- The Party of Labour and Solidarity"
-        },
-        {
-          "party_abbr": "Most",
-          "party_name": "Bridge of Independent Lists"
-        },
-        {
-          "party_abbr": "NHR",
-          "party_name": "Independents for Croatia"
-        },
-        {
-          "party_abbr": "NS",
-          "party_name": "People's Party -- Reformists"
-        },
-        {
-          "party_abbr": "ORaH",
-          "party_name": "Sustainable Development of Croatia"
-        },
-        {
-          "party_abbr": "P",
-          "party_name": "Intelligently"
-        },
-        {
-          "party_abbr": "PGS",
-          "party_name": "Alliance of Primorje-Gorski"
-        },
-        {
-          "party_abbr": "Pi",
-          "party_name": "Pirate Party Croatia"
-        },
-        {
-          "party_abbr": "SDA",
-          "party_name": "Party of Democratic Action of Croatia"
-        },
-        {
-          "party_abbr": "SDSS",
-          "party_name": "Independent Democratic Serb Party"
-        },
-        {
-          "party_abbr": "SPH",
-          "party_name": "Social Democratic Party of Croatia"
-        },
-        {
-          "party_abbr": "START",
-          "party_name": "Party of Anti-Corruption, Development and Transparency"
-        },
-        {
-          "party_abbr": "ZDS",
-          "party_name": "Democratic Party of Zagorje"
-        },
-        {
-          "party_abbr": "ZZ",
-          "party_name": "Greens Together"
-        },
-        {
-          "party_abbr": "ZiZi",
-          "party_name": "Human Shield"
-        }
-      ]
-    },
-    {
-      "country": ["hungary", "hungria"],
-      "parties": [
-        {
-          "party_abbr": "ASZ",
-          "party_name": "Agrarian Alliance"
-        },
-        {
-          "party_abbr": "DK",
-          "party_name": "Democratic Coalition"
-        },
-        {
-          "party_abbr": "Egyutt",
-          "party_name": "Together -- Party for a New Era"
-        },
-        {
-          "party_abbr": "FKgP",
-          "party_name": "Independent Small Holders Party"
-        },
-        {
-          "party_abbr": "Fi+KDNP",
-          "party_name": "Fidesz -- Hungarian Civic Party / Christian Democratic People's Party"
-        },
-        {
-          "party_abbr": "Fi-MPSz",
-          "party_name": "Fidesz -- Hungarian Civic Union"
-        },
-        {
-          "party_abbr": "HVK",
-          "party_name": "Patriotic Elections Coalition"
-        },
-        {
-          "party_abbr": "Jobbik",
-          "party_name": "Jobbik Movement for a Better Hungary"
-        },
-        {
-          "party_abbr": "KDNP",
-          "party_name": "Christian Democratic People's Party"
-        },
-        {
-          "party_abbr": "KP",
-          "party_name": "Republican Party"
-        },
-        {
-          "party_abbr": "LMP",
-          "party_name": "Politics Can Be Different"
-        },
-        {
-          "party_abbr": "MDF",
-          "party_name": "Hungarian Democratic Forum"
-        },
-        {
-          "party_abbr": "MHM",
-          "party_name": "Our Homeland Movement"
-        },
-        {
-          "party_abbr": "MIEP",
-          "party_name": "Hungarian Justice and Life Party"
-        },
-        {
-          "party_abbr": "MKKP",
-          "party_name": "Hungarian Two-tailed Dog Party"
-        },
-        {
-          "party_abbr": "MM",
-          "party_name": "Momentum Movement"
-        },
-        {
-          "party_abbr": "MMP",
-          "party_name": "Hungarian Workers' Party"
-        },
-        {
-          "party_abbr": "MSZP",
-          "party_name": "Hungarian Socialist Party"
-        },
-        {
-          "party_abbr": "MSzDP",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "PM",
-          "party_name": "Dialogue for Hungary"
-        },
-        {
-          "party_abbr": "SzDSz",
-          "party_name": "Alliance of Free Democrats"
-        },
-        {
-          "party_abbr": "VP",
-          "party_name": "Entrepreneurs' Party"
-        }
-      ]
-    },
-    {
-      "country": ["ireland", "irlanda"],
-      "parties": [
-        {
-          "party_abbr": "A",
-          "party_name": "Aontu"
-        },
-        {
-          "party_abbr": "BP",
-          "party_name": "Business and Professional Group"
-        },
-        {
-          "party_abbr": "CG",
-          "party_name": "Society of the Gaels"
-        },
-        {
-          "party_abbr": "CPA",
-          "party_name": "Cork Progressive Association"
-        },
-        {
-          "party_abbr": "CnP",
-          "party_name": "Republican Party"
-        },
-        {
-          "party_abbr": "CnT",
-          "party_name": "Party of the Land"
-        },
-        {
-          "party_abbr": "D-PRB",
-          "party_name": "Solidarity -- People Before Profit"
-        },
-        {
-          "party_abbr": "DDI",
-          "party_name": "Direct Democracy Ireland"
-        },
-        {
-          "party_abbr": "DLP",
-          "party_name": "Democratic Left"
-        },
-        {
-          "party_abbr": "DS",
-          "party_name": "Social Democrats"
-        },
-        {
-          "party_abbr": "DSP",
-          "party_name": "Democratic Socialist Party"
-        },
-        {
-          "party_abbr": "FF",
-          "party_name": "Fianna Fail"
-        },
-        {
-          "party_abbr": "FG",
-          "party_name": "Fine Gael (Familiy of the Irish)"
-        },
-        {
-          "party_abbr": "FP",
-          "party_name": "Farmers' Party"
-        },
-        {
-          "party_abbr": "Green",
-          "party_name": "Green Party"
-        },
-        {
-          "party_abbr": "H-B",
-          "party_name": "Anti H-Block"
-        },
-        {
-          "party_abbr": "I-LF",
-          "party_name": "Independent -- Luke Flanagan"
-        },
-        {
-          "party_abbr": "I-MH",
-          "party_name": "Independent -- Marian Harkin"
-        },
-        {
-          "party_abbr": "I-NC",
-          "party_name": "Independent -- Nessa Childers"
-        },
-        {
-          "party_abbr": "I-PC",
-          "party_name": "Independent -- Pat Cox"
-        },
-        {
-          "party_abbr": "I-TJM",
-          "party_name": "Independent -- Thomas (TJ) Maher"
-        },
-        {
-          "party_abbr": "IA",
-          "party_name": "Independent Alliance"
-        },
-        {
-          "party_abbr": "IC",
-          "party_name": "Independents 4 Change"
-        },
-        {
-          "party_abbr": "IFF",
-          "party_name": "Independent Fianna Fail"
-        },
-        {
-          "party_abbr": "IWL",
-          "party_name": "Irish Worker League"
-        },
-        {
-          "party_abbr": "Lab",
-          "party_name": "Labour Party"
-        },
-        {
-          "party_abbr": "Lib",
-          "party_name": "Libertas Ireland"
-        },
-        {
-          "party_abbr": "NCP",
-          "party_name": "National Centre Party"
-        },
-        {
-          "party_abbr": "NL",
-          "party_name": "National Labour Party"
-        },
-        {
-          "party_abbr": "NLP",
-          "party_name": "National League Party"
-        },
-        {
-          "party_abbr": "NP",
-          "party_name": "National Party"
-        },
-        {
-          "party_abbr": "NPD",
-          "party_name": "National Progressive Democrats"
-        },
-        {
-          "party_abbr": "PBPA",
-          "party_name": "People Before Profit Alliance"
-        },
-        {
-          "party_abbr": "PD",
-          "party_name": "Progressive Democrats"
-        },
-        {
-          "party_abbr": "RI",
-          "party_name": "Renua Ireland"
-        },
-        {
-          "party_abbr": "SF",
-          "party_name": "Sinn Fein"
-        },
-        {
-          "party_abbr": "SFWP",
-          "party_name": "Sinn Fein The Workers' Party"
-        },
-        {
-          "party_abbr": "SP",
-          "party_name": "Socialist Party"
-        }
-      ]
-    },
-    {
-      "country": ["iceland", "islandia"],
-      "parties": [
-        {
-          "party_abbr": "A",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "Ab",
-          "party_name": "People's Alliance"
-        },
-        {
-          "party_abbr": "B-H",
-          "party_name": "Civic Movement -- The Movement"
-        },
-        {
-          "party_abbr": "BF",
-          "party_name": "Bright Future"
-        },
-        {
-          "party_abbr": "BJ",
-          "party_name": "Alliance of Social Democrats"
-        },
-        {
-          "party_abbr": "Ba",
-          "party_name": "Farmers' Party"
-        },
-        {
-          "party_abbr": "Bf-87",
-          "party_name": "Citizens' Party -- 1987"
-        },
-        {
-          "party_abbr": "Dawn",
-          "party_name": "Dawn -- Organization of justice, fairness and democracy"
-        },
-        {
-          "party_abbr": "F",
-          "party_name": "Progressive Party"
-        },
-        {
-          "party_abbr": "FF",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "FH",
-          "party_name": "Households Party"
-        },
-        {
-          "party_abbr": "FM",
-          "party_name": "Humanist Party"
-        },
-        {
-          "party_abbr": "Fb",
-          "party_name": "Candidature Party"
-        },
-        {
-          "party_abbr": "Ff",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "FlF",
-          "party_name": "People's Party"
-        },
-        {
-          "party_abbr": "Fr",
-          "party_name": "Liberals"
-        },
-        {
-          "party_abbr": "Graen",
-          "party_name": "Left-Green Movement"
-        },
-        {
-          "party_abbr": "HG",
-          "party_name": "RIght-Green People's Party"
-        },
-        {
-          "party_abbr": "He",
-          "party_name": "Home Rule Party"
-        },
-        {
-          "party_abbr": "IDP",
-          "party_name": "Iceland Democratic Party"
-        },
-        {
-          "party_abbr": "IL",
-          "party_name": "Icelandic Movement -- Living Country"
-        },
-        {
-          "party_abbr": "KL",
-          "party_name": "Women's Alliance"
-        },
-        {
-          "party_abbr": "Komm",
-          "party_name": "Communist Party"
-        },
-        {
-          "party_abbr": "Lve",
-          "party_name": "Republican Party"
-        },
-        {
-          "party_abbr": "M",
-          "party_name": "Centre Party"
-        },
-        {
-          "party_abbr": "MJ",
-          "party_name": "Debating Society of Social Democrats"
-        },
-        {
-          "party_abbr": "Pi",
-          "party_name": "Pirate Party"
-        },
-        {
-          "party_abbr": "Rebo",
-          "party_name": "Rainbow"
-        },
-        {
-          "party_abbr": "SA-S",
-          "party_name": "United Socialist Party"
-        },
-        {
-          "party_abbr": "Sam",
-          "party_name": "Social Democratic Alliance"
-        },
-        {
-          "party_abbr": "Sfvm",
-          "party_name": "Union of Liberals and Leftist"
-        },
-        {
-          "party_abbr": "Sj",
-          "party_name": "Independence Party"
-        },
-        {
-          "party_abbr": "Sj-07",
-          "party_name": "Independence Party -- 1907"
-        },
-        {
-          "party_abbr": "Sjf",
-          "party_name": "Association for Equality and Justice"
-        },
-        {
-          "party_abbr": "Th-Ff",
-          "party_name": "People's Movement"
-        },
-        {
-          "party_abbr": "Thod",
-          "party_name": "National Party"
-        },
-        {
-          "party_abbr": "Thva",
-          "party_name": "National Preservation Party"
-        },
-        {
-          "party_abbr": "Thve",
-          "party_name": "Common Wealth Party"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Revival"
-        }
-      ]
-    },
-    {
-      "country": ["israel"],
-      "parties": [
-        {
-          "party_abbr": "AE",
-          "party_name": "One Nation"
-        },
-        {
-          "party_abbr": "AY",
-          "party_name": "Union of Israel"
-        },
-        {
-          "party_abbr": "AhAv",
-          "party_name": "Labour Unity"
-        },
-        {
-          "party_abbr": "AlYa",
-          "party_name": "Green Leaf"
-        },
-        {
-          "party_abbr": "AmSh",
-          "party_name": "Whole Nation"
-        },
-        {
-          "party_abbr": "Atid",
-          "party_name": "Future"
-        },
-        {
-          "party_abbr": "Balad",
-          "party_name": "National Democratic Assembly"
-        },
-        {
-          "party_abbr": "DS",
-          "party_name": "The Third Way"
-        },
-        {
-          "party_abbr": "DeTo",
-          "party_name": "Banner of the Torah"
-        },
-        {
-          "party_abbr": "FS",
-          "party_name": "Flatto-Sharon"
-        },
-        {
-          "party_abbr": "G",
-          "party_name": "Bridge"
-        },
-        {
-          "party_abbr": "Gesher",
-          "party_name": "Bridge"
-        },
-        {
-          "party_abbr": "Gil",
-          "party_name": "Pensioners of Israel"
-        },
-        {
-          "party_abbr": "HDM",
-          "party_name": "United Religious Front"
-        },
-        {
-          "party_abbr": "HDT",
-          "party_name": "Religious Torah Front"
-        },
-        {
-          "party_abbr": "HHT",
-          "party_name": "Yemenite Association"
-        },
-        {
-          "party_abbr": "HLY",
-          "party_name": "Israel Resilience Party"
-        },
-        {
-          "party_abbr": "HU",
-          "party_name": "Agriculture and Development"
-        },
-        {
-          "party_abbr": "HaLe-T",
-          "party_name": "National Union--Tkuma"
-        },
-        {
-          "party_abbr": "HaMi",
-          "party_name": "Mizrachi Workers"
-        },
-        {
-          "party_abbr": "Haatz",
-          "party_name": "Sia'at Ha'Atzma'ut"
-        },
-        {
-          "party_abbr": "Hat",
-          "party_name": "The Movement"
-        },
-        {
-          "party_abbr": "He-TnLe",
-          "party_name": "Herut -- The National Movement"
-        },
-        {
-          "party_abbr": "Herut",
-          "party_name": "Freedom Party"
-        },
-        {
-          "party_abbr": "KL",
-          "party_name": "Blue and White"
-        },
-        {
-          "party_abbr": "KP",
-          "party_name": "Progress and Development"
-        },
-        {
-          "party_abbr": "Kach",
-          "party_name": "Thus"
-        },
-        {
-          "party_abbr": "Kadima",
-          "party_name": "Forward"
-        },
-        {
-          "party_abbr": "KiVe",
-          "party_name": "Progress and Work"
-        },
-        {
-          "party_abbr": "Kulanu",
-          "party_name": "All of Us"
-        },
-        {
-          "party_abbr": "L",
-          "party_name": "The Consolidation"
-        },
-        {
-          "party_abbr": "LA",
-          "party_name": "Independent Liberals"
-        },
-        {
-          "party_abbr": "M",
-          "party_name": "Homeland"
-        },
-        {
-          "party_abbr": "MLH",
-          "party_name": "New Liberal Party"
-        },
-        {
-          "party_abbr": "MP",
-          "party_name": "Progressive Party"
-        },
-        {
-          "party_abbr": "Mada",
-          "party_name": "Arab Democratic Party"
-        },
-        {
-          "party_abbr": "Mafdal",
-          "party_name": "National Religious Party"
-        },
-        {
-          "party_abbr": "Mapam",
-          "party_name": "United Workers Party"
-        },
-        {
-          "party_abbr": "Ma|Av",
-          "party_name": "Alignment | Labor"
-        },
-        {
-          "party_abbr": "MeHo",
-          "party_name": "Free Centre"
-        },
-        {
-          "party_abbr": "Meimad",
-          "party_name": "Meimad"
-        },
-        {
-          "party_abbr": "Meretz",
-          "party_name": "Energy"
-        },
-        {
-          "party_abbr": "MiHa",
-          "party_name": "Centre Party"
-        },
-        {
-          "party_abbr": "MiHal",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "MiKo|Mo|Sh",
-          "party_name": "Communist Party | Moked | Sheli"
-        },
-        {
-          "party_abbr": "Mizrahi",
-          "party_name": "Spiritual Centre"
-        },
-        {
-          "party_abbr": "Mo",
-          "party_name": "Heritage"
-        },
-        {
-          "party_abbr": "O",
-          "party_name": "Courage"
-        },
-        {
-          "party_abbr": "OL",
-          "party_name": "Strength to Israel"
-        },
-        {
-          "party_abbr": "OZ-KH",
-          "party_name": "This World -- New Force"
-        },
-        {
-          "party_abbr": "PAY",
-          "party_name": "Agudat Israel Workers"
-        },
-        {
-          "party_abbr": "RALEV",
-          "party_name": "Arab List for Bedouin and Villagers"
-        },
-        {
-          "party_abbr": "RAM-77",
-          "party_name": "United Arab List -- 1977"
-        },
-        {
-          "party_abbr": "RDAY",
-          "party_name": "Democratic List for Israeli Arabs"
-        },
-        {
-          "party_abbr": "RDN",
-          "party_name": "Democratic List of Nazareth"
-        },
-        {
-          "party_abbr": "RM",
-          "party_name": "National List"
-        },
-        {
-          "party_abbr": "Raam",
-          "party_name": "United Arab List"
-        },
-        {
-          "party_abbr": "Rafi",
-          "party_name": "Israeli Workers List"
-        },
-        {
-          "party_abbr": "Ratz",
-          "party_name": "Movement for Civil Rights and Peace"
-        },
-        {
-          "party_abbr": "ReLo",
-          "party_name": "Fighters List"
-        },
-        {
-          "party_abbr": "ReMiSh",
-          "party_name": "Progressive List for Peace"
-        },
-        {
-          "party_abbr": "R|H",
-          "party_name": "New Communist List | Democratic Front"
-        },
-        {
-          "party_abbr": "SV",
-          "party_name": "Cooperation and Brotherhood"
-        },
-        {
-          "party_abbr": "SVM",
-          "party_name": "Sephardim and Oriental Communities"
-        },
-        {
-          "party_abbr": "Sh",
-          "party_name": "Peace-Zion"
-        },
-        {
-          "party_abbr": "Shas",
-          "party_name": "Sfarad's guards of the Torah"
-        },
-        {
-          "party_abbr": "Shinui",
-          "party_name": "Change"
-        },
-        {
-          "party_abbr": "TDL",
-          "party_name": "Democratic Movement for Change"
-        },
-        {
-          "party_abbr": "THTH",
-          "party_name": "Movement for the Renewal of Social Zionism"
-        },
-        {
-          "party_abbr": "Taal",
-          "party_name": "Arab Movement for Renewal"
-        },
-        {
-          "party_abbr": "Tami",
-          "party_name": "Movement for the Heritage of Israel"
-        },
-        {
-          "party_abbr": "Tehiya",
-          "party_name": "Revival"
-        },
-        {
-          "party_abbr": "Telem",
-          "party_name": "Telem"
-        },
-        {
-          "party_abbr": "Tnufa",
-          "party_name": "Momentum"
-        },
-        {
-          "party_abbr": "Tzomet",
-          "party_name": "Crossroads"
-        },
-        {
-          "party_abbr": "Vitzo",
-          "party_name": "Women's International Zionist Organization"
-        },
-        {
-          "party_abbr": "Y",
-          "party_name": "Right"
-        },
-        {
-          "party_abbr": "YA",
-          "party_name": "There is a Future"
-        },
-        {
-          "party_abbr": "YB",
-          "party_name": "Israel is Our Home"
-        },
-        {
-          "party_abbr": "YBA",
-          "party_name": "Israel for Immigration"
-        },
-        {
-          "party_abbr": "YaHa",
-          "party_name": "New Right"
-        },
-        {
-          "party_abbr": "YaToMe",
-          "party_name": "United Torah Judaism"
-        },
-        {
-          "party_abbr": "Yachad",
-          "party_name": "Together"
-        },
-        {
-          "party_abbr": "Yahad",
-          "party_name": "Together"
-        },
-        {
-          "party_abbr": "Ye",
-          "party_name": "The Greens"
-        },
-        {
-          "party_abbr": "Yiud",
-          "party_name": "Mission"
-        },
-        {
-          "party_abbr": "Z",
-          "party_name": "Zehut"
-        },
-        {
-          "party_abbr": "ZK",
-          "party_name": "General Zionists"
-        }
-      ]
-    },
-    {
-      "country": ["italy", "italia"],
-      "parties": [
-        {
-          "party_abbr": "+EU",
-          "party_name": "More Europe"
-        },
-        {
-          "party_abbr": "AD",
-          "party_name": "Democratic Alliance"
-        },
-        {
-          "party_abbr": "AIE",
-          "party_name": "Associative Italians Abroad"
-        },
-        {
-          "party_abbr": "ALD",
-          "party_name": "Autonomy Liberty Democracy"
-        },
-        {
-          "party_abbr": "AN",
-          "party_name": "National Alliance"
-        },
-        {
-          "party_abbr": "ASM",
-          "party_name": "Social Alternative Mussolini"
-        },
-        {
-          "party_abbr": "CCD",
-          "party_name": "Christian Democratic Centre"
-        },
-        {
-          "party_abbr": "CCD+CDU",
-          "party_name": "Christian Democratic Centre / United Christian Democrats"
-        },
-        {
-          "party_abbr": "CD",
-          "party_name": "Democratic Centre"
-        },
-        {
-          "party_abbr": "CDR",
-          "party_name": "Republican Democratic Concentration"
-        },
-        {
-          "party_abbr": "CDU",
-          "party_name": "United Christian Democrats"
-        },
-        {
-          "party_abbr": "CS",
-          "party_name": "Social Christians"
-        },
-        {
-          "party_abbr": "CeD",
-          "party_name": "Centre Right"
-        },
-        {
-          "party_abbr": "CeS",
-          "party_name": "Centre Left"
-        },
-        {
-          "party_abbr": "DC",
-          "party_name": "Christian Democrats"
-        },
-        {
-          "party_abbr": "DCA",
-          "party_name": "Christian Democracy for the Autonomies"
-        },
-        {
-          "party_abbr": "DE",
-          "party_name": "European Democracy"
-        },
-        {
-          "party_abbr": "DINI-RI",
-          "party_name": "Dini List -- Italian Renewal"
-        },
-        {
-          "party_abbr": "DL-M",
-          "party_name": "Democracy is Freedom -- The Daisy"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "Proletarian Democracy"
-        },
-        {
-          "party_abbr": "DS",
-          "party_name": "Democrats of the Left"
-        },
-        {
-          "party_abbr": "FI-PdL",
-          "party_name": "Go Italy -- The People of Freedom"
-        },
-        {
-          "party_abbr": "FLI",
-          "party_name": "Future and Freedom for Italy"
-        },
-        {
-          "party_abbr": "FUQ",
-          "party_name": "Front of the Ordinary Man"
-        },
-        {
-          "party_abbr": "FdI-CN",
-          "party_name": "Brothers of Italy -- National Centre-right"
-        },
-        {
-          "party_abbr": "FdLV",
-          "party_name": "Green Lists"
-        },
-        {
-          "party_abbr": "FdV",
-          "party_name": "Federation of the Greens"
-        },
-        {
-          "party_abbr": "Fed",
-          "party_name": "Federalism"
-        },
-        {
-          "party_abbr": "FiD",
-          "party_name": "Stop the Decline"
-        },
-        {
-          "party_abbr": "ID",
-          "party_name": "Democracy"
-        },
-        {
-          "party_abbr": "IV",
-          "party_name": "Italy Alive"
-        },
-        {
-          "party_abbr": "IdV",
-          "party_name": "Italy of Values"
-        },
-        {
-          "party_abbr": "LAM",
-          "party_name": "Southern Action League"
-        },
-        {
-          "party_abbr": "LD",
-          "party_name": "Liberal Democrats"
-        },
-        {
-          "party_abbr": "LL",
-          "party_name": "Lombard League"
-        },
-        {
-          "party_abbr": "LN",
-          "party_name": "North League"
-        },
-        {
-          "party_abbr": "LT",
-          "party_name": "List for Trieste"
-        },
-        {
-          "party_abbr": "LUP",
-          "party_name": "The Union-Prodi"
-        },
-        {
-          "party_abbr": "LV",
-          "party_name": "Venetian League"
-        },
-        {
-          "party_abbr": "M5S",
-          "party_name": "Five Star Movement"
-        },
-        {
-          "party_abbr": "MIS",
-          "party_name": "Movement for the Independence of Sicily"
-        },
-        {
-          "party_abbr": "MRE",
-          "party_name": "European Republicans Movement"
-        },
-        {
-          "party_abbr": "MSFT",
-          "party_name": "Fiamma Tricolore"
-        },
-        {
-          "party_abbr": "MSI",
-          "party_name": "Italian Social Movement"
-        },
-        {
-          "party_abbr": "MpA",
-          "party_name": "Movement for Autonomy"
-        },
-        {
-          "party_abbr": "NCD",
-          "party_name": "New Centre-Right | Popular Alternative"
-        },
-        {
-          "party_abbr": "NPSI",
-          "party_name": "New PSI"
-        },
-        {
-          "party_abbr": "PAz",
-          "party_name": "Action Party"
-        },
-        {
-          "party_abbr": "PC",
-          "party_name": "Prime minister"
-        },
-        {
-          "party_abbr": "PCI",
-          "party_name": "Communist Party"
-        },
-        {
-          "party_abbr": "PD",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "PDIUM",
-          "party_name": "Italian Democratic Party of Monarchist Unity"
-        },
-        {
-          "party_abbr": "PLD",
-          "party_name": "Liberal Democratic Pole"
-        },
-        {
-          "party_abbr": "PLI",
-          "party_name": "Italian Liberal Party"
-        },
-        {
-          "party_abbr": "PMP",
-          "party_name": "Popular Monarchist Party"
-        },
-        {
-          "party_abbr": "PNM",
-          "party_name": "Monarchist National Party"
-        },
-        {
-          "party_abbr": "PNP",
-          "party_name": "National Pensioners' Party"
-        },
-        {
-          "party_abbr": "PP",
-          "party_name": "Pensioners' Party"
-        },
-        {
-          "party_abbr": "PPI",
-          "party_name": "Italian People's Party"
-        },
-        {
-          "party_abbr": "PRC",
-          "party_name": "Communist Refoundation Party"
-        },
-        {
-          "party_abbr": "PRI",
-          "party_name": "Republican Party"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Segni Pact"
-        },
-        {
-          "party_abbr": "PSA",
-          "party_name": "Sardinian Action Party"
-        },
-        {
-          "party_abbr": "PSDI",
-          "party_name": "Italian Democratic Socialist Party"
-        },
-        {
-          "party_abbr": "PSI",
-          "party_name": "Italian Socialist Party"
-        },
-        {
-          "party_abbr": "PSIUP",
-          "party_name": "Socialist Party of Proletarian Unity"
-        },
-        {
-          "party_abbr": "PaCoI",
-          "party_name": "Agrarian Party"
-        },
-        {
-          "party_abbr": "PdCI",
-          "party_name": "Party of the Italian Communists"
-        },
-        {
-          "party_abbr": "PdUP",
-          "party_name": "Proletarian Unity Party"
-        },
-        {
-          "party_abbr": "PpP",
-          "party_name": "Popular Party for Prodi"
-        },
-        {
-          "party_abbr": "P|SDI",
-          "party_name": "Italian Democratic Socialists | Party"
-        },
-        {
-          "party_abbr": "R",
-          "party_name": "Radicals"
-        },
-        {
-          "party_abbr": "Rete",
-          "party_name": "Movement for Democracy -- The Net"
-        },
-        {
-          "party_abbr": "S",
-          "party_name": "Left"
-        },
-        {
-          "party_abbr": "SC",
-          "party_name": "Civic Choice"
-        },
-        {
-          "party_abbr": "SVP",
-          "party_name": "South Tyrol Peoples Party"
-        },
-        {
-          "party_abbr": "UC",
-          "party_name": "Union / Centre"
-        },
-        {
-          "party_abbr": "UD",
-          "party_name": "Democratic Union"
-        },
-        {
-          "party_abbr": "UDEUR",
-          "party_name": "Union of Democrats for Europe"
-        },
-        {
-          "party_abbr": "UDR",
-          "party_name": "Union of republican democrats"
-        },
-        {
-          "party_abbr": "USEI",
-          "party_name": "South American Union Italian Emigrants"
-        },
-        {
-          "party_abbr": "UV",
-          "party_name": "Valdotanian Union"
-        },
-        {
-          "party_abbr": "UdCe",
-          "party_name": "Democratic Union of the Centre"
-        },
-        {
-          "party_abbr": "VA",
-          "party_name": "Rainbow Greens"
-        }
-      ]
-    },
-    {
-      "country": ["japan", "japao"],
-      "parties": [
-        {
-          "party_abbr": "CoP",
-          "party_name": "Cooperative Party"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "DPJ",
-          "party_name": "Democratic Party of Japan"
-        },
-        {
-          "party_abbr": "DRP",
-          "party_name": "Democratic Reform Party"
-        },
-        {
-          "party_abbr": "DSP",
-          "party_name": "Democratic Socialist Party"
-        },
-        {
-          "party_abbr": "IC",
-          "party_name": "Independent's Club"
-        },
-        {
-          "party_abbr": "JCP",
-          "party_name": "Japan Communist Party"
-        },
-        {
-          "party_abbr": "JDP",
-          "party_name": "Japan Democratic Party"
-        },
-        {
-          "party_abbr": "JLP",
-          "party_name": "Japan Liberal Party"
-        },
-        {
-          "party_abbr": "JNP",
-          "party_name": "Japan New Party"
-        },
-        {
-          "party_abbr": "JRP",
-          "party_name": "Japan Renewal Party"
-        },
-        {
-          "party_abbr": "JReP",
-          "party_name": "Japan Restoration Party"
-        },
-        {
-          "party_abbr": "JSP",
-          "party_name": "Japan Socialist Party"
-        },
-        {
-          "party_abbr": "K",
-          "party_name": "Komeito Party"
-        },
-        {
-          "party_abbr": "KDP",
-          "party_name": "Constitutional Democratic Party of Japan"
-        },
-        {
-          "party_abbr": "LDP",
-          "party_name": "Liberal Democratic Party"
-        },
-        {
-          "party_abbr": "LFP",
-          "party_name": "Labour Farmer Party"
-        },
-        {
-          "party_abbr": "LL",
-          "party_name": "Liberal League"
-        },
-        {
-          "party_abbr": "LP",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "LP(H)",
-          "party_name": "Liberal Party (Hatoyama)"
-        },
-        {
-          "party_abbr": "LWSP",
-          "party_name": "Left Wing Socialist Party"
-        },
-        {
-          "party_abbr": "NCP",
-          "party_name": "New Conservative Party"
-        },
-        {
-          "party_abbr": "NCoP",
-          "party_name": "National Cooperative Party"
-        },
-        {
-          "party_abbr": "NFP",
-          "party_name": "New Frontier Party"
-        },
-        {
-          "party_abbr": "NLC",
-          "party_name": "New Liberal Club"
-        },
-        {
-          "party_abbr": "NPD",
-          "party_name": "New Party Daichi"
-        },
-        {
-          "party_abbr": "NPN",
-          "party_name": "New Party Nippon"
-        },
-        {
-          "party_abbr": "NPS",
-          "party_name": "New Party Sakigake"
-        },
-        {
-          "party_abbr": "PFG",
-          "party_name": "Party for Future Generations"
-        },
-        {
-          "party_abbr": "PH",
-          "party_name": "Party of Hope"
-        },
-        {
-          "party_abbr": "PLFP",
-          "party_name": "People's Life First Party"
-        },
-        {
-          "party_abbr": "PNP",
-          "party_name": "People's New Party"
-        },
-        {
-          "party_abbr": "PR",
-          "party_name": "Peace and Reform"
-        },
-        {
-          "party_abbr": "RWSP",
-          "party_name": "Right Wing Socialist Party"
-        },
-        {
-          "party_abbr": "SDF",
-          "party_name": "Socialist Democratic Federation"
-        },
-        {
-          "party_abbr": "SRP",
-          "party_name": "Social Reform Party"
-        },
-        {
-          "party_abbr": "TPJ",
-          "party_name": "Tomorrow Party of Japan"
-        },
-        {
-          "party_abbr": "YP",
-          "party_name": "Your Party"
-        }
-      ]
-    },
-    {
-      "country": ["lithuania", "lituania"],
-      "parties": [
-        {
-          "party_abbr": "DK",
-          "party_name": "The Way of Courage"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "Labour Party"
-        },
-        {
-          "party_abbr": "JL",
-          "party_name": "Young Lithuania"
-        },
-        {
-          "party_abbr": "K-AMT",
-          "party_name": "PEC -- Ausra Maldeikiene's Rain"
-        },
-        {
-          "party_abbr": "K-LS",
-          "party_name": "PEC -- Decisive Leap"
-        },
-        {
-          "party_abbr": "K-PRPJ",
-          "party_name": "PEC -- President Rolandas Paksas' Movement"
-        },
-        {
-          "party_abbr": "K-SLVE",
-          "party_name": "PEC -- Strong Lithuania in United Europe"
-        },
-        {
-          "party_abbr": "K-VRS",
-          "party_name": "PEC -- Vytautas Radzvilas: Recover the State!"
-        },
-        {
-          "party_abbr": "KDS",
-          "party_name": "Christian Democratic Union"
-        },
-        {
-          "party_abbr": "KKSS",
-          "party_name": "Christian Conservative Social Union"
-        },
-        {
-          "party_abbr": "LCP",
-          "party_name": "Lithuanian Centre Party"
-        },
-        {
-          "party_abbr": "LCS",
-          "party_name": "Centre Union of Lithuania"
-        },
-        {
-          "party_abbr": "LDDP",
-          "party_name": "Democratic Labour Party of Lithuania"
-        },
-        {
-          "party_abbr": "LDP",
-          "party_name": "Lithuanian Democratic Party"
-        },
-        {
-          "party_abbr": "LKDP",
-          "party_name": "Lithuanian Christian Democrats"
-        },
-        {
-          "party_abbr": "LKP",
-          "party_name": "Communist Party of Lithuania"
-        },
-        {
-          "party_abbr": "LLL",
-          "party_name": "Lithuanian Liberty League"
-        },
-        {
-          "party_abbr": "LLRA",
-          "party_name": "Election Action of Lithuania's Poles"
-        },
-        {
-          "party_abbr": "LLS",
-          "party_name": "Lithuanian Freedom Union (Liberals)"
-        },
-        {
-          "party_abbr": "LLaS",
-          "party_name": "Lithuanian Liberty Union"
-        },
-        {
-          "party_abbr": "LMP-NDP",
-          "party_name": "Lithuanian Womens Party -- New Democratic Party"
-        },
-        {
-          "party_abbr": "LP",
-          "party_name": "Freedom Party"
-        },
-        {
-          "party_abbr": "LPKTS",
-          "party_name": "Union of Lithuanian Political Prisoners and Deportees"
-        },
-        {
-          "party_abbr": "LRLS",
-          "party_name": "Liberals Movement of the Republic of Lithuania"
-        },
-        {
-          "party_abbr": "LRS",
-          "party_name": "Lithuanian Russian Union"
-        },
-        {
-          "party_abbr": "LSDDP",
-          "party_name": "Social Democratic Labour Party of Lithuania"
-        },
-        {
-          "party_abbr": "LSDP",
-          "party_name": "Lithuanian Social Democratic Party"
-        },
-        {
-          "party_abbr": "LSDP-89",
-          "party_name": "Lithuanian Social Democratic Party -- 1989"
-        },
-        {
-          "party_abbr": "LTMA",
-          "party_name": "Alliance of the Lithuanian National Minorities"
-        },
-        {
-          "party_abbr": "LTS",
-          "party_name": "Lithuanian National Union List"
-        },
-        {
-          "party_abbr": "LUP",
-          "party_name": "Lithuanian Party of Economy"
-        },
-        {
-          "party_abbr": "LVLS",
-          "party_name": "Lithuanian Peasant Union"
-        },
-        {
-          "party_abbr": "LVP",
-          "party_name": "Lithuanian Peasant Party"
-        },
-        {
-          "party_abbr": "LZP",
-          "party_name": "Lithuanian Green Party"
-        },
-        {
-          "party_abbr": "LiCS",
-          "party_name": "Liberal and Centre Union"
-        },
-        {
-          "party_abbr": "LiCS-TPP",
-          "party_name": "United Faction of the Liberal and Centre Union and Nations Resurrection Party"
-        },
-        {
-          "party_abbr": "NS-SL",
-          "party_name": "New Union (Social Liberals)"
-        },
-        {
-          "party_abbr": "PDP",
-          "party_name": "Civic Democratic Party"
-        },
-        {
-          "party_abbr": "SPF",
-          "party_name": "Socialist People's Front"
-        },
-        {
-          "party_abbr": "TAIP",
-          "party_name": "YES -- Homeland Revival and Perspective"
-        },
-        {
-          "party_abbr": "TPJ",
-          "party_name": "National Progress Movement"
-        },
-        {
-          "party_abbr": "TPP",
-          "party_name": "National Resurrection Party"
-        },
-        {
-          "party_abbr": "TS-LK",
-          "party_name": "Homeland Union"
-        },
-        {
-          "party_abbr": "TSKP",
-          "party_name": "Lithuanian Communist Party on the CPSU Platform"
-        },
-        {
-          "party_abbr": "TT-LDP",
-          "party_name": "Order and Justice -- Liberal Democratic Party"
-        },
-        {
-          "party_abbr": "Tpp",
-          "party_name": "Party of National Progress"
-        },
-        {
-          "party_abbr": "UTL",
-          "party_name": "Peoples Union -- For Just Lithuania"
-        },
-        {
-          "party_abbr": "Zp",
-          "party_name": "Samogitian Party"
-        }
-      ]
-    },
-    {
-      "country": ["luxembourg", "luxemburgo"],
-      "parties": [
-        {
-          "party_abbr": "AR|ADR",
-          "party_name": "Action Committee Pensions | Alternative Democratic Reform Party"
-        },
-        {
-          "party_abbr": "BMP",
-          "party_name": "Party of Farmers and the Middle Class"
-        },
-        {
-          "party_abbr": "Bl",
-          "party_name": "Citizens' List"
-        },
-        {
-          "party_abbr": "CSV",
-          "party_name": "Christian Social People's Party"
-        },
-        {
-          "party_abbr": "DL",
-          "party_name": "The Left"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "DeLe",
-          "party_name": "Democratic List"
-        },
-        {
-          "party_abbr": "FV",
-          "party_name": "Independent People's Party"
-        },
-        {
-          "party_abbr": "GLEI",
-          "party_name": "Green Left Ecological Initiative"
-        },
-        {
-          "party_abbr": "GLS",
-          "party_name": "Group for Luxembourgian Sovereignty"
-        },
-        {
-          "party_abbr": "Greng",
-          "party_name": "The Greens"
-        },
-        {
-          "party_abbr": "KPL",
-          "party_name": "Communist Party of Luxembourg"
-        },
-        {
-          "party_abbr": "LL",
-          "party_name": "Liberal League"
-        },
-        {
-          "party_abbr": "LSAP",
-          "party_name": "Luxembourg Socialist Workers' Party"
-        },
-        {
-          "party_abbr": "LiLe",
-          "party_name": "Left Liberals"
-        },
-        {
-          "party_abbr": "MIP",
-          "party_name": "Popular Independent Movement"
-        },
-        {
-          "party_abbr": "NB",
-          "party_name": "National Movement"
-        },
-        {
-          "party_abbr": "ONP",
-          "party_name": "Independent National Party"
-        },
-        {
-          "party_abbr": "ONV",
-          "party_name": "National Independent Union"
-        },
-        {
-          "party_abbr": "PBMA",
-          "party_name": "Free List of Peasants, Middle Classes and Workers"
-        },
-        {
-          "party_abbr": "PD",
-          "party_name": "Party of the Right"
-        },
-        {
-          "party_abbr": "PDPN",
-          "party_name": "Progressive Democratic Party of the North"
-        },
-        {
-          "party_abbr": "PICM",
-          "party_name": "Independent Party of the Middle Class"
-        },
-        {
-          "party_abbr": "PID",
-          "party_name": "Party for Full Democracy"
-        },
-        {
-          "party_abbr": "PIE",
-          "party_name": "Independents of the East"
-        },
-        {
-          "party_abbr": "PL",
-          "party_name": "Liberal Party"
-        },
-        {
-          "party_abbr": "PRL",
-          "party_name": "Radical Liberal Party"
-        },
-        {
-          "party_abbr": "Pi",
-          "party_name": "Pirate Party Luxembourg"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Radical Left / Radical Party"
-        },
-        {
-          "party_abbr": "RPMC",
-          "party_name": "Radical Party (Marcel Cahen)"
-        },
-        {
-          "party_abbr": "RSP",
-          "party_name": "Radical Socialist Party"
-        },
-        {
-          "party_abbr": "SDP",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "SI",
-          "party_name": "Jean Gremling List -- Independent Socialists"
-        },
-        {
-          "party_abbr": "VL",
-          "party_name": "Volt Luxembourg"
-        },
-        {
-          "party_abbr": "Z-EF",
-          "party_name": "Coerced Conscripts"
-        }
-      ]
-    },
-    {
-      "country": ["latvia", "letonia"],
-      "parties": [
-        {
-          "party_abbr": "DCP",
-          "party_name": "Democratic Centre Party"
-        },
-        {
-          "party_abbr": "DPS",
-          "party_name": "Democratic Party Saimnieks"
-        },
-        {
-          "party_abbr": "JD",
-          "party_name": "New Democrats"
-        },
-        {
-          "party_abbr": "JKP",
-          "party_name": "New Conservative Party"
-        },
-        {
-          "party_abbr": "JL",
-          "party_name": "New Era"
-        },
-        {
-          "party_abbr": "JP",
-          "party_name": "New Era Party"
-        },
-        {
-          "party_abbr": "K",
-          "party_name": "Conservative Party"
-        },
-        {
-          "party_abbr": "KDS",
-          "party_name": "Christian Democratic Union"
-        },
-        {
-          "party_abbr": "KP",
-          "party_name": "Movement For!"
-        },
-        {
-          "party_abbr": "KPV-LV",
-          "party_name": "Who owns the state?"
-        },
-        {
-          "party_abbr": "L",
-          "party_name": "Equal Rights"
-        },
-        {
-          "party_abbr": "LA",
-          "party_name": "For Latvia's Development"
-        },
-        {
-          "party_abbr": "LC",
-          "party_name": "Latvian Way"
-        },
-        {
-          "party_abbr": "LG",
-          "party_name": "Light of Latgale"
-        },
-        {
-          "party_abbr": "LKP",
-          "party_name": "Communist Party of Latvia"
-        },
-        {
-          "party_abbr": "LKPP",
-          "party_name": "Latvias Party of Russian Citizens"
-        },
-        {
-          "party_abbr": "LNNK",
-          "party_name": "Latvian National Independence Movement"
-        },
-        {
-          "party_abbr": "LPP",
-          "party_name": "Latvia's First Party"
-        },
-        {
-          "party_abbr": "LPP/LC",
-          "party_name": "Latvian First Party / Latvian Way Party"
-        },
-        {
-          "party_abbr": "LRa",
-          "party_name": "Latvian Association of Regions"
-        },
-        {
-          "party_abbr": "LSDSP",
-          "party_name": "Latvian Social Democratic Workers' Party"
-        },
-        {
-          "party_abbr": "LSP",
-          "party_name": "Socialist Party of Latvia"
-        },
-        {
-          "party_abbr": "LTF",
-          "party_name": "Popular Front of Latvia"
-        },
-        {
-          "party_abbr": "LVP",
-          "party_name": "Latvian Unity Party"
-        },
-        {
-          "party_abbr": "LZ",
-          "party_name": "Union of Latvian Farmers"
-        },
-        {
-          "party_abbr": "LZP",
-          "party_name": "Latvian Green Party"
-        },
-        {
-          "party_abbr": "LZS",
-          "party_name": "Farmers Union of Latvia"
-        },
-        {
-          "party_abbr": "Lib",
-          "party_name": "Libertas.lv"
-        },
-        {
-          "party_abbr": "MPA-LNP",
-          "party_name": "Political Association of the Underprivileged and Latvian Independence Party"
-        },
-        {
-          "party_abbr": "NA/TB/LNNK",
-          "party_name": "National Alliance / For Fatherland and Freedom / LNNK"
-        },
-        {
-          "party_abbr": "NsL",
-          "party_name": "For Latvia from the Heart"
-        },
-        {
-          "party_abbr": "P",
-          "party_name": "The Progressive"
-        },
-        {
-          "party_abbr": "PCTVL",
-          "party_name": "For Human Rights in a United Latvia"
-        },
-        {
-          "party_abbr": "PLL",
-          "party_name": "For a Good Latvia"
-        },
-        {
-          "party_abbr": "PPA",
-          "party_name": "Political Party -- Alternative"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Civic Union"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Reform Party"
-        },
-        {
-          "party_abbr": "S",
-          "party_name": "Harmony"
-        },
-        {
-          "party_abbr": "SCP",
-          "party_name": "Society for Other Politics"
-        },
-        {
-          "party_abbr": "SDLP",
-          "party_name": "Social Democratic Welfare Party"
-        },
-        {
-          "party_abbr": "SDP",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "TB",
-          "party_name": "For Fatherland and Freedom"
-        },
-        {
-          "party_abbr": "TKL-ZP",
-          "party_name": "People's Movement for Latvia -- Siegerist Party"
-        },
-        {
-          "party_abbr": "TP",
-          "party_name": "People's Party"
-        },
-        {
-          "party_abbr": "TPA",
-          "party_name": "Political Union of Economists"
-        },
-        {
-          "party_abbr": "TSP",
-          "party_name": "National Harmony Party"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Unity"
-        },
-        {
-          "party_abbr": "VL",
-          "party_name": "All For Latvia!"
-        },
-        {
-          "party_abbr": "ViLa",
-          "party_name": "United for Latvia"
-        },
-        {
-          "party_abbr": "ZZS",
-          "party_name": "Green and Farmers' Union"
-        }
-      ]
-    },
-    {
-      "country": ["malta"],
-      "parties": [
-        {
-          "party_abbr": "AD",
-          "party_name": "Democratic Alternative"
-        },
-        {
-          "party_abbr": "DAP",
-          "party_name": "Democratic Action Party"
-        },
-        {
-          "party_abbr": "GP",
-          "party_name": "Gozo Party"
-        },
-        {
-          "party_abbr": "IE",
-          "party_name": "Imperium Europa"
-        },
-        {
-          "party_abbr": "JP",
-          "party_name": "Jones Party"
-        },
-        {
-          "party_abbr": "MWP",
-          "party_name": "Malta Workers' Party"
-        },
-        {
-          "party_abbr": "PD",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "PDN",
-          "party_name": "Democratic Nationalist Party"
-        },
-        {
-          "party_abbr": "PHN",
-          "party_name": "Christian Workers' Party"
-        },
-        {
-          "party_abbr": "PK",
-          "party_name": "Constitutionalist Party"
-        },
-        {
-          "party_abbr": "PKP",
-          "party_name": "Progressive Constitutionalist Party"
-        },
-        {
-          "party_abbr": "PL",
-          "party_name": "Malta Labour Party"
-        },
-        {
-          "party_abbr": "PN",
-          "party_name": "Nationalist Party"
-        }
-      ]
-    },
-    {
-      "country": ["netherlands", "paises baixos"],
-      "parties": [
-        {
-          "party_abbr": "50+",
-          "party_name": "50PLUS"
-        },
-        {
-          "party_abbr": "AOV|VSP",
-          "party_name": "General Senior Union | United Seniors Party"
-        },
-        {
-          "party_abbr": "ARP",
-          "party_name": "Anti-Revolutionary Party"
-        },
-        {
-          "party_abbr": "BVL",
-          "party_name": "League of Free Liberals"
-        },
-        {
-          "party_abbr": "Bp",
-          "party_name": "Farmers Party"
-        },
-        {
-          "party_abbr": "CD",
-          "party_name": "Centre Democrats"
-        },
-        {
-          "party_abbr": "CDA",
-          "party_name": "Christian Democratic Appeal"
-        },
-        {
-          "party_abbr": "CDU",
-          "party_name": "Christian Democratic Union"
-        },
-        {
-          "party_abbr": "CHU",
-          "party_name": "Christian Historical Union"
-        },
-        {
-          "party_abbr": "CP",
-          "party_name": "Centre Party"
-        },
-        {
-          "party_abbr": "CPN",
-          "party_name": "Communist Party of the Netherlands"
-        },
-        {
-          "party_abbr": "CU",
-          "party_name": "Christian Union"
-        },
-        {
-          "party_abbr": "D66",
-          "party_name": "Democrats 66"
-        },
-        {
-          "party_abbr": "DENK",
-          "party_name": "Think"
-        },
-        {
-          "party_abbr": "DS70",
-          "party_name": "Democratic Socialists 70"
-        },
-        {
-          "party_abbr": "EB",
-          "party_name": "Economic League"
-        },
-        {
-          "party_abbr": "EuTr",
-          "party_name": "Europe Transparent"
-        },
-        {
-          "party_abbr": "FvD",
-          "party_name": "Forum for Democracy"
-        },
-        {
-          "party_abbr": "GL",
-          "party_name": "Green Left"
-        },
-        {
-          "party_abbr": "GPV",
-          "party_name": "Reformed Political League"
-        },
-        {
-          "party_abbr": "Groen",
-          "party_name": "The Greens"
-        },
-        {
-          "party_abbr": "HGS",
-          "party_name": "New Reformed State Party"
-        },
-        {
-          "party_abbr": "KNP",
-          "party_name": "Catholic National Party"
-        },
-        {
-          "party_abbr": "KVP",
-          "party_name": "Catholic Peoples Party"
-        },
-        {
-          "party_abbr": "LN",
-          "party_name": "Livable Netherlands"
-        },
-        {
-          "party_abbr": "LPF",
-          "party_name": "Fortuyn List"
-        },
-        {
-          "party_abbr": "LSP",
-          "party_name": "Liberal State Party -- The Freedom League"
-        },
-        {
-          "party_abbr": "LU",
-          "party_name": "Liberal Union"
-        },
-        {
-          "party_abbr": "MP",
-          "party_name": "Middle Party"
-        },
-        {
-          "party_abbr": "MPSL",
-          "party_name": "Middle Party for City and Country"
-        },
-        {
-          "party_abbr": "NSB",
-          "party_name": "National Socialist Movement in the Netherlands"
-        },
-        {
-          "party_abbr": "PB|NBTM",
-          "party_name": "Plattelandersbond | National Farmers', Horticulturists' and Middle Class Party"
-        },
-        {
-          "party_abbr": "PPR",
-          "party_name": "Radical Political Party"
-        },
-        {
-          "party_abbr": "PSP",
-          "party_name": "Pacifist Socialist Party"
-        },
-        {
-          "party_abbr": "PVV",
-          "party_name": "Party for Freedom"
-        },
-        {
-          "party_abbr": "PvdA",
-          "party_name": "Labour Party"
-        },
-        {
-          "party_abbr": "PvdD",
-          "party_name": "Party for the Animals"
-        },
-        {
-          "party_abbr": "RKP",
-          "party_name": "Roman Catholic Party"
-        },
-        {
-          "party_abbr": "RKVP",
-          "party_name": "Roman Catholic People's Party"
-        },
-        {
-          "party_abbr": "RPF",
-          "party_name": "Reformatory Political Federation"
-        },
-        {
-          "party_abbr": "RSP",
-          "party_name": "Revolutionary Socialist Party"
-        },
-        {
-          "party_abbr": "S+G+R",
-          "party_name": "Reformatory Political Federation / Reformed Political League / Political Reformed Party"
-        },
-        {
-          "party_abbr": "SDAP",
-          "party_name": "Social Democratic Workers' Party"
-        },
-        {
-          "party_abbr": "SGP",
-          "party_name": "Political Reformed Party"
-        },
-        {
-          "party_abbr": "SP",
-          "party_name": "Socialist Party"
-        },
-        {
-          "party_abbr": "VDB",
-          "party_name": "Free-thinking Democratic League"
-        },
-        {
-          "party_abbr": "VN",
-          "party_name": "Volt Netherlands"
-        },
-        {
-          "party_abbr": "VVD",
-          "party_name": "People's Party for Freedom and Democracy"
-        }
-      ]
-    },
-    {
-      "country": ["norway", "noruega"],
-      "parties": [
-        {
-          "party_abbr": "A",
-          "party_name": "Teetotaler Party"
-        },
-        {
-          "party_abbr": "DLF",
-          "party_name": "Liberal People's Party"
-        },
-        {
-          "party_abbr": "DNA",
-          "party_name": "Norwegian Labour Party"
-        },
-        {
-          "party_abbr": "DRF",
-          "party_name": "Radical People's Party"
-        },
-        {
-          "party_abbr": "FV",
-          "party_name": "Liberal Left Party"
-        },
-        {
-          "party_abbr": "FeBo",
-          "party_name": "Electoral lists Conservatives"
-        },
-        {
-          "party_abbr": "Fr",
-          "party_name": "Progress Party"
-        },
-        {
-          "party_abbr": "H",
-          "party_name": "Conservative Party"
-        },
-        {
-          "party_abbr": "Hf",
-          "party_name": "Resistance Movement"
-        },
-        {
-          "party_abbr": "Kp",
-          "party_name": "Coastal Party"
-        },
-        {
-          "party_abbr": "KrF",
-          "party_name": "Christian Democratic Party"
-        },
-        {
-          "party_abbr": "MDG",
-          "party_name": "Green Party"
-        },
-        {
-          "party_abbr": "MV",
-          "party_name": "Moderate Liberal Party"
-        },
-        {
-          "party_abbr": "NKP",
-          "party_name": "Communist Party of Norway"
-        },
-        {
-          "party_abbr": "NS",
-          "party_name": "National Gathering"
-        },
-        {
-          "party_abbr": "NSA",
-          "party_name": "Social Democratic Labour Party of Norway"
-        },
-        {
-          "party_abbr": "P",
-          "party_name": "Pensioners Party"
-        },
-        {
-          "party_abbr": "RV",
-          "party_name": "Red Electoral Alliance"
-        },
-        {
-          "party_abbr": "SF",
-          "party_name": "Socialist People's Party"
-        },
-        {
-          "party_abbr": "SV",
-          "party_name": "Socialist Left Party"
-        },
-        {
-          "party_abbr": "Soc",
-          "party_name": "Society Party"
-        },
-        {
-          "party_abbr": "Sp",
-          "party_name": "Centre Party"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Liberal Party of Norway"
-        }
-      ]
-    },
-    {
-      "country": ["new zealand", "nova zelandia"],
-      "parties": [
-        {
-          "party_abbr": "A",
-          "party_name": "Alliance"
-        },
-        {
-          "party_abbr": "ACT",
-          "party_name": "ACT New Zealand"
-        },
-        {
-          "party_abbr": "ALCP",
-          "party_name": "Aotearoa Legalise Cannabis Party"
-        },
-        {
-          "party_abbr": "CD/FNZ",
-          "party_name": "Christian Democrat Party / Future New Zealand"
-        },
-        {
-          "party_abbr": "CH",
-          "party_name": "Christian Heritage Party of New Zealand"
-        },
-        {
-          "party_abbr": "CP",
-          "party_name": "Conservatice Party of New Zealand"
-        },
-        {
-          "party_abbr": "CPNZ",
-          "party_name": "Communist Party of New Zealand"
-        },
-        {
-          "party_abbr": "CouPa",
-          "party_name": "Country Party"
-        },
-        {
-          "party_abbr": "DLP",
-          "party_name": "Democratic Labour Party"
-        },
-        {
-          "party_abbr": "DP",
-          "party_name": "Democrat Party"
-        },
-        {
-          "party_abbr": "Greens",
-          "party_name": "Green Party"
-        },
-        {
-          "party_abbr": "LP",
-          "party_name": "Labour Party"
-        },
-        {
-          "party_abbr": "MP",
-          "party_name": "Maori Party"
-        },
-        {
-          "party_abbr": "Mana",
-          "party_name": "Mana Party"
-        },
-        {
-          "party_abbr": "NC",
-          "party_name": "New Conservative Party"
-        },
-        {
-          "party_abbr": "NLP",
-          "party_name": "New Labour Party"
-        },
-        {
-          "party_abbr": "NP",
-          "party_name": "National Party"
-        },
-        {
-          "party_abbr": "NZFP",
-          "party_name": "New Zealand First Party"
-        },
-        {
-          "party_abbr": "NZLP",
-          "party_name": "New Zealand Liberal Party"
-        },
-        {
-          "party_abbr": "NZP",
-          "party_name": "New Zealand Party"
-        },
-        {
-          "party_abbr": "OR",
-          "party_name": "Outdoor Recreation New Zealand"
-        },
-        {
-          "party_abbr": "PP",
-          "party_name": "Progressive Party"
-        },
-        {
-          "party_abbr": "RM",
-          "party_name": "Ratana Movement"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Reform Party"
-        },
-        {
-          "party_abbr": "SC|DP",
-          "party_name": "Social Credit | Democratic Party"
-        },
-        {
-          "party_abbr": "SDP",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "TOP",
-          "party_name": "The Opportunities Party"
-        },
-        {
-          "party_abbr": "UFNZ",
-          "party_name": "United Future New Zealand"
-        },
-        {
-          "party_abbr": "UNZ",
-          "party_name": "United New Zealand"
-        },
-        {
-          "party_abbr": "VP",
-          "party_name": "Values Party"
-        }
-      ]
-    },
-    {
-      "country": ["poland", "polonia"],
-      "parties": [
-        {
-          "party_abbr": "AWS",
-          "party_name": "Solidarity Electoral Action"
-        },
-        {
-          "party_abbr": "BBWR",
-          "party_name": "Non-Party Block for Supporting the Reforms"
-        },
-        {
-          "party_abbr": "ChD",
-          "party_name": "Christian Democracy"
-        },
-        {
-          "party_abbr": "D|W|U",
-          "party_name": "Democratic | Freedom | Union"
-        },
-        {
-          "party_abbr": "IdP",
-          "party_name": "Initiative for Poland"
-        },
-        {
-          "party_abbr": "K",
-          "party_name": "Kukiz'15"
-        },
-        {
-          "party_abbr": "KLD",
-          "party_name": "Liberal Democratic Congress"
-        },
-        {
-          "party_abbr": "KORWIN",
-          "party_name": "Coalition for the Renewal of the Republic -- Liberty and Hope"
-        },
-        {
-          "party_abbr": "KPEiR",
-          "party_name": "National Party of Pensioners and Retired"
-        },
-        {
-          "party_abbr": "KPEiR-RP",
-          "party_name": "National Agreement of Pensioners and Retired of the Republic Poland"
-        },
-        {
-          "party_abbr": "KPN",
-          "party_name": "Confederation for Independent Poland"
-        },
-        {
-          "party_abbr": "LP",
-          "party_name": "Libertas Poland"
-        },
-        {
-          "party_abbr": "LPR",
-          "party_name": "League of Polish Families"
-        },
-        {
-          "party_abbr": "LR",
-          "party_name": "Left Together"
-        },
-        {
-          "party_abbr": "LiD",
-          "party_name": "Left and Democrats"
-        },
-        {
-          "party_abbr": "MN",
-          "party_name": "German minority"
-        },
-        {
-          "party_abbr": "N",
-          "party_name": "Modern"
-        },
-        {
-          "party_abbr": "NCD -BdP",
-          "party_name": "National Christian Democratic -- Block for Poland"
-        },
-        {
-          "party_abbr": "NKWW",
-          "party_name": "National Voters Committee"
-        },
-        {
-          "party_abbr": "PC",
-          "party_name": "Centre Agreement"
-        },
-        {
-          "party_abbr": "PCD",
-          "party_name": "Party of Christian Democrats"
-        },
-        {
-          "party_abbr": "PL",
-          "party_name": "Peasants Agreement"
-        },
-        {
-          "party_abbr": "PO",
-          "party_name": "Civic Platform"
-        },
-        {
-          "party_abbr": "PPG",
-          "party_name": "Polish Economic Program [Large Beer]"
-        },
-        {
-          "party_abbr": "PR|A",
-          "party_name": "Poland Together | Agreement"
-        },
-        {
-          "party_abbr": "PSL",
-          "party_name": "Polish People's Party"
-        },
-        {
-          "party_abbr": "PZ",
-          "party_name": "The Greens"
-        },
-        {
-          "party_abbr": "PZPR",
-          "party_name": "Polish United Workers' Party"
-        },
-        {
-          "party_abbr": "PZZ",
-          "party_name": "Polish Western Union"
-        },
-        {
-          "party_abbr": "PiS",
-          "party_name": "Law and Justice"
-        },
-        {
-          "party_abbr": "PjN",
-          "party_name": "Poland is the Most Important"
-        },
-        {
-          "party_abbr": "PrRz",
-          "party_name": "Republic Right Party"
-        },
-        {
-          "party_abbr": "RAS",
-          "party_name": "Movement for Silesian Autonomy"
-        },
-        {
-          "party_abbr": "RKN",
-          "party_name": "Catholic-National Movement"
-        },
-        {
-          "party_abbr": "RN",
-          "party_name": "National Movement"
-        },
-        {
-          "party_abbr": "ROP",
-          "party_name": "Movement for the Reconstruction of Poland"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Your (Palikot's) Movement"
-        },
-        {
-          "party_abbr": "Razem",
-          "party_name": "Together Party"
-        },
-        {
-          "party_abbr": "RdR",
-          "party_name": "Movement for the Republic"
-        },
-        {
-          "party_abbr": "S",
-          "party_name": "Solidarnosc"
-        },
-        {
-          "party_abbr": "SD",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "SDPL",
-          "party_name": "Social Democracy of Poland"
-        },
-        {
-          "party_abbr": "SLD",
-          "party_name": "Democratic Left Alliance"
-        },
-        {
-          "party_abbr": "SP",
-          "party_name": "United Poland"
-        },
-        {
-          "party_abbr": "SRP",
-          "party_name": "Self-Defense of the Republic Poland"
-        },
-        {
-          "party_abbr": "SoPr",
-          "party_name": "Labour Solidarity"
-        },
-        {
-          "party_abbr": "UP",
-          "party_name": "Labour Union"
-        },
-        {
-          "party_abbr": "UPR|KNP",
-          "party_name": "Real Politics Union | Congress of the New Right"
-        },
-        {
-          "party_abbr": "WIO",
-          "party_name": "Spring"
-        },
-        {
-          "party_abbr": "X",
-          "party_name": "Party X"
-        },
-        {
-          "party_abbr": "ZChN",
-          "party_name": "Christian National Union"
-        },
-        {
-          "party_abbr": "ZSL",
-          "party_name": "United People's Party"
-        }
-      ]
-    },
-    {
-      "country": ["portugal"],
-      "parties": [
-        {
-          "party_abbr": "A",
-          "party_name": "Alliance"
-        },
-        {
-          "party_abbr": "AD",
-          "party_name": "Democratic Alliance"
-        },
-        {
-          "party_abbr": "APU",
-          "party_name": "United People Alliance"
-        },
-        {
-          "party_abbr": "ASDI",
-          "party_name": "Independent Social Democrats"
-        },
-        {
-          "party_abbr": "BE",
-          "party_name": "Bloc of the Left"
-        },
-        {
-          "party_abbr": "CDS-PP",
-          "party_name": "Democratic and Social Centre -- People's Party"
-        },
-        {
-          "party_abbr": "CDU",
-          "party_name": "Unified Democratic Coalition"
-        },
-        {
-          "party_abbr": "CH",
-          "party_name": "Enough"
-        },
-        {
-          "party_abbr": "FSP",
-          "party_name": "People's Socialist Front"
-        },
-        {
-          "party_abbr": "ID",
-          "party_name": "Democratic Intervention"
-        },
-        {
-          "party_abbr": "IL",
-          "party_name": "Liberal Initiative"
-        },
-        {
-          "party_abbr": "L",
-          "party_name": "Livre"
-        },
-        {
-          "party_abbr": "MDP",
-          "party_name": "Democratic Movement"
-        },
-        {
-          "party_abbr": "MEP",
-          "party_name": "Hope for Portugal Movement"
-        },
-        {
-          "party_abbr": "MES",
-          "party_name": "Movement of Socialist Left"
-        },
-        {
-          "party_abbr": "MPT",
-          "party_name": "Earth Party"
-        },
-        {
-          "party_abbr": "NC",
-          "party_name": "We, the Citizens!"
-        },
-        {
-          "party_abbr": "PAN",
-          "party_name": "Party for Animals and Nature"
-        },
-        {
-          "party_abbr": "PCP",
-          "party_name": "Portuguese Communist Party"
-        },
-        {
-          "party_abbr": "PCTP/MRPP",
-          "party_name": "Communist Party of the Portuguese Workers / Reorganizative Movement of the Party of the Proletariat"
-        },
-        {
-          "party_abbr": "PDC",
-          "party_name": "Christian Democratic Party"
-        },
-        {
-          "party_abbr": "PDR",
-          "party_name": "Republican Democratic Party"
-        },
-        {
-          "party_abbr": "PEV",
-          "party_name": "Ecology Party -- Greens"
-        },
-        {
-          "party_abbr": "POUS",
-          "party_name": "Workers Party of Socialist Unity"
-        },
-        {
-          "party_abbr": "PPM",
-          "party_name": "Popular Monarchist Party"
-        },
-        {
-          "party_abbr": "PRD",
-          "party_name": "Democratic Renewal Party"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Socialist Party"
-        },
-        {
-          "party_abbr": "PSD",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "PSN",
-          "party_name": "National Solidarity Party"
-        },
-        {
-          "party_abbr": "PSR",
-          "party_name": "Revolutionary Socialist Party"
-        },
-        {
-          "party_abbr": "Ref",
-          "party_name": "Reformists"
-        },
-        {
-          "party_abbr": "UDP",
-          "party_name": "Popular Democratic Union"
-        },
-        {
-          "party_abbr": "UEDS",
-          "party_name": "Leftwing Union for the Socialist Democracy"
-        }
-      ]
-    },
-    {
-      "country": ["romania", "romenia"],
-      "parties": [
-        {
-          "party_abbr": "ALDE",
-          "party_name": "Alliance of Liberals and Democrats"
-        },
-        {
-          "party_abbr": "AUR",
-          "party_name": "Alliance for the Unity of Romanians"
-        },
-        {
-          "party_abbr": "ApR",
-          "party_name": "Alliance for Romania"
-        },
-        {
-          "party_abbr": "CDR",
-          "party_name": "Romanian Democratic Convention"
-        },
-        {
-          "party_abbr": "FC",
-          "party_name": "Civic Force"
-        },
-        {
-          "party_abbr": "GDC",
-          "party_name": "Democratic Group of the Centre"
-        },
-        {
-          "party_abbr": "I-GCT",
-          "party_name": "Independent -- Gregoriana Carmen Tudoran"
-        },
-        {
-          "party_abbr": "I-GNS",
-          "party_name": "Independent -- George-Nicolae Simion"
-        },
-        {
-          "party_abbr": "I-MD",
-          "party_name": "Independent -- Mircea Diaconu"
-        },
-        {
-          "party_abbr": "I-PC",
-          "party_name": "Independent -- Peter Costea"
-        },
-        {
-          "party_abbr": "LRP",
-          "party_name": "Liberal Reformist Party"
-        },
-        {
-          "party_abbr": "MER",
-          "party_name": "Romanian Ecological Movement"
-        },
-        {
-          "party_abbr": "PAC",
-          "party_name": "Party of the Civic Alliance"
-        },
-        {
-          "party_abbr": "PAR",
-          "party_name": "Alternative Party of Romania"
-        },
-        {
-          "party_abbr": "PC",
-          "party_name": "Conservative Party"
-        },
-        {
-          "party_abbr": "PD",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "PD-L",
-          "party_name": "Democratic Liberal Party"
-        },
-        {
-          "party_abbr": "PDAR",
-          "party_name": "Democratic Agrarian Party of Romania"
-        },
-        {
-          "party_abbr": "PER",
-          "party_name": "Romanian Ecologist Party"
-        },
-        {
-          "party_abbr": "PIN",
-          "party_name": "National Initiative Party"
-        },
-        {
-          "party_abbr": "PL/DC",
-          "party_name": "Liberal Party / Democratic Convention"
-        },
-        {
-          "party_abbr": "PLD",
-          "party_name": "Liberal Democratic Party"
-        },
-        {
-          "party_abbr": "PMP",
-          "party_name": "People's Movement Party"
-        },
-        {
-          "party_abbr": "PNG-CD",
-          "party_name": "New Generation Party -- Christian Democratic"
-        },
-        {
-          "party_abbr": "PNL",
-          "party_name": "National Liberal Party"
-        },
-        {
-          "party_abbr": "PNL-C",
-          "party_name": "National Liberal Party Campeanu"
-        },
-        {
-          "party_abbr": "PNL-CD",
-          "party_name": "National Liberal Party -- Democratic Convention"
-        },
-        {
-          "party_abbr": "PNT-CD",
-          "party_name": "Christian-Democratic National Peasants' Party"
-        },
-        {
-          "party_abbr": "PP-DD",
-          "party_name": "People's Party -- Dan Diaconescu"
-        },
-        {
-          "party_abbr": "PPR",
-          "party_name": "Party of Pensioners of Romania"
-        },
-        {
-          "party_abbr": "PRM",
-          "party_name": "Greater Romania Party"
-        },
-        {
-          "party_abbr": "PROR",
-          "party_name": "PRO Romania"
-        },
-        {
-          "party_abbr": "PRU",
-          "party_name": "United Romania Party"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Socialist Party"
-        },
-        {
-          "party_abbr": "PSD",
-          "party_name": "Social Democratic Party"
-        },
-        {
-          "party_abbr": "PSDR",
-          "party_name": "Romanian Social Democratic Party"
-        },
-        {
-          "party_abbr": "PSM",
-          "party_name": "Socialist Party of Labour"
-        },
-        {
-          "party_abbr": "PSMR",
-          "party_name": "Romanian Socialist Party of Workers"
-        },
-        {
-          "party_abbr": "PSoDR",
-          "party_name": "Romanian Socialist Democratic Party"
-        },
-        {
-          "party_abbr": "PUNR",
-          "party_name": "Romanian National Unity Party"
-        },
-        {
-          "party_abbr": "PaRe",
-          "party_name": "Republican Party"
-        },
-        {
-          "party_abbr": "PaRo",
-          "party_name": "Party of the Roma"
-        },
-        {
-          "party_abbr": "UDMR",
-          "party_name": "Democratic Union of Hungarians in Romania"
-        },
-        {
-          "party_abbr": "UNPR",
-          "party_name": "National Union for the Progress of Romania"
-        },
-        {
-          "party_abbr": "USR",
-          "party_name": "Save Romania Union"
-        }
-      ]
-    },
-    {
-      "country": ["slovakia", "eslovaquia"],
-      "parties": [
-        {
-          "party_abbr": "KDZP",
-          "party_name": "Christian Democracy -- Life and Prosperity"
-        },
-        {
-          "party_abbr": "99%",
-          "party_name": "99 Percent -- Civic Voice"
-        },
-        {
-          "party_abbr": "ADS",
-          "party_name": "Alliance of Democrats"
-        },
-        {
-          "party_abbr": "ANO",
-          "party_name": "Alliance of the New Citizen"
-        },
-        {
-          "party_abbr": "DS",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "DUS",
-          "party_name": "Democratic Union"
-        },
-        {
-          "party_abbr": "DV",
-          "party_name": "Good Choice"
-        },
-        {
-          "party_abbr": "HZD",
-          "party_name": "Movement for Democracy"
-        },
-        {
-          "party_abbr": "HZDS",
-          "party_name": "Movement for a Democratic Slovakia"
-        },
-        {
-          "party_abbr": "HZPCS",
-          "party_name": "Movement for a Prosperous Czechia and Slovakia"
-        },
-        {
-          "party_abbr": "KDH",
-          "party_name": "Christian Democratic Movement"
-        },
-        {
-          "party_abbr": "KSS",
-          "party_name": "Communist Party of Slovakia"
-        },
-        {
-          "party_abbr": "KSU",
-          "party_name": "Christian Social Union"
-        },
-        {
-          "party_abbr": "KU",
-          "party_name": "Christian Union"
-        },
-        {
-          "party_abbr": "LsNS",
-          "party_name": "People's Party Our Slovakia"
-        },
-        {
-          "party_abbr": "Lu+Ls",
-          "party_name": "People's Union -- Liberal Party"
-        },
-        {
-          "party_abbr": "MH",
-          "party_name": "Most-Hid"
-        },
-        {
-          "party_abbr": "MK",
-          "party_name": "Hungarian Coalition"
-        },
-        {
-          "party_abbr": "MKDM",
-          "party_name": "Hungarian Christian Democratic Movement"
-        },
-        {
-          "party_abbr": "MOS",
-          "party_name": "Hungarian Civic Party"
-        },
-        {
-          "party_abbr": "MS",
-          "party_name": "Beautiful Slovakia"
-        },
-        {
-          "party_abbr": "NDS",
-          "party_name": "National Democratic Party"
-        },
-        {
-          "party_abbr": "NOVA",
-          "party_name": "New Majority"
-        },
-        {
-          "party_abbr": "NS",
-          "party_name": "New Slovakia"
-        },
-        {
-          "party_abbr": "NaS-NS",
-          "party_name": "Nation and Justice -- Our Party"
-        },
-        {
-          "party_abbr": "OKS",
-          "party_name": "Civic Conservative Party"
-        },
-        {
-          "party_abbr": "OLaNO",
-          "party_name": "Ordinary People and Independent"
-        },
-        {
-          "party_abbr": "PS",
-          "party_name": "Progressive Slovakia"
-        },
-        {
-          "party_abbr": "PSNS",
-          "party_name": "Real Slovak National Party"
-        },
-        {
-          "party_abbr": "PaS",
-          "party_name": "Law and Justice"
-        },
-        {
-          "party_abbr": "S",
-          "party_name": "Network"
-        },
-        {
-          "party_abbr": "S-E",
-          "party_name": "Coexistence"
-        },
-        {
-          "party_abbr": "SDA",
-          "party_name": "Social Democratic Alternative"
-        },
-        {
-          "party_abbr": "SDK",
-          "party_name": "Slovak Democratic Coalition"
-        },
-        {
-          "party_abbr": "SDKU-DS",
-          "party_name": "Slovak Democratic and Christian Union -- Democratic Party"
-        },
-        {
-          "party_abbr": "SDL",
-          "party_name": "Party of the Democratic Left"
-        },
-        {
-          "party_abbr": "SDL-05",
-          "party_name": "Party of the Democratic Left -- 2005"
-        },
-        {
-          "party_abbr": "SDSS",
-          "party_name": "Social Democratic Party of Slovakia"
-        },
-        {
-          "party_abbr": "SF",
-          "party_name": "Free Forum"
-        },
-        {
-          "party_abbr": "SNS",
-          "party_name": "Slovak National Party"
-        },
-        {
-          "party_abbr": "SOP",
-          "party_name": "Party of Civic Understanding"
-        },
-        {
-          "party_abbr": "SPK",
-          "party_name": "Party against Corruption, for Order, Labour and Money for all Decent Citizens"
-        },
-        {
-          "party_abbr": "SPOLU",
-          "party_name": "TOGETHER -- Civic Democracy"
-        },
-        {
-          "party_abbr": "SPV",
-          "party_name": "Alliance of Farmers and the Countryside"
-        },
-        {
-          "party_abbr": "SR",
-          "party_name": "We are family -- Boris Kollar"
-        },
-        {
-          "party_abbr": "SSL",
-          "party_name": "Freedom Party"
-        },
-        {
-          "party_abbr": "SV",
-          "party_name": "Common Choice"
-        },
-        {
-          "party_abbr": "SZ-92",
-          "party_name": "Green Party -- 1992"
-        },
-        {
-          "party_abbr": "SZS",
-          "party_name": "Green Party"
-        },
-        {
-          "party_abbr": "SaS",
-          "party_name": "Freedom and Solidarity"
-        },
-        {
-          "party_abbr": "Smer",
-          "party_name": "Direction -- Social Democracy"
-        },
-        {
-          "party_abbr": "TIP",
-          "party_name": "TIP Party -- We create another policy"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Homeland"
-        },
-        {
-          "party_abbr": "VPN",
-          "party_name": "Public against Violence"
-        },
-        {
-          "party_abbr": "ZAL",
-          "party_name": "For the People"
-        },
-        {
-          "party_abbr": "ZRS",
-          "party_name": "Association of Workers of Slovakia"
-        },
-        {
-          "party_abbr": "ZZ",
-          "party_name": "Change from the Bottom, DU"
-        }
-      ]
-    },
-    {
-      "country": ["slovenia", "eslovenia"],
-      "parties": [
-        {
-          "party_abbr": "AS",
-          "party_name": "Active Slovenia"
-        },
-        {
-          "party_abbr": "DD",
-          "party_name": "Good Country"
-        },
-        {
-          "party_abbr": "DEMOS",
-          "party_name": "Democratic Opposition of Slovenia"
-        },
-        {
-          "party_abbr": "DL",
-          "party_name": "Civic List"
-        },
-        {
-          "party_abbr": "DOM",
-          "party_name": "Homeland League"
-        },
-        {
-          "party_abbr": "DS",
-          "party_name": "Democratic Party"
-        },
-        {
-          "party_abbr": "DZL",
-          "party_name": "Civic Green List"
-        },
-        {
-          "party_abbr": "DeSUS",
-          "party_name": "Democratic Party of Pensioners of Slovenia"
-        },
-        {
-          "party_abbr": "GZS",
-          "party_name": "Voice of Slovenian women"
-        },
-        {
-          "party_abbr": "I-JK",
-          "party_name": "Independent -- Jelko Kacin"
-        },
-        {
-          "party_abbr": "IDS",
-          "party_name": "Initiative for Democratic Socialism"
-        },
-        {
-          "party_abbr": "Ita",
-          "party_name": "Italian national community"
-        },
-        {
-          "party_abbr": "KS",
-          "party_name": "Christian Socialists"
-        },
-        {
-          "party_abbr": "L",
-          "party_name": "The Left"
-        },
-        {
-          "party_abbr": "LDS",
-          "party_name": "Liberal Democracy of Slovenia"
-        },
-        {
-          "party_abbr": "LDSS",
-          "party_name": "Liberal Democratic Party of Slovenia"
-        },
-        {
-          "party_abbr": "LIPA",
-          "party_name": "Party Lime Tree"
-        },
-        {
-          "party_abbr": "LMS",
-          "party_name": "List of Marjan Sarec"
-        },
-        {
-          "party_abbr": "LZJ-PS",
-          "party_name": "Zoran Jankovic's List -- Positive Slovenia"
-        },
-        {
-          "party_abbr": "Mad",
-          "party_name": "Hungarian national community"
-        },
-        {
-          "party_abbr": "NDS",
-          "party_name": "National Democratic Party"
-        },
-        {
-          "party_abbr": "NSI",
-          "party_name": "New Slovenia -- Christian People's Party"
-        },
-        {
-          "party_abbr": "PSS",
-          "party_name": "Slovenian Pirate Party"
-        },
-        {
-          "party_abbr": "Pose",
-          "party_name": "Let's Unite"
-        },
-        {
-          "party_abbr": "S",
-          "party_name": "Solidarity"
-        },
-        {
-          "party_abbr": "SDS",
-          "party_name": "Slovenian Democratic Party"
-        },
-        {
-          "party_abbr": "SDZ",
-          "party_name": "Slovenian Democratic Union"
-        },
-        {
-          "party_abbr": "SF",
-          "party_name": "Slovenian Forum"
-        },
-        {
-          "party_abbr": "SLS",
-          "party_name": "Slovenian People's Party"
-        },
-        {
-          "party_abbr": "SMC",
-          "party_name": "Party of Miro Cerar"
-        },
-        {
-          "party_abbr": "SMS",
-          "party_name": "Youth Party of Slovenia"
-        },
-        {
-          "party_abbr": "SN",
-          "party_name": "Party of Independence"
-        },
-        {
-          "party_abbr": "SNS",
-          "party_name": "Slovenian National Party"
-        },
-        {
-          "party_abbr": "SO",
-          "party_name": "Slovenia is Ours"
-        },
-        {
-          "party_abbr": "SOPS",
-          "party_name": "Slovenian Craftsmen and Entreprenerial Party"
-        },
-        {
-          "party_abbr": "SOS",
-          "party_name": "Slovenian Liberal Party"
-        },
-        {
-          "party_abbr": "SS",
-          "party_name": "Dream Job"
-        },
-        {
-          "party_abbr": "SSS",
-          "party_name": "Socialist Party of Slovenia"
-        },
-        {
-          "party_abbr": "TRS",
-          "party_name": "Party for Sustainable Development of Slovenia"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "I Believe"
-        },
-        {
-          "party_abbr": "ZEO",
-          "party_name": "League for Citizens' Equality"
-        },
-        {
-          "party_abbr": "ZL-SD",
-          "party_name": "United List -- Social Democrats"
-        },
-        {
-          "party_abbr": "ZS",
-          "party_name": "Greens of Slovenia"
-        },
-        {
-          "party_abbr": "ZaAB",
-          "party_name": "Alliance of Alenka Bratusek"
-        },
-        {
-          "party_abbr": "Zares",
-          "party_name": "For Real"
-        },
-        {
-          "party_abbr": "ZdLe",
-          "party_name": "United Left"
-        }
-      ]
-    },
-    {
-      "country": ["sweden", "suecia"],
-      "parties": [
-        {
-          "party_abbr": "C",
-          "party_name": "Centre Party"
-        },
-        {
-          "party_abbr": "FP",
-          "party_name": "People's Party"
-        },
-        {
-          "party_abbr": "Fi",
-          "party_name": "Feminist Initiative"
-        },
-        {
-          "party_abbr": "JR",
-          "party_name": "National Farmers' Union"
-        },
-        {
-          "party_abbr": "Jl",
-          "party_name": "June List"
-        },
-        {
-          "party_abbr": "KD",
-          "party_name": "Christian Democrats"
-        },
-        {
-          "party_abbr": "M",
-          "party_name": "Moderate Party"
-        },
-        {
-          "party_abbr": "MP",
-          "party_name": "Greens"
-        },
-        {
-          "party_abbr": "MbS",
-          "party_name": "Citizens Coalition"
-        },
-        {
-          "party_abbr": "Mi",
-          "party_name": "Middle Parties"
-        },
-        {
-          "party_abbr": "NP-AV",
-          "party_name": "National Party [General Electoral League]"
-        },
-        {
-          "party_abbr": "NyD",
-          "party_name": "New Democracy"
-        },
-        {
-          "party_abbr": "Pi",
-          "party_name": "Pirate Party"
-        },
-        {
-          "party_abbr": "SAP",
-          "party_name": "Social Democrats"
-        },
-        {
-          "party_abbr": "SD",
-          "party_name": "Sweden Democrats"
-        },
-        {
-          "party_abbr": "SJ",
-          "party_name": "Sarajevo List"
-        },
-        {
-          "party_abbr": "SKP-H",
-          "party_name": "Communist Party of Sweden [Hoglund]"
-        },
-        {
-          "party_abbr": "SLP",
-          "party_name": "Liberal Party of Sweden"
-        },
-        {
-          "party_abbr": "SP",
-          "party_name": "Socialist Party"
-        },
-        {
-          "party_abbr": "SPI",
-          "party_name": "Swedish Senior Citizen Interest Party"
-        },
-        {
-          "party_abbr": "SSV-21",
-          "party_name": "Social Democratic Left Party of Sweden -- 1921"
-        },
-        {
-          "party_abbr": "V",
-          "party_name": "Left Party (Communists)"
-        },
-        {
-          "party_abbr": "VSP",
-          "party_name": "Left Socialist Party"
-        }
-      ]
-    },
-    {
-      "country": ["turkey", "turquia"],
-      "parties": [
-        {
-          "party_abbr": "AKP",
-          "party_name": "Justice and Development Party"
-        },
-        {
-          "party_abbr": "ANAP",
-          "party_name": "Motherland Party"
-        },
-        {
-          "party_abbr": "BBP",
-          "party_name": "Great Union Party"
-        },
-        {
-          "party_abbr": "DSP",
-          "party_name": "Democratic Left Party"
-        },
-        {
-          "party_abbr": "DTuP",
-          "party_name": "Democratic Turkey Party"
-        },
-        {
-          "party_abbr": "DYP",
-          "party_name": "Right Path Party"
-        },
-        {
-          "party_abbr": "GP",
-          "party_name": "Young Party"
-        },
-        {
-          "party_abbr": "HADEP",
-          "party_name": "People's Democracy Party"
-        },
-        {
-          "party_abbr": "HDP",
-          "party_name": "Peoples' Democratic Party"
-        },
-        {
-          "party_abbr": "IYI",
-          "party_name": "Iyi Party"
-        },
-        {
-          "party_abbr": "MDP",
-          "party_name": "Nationalist Democratic Party"
-        },
-        {
-          "party_abbr": "MHP",
-          "party_name": "National Action Party"
-        },
-        {
-          "party_abbr": "RP",
-          "party_name": "Welfare (Virtue) Party"
-        },
-        {
-          "party_abbr": "SHP|CHP",
-          "party_name": "Social Democratic Populist Party | Republican People's Party"
-        },
-        {
-          "party_abbr": "SP",
-          "party_name": "Felicity Party"
-        },
-        {
-          "party_abbr": "YTP",
-          "party_name": "New Turkey Party"
-        }
-      ]
-    }
-  ]
+  {
+    "estado": "Ativa",
+    "sigla": "A3ES",
+    "sioe": "",
+    "designacao": "Agência de Avaliação e Acreditação do Ensino Superior",
+    "id": "ent_A3ES",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AAN",
+    "sioe": "875780390",
+    "designacao": "Autoridade Aeronáutica Nacional",
+    "id": "ent_AAN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AC",
+    "sioe": "875790676",
+    "designacao": "Águas de Coimbra, EM",
+    "id": "ent_AC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ACM",
+    "sioe": "875791993",
+    "designacao": "Alto Comissariado para as Migrações, IP",
+    "id": "ent_ACM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ACSS",
+    "sioe": "149110000",
+    "designacao": "Administração Central do Sistema de Saúde, IP",
+    "id": "ent_ACSS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ACT",
+    "sioe": "92380000",
+    "designacao": "Autoridade para as Condições de Trabalho",
+    "id": "ent_ACT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ADC",
+    "sioe": "875791975",
+    "designacao": "Agência para o Desenvolvimento e Coesão, I.P.",
+    "id": "ent_ADC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ADSE",
+    "sioe": "875793041",
+    "designacao": "Instituto de Proteção e Assistência na Doença, IP",
+    "id": "ent_ADSE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AGIF",
+    "sioe": "875793280",
+    "designacao": "Agência para a Gestão Integrada de Fogos Rurais, IP",
+    "id": "ent_AGIF",
+    "dataCriacao": "2018-02-16",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AICEP",
+    "sioe": "70090000",
+    "designacao": "Agência para o Investimento e Comércio Externo de Portugal, EPE",
+    "id": "ent_AICEP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ALRAA",
+    "sioe": "875780307",
+    "designacao": "Assembleia Legislativa da Região Autónoma dos Açores",
+    "id": "ent_ALRAA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ALRAM",
+    "sioe": "770000054",
+    "designacao": "Assembleia Legislativa da Região Autónoma da Madeira",
+    "id": "ent_ALRAM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AMA",
+    "sioe": "13250000",
+    "designacao": "Agência para a Modernização Administrativa, I.P.",
+    "id": "ent_AMA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AMN",
+    "sioe": "875780389",
+    "designacao": "Autoridade Marítima Nacional",
+    "id": "ent_AMN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AMT",
+    "sioe": "875792925",
+    "designacao": "Autoridade da Mobilidade e dos Transportes",
+    "id": "ent_AMT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANA",
+    "sioe": "",
+    "designacao": "ANA - Aeroportos de Portugal, SA",
+    "id": "ent_ANA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANAC",
+    "sioe": "111300000",
+    "designacao": "Autoridade Nacional da Aviação Civil",
+    "id": "ent_ANAC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANACOM",
+    "sioe": "70070000",
+    "designacao": "Autoridade Nacional de Comunicações",
+    "id": "ent_ANACOM",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "ANCP",
+    "sioe": "",
+    "designacao": "Agência Nacional de Compras Públicas, EPE",
+    "id": "ent_ANCP",
+    "dataCriacao": "2007-02-19",
+    "dataExtincao": "2012-06-14",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANEPC",
+    "sioe": "21300000",
+    "designacao": "Autoridade Nacional de Emergência e Proteção Civil",
+    "id": "ent_ANEPC",
+    "dataCriacao": "2019-04-02",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANMP",
+    "sioe": "770000136",
+    "designacao": "Associação Nacional de Municípios Portugueses",
+    "id": "ent_ANMP",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "ANPC",
+    "sioe": "21300000",
+    "designacao": "Autoridade Nacional de Proteção Civil",
+    "id": "ent_ANPC",
+    "dataCriacao": "2006-10-27",
+    "dataExtincao": "2019-04-02",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANQEP",
+    "sioe": "90540000",
+    "designacao": "Agência Nacional para a Qualificação e o Ensino Profissional, IP",
+    "id": "ent_ANQEP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANS",
+    "sioe": "",
+    "designacao": "Autoridade Nacional de Segurança",
+    "id": "ent_ANS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANSR",
+    "sioe": "20100000",
+    "designacao": "Autoridade Nacional de Segurança Rodoviária",
+    "id": "ent_ANSR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ANTRAL",
+    "sioe": "",
+    "designacao": "Associação Nacional dos Transportes Rodoviários em Automóveis Ligeiros",
+    "id": "ent_ANTRAL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "APA",
+    "sioe": "83420000",
+    "designacao": "Agência Portuguesa do Ambiente, IP",
+    "id": "ent_APA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "APAV",
+    "sioe": "",
+    "designacao": "Associação Portuguesa de Apoio à Vítima",
+    "id": "ent_APAV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "APEL",
+    "sioe": "",
+    "designacao": "Associação Portuguesa de Editores e Livreiros",
+    "id": "ent_APEL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AR",
+    "sioe": "875780306",
+    "designacao": "Assembleia da República",
+    "id": "ent_AR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ARS-Alg",
+    "sioe": "148000000",
+    "designacao": "Administração Regional de Saúde do Algarve, IP",
+    "id": "ent_ARS-Alg",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ARS-Aln",
+    "sioe": "147000000",
+    "designacao": "Administração Regional de Saúde do Alentejo, IP",
+    "id": "ent_ARS-Aln",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ARS-C",
+    "sioe": "145000000",
+    "designacao": "Administração Regional de Saúde do Centro, IP",
+    "id": "ent_ARS-C",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ARS-LVT",
+    "sioe": "146000000",
+    "designacao": "Administração Regional de Saúde de Lisboa e Vale do Tejo, IP",
+    "id": "ent_ARS-LVT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ARS-N",
+    "sioe": "144000000",
+    "designacao": "Administração Regional de Saúde do Norte, IP",
+    "id": "ent_ARS-N",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ASAE",
+    "sioe": "74500000",
+    "designacao": "Autoridade de Segurança Alimentar e Económica",
+    "id": "ent_ASAE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ASF",
+    "sioe": "53200000",
+    "designacao": "Autoridade de Supervisão de Seguros e Fundos de Pensões",
+    "id": "ent_ASF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AT",
+    "sioe": "875780312",
+    "designacao": "Autoridade Tributária e Aduaneira",
+    "id": "ent_AT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AdC",
+    "sioe": "70010000",
+    "designacao": "Autoridade da Concorrência",
+    "id": "ent_AdC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Alentejo2020",
+    "sioe": "875792869",
+    "designacao": "Autoridade de Gestão do Programa Operacional Regional do Alentejo",
+    "id": "ent_Alentejo2020",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Algarve2020",
+    "sioe": "875792872",
+    "designacao": "Autoridade de Gestão do Programa Operacional Regional do Algarve",
+    "id": "ent_Algarve2020",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "BNA",
+    "sioe": "875790906",
+    "designacao": "Balcão Nacional de Arrendamento",
+    "id": "ent_BNA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "BNI",
+    "sioe": "875780001",
+    "designacao": "Balcão Nacional de Injunções",
+    "id": "ent_BNI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "BNP",
+    "sioe": "60160000",
+    "designacao": "Biblioteca Nacional de Portugal",
+    "id": "ent_BNP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "BdP",
+    "sioe": "50200000",
+    "designacao": "Banco de Portugal",
+    "id": "ent_BdP",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "CACME",
+    "sioe": "",
+    "designacao": "Comissão de Aplicação de Coimas em Matéria Económica",
+    "id": "ent_CACME",
+    "dataCriacao": "1984-07-03",
+    "dataExtincao": "2020-08-10",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "CACMP",
+    "sioe": "",
+    "designacao": "Comissão de Aplicação de Coimas em Matéria de Publicidade",
+    "id": "ent_CACMP",
+    "dataCriacao": "1990-10-23",
+    "dataExtincao": "2020-08-10",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CADA",
+    "sioe": "875780258",
+    "designacao": "Comissão de Acesso aos Documentos Administrativos",
+    "id": "ent_CADA",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "CAFEB",
+    "sioe": "",
+    "designacao": "Caixa de Abono de Família dos Empregados Bancários",
+    "id": "ent_CAFEB",
+    "dataCriacao": "1970-06-04",
+    "dataExtincao": "2011-01-03",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CASES",
+    "sioe": "875780315",
+    "designacao": "Cooperativa António Sérgio para a Economia Social",
+    "id": "ent_CASES",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCDR-Alg",
+    "sioe": "83370000",
+    "designacao": "Comissão de Coordenação do Desenvolvimento Regional do Algarve",
+    "id": "ent_CCDR-Alg",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCDR-Aln",
+    "sioe": "83360000",
+    "designacao": "Comissão de Coordenação do Desenvolvimento Regional do Alentejo",
+    "id": "ent_CCDR-Aln",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCDR-C",
+    "sioe": "83410000",
+    "designacao": "Comissão de Coordenação do Desenvolvimento Regional do Centro",
+    "id": "ent_CCDR-C",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCDR-LVT",
+    "sioe": "83140000",
+    "designacao": "Comissão de Coordenação do Desenvolvimento Regional de Lisboa e Vale do Tejo",
+    "id": "ent_CCDR-LVT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCDR-N",
+    "sioe": "83400000",
+    "designacao": "Comissão de Coordenação do Desenvolvimento Regional do Norte",
+    "id": "ent_CCDR-N",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCM",
+    "sioe": "875791078",
+    "designacao": "Comissão Cultural de Marinha",
+    "id": "ent_CCM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCPFC",
+    "sioe": "",
+    "designacao": "Conselho Científico-Pedagógico da Formação Contínua",
+    "id": "ent_CCPFC",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "CE",
+    "sioe": "",
+    "designacao": "Comunidade Europeia",
+    "id": "ent_CE",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "CEE",
+    "sioe": "",
+    "designacao": "Comunidade Económica Europeia",
+    "id": "ent_CEE",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CEGER",
+    "sioe": "13130000",
+    "designacao": "Centro de Gestão da Rede Informática do Governo",
+    "id": "ent_CEGER",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CEIC",
+    "sioe": "875792011",
+    "designacao": "Comissão de Ética para a Investigação Clínica",
+    "id": "ent_CEIC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CEJ",
+    "sioe": "152800000",
+    "designacao": "Centro de Estudos Judiciários",
+    "id": "ent_CEJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CES",
+    "sioe": "800003367",
+    "designacao": "Conselho Económico e Social",
+    "id": "ent_CES",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CGA",
+    "sioe": "51800000",
+    "designacao": "Caixa Geral de Aposentações, IP",
+    "id": "ent_CGA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CIG",
+    "sioe": "13230000",
+    "designacao": "Comissão para a Cidadania e a Igualdade de Género",
+    "id": "ent_CIG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CISAC",
+    "sioe": "",
+    "designacao": "International Confederation of Societies of Authors and Composers",
+    "id": "ent_CISAC",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CITE",
+    "sioe": "90150000",
+    "designacao": "Comissão para a Igualdade no Trabalho e no Emprego",
+    "id": "ent_CITE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CM",
+    "sioe": "",
+    "designacao": "Conselho de Ministros",
+    "id": "ent_CM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMABF",
+    "sioe": "600000006",
+    "designacao": "Câmara Municipal de Albufeira",
+    "id": "ent_CMABF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMABT",
+    "sioe": "600000001",
+    "designacao": "Câmara Municipal de Abrantes",
+    "id": "ent_CMABT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMACB",
+    "sioe": "600000009",
+    "designacao": "Câmara Municipal de Alcobaça",
+    "id": "ent_CMACB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMACH",
+    "sioe": "600000010",
+    "designacao": "Câmara Municipal de Alcochete",
+    "id": "ent_CMACH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMACN",
+    "sioe": "600000008",
+    "designacao": "Câmara Municipal de Alcanena",
+    "id": "ent_CMACN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMACT",
+    "sioe": "600000011",
+    "designacao": "Câmara Municipal de Alcoutim",
+    "id": "ent_CMACT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMADL",
+    "sioe": "600000004",
+    "designacao": "Câmara Municipal de Alandroal",
+    "id": "ent_CMADL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMADV",
+    "sioe": "600000020",
+    "designacao": "Câmara Municipal de Almodôvar",
+    "id": "ent_CMADV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAFE",
+    "sioe": "600000013",
+    "designacao": "Câmara Municipal de Alfândega da Fé",
+    "id": "ent_CMAFE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAGB",
+    "sioe": "600000003",
+    "designacao": "Câmara Municipal de Aguiar da Beira",
+    "id": "ent_CMAGB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAGD",
+    "sioe": "600000002",
+    "designacao": "Câmara Municipal de Águeda",
+    "id": "ent_CMAGD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAGH",
+    "sioe": "600000029",
+    "designacao": "Câmara Municipal de Angra do Heroísmo",
+    "id": "ent_CMAGH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAGN",
+    "sioe": "600000032",
+    "designacao": "Câmara Municipal de Arganil",
+    "id": "ent_CMAGN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAJT",
+    "sioe": "600000016",
+    "designacao": "Câmara Municipal de Aljustrel",
+    "id": "ent_CMAJT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAJZ",
+    "sioe": "600000015",
+    "designacao": "Câmara Municipal de Aljezur",
+    "id": "ent_CMAJZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMALB",
+    "sioe": "600000005",
+    "designacao": "Câmara Municipal de Albergaria-A-Velha",
+    "id": "ent_CMALB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMALD",
+    "sioe": "600000018",
+    "designacao": "Câmara Municipal de Almeida",
+    "id": "ent_CMALD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMALJ",
+    "sioe": "600000014",
+    "designacao": "Câmara Municipal de Alijó",
+    "id": "ent_CMALJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMALM",
+    "sioe": "600000017",
+    "designacao": "Câmara Municipal de Almada",
+    "id": "ent_CMALM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMALQ",
+    "sioe": "600000012",
+    "designacao": "Câmara Municipal de Alenquer",
+    "id": "ent_CMALQ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMALR",
+    "sioe": "600000019",
+    "designacao": "Câmara Municipal de Almeirim",
+    "id": "ent_CMALR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMALT",
+    "sioe": "600000022",
+    "designacao": "Câmara Municipal de Alter do Chão",
+    "id": "ent_CMALT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAMD",
+    "sioe": "600000025",
+    "designacao": "Câmara Municipal da Amadora",
+    "id": "ent_CMAMD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAMM",
+    "sioe": "600000033",
+    "designacao": "Câmara Municipal de Armamar",
+    "id": "ent_CMAMM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAMR",
+    "sioe": "600000027",
+    "designacao": "Câmara Municipal de Amares",
+    "id": "ent_CMAMR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAMT",
+    "sioe": "600000026",
+    "designacao": "Câmara Municipal de Amarante",
+    "id": "ent_CMAMT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAND",
+    "sioe": "600000028",
+    "designacao": "Câmara Municipal da Anadia",
+    "id": "ent_CMAND",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMANS",
+    "sioe": "600000030",
+    "designacao": "Câmara Municipal de Ansião",
+    "id": "ent_CMANS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAPC",
+    "sioe": "600000021",
+    "designacao": "Câmara Municipal de Alpiarça",
+    "id": "ent_CMAPC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMARC",
+    "sioe": "600000034",
+    "designacao": "Câmara Municipal de Arouca",
+    "id": "ent_CMARC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMARL",
+    "sioe": "600000035",
+    "designacao": "Câmara Municipal de Arraiolos",
+    "id": "ent_CMARL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMARR",
+    "sioe": "600000036",
+    "designacao": "Câmara Municipal de Arronches",
+    "id": "ent_CMARR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMARV",
+    "sioe": "600000037",
+    "designacao": "Câmara Municipal de Arruda dos Vinhos",
+    "id": "ent_CMARV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMASL",
+    "sioe": "600000007",
+    "designacao": "Câmara Municipal de Alcácer do Sal",
+    "id": "ent_CMASL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAVR",
+    "sioe": "600000038",
+    "designacao": "Câmara Municipal de Aveiro",
+    "id": "ent_CMAVR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAVS",
+    "sioe": "600000039",
+    "designacao": "Câmara Municipal de Avis",
+    "id": "ent_CMAVS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAVT",
+    "sioe": "600000024",
+    "designacao": "Câmara Municipal de Alvito",
+    "id": "ent_CMAVT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAVV",
+    "sioe": "600000031",
+    "designacao": "Câmara Municipal de Arcos de Valdevez",
+    "id": "ent_CMAVV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAVZ",
+    "sioe": "600000023",
+    "designacao": "Câmara Municipal de Alvaiázere",
+    "id": "ent_CMAVZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMAZB",
+    "sioe": "600000040",
+    "designacao": "Câmara Municipal da Azambuja",
+    "id": "ent_CMAZB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBAO",
+    "sioe": "600000041",
+    "designacao": "Câmara Municipal de Baião",
+    "id": "ent_CMBAO",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBBR",
+    "sioe": "600000049",
+    "designacao": "Câmara Municipal do Bombarral",
+    "id": "ent_CMBBR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBCL",
+    "sioe": "600000042",
+    "designacao": "Câmara Municipal de Barcelos",
+    "id": "ent_CMBCL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBGC",
+    "sioe": "600000053",
+    "designacao": "Câmara Municipal de Bragança",
+    "id": "ent_CMBGC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBJA",
+    "sioe": "600000046",
+    "designacao": "Câmara Municipal de Beja",
+    "id": "ent_CMBJA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBMT",
+    "sioe": "600000047",
+    "designacao": "Câmara Municipal de Belmonte",
+    "id": "ent_CMBMT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBNV",
+    "sioe": "600000048",
+    "designacao": "Câmara Municipal de Benavente",
+    "id": "ent_CMBNV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBRB",
+    "sioe": "600000050",
+    "designacao": "Câmara Municipal de Borba",
+    "id": "ent_CMBRB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBRC",
+    "sioe": "600000043",
+    "designacao": "Câmara Municipal de Barrancos",
+    "id": "ent_CMBRC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBRG",
+    "sioe": "600000052",
+    "designacao": "Câmara Municipal de Braga",
+    "id": "ent_CMBRG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBRR",
+    "sioe": "600000044",
+    "designacao": "Câmara Municipal do Barreiro",
+    "id": "ent_CMBRR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBTC",
+    "sioe": "600000051",
+    "designacao": "Câmara Municipal de Boticas",
+    "id": "ent_CMBTC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMBTL",
+    "sioe": "600000045",
+    "designacao": "Câmara Municipal da Batalha",
+    "id": "ent_CMBTL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCBA",
+    "sioe": "600000086",
+    "designacao": "Câmara Municipal de Cuba",
+    "id": "ent_CMCBA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCBC",
+    "sioe": "600000054",
+    "designacao": "Câmara Municipal de Cabeceiras de Basto",
+    "id": "ent_CMCBC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCBR",
+    "sioe": "600000079",
+    "designacao": "Câmara Municipal de Coimbra",
+    "id": "ent_CMCBR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCBT",
+    "sioe": "600000075",
+    "designacao": "Câmara Municipal de Celorico de Basto",
+    "id": "ent_CMCBT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCCH",
+    "sioe": "600000082",
+    "designacao": "Câmara Municipal de Coruche",
+    "id": "ent_CMCCH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCDN",
+    "sioe": "600000080",
+    "designacao": "Câmara Municipal de Condeixa-a-Nova",
+    "id": "ent_CMCDN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCDR",
+    "sioe": "600000071",
+    "designacao": "Câmara Municipal de Castro Daire",
+    "id": "ent_CMCDR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCDV",
+    "sioe": "600000055",
+    "designacao": "Câmara Municipal de Cadaval",
+    "id": "ent_CMCDV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCHM",
+    "sioe": "600000076",
+    "designacao": "Câmara Municipal da Chamusca",
+    "id": "ent_CMCHM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCHT",
+    "sioe": "600000058",
+    "designacao": "Câmara Municipal da Calheta (Açores)",
+    "id": "ent_CMCHT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCHV",
+    "sioe": "600000077",
+    "designacao": "Câmara Municipal de Chaves",
+    "id": "ent_CMCHV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCLB",
+    "sioe": "600000074",
+    "designacao": "Câmara Municipal de Celorico da Beira",
+    "id": "ent_CMCLB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCLD",
+    "sioe": "600000056",
+    "designacao": "Câmara Municipal de Caldas da Rainha",
+    "id": "ent_CMCLD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCLT",
+    "sioe": "600000057",
+    "designacao": "Câmara Municipal da Calheta (Madeira)",
+    "id": "ent_CMCLT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCML",
+    "sioe": "600000059",
+    "designacao": "Câmara Municipal de Câmara de Lobos",
+    "id": "ent_CMCML",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCMN",
+    "sioe": "600000060",
+    "designacao": "Câmara Municipal de Caminha",
+    "id": "ent_CMCMN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCMR",
+    "sioe": "600000061",
+    "designacao": "Câmara Municipal de Campo Maior",
+    "id": "ent_CMCMR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCNF",
+    "sioe": "600000078",
+    "designacao": "Câmara Municipal de Cinfães",
+    "id": "ent_CMCNF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCNS",
+    "sioe": "600000081",
+    "designacao": "Câmara Municipal de Constância",
+    "id": "ent_CMCNS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCNT",
+    "sioe": "600000062",
+    "designacao": "Câmara Municipal de Cantanhede",
+    "id": "ent_CMCNT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCPR",
+    "sioe": "600000067",
+    "designacao": "Câmara Municipal de Castanheira de Pera",
+    "id": "ent_CMCPR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCPV",
+    "sioe": "600000069",
+    "designacao": "Câmara Municipal de Castelo de Paiva",
+    "id": "ent_CMCPV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCRS",
+    "sioe": "600000064",
+    "designacao": "Câmara Municipal de Carregal do Sal",
+    "id": "ent_CMCRS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCRT",
+    "sioe": "600000085",
+    "designacao": "Câmara Municipal do Crato",
+    "id": "ent_CMCRT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCRV",
+    "sioe": "600000083",
+    "designacao": "Câmara Municipal do Corvo",
+    "id": "ent_CMCRV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCRZ",
+    "sioe": "600000063",
+    "designacao": "Câmara Municipal de Carrazeda de Ansiães",
+    "id": "ent_CMCRZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCSC",
+    "sioe": "600000066",
+    "designacao": "Câmara Municipal de Cascais",
+    "id": "ent_CMCSC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCTB",
+    "sioe": "600000068",
+    "designacao": "Câmara Municipal de Castelo Branco",
+    "id": "ent_CMCTB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCTM",
+    "sioe": "600000072",
+    "designacao": "Câmara Municipal de Castro Marim",
+    "id": "ent_CMCTM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCTX",
+    "sioe": "600000065",
+    "designacao": "Câmara Municipal do Cartaxo",
+    "id": "ent_CMCTX",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCVD",
+    "sioe": "600000070",
+    "designacao": "Câmara Municipal de Castelo de Vide",
+    "id": "ent_CMCVD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCVL",
+    "sioe": "600000084",
+    "designacao": "Câmara Municipal da Covilhã",
+    "id": "ent_CMCVL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMCVR",
+    "sioe": "600000073",
+    "designacao": "Câmara Municipal de Castro Verde",
+    "id": "ent_CMCVR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMELV",
+    "sioe": "600000087",
+    "designacao": "Câmara Municipal de Elvas",
+    "id": "ent_CMELV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMENT",
+    "sioe": "600000088",
+    "designacao": "Câmara Municipal do Entroncamento",
+    "id": "ent_CMENT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMEPS",
+    "sioe": "600000090",
+    "designacao": "Câmara Municipal de Esposende",
+    "id": "ent_CMEPS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMESP",
+    "sioe": "600000089",
+    "designacao": "Câmara Municipal de Espinho",
+    "id": "ent_CMESP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMETR",
+    "sioe": "600000091",
+    "designacao": "Câmara Municipal de Estarreja",
+    "id": "ent_CMETR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMETZ",
+    "sioe": "600000092",
+    "designacao": "Câmara Municipal de Estremoz",
+    "id": "ent_CMETZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMEVR",
+    "sioe": "600000093",
+    "designacao": "Câmara Municipal de Évora",
+    "id": "ent_CMEVR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFAF",
+    "sioe": "600000094",
+    "designacao": "Câmara Municipal de Fafe",
+    "id": "ent_CMFAF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFAG",
+    "sioe": "600000102",
+    "designacao": "Câmara Municipal de Fornos de Algodres",
+    "id": "ent_CMFAG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFAL",
+    "sioe": "600000097",
+    "designacao": "Câmara Municipal de Ferreira do Alentejo",
+    "id": "ent_CMFAL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFAR",
+    "sioe": "600000095",
+    "designacao": "Câmara Municipal de Faro",
+    "id": "ent_CMFAR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFCR",
+    "sioe": "600000100",
+    "designacao": "Câmara Municipal de Figueira de Castelo Rodrigo",
+    "id": "ent_CMFCR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFEC",
+    "sioe": "600000103",
+    "designacao": "Câmara Municipal de Freixo de Espada à Cinta",
+    "id": "ent_CMFEC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFIG",
+    "sioe": "600000099",
+    "designacao": "Câmara Municipal da Figueira da Foz",
+    "id": "ent_CMFIG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFLG",
+    "sioe": "600000096",
+    "designacao": "Câmara Municipal de Felgueiras",
+    "id": "ent_CMFLG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFNC",
+    "sioe": "600000105",
+    "designacao": "Câmara Municipal do Funchal",
+    "id": "ent_CMFNC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFND",
+    "sioe": "600000106",
+    "designacao": "Câmara Municipal do Fundão",
+    "id": "ent_CMFND",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFTR",
+    "sioe": "600000104",
+    "designacao": "Câmara Municipal de Fronteira",
+    "id": "ent_CMFTR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFVN",
+    "sioe": "600000101",
+    "designacao": "Câmara Municipal de Figueiró dos Vinhos",
+    "id": "ent_CMFVN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMFZZ",
+    "sioe": "600000098",
+    "designacao": "Câmara Municipal de Ferreira do Zêzere",
+    "id": "ent_CMFZZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGAV",
+    "sioe": "600000107",
+    "designacao": "Câmara Municipal de Gavião",
+    "id": "ent_CMGAV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGDL",
+    "sioe": "600000112",
+    "designacao": "Câmara Municipal de Grândola",
+    "id": "ent_CMGDL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGDM",
+    "sioe": "600000110",
+    "designacao": "Câmara Municipal de Gondomar",
+    "id": "ent_CMGDM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGLG",
+    "sioe": "600000109",
+    "designacao": "Câmara Municipal da Golegã",
+    "id": "ent_CMGLG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGMR",
+    "sioe": "600000114",
+    "designacao": "Câmara Municipal de Guimarães",
+    "id": "ent_CMGMR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGOI",
+    "sioe": "600000108",
+    "designacao": "Câmara Municipal de Góis",
+    "id": "ent_CMGOI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGRD",
+    "sioe": "600000113",
+    "designacao": "Câmara Municipal da Guarda",
+    "id": "ent_CMGRD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMGVA",
+    "sioe": "600000111",
+    "designacao": "Câmara Municipal de Gouveia",
+    "id": "ent_CMGVA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMHRT",
+    "sioe": "600000115",
+    "designacao": "Câmara Municipal da Horta",
+    "id": "ent_CMHRT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMIDN",
+    "sioe": "600000116",
+    "designacao": "Câmara Municipal de Idanha-a-Nova",
+    "id": "ent_CMIDN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMILH",
+    "sioe": "600000117",
+    "designacao": "Câmara Municipal de Ílhavo",
+    "id": "ent_CMILH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLAG",
+    "sioe": "600000118",
+    "designacao": "Câmara Municipal de Lagoa (Açores)",
+    "id": "ent_CMLAG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLGA",
+    "sioe": "600000119",
+    "designacao": "Câmara Municipal de Lagoa (Algarve)",
+    "id": "ent_CMLGA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLGF",
+    "sioe": "600000121",
+    "designacao": "Câmara Municipal de Lajes das Flores",
+    "id": "ent_CMLGF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLGP",
+    "sioe": "600000122",
+    "designacao": "Câmara Municipal de Lajes do Pico",
+    "id": "ent_CMLGP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLGS",
+    "sioe": "600000120",
+    "designacao": "Câmara Municipal de Lagos",
+    "id": "ent_CMLGS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLLE",
+    "sioe": "600000126",
+    "designacao": "Câmara Municipal de Loulé",
+    "id": "ent_CMLLE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLMG",
+    "sioe": "600000123",
+    "designacao": "Câmara Municipal de Lamego",
+    "id": "ent_CMLMG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLNH",
+    "sioe": "600000137",
+    "designacao": "Câmara Municipal da Lourinhã",
+    "id": "ent_CMLNH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLOU",
+    "sioe": "600000139",
+    "designacao": "Câmara Municipal de Lousada",
+    "id": "ent_CMLOU",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLRA",
+    "sioe": "600000124",
+    "designacao": "Câmara Municipal de Leiria",
+    "id": "ent_CMLRA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLRS",
+    "sioe": "600000136",
+    "designacao": "Câmara Municipal de Loures",
+    "id": "ent_CMLRS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLSA",
+    "sioe": "600000138",
+    "designacao": "Câmara Municipal da Lousã",
+    "id": "ent_CMLSA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMLSB",
+    "sioe": "600000125",
+    "designacao": "Câmara Municipal de Lisboa",
+    "id": "ent_CMLSB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMAC",
+    "sioe": "600000140",
+    "designacao": "Câmara Municipal de Mação",
+    "id": "ent_CMMAC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMAD",
+    "sioe": "600000143",
+    "designacao": "Câmara Municipal da Madalena",
+    "id": "ent_CMMAD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMAI",
+    "sioe": "600000145",
+    "designacao": "Câmara Municipal da Maia",
+    "id": "ent_CMMAI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMBR",
+    "sioe": "600000162",
+    "designacao": "Câmara Municipal de Moimenta da Beira",
+    "id": "ent_CMMBR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMCD",
+    "sioe": "600000141",
+    "designacao": "Câmara Municipal de Macedo de Cavaleiros",
+    "id": "ent_CMMCD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMCH",
+    "sioe": "600000142",
+    "designacao": "Câmara Municipal de Machico",
+    "id": "ent_CMMCH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMCN",
+    "sioe": "600000148",
+    "designacao": "Câmara Municipal de Marco de Canaveses",
+    "id": "ent_CMMCN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMCQ",
+    "sioe": "600000165",
+    "designacao": "Câmara Municipal de Monchique",
+    "id": "ent_CMMCQ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMCV",
+    "sioe": "600000158",
+    "designacao": "Câmara Municipal de Miranda do Corvo",
+    "id": "ent_CMMCV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMDB",
+    "sioe": "600000166",
+    "designacao": "Câmara Municipal de Mondim de Basto",
+    "id": "ent_CMMDB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMDL",
+    "sioe": "600000160",
+    "designacao": "Câmara Municipal de Mirandela",
+    "id": "ent_CMMDL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMDR",
+    "sioe": "600000159",
+    "designacao": "Câmara Municipal de Miranda do Douro",
+    "id": "ent_CMMDR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMED",
+    "sioe": "600000153",
+    "designacao": "Câmara Municipal de Mêda",
+    "id": "ent_CMMED",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMFR",
+    "sioe": "600000144",
+    "designacao": "Câmara Municipal de Mafra",
+    "id": "ent_CMMFR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMFT",
+    "sioe": "600000167",
+    "designacao": "Câmara Municipal de Monforte",
+    "id": "ent_CMMFT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMGD",
+    "sioe": "600000161",
+    "designacao": "Câmara Municipal de Mogadouro",
+    "id": "ent_CMMGD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMGL",
+    "sioe": "600000146",
+    "designacao": "Câmara Municipal de Mangualde",
+    "id": "ent_CMMGL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMGR",
+    "sioe": "600000149",
+    "designacao": "Câmara Municipal da Marinha Grande",
+    "id": "ent_CMMGR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMIR",
+    "sioe": "600000157",
+    "designacao": "Câmara Municipal de Mira",
+    "id": "ent_CMMIR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMLD",
+    "sioe": "600000152",
+    "designacao": "Câmara Municipal da Mealhada",
+    "id": "ent_CMMLD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMLG",
+    "sioe": "600000154",
+    "designacao": "Câmara Municipal de Melgaço",
+    "id": "ent_CMMLG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMMN",
+    "sioe": "600000169",
+    "designacao": "Câmara Municipal de Montemor-o-Novo",
+    "id": "ent_CMMMN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMMV",
+    "sioe": "600000170",
+    "designacao": "Câmara Municipal de Montemor-o-Velho",
+    "id": "ent_CMMMV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMNC",
+    "sioe": "600000164",
+    "designacao": "Câmara Municipal de Monção",
+    "id": "ent_CMMNC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMOR",
+    "sioe": "600000172",
+    "designacao": "Câmara Municipal de Mora",
+    "id": "ent_CMMOR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMOU",
+    "sioe": "600000175",
+    "designacao": "Câmara Municipal de Mourão",
+    "id": "ent_CMMOU",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMRA",
+    "sioe": "600000174",
+    "designacao": "Câmara Municipal de Moura",
+    "id": "ent_CMMRA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMRS",
+    "sioe": "600000177",
+    "designacao": "Câmara Municipal da Murtosa",
+    "id": "ent_CMMRS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMRT",
+    "sioe": "600000173",
+    "designacao": "Câmara Municipal de Mortágua",
+    "id": "ent_CMMRT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMRV",
+    "sioe": "600000150",
+    "designacao": "Câmara Municipal de Marvão",
+    "id": "ent_CMMRV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMSF",
+    "sioe": "600000156",
+    "designacao": "Câmara Municipal de Mesão Frio",
+    "id": "ent_CMMSF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMTA",
+    "sioe": "600000163",
+    "designacao": "Câmara Municipal da Moita",
+    "id": "ent_CMMTA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMTG",
+    "sioe": "600000147",
+    "designacao": "Câmara Municipal de Manteigas",
+    "id": "ent_CMMTG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMTJ",
+    "sioe": "600000171",
+    "designacao": "Câmara Municipal do Montijo",
+    "id": "ent_CMMTJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMTL",
+    "sioe": "600000155",
+    "designacao": "Câmara Municipal de Mértola",
+    "id": "ent_CMMTL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMTR",
+    "sioe": "600000168",
+    "designacao": "Câmara Municipal de Montalegre",
+    "id": "ent_CMMTR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMTS",
+    "sioe": "600000151",
+    "designacao": "Câmara Municipal de Matosinhos",
+    "id": "ent_CMMTS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMMUR",
+    "sioe": "600000176",
+    "designacao": "Câmara Municipal de Murça",
+    "id": "ent_CMMUR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMNIS",
+    "sioe": "600000180",
+    "designacao": "Câmara Municipal de Nisa",
+    "id": "ent_CMNIS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMNLS",
+    "sioe": "600000179",
+    "designacao": "Câmara Municipal de Nelas",
+    "id": "ent_CMNLS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMNRD",
+    "sioe": "600000181",
+    "designacao": "Câmara Municipal do Nordeste",
+    "id": "ent_CMNRD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMNZR",
+    "sioe": "600000178",
+    "designacao": "Câmara Municipal da Nazaré",
+    "id": "ent_CMNZR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOAZ",
+    "sioe": "600000188",
+    "designacao": "Câmara Municipal de Oliveira de Azeméis",
+    "id": "ent_CMOAZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOBD",
+    "sioe": "600000182",
+    "designacao": "Câmara Municipal de Óbidos",
+    "id": "ent_CMOBD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOBR",
+    "sioe": "600000190",
+    "designacao": "Câmara Municipal de Oliveira do Bairro",
+    "id": "ent_CMOBR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMODM",
+    "sioe": "600000183",
+    "designacao": "Câmara Municipal de Odemira",
+    "id": "ent_CMODM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMODV",
+    "sioe": "600000184",
+    "designacao": "Câmara Municipal de Odivelas",
+    "id": "ent_CMODV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOER",
+    "sioe": "600000185",
+    "designacao": "Câmara Municipal de Oeiras",
+    "id": "ent_CMOER",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOFR",
+    "sioe": "600000189",
+    "designacao": "Câmara Municipal de Oliveira de Frades",
+    "id": "ent_CMOFR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOHP",
+    "sioe": "600000191",
+    "designacao": "Câmara Municipal de Oliveira do Hospital",
+    "id": "ent_CMOHP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOLH",
+    "sioe": "600000187",
+    "designacao": "Câmara Municipal de Olhão",
+    "id": "ent_CMOLH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOLR",
+    "sioe": "600000186",
+    "designacao": "Câmara Municipal de Oleiros",
+    "id": "ent_CMOLR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMORM",
+    "sioe": "600000192",
+    "designacao": "Câmara Municipal de Ourém",
+    "id": "ent_CMORM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMORQ",
+    "sioe": "600000193",
+    "designacao": "Câmara Municipal de Ourique",
+    "id": "ent_CMORQ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMOVR",
+    "sioe": "600000194",
+    "designacao": "Câmara Municipal de Ovar",
+    "id": "ent_CMOVR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPBL",
+    "sioe": "600000204",
+    "designacao": "Câmara Municipal de Pombal",
+    "id": "ent_CMPBL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPCR",
+    "sioe": "600000199",
+    "designacao": "Câmara Municipal de Paredes de Coura",
+    "id": "ent_CMPCR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPCT",
+    "sioe": "600000128",
+    "designacao": "Câmara Municipal de Penalva do Castelo",
+    "id": "ent_CMPCT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPCV",
+    "sioe": "600000201",
+    "designacao": "Câmara Municipal de Penacova",
+    "id": "ent_CMPCV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPDL",
+    "sioe": "600000205",
+    "designacao": "Câmara Municipal de Ponta Delgada",
+    "id": "ent_CMPDL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPFR",
+    "sioe": "600000195",
+    "designacao": "Câmara Municipal de Paços de Ferreira",
+    "id": "ent_CMPFR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPGR",
+    "sioe": "600000200",
+    "designacao": "Câmara Municipal de Pedrógão Grande",
+    "id": "ent_CMPGR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPLM",
+    "sioe": "600000196",
+    "designacao": "Câmara Municipal de Palmela",
+    "id": "ent_CMPLM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPMS",
+    "sioe": "600000214",
+    "designacao": "Câmara Municipal de Porto de Mós",
+    "id": "ent_CMPMS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPMZ",
+    "sioe": "600000215",
+    "designacao": "Câmara Municipal de Porto Moniz",
+    "id": "ent_CMPMZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPNC",
+    "sioe": "600000129",
+    "designacao": "Câmara Municipal de Penamacor",
+    "id": "ent_CMPNC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPND",
+    "sioe": "600000130",
+    "designacao": "Câmara Municipal de Penedono",
+    "id": "ent_CMPND",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPNF",
+    "sioe": "600000127",
+    "designacao": "Câmara Municipal de Penafiel",
+    "id": "ent_CMPNF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPNH",
+    "sioe": "600000203",
+    "designacao": "Câmara Municipal de Pinhel",
+    "id": "ent_CMPNH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPNI",
+    "sioe": "600000132",
+    "designacao": "Câmara Municipal de Peniche",
+    "id": "ent_CMPNI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPNL",
+    "sioe": "600000131",
+    "designacao": "Câmara Municipal de Penela",
+    "id": "ent_CMPNL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPNV",
+    "sioe": "600000220",
+    "designacao": "Câmara Municipal de Proença-a-Nova",
+    "id": "ent_CMPNV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPPS",
+    "sioe": "600000197",
+    "designacao": "Câmara Municipal da Pampilhosa da Serra",
+    "id": "ent_CMPPS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPRD",
+    "sioe": "600000198",
+    "designacao": "Câmara Municipal de Paredes",
+    "id": "ent_CMPRD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPRG",
+    "sioe": "600000202",
+    "designacao": "Câmara Municipal de Peso da Régua",
+    "id": "ent_CMPRG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPRL",
+    "sioe": "600000211",
+    "designacao": "Câmara Municipal de Portel",
+    "id": "ent_CMPRL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPRS",
+    "sioe": "600000296",
+    "designacao": "Câmara Municipal de Vila Nova de Poiares",
+    "id": "ent_CMPRS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPRT",
+    "sioe": "600000213",
+    "designacao": "Câmara Municipal do Porto",
+    "id": "ent_CMPRT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPSR",
+    "sioe": "600000209",
+    "designacao": "Câmara Municipal de Ponte de Sôr",
+    "id": "ent_CMPSR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPST",
+    "sioe": "600000216",
+    "designacao": "Câmara Municipal de Porto Santo",
+    "id": "ent_CMPST",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPTB",
+    "sioe": "600000207",
+    "designacao": "Câmara Municipal de Ponte da Barca",
+    "id": "ent_CMPTB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPTG",
+    "sioe": "600000210",
+    "designacao": "Câmara Municipal de Portalegre",
+    "id": "ent_CMPTG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPTL",
+    "sioe": "600000208",
+    "designacao": "Câmara Municipal de Ponte de Lima",
+    "id": "ent_CMPTL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPTM",
+    "sioe": "600000212",
+    "designacao": "Câmara Municipal de Portimão",
+    "id": "ent_CMPTM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPTS",
+    "sioe": "600000206",
+    "designacao": "Câmara Municipal de Ponta do Sol",
+    "id": "ent_CMPTS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPVC",
+    "sioe": "600000219",
+    "designacao": "Câmara Municipal de Povoação",
+    "id": "ent_CMPVC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPVL",
+    "sioe": "600000217",
+    "designacao": "Câmara Municipal de Póvoa de Lanhoso",
+    "id": "ent_CMPVL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMPVZ",
+    "sioe": "600000218",
+    "designacao": "Câmara Municipal de Póvoa de Varzim",
+    "id": "ent_CMPVZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMRBR",
+    "sioe": "600000224",
+    "designacao": "Câmara Municipal da Ribeira Brava",
+    "id": "ent_CMRBR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMRDD",
+    "sioe": "600000221",
+    "designacao": "Câmara Municipal do Redondo",
+    "id": "ent_CMRDD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMRGR",
+    "sioe": "600000226",
+    "designacao": "Câmara Municipal de Ribeira Grande",
+    "id": "ent_CMRGR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMRMR",
+    "sioe": "600000227",
+    "designacao": "Câmara Municipal de Rio Maior",
+    "id": "ent_CMRMR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMRMZ",
+    "sioe": "600000222",
+    "designacao": "Câmara Municipal de Reguengos de Monsaraz",
+    "id": "ent_CMRMZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMRPN",
+    "sioe": "600000225",
+    "designacao": "Câmara Municipal de Ribeira de Pena",
+    "id": "ent_CMRPN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMRSD",
+    "sioe": "600000223",
+    "designacao": "Câmara Municipal de Resende",
+    "id": "ent_CMRSD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSAT",
+    "sioe": "600000248",
+    "designacao": "Câmara Municipal de Sátão",
+    "id": "ent_CMSAT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSBA",
+    "sioe": "600000241",
+    "designacao": "Câmara Municipal de São Brás de Alportel",
+    "id": "ent_CMSBA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSBG",
+    "sioe": "600000229",
+    "designacao": "Câmara Municipal do Sabugal",
+    "id": "ent_CMSBG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSBS",
+    "sioe": "600000228",
+    "designacao": "Câmara Municipal de Sabrosa",
+    "id": "ent_CMSBS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSCD",
+    "sioe": "600000231",
+    "designacao": "Câmara Municipal de Santa Comba Dão",
+    "id": "ent_CMSCD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSCF",
+    "sioe": "600000234",
+    "designacao": "Câmara Municipal de Santa Cruz das Flores",
+    "id": "ent_CMSCF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSCG",
+    "sioe": "600000233",
+    "designacao": "Câmara Municipal de Santa Cruz da Graciosa",
+    "id": "ent_CMSCG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSCR",
+    "sioe": "600000232",
+    "designacao": "Câmara Municipal de Santa Cruz",
+    "id": "ent_CMSCR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSEI",
+    "sioe": "600000249",
+    "designacao": "Câmara Municipal de Seia",
+    "id": "ent_CMSEI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSJM",
+    "sioe": "600000242",
+    "designacao": "Câmara Municipal de São João da Madeira",
+    "id": "ent_CMSJM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSJP",
+    "sioe": "600000243",
+    "designacao": "Câmara Municipal de São João da Pesqueira",
+    "id": "ent_CMSJP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSLV",
+    "sioe": "600000257",
+    "designacao": "Câmara Municipal de Silves",
+    "id": "ent_CMSLV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSMA",
+    "sioe": "600000260",
+    "designacao": "Câmara Municipal de Sobral de Monte Agraço",
+    "id": "ent_CMSMA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSMG",
+    "sioe": "600000230",
+    "designacao": "Câmara Municipal de Salvaterra de Magos",
+    "id": "ent_CMSMG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSMP",
+    "sioe": "600000236",
+    "designacao": "Câmara Municipal de Santa Marta de Penaguião",
+    "id": "ent_CMSMP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSNS",
+    "sioe": "600000258",
+    "designacao": "Câmara Municipal de Sines",
+    "id": "ent_CMSNS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSNT",
+    "sioe": "600000259",
+    "designacao": "Câmara Municipal de Sintra",
+    "id": "ent_CMSNT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSPS",
+    "sioe": "600000244",
+    "designacao": "Câmara Municipal de São Pedro do Sul",
+    "id": "ent_CMSPS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSRD",
+    "sioe": "600000247",
+    "designacao": "Câmara Municipal de Sardoal",
+    "id": "ent_CMSRD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSRE",
+    "sioe": "600000261",
+    "designacao": "Câmara Municipal de Soure",
+    "id": "ent_CMSRE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSRN",
+    "sioe": "600000251",
+    "designacao": "Câmara Municipal de Sernancelhe",
+    "id": "ent_CMSRN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSRP",
+    "sioe": "600000252",
+    "designacao": "Câmara Municipal de Serpa",
+    "id": "ent_CMSRP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSRQ",
+    "sioe": "600000245",
+    "designacao": "Câmara Municipal de São Roque do Pico",
+    "id": "ent_CMSRQ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSRT",
+    "sioe": "600000253",
+    "designacao": "Câmara Municipal da Sertã",
+    "id": "ent_CMSRT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSSB",
+    "sioe": "600000254",
+    "designacao": "Câmara Municipal de Sesimbra",
+    "id": "ent_CMSSB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSSL",
+    "sioe": "600000262",
+    "designacao": "Câmara Municipal de Sousel",
+    "id": "ent_CMSSL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSTB",
+    "sioe": "600000255",
+    "designacao": "Câmara Municipal de Setúbal",
+    "id": "ent_CMSTB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSTC",
+    "sioe": "600000239",
+    "designacao": "Câmara Municipal de Santiago do Cacém",
+    "id": "ent_CMSTC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSTN",
+    "sioe": "600000237",
+    "designacao": "Câmara Municipal de Santana",
+    "id": "ent_CMSTN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSTR",
+    "sioe": "600000238",
+    "designacao": "Câmara Municipal de Santarém",
+    "id": "ent_CMSTR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSTS",
+    "sioe": "600000240",
+    "designacao": "Câmara Municipal de Santo Tirso",
+    "id": "ent_CMSTS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSVC",
+    "sioe": "600000246",
+    "designacao": "Câmara Municipal de São Vicente",
+    "id": "ent_CMSVC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSVV",
+    "sioe": "600000256",
+    "designacao": "Câmara Municipal de Sever do Vouga",
+    "id": "ent_CMSVV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMSXL",
+    "sioe": "600000250",
+    "designacao": "Câmara Municipal do Seixal",
+    "id": "ent_CMSXL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTBC",
+    "sioe": "600000264",
+    "designacao": "Câmara Municipal de Tabuaço",
+    "id": "ent_CMTBC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTBR",
+    "sioe": "600000267",
+    "designacao": "Câmara Municipal de Terras de Bouro",
+    "id": "ent_CMTBR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTBU",
+    "sioe": "600000263",
+    "designacao": "Câmara Municipal de Tábua",
+    "id": "ent_CMTBU",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTCS",
+    "sioe": "600000270",
+    "designacao": "Câmara Municipal de Trancoso",
+    "id": "ent_CMTCS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTMC",
+    "sioe": "600000135",
+    "designacao": "Câmara Municipal de Torre de Moncorvo",
+    "id": "ent_CMTMC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTMR",
+    "sioe": "600000133",
+    "designacao": "Câmara Municipal de Tomar",
+    "id": "ent_CMTMR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTND",
+    "sioe": "600000134",
+    "designacao": "Câmara Municipal de Tondela",
+    "id": "ent_CMTND",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTNV",
+    "sioe": "600000268",
+    "designacao": "Câmara Municipal de Torres Novas",
+    "id": "ent_CMTNV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTRC",
+    "sioe": "600000265",
+    "designacao": "Câmara Municipal de Tarouca",
+    "id": "ent_CMTRC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTRF",
+    "sioe": "600000271",
+    "designacao": "Câmara Municipal de Trofa",
+    "id": "ent_CMTRF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTVD",
+    "sioe": "600000269",
+    "designacao": "Câmara Municipal de Torres Vedras",
+    "id": "ent_CMTVD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMTVR",
+    "sioe": "600000266",
+    "designacao": "Câmara Municipal de Tavira",
+    "id": "ent_CMTVR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVBP",
+    "sioe": "600000284",
+    "designacao": "Câmara Municipal de Vila do Bispo",
+    "id": "ent_CMVBP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVCD",
+    "sioe": "600000285",
+    "designacao": "Câmara Municipal de Vila do Conde",
+    "id": "ent_CMVCD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVCT",
+    "sioe": "600000280",
+    "designacao": "Câmara Municipal de Viana do Castelo",
+    "id": "ent_CMVCT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVDG",
+    "sioe": "600000281",
+    "designacao": "Câmara Municipal de Vidigueira",
+    "id": "ent_CMVDG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVFC",
+    "sioe": "600000289",
+    "designacao": "Câmara Municipal de Vila Franca do Campo",
+    "id": "ent_CMVFC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVFL",
+    "sioe": "600000287",
+    "designacao": "Câmara Municipal de Vila Flor",
+    "id": "ent_CMVFL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVFR",
+    "sioe": "600000235",
+    "designacao": "Câmara Municipal de Santa Maria da Feira",
+    "id": "ent_CMVFR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVFX",
+    "sioe": "600000288",
+    "designacao": "Câmara Municipal de Vila Franca de Xira",
+    "id": "ent_CMVFX",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVGS",
+    "sioe": "600000272",
+    "designacao": "Câmara Municipal de Vagos",
+    "id": "ent_CMVGS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVIS",
+    "sioe": "600000306",
+    "designacao": "Câmara Municipal de Viseu",
+    "id": "ent_CMVIS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVIZ",
+    "sioe": "600000307",
+    "designacao": "Câmara Municipal de Vizela",
+    "id": "ent_CMVIZ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVLC",
+    "sioe": "600000273",
+    "designacao": "Câmara Municipal de Vale de Cambra",
+    "id": "ent_CMVLC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVLF",
+    "sioe": "600000293",
+    "designacao": "Câmara Municipal de Vila Nova de Foz Côa",
+    "id": "ent_CMVLF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVLG",
+    "sioe": "600000275",
+    "designacao": "Câmara Municipal de Valongo",
+    "id": "ent_CMVLG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVLN",
+    "sioe": "600000274",
+    "designacao": "Câmara Municipal de Valença",
+    "id": "ent_CMVLN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVLP",
+    "sioe": "600000276",
+    "designacao": "Câmara Municipal de Valpaços",
+    "id": "ent_CMVLP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVLR",
+    "sioe": "600000283",
+    "designacao": "Câmara Municipal de Vila de Rei",
+    "id": "ent_CMVLR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVLS",
+    "sioe": "600000277",
+    "designacao": "Câmara Municipal de Velas",
+    "id": "ent_CMVLS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVM",
+    "sioe": "",
+    "designacao": "Comissão do Mercado de Valores Mobiliários",
+    "id": "ent_CMVM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVMS",
+    "sioe": "600000304",
+    "designacao": "Câmara Municipal de Vimioso",
+    "id": "ent_CMVMS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVNB",
+    "sioe": "600000290",
+    "designacao": "Câmara Municipal de Vila Nova da Barquinha",
+    "id": "ent_CMVNB",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVNC",
+    "sioe": "600000291",
+    "designacao": "Câmara Municipal de Vila Nova de Cerveira",
+    "id": "ent_CMVNC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVND",
+    "sioe": "600000278",
+    "designacao": "Câmara Municipal de Vendas Novas",
+    "id": "ent_CMVND",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVNF",
+    "sioe": "600000292",
+    "designacao": "Câmara Municipal de Vila Nova de Famalicão",
+    "id": "ent_CMVNF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVNG",
+    "sioe": "600000294",
+    "designacao": "Câmara Municipal de Vila Nova de Gaia",
+    "id": "ent_CMVNG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVNH",
+    "sioe": "600000305",
+    "designacao": "Câmara Municipal de Vinhais",
+    "id": "ent_CMVNH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVNP",
+    "sioe": "600000295",
+    "designacao": "Câmara Municipal de Vila Nova de Paiva",
+    "id": "ent_CMVNP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVNT",
+    "sioe": "600000279",
+    "designacao": "Câmara Municipal de Viana do Alentejo",
+    "id": "ent_CMVNT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVPA",
+    "sioe": "600000297",
+    "designacao": "Câmara Municipal de Vila Pouca de Aguiar",
+    "id": "ent_CMVPA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVPT",
+    "sioe": "600000286",
+    "designacao": "Câmara Municipal de Vila do Porto",
+    "id": "ent_CMVPT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVPV",
+    "sioe": "600000298",
+    "designacao": "Câmara Municipal de Vila Praia da Vitória",
+    "id": "ent_CMVPV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVRL",
+    "sioe": "600000299",
+    "designacao": "Câmara Municipal de Vila Real",
+    "id": "ent_CMVRL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVRM",
+    "sioe": "600000282",
+    "designacao": "Câmara Municipal de Vieira do Minho",
+    "id": "ent_CMVRM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVRS",
+    "sioe": "600000300",
+    "designacao": "Câmara Municipal de Vila Real de Santo António",
+    "id": "ent_CMVRS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVVC",
+    "sioe": "600000303",
+    "designacao": "Câmara Municipal de Vila Viçosa",
+    "id": "ent_CMVVC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVVD",
+    "sioe": "600000302",
+    "designacao": "Câmara Municipal de Vila Verde",
+    "id": "ent_CMVVD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVVR",
+    "sioe": "600000301",
+    "designacao": "Câmara Municipal de Vila Velha de Ródão",
+    "id": "ent_CMVVR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CMVZL",
+    "sioe": "600000308",
+    "designacao": "Câmara Municipal de Vouzela",
+    "id": "ent_CMVZL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNCS",
+    "sioe": "875793274",
+    "designacao": "Centro Nacional de Cibersegurança",
+    "id": "ent_CNCS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNE",
+    "sioe": "875780257",
+    "designacao": "Comissão Nacional de Eleições",
+    "id": "ent_CNE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNECV",
+    "sioe": "875780304",
+    "designacao": "Conselho Nacional de Ética para as Ciências da Vida",
+    "id": "ent_CNECV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNEdu",
+    "sioe": "89280000",
+    "designacao": "Conselho Nacional de Educação",
+    "id": "ent_CNEdu",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNOC",
+    "sioe": "",
+    "designacao": "Comissão Nacional de Objeção de Consciência",
+    "id": "ent_CNOC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNPC",
+    "sioe": "",
+    "designacao": "Comissão Nacional de Proteção Civil",
+    "id": "ent_CNPC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNPD",
+    "sioe": "800002002",
+    "designacao": "Comissão Nacional de Proteção de Dados",
+    "id": "ent_CNPD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNPDPCJ",
+    "sioe": "875793019",
+    "designacao": "Comissão Nacional de Promoção dos Direitos e Proteção das Crianças e Jovens",
+    "id": "ent_CNPDPCJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNPMA",
+    "sioe": "875793282",
+    "designacao": "Conselho Nacional de Procriação Medicamente Assistida",
+    "id": "ent_CNPMA",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "CNPRP",
+    "sioe": "90312000",
+    "designacao": "Centro Nacional de Proteção contra os Riscos Profissionais",
+    "id": "ent_CNPRP",
+    "dataCriacao": "1999-05-11",
+    "dataExtincao": "2006-10-27",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CNPSSS",
+    "sioe": "875780378",
+    "designacao": "Conselho Nacional para as Políticas de Solidariedade, Voluntariado, Família, Reabilitação e Segurança Social",
+    "id": "ent_CNPSSS",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "CNU",
+    "sioe": "",
+    "designacao": "Comissão Nacional da UNESCO",
+    "id": "ent_CNU",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CP",
+    "sioe": "875790327",
+    "designacao": "Comboios de Portugal, EPE",
+    "id": "ent_CP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CP-MC",
+    "sioe": "60330000",
+    "designacao": "Cinemateca Portuguesa-Museu do Cinema, IP",
+    "id": "ent_CP-MC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CPAI",
+    "designacao": "Comissão Permanente de Apoio ao Investidor ",
+    "id": "ent_CPAI",
+    "dataCriacao": "2013-02-05",
+    "internacional": "Não"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CPES",
+    "sioe": "300200000",
+    "designacao": "Comissão de Programas Especiais de Segurança",
+    "id": "ent_CPES",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CPL",
+    "sioe": "90120000",
+    "designacao": "Casa Pia de Lisboa, IP",
+    "id": "ent_CPL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CPVC",
+    "sioe": "153000000",
+    "designacao": "Comissão de Proteção às Vítimas de Crimes",
+    "id": "ent_CPVC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CRESAP",
+    "sioe": "875780391",
+    "designacao": "Comissão de Recrutamento e Seleção para a Administração Pública",
+    "id": "ent_CRESAP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CRL",
+    "sioe": "875780377",
+    "designacao": "Centro de Relações Laborais",
+    "id": "ent_CRL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CSE",
+    "sioe": "875780386",
+    "designacao": "Conselho Superior de Estatística",
+    "id": "ent_CSE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CSM",
+    "sioe": "800004000",
+    "designacao": "Conselho Superior de Magistratura",
+    "id": "ent_CSM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CSTAF",
+    "sioe": "770000439",
+    "designacao": "Conselho Superior dos Tribunais Administrativos e Fiscais",
+    "id": "ent_CSTAF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CV",
+    "sioe": "",
+    "designacao": "Ciência Viva – Agência Nacional para a Cultura Científica e Tecnológica",
+    "id": "ent_CV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Camões",
+    "sioe": "875780322",
+    "designacao": "Camões - Instituto da Cooperação e da Língua, IP",
+    "id": "ent_Camões",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Centro2020",
+    "sioe": "875792874",
+    "designacao": "Autoridade de Gestão do Programa Operacional Regional do Centro",
+    "id": "ent_Centro2020",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAC",
+    "sioe": "",
+    "designacao": "Direção-Geral dos Assuntos Comunitários",
+    "id": "ent_DGAC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGACCP",
+    "sioe": "86060000",
+    "designacao": "Direção-Geral dos Assuntos Consulares e das Comunidades Portuguesas",
+    "id": "ent_DGACCP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGADR",
+    "sioe": "32160000",
+    "designacao": "Direção-Geral de Agricultura e Desenvolvimento Rural",
+    "id": "ent_DGADR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAE",
+    "sioe": "71210000",
+    "designacao": "Direção-Geral das Atividades Económicas",
+    "id": "ent_DGAE",
+    "dataCriacao": "2007-04-27",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAEP",
+    "sioe": "54300000",
+    "designacao": "Direção-Geral da Administração e do Emprego Público",
+    "id": "ent_DGAEP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAEs",
+    "sioe": "875780329",
+    "designacao": "Direção-Geral da Administração Escolar",
+    "id": "ent_DGAEs",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAEu",
+    "sioe": "86050000",
+    "designacao": "Direção-Geral dos Assuntos Europeus",
+    "id": "ent_DGAEu",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGAIEC",
+    "sioe": "",
+    "designacao": "Direcção-Geral das Alfândegas e dos Impostos Especiais sobre o Consumo",
+    "id": "ent_DGAIEC",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGAIESC",
+    "sioe": "",
+    "designacao": "Direção-Geral das Alfândegas e do Impostos Especiais sobre o Consumo",
+    "id": "ent_DGAIESC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAJ",
+    "sioe": "151500000",
+    "designacao": "Direção-Geral da Administração da Justiça",
+    "id": "ent_DGAJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAL",
+    "sioe": "83080000",
+    "designacao": "Direção-Geral das Autarquias Locais",
+    "id": "ent_DGAL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAM",
+    "sioe": "875791082",
+    "designacao": "Direção-Geral da Autoridade Marítima",
+    "id": "ent_DGAM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGARTES",
+    "sioe": "60170000",
+    "designacao": "Direção-Geral das Artes",
+    "id": "ent_DGARTES",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGAV",
+    "sioe": "875780353",
+    "designacao": "Direção-Geral de Alimentação e Veterinária",
+    "id": "ent_DGAV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGC",
+    "sioe": "12010000",
+    "designacao": "Direção-Geral do Consumidor",
+    "id": "ent_DGC",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGCI",
+    "sioe": "",
+    "designacao": "Direção-Geral das Contribuições e Impostos",
+    "id": "ent_DGCI",
+    "dataCriacao": "1911-01-14",
+    "dataExtincao": "2011-12-15",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGCSP",
+    "sioe": "",
+    "designacao": "Direção-Geral dos Cuidados de Saúde Primários",
+    "id": "ent_DGCSP",
+    "dataCriacao": "1984-03-02",
+    "dataExtincao": "1993-10-01",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGE",
+    "sioe": "875780318",
+    "designacao": "Direção-Geral da Educação",
+    "id": "ent_DGE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGEEC",
+    "sioe": "875780319",
+    "designacao": "Direção-Geral de Estatísticas da Educação e Ciência",
+    "id": "ent_DGEEC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGEG",
+    "sioe": "71200000",
+    "designacao": "Direção-Geral de Energia e Geologia",
+    "id": "ent_DGEG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGERT",
+    "sioe": "90230000",
+    "designacao": "Direção-Geral do Emprego e das Relações de Trabalho",
+    "id": "ent_DGERT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGES",
+    "sioe": "101990000",
+    "designacao": "Direção-Geral do Ensino Superior",
+    "id": "ent_DGES",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGEstE",
+    "sioe": "875790445",
+    "designacao": "Direção-Geral dos Estabelecimentos Escolares",
+    "id": "ent_DGEstE",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGITA",
+    "sioe": "",
+    "designacao": "Direcção Geral de Informática e Apoio aos Serviços Tributários e Aduaneiros",
+    "id": "ent_DGITA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGLAB",
+    "sioe": "875780384",
+    "designacao": "Direção-Geral do Livro, dos Arquivos e das Bibliotecas",
+    "id": "ent_DGLAB",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGLB",
+    "sioe": "",
+    "designacao": "Direção-Geral do Livro e das Bibliotecas",
+    "id": "ent_DGLB",
+    "dataCriacao": "2007-03-29",
+    "dataExtincao": "2011-12-29",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGMARE",
+    "sioe": "",
+    "designacao": "Directorate General for Maritime Affairs and Fisheries",
+    "id": "ent_DGMARE",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGO",
+    "sioe": "51100000",
+    "designacao": "Direção-Geral do Orçamento",
+    "id": "ent_DGO",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGOTDU",
+    "sioe": "83090000",
+    "designacao": "Direcção Geral de Ordenamento do Território e Desenvolvimento Urbano",
+    "id": "ent_DGOTDU",
+    "dataCriacao": "1994-10-28",
+    "dataExtincao": "2006-10-27",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGPC",
+    "sioe": "875780385",
+    "designacao": "Direção-Geral do Património Cultural",
+    "id": "ent_DGPC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGPDN",
+    "sioe": "85040000",
+    "designacao": "Direção-Geral de Política de Defesa Nacional",
+    "id": "ent_DGPDN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGPE",
+    "sioe": "86040000",
+    "designacao": "Direção-Geral de Política Externa",
+    "id": "ent_DGPE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGPJ",
+    "sioe": "300220000",
+    "designacao": "Direção-Geral de Política de Justiça",
+    "id": "ent_DGPJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGPM",
+    "sioe": "600082458",
+    "designacao": "Direção-Geral de Política do Mar",
+    "id": "ent_DGPM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGRDN",
+    "sioe": "875792095",
+    "designacao": "Direção-Geral de Recursos da Defesa Nacional",
+    "id": "ent_DGRDN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGRM",
+    "sioe": "875780332",
+    "designacao": "Direção-Geral de Recursos Naturais, Segurança e Serviços Marítimos",
+    "id": "ent_DGRM",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGRS",
+    "sioe": "",
+    "designacao": "Direção-Geral de Reinserção Social",
+    "id": "ent_DGRS",
+    "dataExtincao": "2011-12-29",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGRSP",
+    "sioe": "875780381",
+    "designacao": "Direção-Geral de Reinserção e Serviços Prisionais",
+    "id": "ent_DGRSP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGS",
+    "sioe": "141300000",
+    "designacao": "Direção-Geral de Saúde",
+    "id": "ent_DGS",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGSP",
+    "sioe": "",
+    "designacao": "Direção-Geral dos Serviços Prisionais",
+    "id": "ent_DGSP",
+    "dataExtincao": "2011-12-29",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGSS",
+    "sioe": "90220000",
+    "designacao": "Direção-Geral da Segurança Social",
+    "id": "ent_DGSS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGT",
+    "sioe": "875780352",
+    "designacao": "Direção-Geral do Território",
+    "id": "ent_DGT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DGTF",
+    "sioe": "53410000",
+    "designacao": "Direção-Geral do Tesouro e Finanças",
+    "id": "ent_DGTF",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGTur",
+    "sioe": "",
+    "designacao": "Direção-Geral do Turismo",
+    "id": "ent_DGTur",
+    "dataCriacao": "1968-11-15",
+    "dataExtincao": "2006-10-27",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DGV",
+    "sioe": "",
+    "designacao": "Direção-Geral de Viação",
+    "id": "ent_DGV",
+    "dataCriacao": "1971-11-09",
+    "dataExtincao": "2007-07-25",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DNS_PT",
+    "sioe": "",
+    "designacao": "Associação DNS.PT",
+    "id": "ent_DNS_PT",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DPP",
+    "sioe": "",
+    "designacao": "Departamento de Prospetiva e Planeamento",
+    "id": "ent_DPP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAC-Alg",
+    "sioe": "60280000",
+    "designacao": "Direção Regional de Cultura do Algarve",
+    "id": "ent_DRAC-Alg",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAC-Aln",
+    "sioe": "60270000",
+    "designacao": "Direção Regional de Cultura do Alentejo",
+    "id": "ent_DRAC-Aln",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAC-C",
+    "sioe": "60260000",
+    "designacao": "Direção Regional de Cultura do Centro",
+    "id": "ent_DRAC-C",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAC-N",
+    "sioe": "60250000",
+    "designacao": "Direção Regional de Cultura do Norte",
+    "id": "ent_DRAC-N",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAP-Alg",
+    "sioe": "32250000",
+    "designacao": "Direção Regional de Agricultura e Pescas do Algarve",
+    "id": "ent_DRAP-Alg",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAP-Aln",
+    "sioe": "32240000",
+    "designacao": "Direção Regional de Agricultura e Pescas do Alentejo",
+    "id": "ent_DRAP-Aln",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAP-C",
+    "sioe": "32400000",
+    "designacao": "Direção Regional de Agricultura e Pescas do Centro",
+    "id": "ent_DRAP-C",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAP-LVT",
+    "sioe": "32260000",
+    "designacao": "Direção Regional de Agricultura e Pescas de Lisboa e Vale do Tejo",
+    "id": "ent_DRAP-LVT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAP-N",
+    "sioe": "32270000",
+    "designacao": "Direção Regional de Agricultura e Pescas do Norte",
+    "id": "ent_DRAP-N",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DREALE",
+    "sioe": "",
+    "designacao": "Direção Regional de Educação do Alentejo",
+    "id": "ent_DREALE",
+    "dataCriacao": "1987-01-03",
+    "dataExtincao": "2012-12-31",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DREALG",
+    "sioe": "",
+    "designacao": "Direção Regional de Educação do Algarve",
+    "id": "ent_DREALG",
+    "dataCriacao": "1987-01-03",
+    "dataExtincao": "2012-12-31",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DREC",
+    "sioe": "",
+    "designacao": "Direção Regional de Educação do Centro",
+    "id": "ent_DREC",
+    "dataCriacao": "1987-01-03",
+    "dataExtincao": "2012-12-31",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DRELVT",
+    "sioe": "",
+    "designacao": "Direção Regional de Educação de Lisboa e Vale do Tejo",
+    "id": "ent_DRELVT",
+    "dataCriacao": "1987-01-03",
+    "dataExtincao": "2012-12-31",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "DREN",
+    "sioe": "",
+    "designacao": "Direção Regional de Educação do Norte",
+    "id": "ent_DREN",
+    "dataCriacao": "1987-01-03",
+    "dataExtincao": "2012-12-31",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ECFP",
+    "sioe": "875780490",
+    "designacao": "Entidade das Contas e Financiamentos Políticos",
+    "id": "ent_ECFP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ECHA",
+    "sioe": "",
+    "designacao": "Agência Europeia dos Produtos Químicos",
+    "id": "ent_ECHA",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EMGFA",
+    "sioe": "85080000",
+    "designacao": "Estado-Maior General das Forças Armadas",
+    "id": "ent_EMGFA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EN",
+    "sioe": "875791079",
+    "designacao": "Marinha – Escola Naval",
+    "id": "ent_EN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ENMC",
+    "sioe": "",
+    "designacao": "Entidade Nacional para o Mercado de Combustíveis, EPE",
+    "id": "ent_ENMC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EPAE",
+    "sioe": "",
+    "designacao": "Escola Portuguesa de Arte Equestre",
+    "id": "ent_EPAE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ERC",
+    "sioe": "800002003",
+    "designacao": "Entidade Reguladora para a Comunicação Social",
+    "id": "ent_ERC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ERS",
+    "sioe": "142900000",
+    "designacao": "Entidade Reguladora da Saúde",
+    "id": "ent_ERS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ERSAR",
+    "sioe": "83270000",
+    "designacao": "Entidade Reguladora dos Serviços de Águas e Resíduos",
+    "id": "ent_ERSAR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ESPAP",
+    "sioe": "875780379",
+    "designacao": "Entidade de Serviços Partilhados da Administração Pública, IP",
+    "id": "ent_ESPAP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EURATOM",
+    "sioe": "",
+    "designacao": "Comunidade Europeia da Energia Atómica",
+    "id": "ent_EURATOM",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Exército",
+    "sioe": "85110000",
+    "designacao": "Exército Português",
+    "id": "ent_Exército",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FAP",
+    "sioe": "85100000",
+    "designacao": "Força Aérea Portuguesa",
+    "id": "ent_FAP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FCMUNL",
+    "sioe": "875793117",
+    "designacao": "Faculdade de Ciências Médicas da Universidade Nova de Lisboa",
+    "id": "ent_FCMUNL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FCT",
+    "sioe": "104110000",
+    "designacao": "Fundação para a Ciência e a Tecnologia",
+    "id": "ent_FCT",
+    "dataCriacao": "1905-06-19",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FCUL",
+    "sioe": "102091400",
+    "designacao": "Faculdade de Ciências da Universidade de Lisboa",
+    "id": "ent_FCUL",
+    "dataCriacao": "1905-03-25",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FFUL",
+    "sioe": "102091200",
+    "designacao": "Faculdade de Farmácia da Universidade de Lisboa",
+    "id": "ent_FFUL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FLUL",
+    "sioe": "102091600",
+    "designacao": "Faculdade de Letras da Universidade de Lisboa",
+    "id": "ent_FLUL",
+    "dataCriacao": "1905-03-25",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FPT",
+    "sioe": "",
+    "designacao": "Federação Portuguesa de Táxis",
+    "id": "ent_FPT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GAMA",
+    "sioe": "875790002",
+    "designacao": "Gabinete  de Investigação de Acidentes Marítimos e da Autoridade para a  Meteorologia Aeronáutica",
+    "id": "ent_GAMA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GEE",
+    "sioe": "74400000",
+    "designacao": "Gabinete de Estratégia e Estudos",
+    "id": "ent_GEE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GEP",
+    "sioe": "90530000",
+    "designacao": "Gabinete de Estratégia e Planeamento",
+    "id": "ent_GEP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GEPAC",
+    "sioe": "60240000",
+    "designacao": "Gabinete de Estratégia, Planeamento e Avaliação Culturais",
+    "id": "ent_GEPAC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GNR",
+    "sioe": "20050000",
+    "designacao": "Guarda Nacional Repúblicana",
+    "id": "ent_GNR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GNS",
+    "sioe": "800007772",
+    "designacao": "Gabinete Nacional de Segurança",
+    "id": "ent_GNS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GPEARI",
+    "sioe": "54800000",
+    "designacao": "Gabinete de Planeamento, Estratégia, Avaliação e Relações Internacionais",
+    "id": "ent_GPEARI",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "GPERI",
+    "sioe": "",
+    "designacao": "Gabinete de Planeamento, Estratégia e Relações Internacionais do Ministério das Obras Públicas, Transportes e Comunicações",
+    "id": "ent_GPERI",
+    "dataCriacao": "undefined-undefined-30-04-2007",
+    "dataExtincao": "2009-01-22",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GPIAAF",
+    "sioe": "875793151",
+    "designacao": "Gabinete de Prevenção e Investigação de Acidentes com Aeronaves e Acidentes Ferroviários",
+    "id": "ent_GPIAAF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GPP",
+    "sioe": "600082458",
+    "designacao": "Gabinete de Planeamento e Políticas",
+    "id": "ent_GPP",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "GSEAE",
+    "sioe": "",
+    "designacao": "Gabinete do Secretário de Estado dos Assuntos Europeus",
+    "id": "ent_GSEAE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GovReg-A",
+    "sioe": "795000090",
+    "designacao": "Governo Regional dos Açores",
+    "id": "ent_GovReg-A",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GovReg-M",
+    "sioe": "",
+    "designacao": "Governo Regional da Madeira",
+    "id": "ent_GovReg-M",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Grupo_IP",
+    "sioe": "770000377",
+    "designacao": "Grupo Infraestruturas de Portugal",
+    "id": "ent_Grupo_IP",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "HDVCT",
+    "sioe": "",
+    "designacao": "Hospital de Viana do Castelo",
+    "id": "ent_HDVCT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IAMA",
+    "sioe": "795000105",
+    "designacao": "Instituto de Alimentação e Mercados Agrícolas",
+    "id": "ent_IAMA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IAPMEI",
+    "sioe": "70080000",
+    "designacao": "Agência para a Competitividade e Inovação, IP",
+    "id": "ent_IAPMEI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IASFA",
+    "sioe": "85230000",
+    "designacao": "Instituto de Ação Social das Forças Armadas, IP",
+    "id": "ent_IASFA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IAVE",
+    "sioe": "875791977",
+    "designacao": "Instituto de Avaliação Educativa, IP",
+    "id": "ent_IAVE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ICA",
+    "sioe": "60320000",
+    "designacao": "Instituto do Cinema e do Audiovisual, IP",
+    "id": "ent_ICA",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "ICAM",
+    "sioe": "",
+    "designacao": "Instituto do Cinema, do Audiovisual e do Multimédia, IP",
+    "id": "ent_ICAM",
+    "dataCriacao": "1998-12-21",
+    "dataExtincao": "2007-03-29",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "ICN",
+    "sioe": "",
+    "designacao": "Instituto da Conservação da Natureza, IP",
+    "id": "ent_ICN",
+    "dataCriacao": "1993-05-24",
+    "dataExtincao": "2007-04-27",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ICNF",
+    "sioe": "875780365",
+    "designacao": "Instituto da Conservação da Natureza e das Florestas, IP",
+    "id": "ent_ICNF",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "IDC",
+    "sioe": "",
+    "designacao": "Inspeção Diplomática e Consular",
+    "id": "ent_IDC",
+    "dataCriacao": "1994-02-24",
+    "dataExtincao": "2006-10-27",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IDN",
+    "sioe": "85130000",
+    "designacao": "Instituto da Defesa Nacional",
+    "id": "ent_IDN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IEFP",
+    "sioe": "90320000",
+    "designacao": "Instituto do Emprego e Formação Profissional, IP",
+    "id": "ent_IEFP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IFAP",
+    "sioe": "30160000",
+    "designacao": "Instituto de Financiamento da Agricultura e Pescas, IP",
+    "id": "ent_IFAP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGAC",
+    "sioe": "60210000",
+    "designacao": "Inspeção-Geral das Atividades Culturais",
+    "id": "ent_IGAC",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "IGAE",
+    "sioe": "",
+    "designacao": "Inspeção-Geral das Atividades Económicas",
+    "id": "ent_IGAE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGAI",
+    "sioe": "20020000",
+    "designacao": "Inspeção-Geral da Administração Interna",
+    "id": "ent_IGAI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGAMAOT",
+    "sioe": "875780330",
+    "designacao": "Inspeção-Geral da Agricultura, do Mar, do Ambiente e do Ordenamento do Território",
+    "id": "ent_IGAMAOT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGAS",
+    "sioe": "141200000",
+    "designacao": "Inspeção-Geral das Atividades em Saúde",
+    "id": "ent_IGAS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGCP",
+    "sioe": "53300000",
+    "designacao": "Agência de Gestão da Tesouraria e da Dívida Pública - IGCP, EPE",
+    "id": "ent_IGCP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGDC",
+    "sioe": "86120000",
+    "designacao": "Inspeção-Geral Diplomática e Consular",
+    "id": "ent_IGDC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGDN",
+    "sioe": "85120000",
+    "designacao": "Inspeção-Geral da Defesa Nacional",
+    "id": "ent_IGDN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGEC",
+    "sioe": "875780321",
+    "designacao": "Inspeção-Geral da Educação e Ciência",
+    "id": "ent_IGEC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGF",
+    "sioe": "51400000",
+    "designacao": "Inspeção-Geral de Finanças",
+    "id": "ent_IGF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGFCSS",
+    "sioe": "90270000",
+    "designacao": "Instituto de Gestão de Fundos de Capitalização da Segurança Social, IP",
+    "id": "ent_IGFCSS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGFEJ",
+    "sioe": "875780382",
+    "designacao": "Instituto de Gestão Financeira e Equipamentos da Justiça, IP",
+    "id": "ent_IGFEJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGFSS",
+    "sioe": "90290000",
+    "designacao": "Instituto de Gestão Financeira da Segurança Social, IP",
+    "id": "ent_IGFSS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGMTSSS",
+    "sioe": "90250000",
+    "designacao": "Inspeção-Geral do Ministério do Trabalho, Solidariedade e Segurança Social",
+    "id": "ent_IGMTSSS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IGSJ",
+    "sioe": "151200000",
+    "designacao": "Inspeção-Geral dos Serviços de Justiça",
+    "id": "ent_IGSJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IH",
+    "sioe": "875790606",
+    "designacao": "Instituto Hidrográfico",
+    "id": "ent_IH",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IHRU",
+    "sioe": "112200000",
+    "designacao": "Instituto da Habitação e da Reabilitação Urbana, IP",
+    "id": "ent_IHRU",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "II",
+    "sioe": "90300000",
+    "designacao": "Instituto de Informática, IP",
+    "id": "ent_II",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IMPIC",
+    "sioe": "111500000",
+    "designacao": "Instituto dos Mercados Públicos, do Imobiliário e da Construção, IP",
+    "id": "ent_IMPIC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IMT",
+    "sioe": "110090000",
+    "designacao": "Instituto de Mobilidade e dos Transportes, IP",
+    "id": "ent_IMT",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INA",
+    "sioe": "875780331",
+    "designacao": "Direção-Geral da Qualificação dos Trabalhadores em Funções Públicas",
+    "id": "ent_INA",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "INA_IP",
+    "sioe": "",
+    "designacao": "Instituto Nacional da Administração, IP",
+    "id": "ent_INA_IP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INCM",
+    "sioe": "875790441",
+    "designacao": "Imprensa Nacional-Casa da Moeda, SA",
+    "id": "ent_INCM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INE",
+    "sioe": "12150000",
+    "designacao": "Instituto Nacional de Estatística, IP",
+    "id": "ent_INE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INEM",
+    "sioe": "142300000",
+    "designacao": "Instituto Nacional de Emergência Médica, IP",
+    "id": "ent_INEM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INFARMED",
+    "sioe": "142200000",
+    "designacao": "Autoridade Nacional do Medicamento e Produtos de Saúde, IP",
+    "id": "ent_INFARMED",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INIAV",
+    "sioe": "875780356",
+    "designacao": "Instituto Nacional de Investigação Agrária e Veterinária, IP",
+    "id": "ent_INIAV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INMLCF",
+    "sioe": "151800000",
+    "designacao": "Instituto Nacional de Medicina Legal e Ciências Forenses, IP",
+    "id": "ent_INMLCF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INPI",
+    "sioe": "71400000",
+    "designacao": "Instituto Nacional da Propriedade Industrial, IP",
+    "id": "ent_INPI",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INR",
+    "sioe": "90170000",
+    "designacao": "Instituto Nacional para a Reabilitação, IP",
+    "id": "ent_INR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "INSA",
+    "sioe": "142100000",
+    "designacao": "Instituto Nacional de Saúde Doutor Ricardo Jorge, IP",
+    "id": "ent_INSA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPAC",
+    "sioe": "71960000",
+    "designacao": "Instituto Português de Acreditação, IP",
+    "id": "ent_IPAC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPCA",
+    "sioe": "102450000",
+    "designacao": "Instituto Politécnico do Cávado e do Ave",
+    "id": "ent_IPCA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPDJ",
+    "sioe": "875780313",
+    "designacao": "Instituto Português do Desporto e Juventude, IP",
+    "id": "ent_IPDJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPMA",
+    "sioe": "875780355",
+    "designacao": "Instituto Português do Mar e da Atmosfera, IP",
+    "id": "ent_IPMA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPP",
+    "sioe": "102460000",
+    "designacao": "Instituto Politécnico do Porto",
+    "id": "ent_IPP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPQ",
+    "sioe": "71600000",
+    "designacao": "Instituto Português da Qualidade, IP",
+    "id": "ent_IPQ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPST",
+    "sioe": "142400000",
+    "designacao": "Instituto Português do Sangue e da Transplantação, IP",
+    "id": "ent_IPST",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "IPTM",
+    "sioe": "",
+    "designacao": "Instituto Portuário e dos Transportes Marítimos, I.P.",
+    "id": "ent_IPTM",
+    "dataCriacao": "2002-11-22",
+    "dataExtincao": "2012-02-29",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IRN",
+    "sioe": "152600000",
+    "designacao": "Instituto dos Registos e do Notariado, IP",
+    "id": "ent_IRN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ISAN_Portugal",
+    "sioe": "",
+    "designacao": "Agência ISAN Portugal",
+    "id": "ent_ISAN_Portugal",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ISCTE",
+    "sioe": "",
+    "designacao": "Instituto Superior de Ciências do Trabalho e da Empresa",
+    "id": "ent_ISCTE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ISS",
+    "sioe": "90310000",
+    "designacao": "Instituto da Segurança Social, IP",
+    "id": "ent_ISS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ISSA",
+    "sioe": "875792013",
+    "designacao": "Instituto da Segurança Social dos Açores, IP",
+    "id": "ent_ISSA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ISSM",
+    "sioe": "790000022",
+    "designacao": "Instituto da Segurança Social da Madeira, IP",
+    "id": "ent_ISSM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IST",
+    "sioe": "102100600",
+    "designacao": "Instituto Superior Técnico",
+    "id": "ent_IST",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IVDP",
+    "sioe": "30210000",
+    "designacao": "Instituto dos Vinhos do Douro e do Porto, IP",
+    "id": "ent_IVDP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IVV",
+    "sioe": "30200000",
+    "designacao": "Instituto da Vinha e do Vinho, IP",
+    "id": "ent_IVV",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IgeFE",
+    "sioe": "875792882",
+    "designacao": "Instituto de Gestão Financeira da Educação, IP",
+    "id": "ent_IgeFE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "JurisAPP",
+    "sioe": "875793281",
+    "designacao": "Centro de Competências Jurídicas do Estado",
+    "id": "ent_JurisAPP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "LNEC",
+    "sioe": "112400000",
+    "designacao": "Laboratório Nacional de Engenharia Civil, I.P.",
+    "id": "ent_LNEC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "LNEG",
+    "sioe": "71510000",
+    "designacao": "Laboratório Nacional de Energia e Geologia, IP",
+    "id": "ent_LNEG",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "LSB71",
+    "sioe": "875791253",
+    "designacao": "Junta de Freguesia de Belém",
+    "id": "ent_LSB71",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Lisboa2020",
+    "sioe": "875792096",
+    "designacao": "Autoridade de Gestão do Programa Operacional Regional de Lisboa",
+    "id": "ent_Lisboa2020",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "MAC",
+    "sioe": "",
+    "designacao": "Maternidade Alfredo da Costa",
+    "id": "ent_MAC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "MF",
+    "sioe": "",
+    "designacao": "Ministro das Finanças",
+    "id": "ent_MF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "MJ",
+    "sioe": "",
+    "designacao": "Ministro da Justiça",
+    "id": "ent_MJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "MP",
+    "sioe": "",
+    "designacao": "Ministério Público",
+    "id": "ent_MP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Marinha",
+    "sioe": "85090000",
+    "designacao": "Marinha Portuguesa",
+    "id": "ent_Marinha",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "MdP",
+    "sioe": "770000329",
+    "designacao": "Metro do Porto, SA",
+    "id": "ent_MdP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Norte2020",
+    "sioe": "875792870",
+    "designacao": "Autoridade de Gestão do Programa Operacional Regional do Norte",
+    "id": "ent_Norte2020",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "OIT",
+    "sioe": "",
+    "designacao": "Organização Internacional do Trabalho - Lisboa",
+    "id": "ent_OIT",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "OMS",
+    "sioe": "85090000",
+    "designacao": "Organização Mundial de Saúde",
+    "id": "ent_OMS",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ON",
+    "sioe": "",
+    "designacao": "Ordem dos Notários",
+    "id": "ent_ON",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "OSAE",
+    "sioe": "",
+    "designacao": "Ordem dos Solicitadores e dos Agentes de Execução",
+    "id": "ent_OSAE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PCM",
+    "sioe": "",
+    "designacao": "Presidência do Conselho de Ministros",
+    "id": "ent_PCM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PDR2020",
+    "sioe": "875792060",
+    "designacao": "Autoridade de Gestão do Programa de Desenvolvimento Rural 2020",
+    "id": "ent_PDR2020",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PE",
+    "sioe": "",
+    "designacao": "Parlamento Europeu",
+    "id": "ent_PE",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PGR",
+    "sioe": "800003365",
+    "designacao": "Procuradoria-Geral da República",
+    "id": "ent_PGR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PJ",
+    "sioe": "152900000",
+    "designacao": "Polícia Judiciária",
+    "id": "ent_PJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PJM",
+    "sioe": "85140000",
+    "designacao": "Polícia Judiciária Militar",
+    "id": "ent_PJM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PM",
+    "sioe": "90350000",
+    "designacao": "Primeiro-Ministro",
+    "id": "ent_PM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PMar",
+    "sioe": "875791092",
+    "designacao": "Polícia Marítima",
+    "id": "ent_PMar",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "POAT_2020",
+    "sioe": "875792876",
+    "designacao": "Autoridade de Gestão do Programa Operacional de Assistência Técnica",
+    "id": "ent_POAT_2020",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "POCH",
+    "sioe": "875792868",
+    "designacao": "Autoridade de Gestão do Programa Operacional Temático Capital Humano",
+    "id": "ent_POCH",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "POCI",
+    "sioe": "875792100",
+    "designacao": "Autoridade de Gestão do Programa Operacional Temático Competitividade e Internacionalização",
+    "id": "ent_POCI",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "POISE",
+    "sioe": "875792878",
+    "designacao": "Autoridade de Gestão do Programa Operacional Inclusão Social e Emprego",
+    "id": "ent_POISE",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "POMar2020",
+    "sioe": "875792879",
+    "designacao": "Autoridade de Gestão do Programa Operacional Mar 2020",
+    "id": "ent_POMar2020",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PO_SEUR",
+    "sioe": "875792877",
+    "designacao": "Autoridade de Gestão do Programa Operacional Temático Sustentabilidade e Eficiência no Uso de Recursos",
+    "id": "ent_PO_SEUR",
+    "dataCriacao": "2014-12-11",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PR",
+    "sioe": "875780308",
+    "designacao": "Presidente da República",
+    "id": "ent_PR",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PRJ",
+    "sioe": "800003366",
+    "designacao": "Provedoria de Justiça",
+    "id": "ent_PRJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PSML__SA",
+    "sioe": "875790342",
+    "designacao": "Parques Sintra - Monte da Lua, SA",
+    "id": "ent_PSML__SA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PSP",
+    "sioe": "20040000",
+    "designacao": "Polícia de Segurança Pública",
+    "id": "ent_PSP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "RA-A",
+    "sioe": "",
+    "designacao": "Região Autónoma dos Açores",
+    "id": "ent_RA-A",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "RA-M",
+    "sioe": "",
+    "designacao": "Região Autónoma da Madeira",
+    "id": "ent_RA-M",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "RNOVA",
+    "sioe": "",
+    "designacao": "Reitoria da Universidade Nova de Lisboa",
+    "id": "ent_RNOVA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SCML",
+    "sioe": "90350000",
+    "designacao": "Santa Casa da Misericórdia de Lisboa",
+    "id": "ent_SCML",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SCMVNG",
+    "designacao": "Santa Casa da Misericórdia de Vila Nova de Gaia",
+    "id": "ent_SCMVNG",
+    "dataCriacao": "1929-06-26",
+    "internacional": "Não"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SEAL",
+    "sioe": "875792993",
+    "designacao": "Secretário de Estado das Autarquias Locais",
+    "id": "ent_SEAL",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SEF",
+    "sioe": "20060000",
+    "designacao": "Serviço de Estrangeiros e Fronteiras",
+    "id": "ent_SEF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SEN",
+    "sioe": "",
+    "designacao": "Sistema Estatístico Nacional",
+    "id": "ent_SEN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SEUE",
+    "sioe": "",
+    "designacao": "Eurostat – Serviços de Estatística da União Europeia",
+    "id": "ent_SEUE",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SF-M",
+    "sioe": "",
+    "designacao": "Superintendência das Finanças – Marinha",
+    "id": "ent_SF-M",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGEC",
+    "sioe": "875780324",
+    "designacao": "Secretaria-Geral da Educação e Ciência",
+    "id": "ent_SGEC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMA",
+    "sioe": "875792006",
+    "designacao": "Secretaria-Geral do Ministério do Ambiente",
+    "id": "ent_SGMA",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "SGMADRP",
+    "sioe": "",
+    "designacao": "Secretaria-Geral do Ministério da Agricultura, do Desenvolvimento Rural e das Pescas",
+    "id": "ent_SGMADRP",
+    "dataCriacao": "1996-06-18",
+    "dataExtincao": "2006-10-27",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMAI",
+    "sioe": "22100000",
+    "designacao": "Secretaria Geral do Ministério da Administração Interna",
+    "id": "ent_SGMAI",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "SGMC",
+    "sioe": "",
+    "designacao": "Secretaria Geral do Ministério da Cultura",
+    "id": "ent_SGMC",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "SGMCES",
+    "sioe": "",
+    "designacao": "Secretaria-Geral do Ministério da Ciência e do Ensino Superior",
+    "id": "ent_SGMCES",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMDN",
+    "sioe": "85010000",
+    "designacao": "Secretaria Geral do Ministério da Defesa Nacional",
+    "id": "ent_SGMDN",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGME",
+    "sioe": "875780376",
+    "designacao": "Secretaria Geral do Ministério da Economia",
+    "id": "ent_SGME",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "SGMEI",
+    "sioe": "70020000",
+    "designacao": "Secretaria Geral do Ministério da Economia e Inovação",
+    "id": "ent_SGMEI",
+    "dataCriacao": "2006-10-27",
+    "dataExtincao": "2011-12-29",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "SGMEd",
+    "sioe": "",
+    "designacao": "Secretaria-Geral do Ministério da Educação",
+    "id": "ent_SGMEd",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMF",
+    "sioe": "54100000",
+    "designacao": "Secretaria Geral do Ministério das Finanças",
+    "id": "ent_SGMF",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMJ",
+    "sioe": "151100000",
+    "designacao": "Secretaria Geral do Ministério da Justiça",
+    "id": "ent_SGMJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMNE",
+    "sioe": "86160000",
+    "designacao": "Secretaria Geral do Ministério dos Negócios Estrangeiros",
+    "id": "ent_SGMNE",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMS",
+    "sioe": "141100000",
+    "designacao": "Secretaria-Geral do Ministério da Saúde",
+    "id": "ent_SGMS",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "SGMSST",
+    "sioe": "",
+    "designacao": "Secretaria-Geral do Ministério da Segurança Social e do Trabalho",
+    "id": "ent_SGMSST",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGMTSSS",
+    "sioe": "90370000",
+    "designacao": "Secretaria Geral do Ministério do Trabalho, Solidariedade e Segurança Social",
+    "id": "ent_SGMTSSS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SGPCM",
+    "sioe": "13110000",
+    "designacao": "Secretaria Geral da Presidência do Conselho de Ministros",
+    "id": "ent_SGPCM",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SICAD",
+    "sioe": "875780320",
+    "designacao": "Serviço de Intervenção nos Comportamentos Aditivos e nas Dependências",
+    "id": "ent_SICAD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SIRP",
+    "sioe": "17000000",
+    "designacao": "Sistema de Informações da República Portuguesa",
+    "id": "ent_SIRP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SIS",
+    "sioe": "20070000",
+    "designacao": "Serviço de Informações e Segurança",
+    "id": "ent_SIS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SM-M",
+    "sioe": "",
+    "designacao": "Superintendência do Material – Marinha",
+    "id": "ent_SM-M",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SMASALM",
+    "sioe": "875790839",
+    "designacao": "Serviços Municipalizados de Água e Saneamento de Almada",
+    "id": "ent_SMASALM",
+    "internacional": ""
+  },
+  {
+    "estado": "Inativa",
+    "sigla": "SNB",
+    "sioe": "",
+    "designacao": "Serviço Nacional de Bombeiros",
+    "id": "ent_SNB",
+    "dataCriacao": "1980-09-29",
+    "dataExtincao": "2000-11-17",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SP-M",
+    "sioe": "875791081",
+    "designacao": "Superintendência do Pessoal – Marinha",
+    "id": "ent_SP-M",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SPMS",
+    "sioe": "875780255",
+    "designacao": "Serviços Partilhados do Ministério da Saúde, EPE",
+    "id": "ent_SPMS",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SSAP",
+    "sioe": "51710000",
+    "designacao": "Serviços Sociais da Administração Pública",
+    "id": "ent_SSAP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "STA",
+    "sioe": "800003021",
+    "designacao": "Supremo Tribunal Administrativo",
+    "id": "ent_STA",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "STI-M",
+    "sioe": "",
+    "designacao": "Superintendência das Tecnologias da Informação – Marinha",
+    "id": "ent_STI-M",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "STJ",
+    "sioe": "800003022",
+    "designacao": "Supremo Tribunal de Justiça",
+    "id": "ent_STJ",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TAP",
+    "sioe": "",
+    "designacao": "Transportes Aéreos Portugueses, S. A",
+    "id": "ent_TAP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TC",
+    "sioe": "800003044",
+    "designacao": "Tribunal Constitucional",
+    "id": "ent_TC",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TContas",
+    "sioe": "800003052",
+    "designacao": "Tribunal de Contas",
+    "id": "ent_TContas",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TJUE",
+    "sioe": "",
+    "designacao": "Tribunal de Justiça da União Europeia",
+    "id": "ent_TJUE",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TP",
+    "sioe": "73400000",
+    "designacao": "Turismo de Portugal, IP",
+    "id": "ent_TP",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "UE",
+    "sioe": "",
+    "designacao": "União Europeia",
+    "id": "ent_UE",
+    "internacional": "Sim"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "UTAD",
+    "sioe": "102150000",
+    "designacao": "Universidade de Trás-os-Montes e Alto Douro",
+    "id": "ent_UTAD",
+    "internacional": ""
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AAC",
+    "designacao": "Autoridades Administrativas Civis",
+    "id": "tip_AAC"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AADR",
+    "designacao": "Assembleias de apuramento distrital de resultados",
+    "id": "tip_AADR"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AAGR",
+    "designacao": "Assembleias de apuramento geral dos resultados",
+    "id": "tip_AAGR"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ACE",
+    "designacao": "Administração Central do Estado",
+    "id": "tip_ACE"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ACES",
+    "designacao": "Agrupamentos de Centros de Saúde",
+    "id": "tip_ACES"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AF",
+    "designacao": "Assembleias de Freguesia",
+    "id": "tip_AF"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AL",
+    "designacao": "Autarquias Locais",
+    "id": "tip_AL"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AM",
+    "designacao": "Assembleias Municipais",
+    "id": "tip_AM"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AP",
+    "designacao": "Administração Pública",
+    "id": "tip_AP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AS",
+    "designacao": "Autoridades de Saúde",
+    "id": "tip_AS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ASF",
+    "designacao": "Autoridades de supervisão e fiscalização",
+    "id": "tip_ASF"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "AV",
+    "designacao": "Assembleias de voto",
+    "id": "tip_AV"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CA",
+    "designacao": "Centros de Arbitragem",
+    "id": "tip_CA"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CH",
+    "designacao": "Comissões de Heráldica",
+    "id": "tip_CH"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CN",
+    "designacao": "Cartórios Notariais",
+    "id": "tip_CN"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Cns",
+    "designacao": "Consulados",
+    "id": "tip_Cns"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CPCJ",
+    "designacao": "Comissões de Proteção de Crianças e Jovens",
+    "id": "tip_CPCJ"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CT",
+    "designacao": "Comissões Técnicas de Normalização",
+    "id": "tip_CT"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EAARPNC",
+    "designacao": "Entidades com autonomia administrativa e receitas próprias não consignadas",
+    "id": "tip_EAARPNC"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EAI",
+    "designacao": "Entidades administrativas independentes",
+    "id": "tip_EAI"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ECM",
+    "designacao": "Entidades com competência de monitorização",
+    "id": "tip_ECM"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ECP",
+    "designacao": "Entidades com capacidade pericial",
+    "id": "tip_ECP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ECS",
+    "designacao": "Entidades com competência sancionatória",
+    "id": "tip_ECS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ECV",
+    "designacao": "Entidades com competência de visita",
+    "id": "tip_ECV"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EDA",
+    "designacao": "Entidades detentoras de animais",
+    "id": "tip_EDA"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EGAG",
+    "designacao": "Entidades gestoras de água",
+    "id": "tip_EGAG"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EGAP",
+    "designacao": "Entidades gestoras de apoios",
+    "id": "tip_EGAP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Emb",
+    "designacao": "Embaixadas",
+    "id": "tip_Emb"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ER",
+    "designacao": "Entidades reguladoras",
+    "id": "tip_ER"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ES",
+    "designacao": "Estabelecimentos de ensino (EstE + IES)",
+    "id": "tip_ES"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ESPS",
+    "designacao": "Entidades do sistema de proteção na saúde",
+    "id": "tip_ESPS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "EstE",
+    "designacao": "Estabelecimentos escolares",
+    "id": "tip_EstE"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FA",
+    "designacao": "Forças Armadas",
+    "id": "tip_FA"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FSS",
+    "designacao": "Forças e serviços de segurança",
+    "id": "tip_FSS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Fnd",
+    "designacao": "Fundações",
+    "id": "tip_Fnd"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Gov",
+    "designacao": "Governo",
+    "id": "tip_Gov"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "HH",
+    "designacao": "Hospitais",
+    "id": "tip_HH"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IP",
+    "designacao": "Institutos Públicos",
+    "id": "tip_IP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IES",
+    "designacao": "Instituições do Ensino Superior",
+    "id": "tip_IES"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "IPSS",
+    "designacao": "Instituições Particulares de Solidariedade Social",
+    "id": "tip_IPSS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "JP",
+    "designacao": "Julgados de Paz",
+    "id": "tip_JP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ONS",
+    "designacao": "Organizações de normalização setorial",
+    "id": "tip_ONS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "OP",
+    "designacao": "Ordens profissionais",
+    "id": "tip_OP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "OPC",
+    "designacao": "Órgãos de polícia criminal",
+    "id": "tip_OPC"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "OSJ",
+    "designacao": "Órgãos do sistema judiciário",
+    "id": "tip_OSJ"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "PMun",
+    "designacao": "Polícias Municipais",
+    "id": "tip_PMun"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SMT",
+    "designacao": "Serviços de Medicina do Trabalho",
+    "id": "tip_SMT"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SPE",
+    "designacao": "Setor Público Empresarial",
+    "id": "tip_SPE"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TComarca",
+    "designacao": "Tribunais de Comarca",
+    "id": "tip_TComarca"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TEP",
+    "designacao": "Tribunais de Execução de Penas",
+    "id": "tip_TEP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TFM",
+    "designacao": "Tribunais de Família e Menores",
+    "id": "tip_TFM"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TIC",
+    "designacao": "Tribunais de Instrução Criminal",
+    "id": "tip_TIC"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TR",
+    "designacao": "Tribunais da Relação",
+    "id": "tip_TR"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "Trb",
+    "designacao": "Tribunais",
+    "id": "tip_Trb"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "UI",
+    "designacao": "Unidades de Investigação",
+    "id": "tip_UI"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "UL",
+    "designacao": "Unidades Laboratoriais",
+    "id": "tip_UL"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "UPCS",
+    "designacao": "Unidades Prestadoras de Cuidados de Saúde",
+    "id": "tip_UPCS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "CCDR",
+    "designacao": "Comissões de Coordenação do Desenvolvimento Regional",
+    "id": "tip_CCDR"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FA-M",
+    "designacao": "Forças Armadas – Marinha",
+    "id": "tip_FA-M"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FA-E",
+    "designacao": "Forças Armadas – Exército",
+    "id": "tip_FA-E"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "FA-FA",
+    "designacao": "Forças Armadas – Força Aérea",
+    "id": "tip_FA-FA"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SEN",
+    "designacao": "Sistema Estatístico Nacional",
+    "id": "tip_SEN"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "SG",
+    "designacao": "Secretarias Gerais",
+    "id": "tip_SG"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "ARS",
+    "designacao": "Administrações Regionais de Saúde",
+    "id": "tip_ARS"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRAP",
+    "designacao": "Direções Regionais de Agricultura e Pescas",
+    "id": "tip_DRAP"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "DRE",
+    "designacao": "Direções Regionais de Educação",
+    "id": "tip_DRE"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "GC",
+    "designacao": "Governos Civis",
+    "id": "tip_GC"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TJ",
+    "designacao": "Tribunais Judiciais",
+    "id": "tip_TJ"
+  },
+  {
+    "estado": "Ativa",
+    "sigla": "TAF",
+    "designacao": "Tribunais Administrativos e Fiscais",
+    "id": "tip_TAF"
+  }
+]
 
-var a = []
-var i = 0
-/* for (var prop in novo) console.log(novo[prop].length)
-console.log("--------------------------")
-arr.forEach(b => console.log(b.parties.length)) */
-/* for (var prop in novo) {
-    var part = []
-    var j = 0
-    arr[i].parties.forEach(p => {
-      part.push({
-        party_abbr: p.party_abbr,
-        party_name: {
-          pt: novo[prop][j++],
-          en: p.party_name
-        }
-      })
-    })
-      a.push({
-        country: arr[i].country,
-        parties: part
-      })
-      i++
-      //a[b.country] = b.parties.map(a => a.party_name);
+arr.forEach(a=>{
+  if ("sioe" in a) delete a.sioe
+  if ("internacional" in a) delete a.internacional
+})
+
+var fs = require('fs')
+fs.writeFile('fix.json', JSON.stringify(arr, null, 2), (err) => {
+  if (err) throw err;
+  console.log('Data written to file');
+});
+
+function formatNumber(num) {
+    var x = num.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace( rgx, '$1' + ',' + '$2' );
+    }
+    return x1 + x2;
 }
 
-console.log(JSON.stringify(a))
+function floating(min, max, decimals, format) {
+  decimals = decimals == undefined ? getDecimalsCount(min,max) : decimals
+  var random = min + (max - min) * Math.random();
+  var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
 
-fs.writeFile('fix.json', JSON.stringify(a, null, 2), (err) => {
-    if (err) throw err;
-    console.log('Data written to file');
-}); */
-var obj = {outros: null, boas: "ola"}
-console.log({...obj, ui: true})
+  if (!(format == undefined || format == null)) {
+      var split = formatNumber(String(rounded)).split('.')
+      rounded = split[0].replace(/,/g, format[1])
 
-//console.log("França".normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase())
+      if (split[1] != undefined) rounded += format[3] + split[1] 
+      if (format.length == 7) rounded += format[6]
+  }
+  return rounded
+}
+
+console.log(String(null))

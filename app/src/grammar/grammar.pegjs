@@ -12,6 +12,10 @@
   var uniq_queue = []
   var queue_prod = 1
 
+  function mapToString(arr) {
+    return arr.map(x => Array.isArray(x) ? mapToString(x) : (typeof x == "object" ? JSON.stringify(x) : String(x)))
+  }
+
   function trimArg(arg, marks) {
     if (arg[0] == '"' || arg[0] == "'") {
       arg = arg.split(arg[0])[1].trim()
@@ -248,10 +252,11 @@ array
       { return [head].concat(tail) }
     )?
     end_array
-    {  
+    {
       var dataModel = !queue.length ? {} : {component: true}
       var model = {attributes: {}}, values = []
       for (let i = 0; i < queue_prod; i++) values.push([])
+      if (arr == null) arr = []
 
       for (let j = 0; j < arr.length; j++) {
         arr[j] = createComponent("elem"+j, arr[j])
@@ -305,7 +310,7 @@ zero
   = "0"
 
 float_format
-  = ws quotation_mark ws f:("0" int_sep:[^0-9] "0" dec_sep:[^0-9] "00" unit:[^0-9] { return text() }) ws quotation_mark ws { return f }
+  = ws quotation_mark ws f:("0" int_sep:[^0-9] "0" dec_sep:[^0-9] "00" unit:[^0-9]? { return text() }) ws quotation_mark ws { return f }
 
 latitude
   = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
@@ -362,6 +367,7 @@ generic_key
   / "gov_entity"
   / "nationality"
   / "top100_celebrity"
+  / "pt_entity"
   / "pt_top100_celebrity"
   ) { return text().slice(0, -1) + 'ies' }
   / "pt_businessman" { return text().slice(0, -2) + 'en' }
@@ -428,11 +434,14 @@ unescaped
 
 // ----- 8. Moustaches -----
 
-interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe {
+interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
   var model = { type: "string", required: true }, data
 
   if (!val.length) data = Array(queue_prod).fill("")
-  else if (val.length == 1) { model = val[0].model; data = val[0].data }
+  else if (val.length == 1) {
+    model = val[0].model; data = val[0].data
+    data = !str ? val[0].data : mapToString(val[0].data)
+  }
   else {
     val.forEach(obj => { if ("objectType" in obj && obj.objectType) obj.data = obj.data.map(el => JSON.stringify(el)) })
     data = val.reduce((a, o) => (a.push(o.data), a), []).reduce((a, b) => a.map((v, i) => v + b[i]))
@@ -450,21 +459,21 @@ not_moustaches = (!(moustaches_start / "'").)+ {
 moustaches_start = "{{"
 moustaches_stop = "}}"
 
-moustaches_value
-  = gen_moustaches / api_moustaches
+moustaches_value = gen_moustaches / api_moustaches
 
 gen_moustaches
   = "objectId(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "objectId", []) } }
   / "guid(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "guid", []) } }
   / "boolean(" ws ")" { return { model: {type: "boolean", required: true}, data: fillArray("gen", null, "boolean", []) } }
-  / "index(" ws ")" {
+  / "index(" ws offset:(i:int ws { return i })? ")" {
     var queue_last = queue[queue.length-1]
+    if (offset == null) offset = 0
     return {
       model: {type: "integer", required: true},
-      data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat()
+      data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat().map(k => k + offset)
     }
   }
-  / "integer(" ws min:int_neg ws "," ws max:int_neg ws unit:("," quotation_mark u:[^"]+ quotation_mark {return u})? ")" {
+  / "integer(" ws min:int_neg ws "," ws max:int_neg ws unit:("," quotation_mark u:[^"]* quotation_mark {return u})? ")" {
     return {
       model: { type: unit === null ? "integer" : "string", required: true }, 
       data: fillArray("gen", null, "integer", [min, max, unit])
