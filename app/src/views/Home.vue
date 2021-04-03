@@ -189,7 +189,7 @@ export default {
       generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
         var generated = convert(this.code,this.parser)
-        console.log(generated.dataModel.data)
+        console.log(generated)
         
         if (this.output_format == "JSON") {
           this.cmOutput.mode = 'text/javascript'

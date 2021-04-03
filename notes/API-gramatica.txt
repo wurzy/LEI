@@ -71,7 +71,7 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
--> restrição: no nível superior é preciso tem um repeat para definir cada coleção
+- index() deve funcionar só dentro de repeats ou arrays também?
 
 - map, filter, reduce
 - lista de erros para apresentar de maneira user-friendly no vue

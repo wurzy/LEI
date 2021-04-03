@@ -5596,7 +5596,7 @@ var arr = [
   }
 ]
 
-arr.forEach(a=>{
+/* arr.forEach(a=>{
   if ("sioe" in a) delete a.sioe
   if ("internacional" in a) delete a.internacional
 })
@@ -5605,32 +5605,19 @@ var fs = require('fs')
 fs.writeFile('fix.json', JSON.stringify(arr, null, 2), (err) => {
   if (err) throw err;
   console.log('Data written to file');
-});
+}); */
 
-function formatNumber(num) {
-    var x = num.split('.');
-    var x1 = x[0];
-    var x2 = x.length > 1 ? '.' + x[1] : '';
-    var rgx = /(\d+)(\d{3})/;
-    while (rgx.test(x1)) {
-        x1 = x1.replace( rgx, '$1' + ',' + '$2' );
-    }
-    return x1 + x2;
-}
+var chunk = (arr, size) =>
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+      arr.slice(i * size, i * size + size)
+    );
 
-function floating(min, max, decimals, format) {
-  decimals = decimals == undefined ? getDecimalsCount(min,max) : decimals
-  var random = min + (max - min) * Math.random();
-  var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
+var aaa = [
+  {indice: 0},
+  {indice: 1},
+  {indice: 2},
+  {indice: 3},
+  {indice: 4}
+]
 
-  if (!(format == undefined || format == null)) {
-      var split = formatNumber(String(rounded)).split('.')
-      rounded = split[0].replace(/,/g, format[1])
-
-      if (split[1] != undefined) rounded += format[3] + split[1] 
-      if (format.length == 7) rounded += format[6]
-  }
-  return rounded
-}
-
-console.log(String(null))
+console.log(chunk(aaa,5))

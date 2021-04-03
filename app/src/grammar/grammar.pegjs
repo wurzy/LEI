@@ -3,14 +3,19 @@
 
 {
   var language = "pt" //"pt" or "en", "pt" by default
-  var components = {}
+  var components = {} //lista de componentes Strapi
 
-  var collections = []
-  var cur_collection = ""
+  var collections = [] //nomes das coleções
+  var cur_collection = "" //nome da coleção atual durante a travessia
 
-  var queue = []
-  var uniq_queue = []
-  var queue_prod = 1
+  var queue = [] //queue com os números dos repeats (aninhados)
+  var uniq_queue = [] //queue para fazer repeats de randoms sem elementos repetidos; ao entrar num repeat, pusha null se for normal, ou o nº do repeat se for unique
+  var queue_prod = 1 //número de cópias de uma folha que é preciso produzir em qualquer momento
+  
+  var open_structs = 0 //para saber o nível de profundidade de estruturas em que está atualmente; incrementa ao abrir um objeto, array ou repeat
+
+  var member_key = "" //chave do membro que está a processar no momento, para guardar na array abaixo ao começar um repeat
+  var repeat_keys = [] //lista das chaves dos repeats, para ao fechar o objeto principal conseguir distinguir um objeto de um repeat (a data do objeto simples vem em Array(1))
 
   function mapToString(arr) {
     return arr.map(x => Array.isArray(x) ? mapToString(x) : (typeof x == "object" ? JSON.stringify(x) : String(x)))
@@ -86,7 +91,7 @@
 
   function createComponent(name, value) {
     if ("component" in value) {
-      if (queue.length > 0) {
+      if (open_structs > 1) {
         value.model.collectionName = "components_" + name
         value.model.info = {name}
         value.model.options = {}
@@ -138,15 +143,16 @@
 
 // ----- 2. DSL Grammar -----
 
-DSL_text = language value:object { return {dataModel: value, components} }
+DSL_text = language value:collection_object { return {dataModel: value, components} }
 
-begin_array     = ws "[" ws
-begin_object    = ws "{" ws
-end_array       = ws "]" ws
-end_object      = ws "}" ws
-name_separator  = ws ":" ws
-value_separator = ws "," ws
-date_separator  = ws sep:("/" / "-" / ".") ws { return sep }
+begin_array      = ws "[" ws { ++open_structs }
+begin_object     = ws "{" ws { ++open_structs }
+end_array        = ws "]" ws
+end_object       = ws "}" ws { --open_structs }
+name_separator   = ws ":" ws
+repeat_separator = ws ":" ws { ++open_structs }
+value_separator  = ws "," ws
+date_separator   = ws sep:("/" / "-" / ".") ws { return sep }
 
 ws "whitespace" = [ \t\n\r]*
 
@@ -173,67 +179,58 @@ true  = "true"  { return {model: {type: "boolean", required: true}, data: Array(
 
 // ----- 4. Objects -----
 
-object
-  = begin_object
-    members:(
-      head:member
-      tail:(value_separator m:member { return m; })*
-      {
-        var result = {};
+collection_object
+  = begin_object members:object_members? end_object {
+      var data = [], model = {}, i = 0
 
-        [head].concat(tail).forEach(function(element) {
-          result[element.name] = element.value;
-        })
-
-        return result;
-      }
-    )?
-    end_object
-    {
-      var dataModel = !queue.length ? {} : {component: true}
-      var values = [], model = {}
-      
-      if (!queue.length) {
-        let i = 0
-        for (let p in members) {
-          model[collections[i]] = {
-            kind: "collectionType",
-            collectionName: collections[i],
-            info: {name: collections[i++]},
-            options: {},
-            attributes: members[p].model.attributes
-          }
-          members[p] = members[p].data
+      for (let p in members) {
+        model[collections[i]] = {
+          kind: "collectionType",
+          collectionName: collections[i],
+          info: {name: collections[i++]},
+          options: {},
+          attributes: members[p].model.attributes
         }
-        values = members
+        members[p] = repeat_keys.includes(p) ? members[p].data : members[p].data[0]
       }
-      else {
-        model.attributes = {}
-        for (let i = 0; i < queue_prod; i++) values.push({})
+      data = members
 
-        for (let p in members) {
-          model.attributes[p] = members[p].model
-          var prob = "probability" in members[p]
-
-          for (let i = 0; i < queue_prod; i++) {
-            if ((prob && members[p].data[i] !== null) || (!prob && !("function" in members[p])))
-              values[i][p] = members[p].data[i]
-          }
-        }
-
-        Object.keys(members).filter(key => "function" in members[key]).forEach(p => {
-          for (let i = 0; i < queue_prod; i++)
-            values[i][p] = members[p].function({genAPI, dataAPI, local: values[i]})
-        })
-      }
-      
-      dataModel.data = values
-      dataModel.model = model
-      return members !== null ? dataModel : {}
+      return members !== null ? {data, model} : {}
     }
+
+object
+  = begin_object members:object_members? end_object {
+      var data = [], model = {attributes: {}}
+      for (let i = 0; i < queue_prod; i++) data.push({})
+
+      for (let p in members) {
+        model.attributes[p] = members[p].model
+        var prob = "probability" in members[p]
+
+        for (let i = 0; i < queue_prod; i++) {
+          if ((prob && members[p].data[i] !== null) || (!prob && !("function" in members[p])))
+            data[i][p] = members[p].data[i]
+        }
+      }
+
+      Object.keys(members).filter(key => "function" in members[key]).forEach(p => {
+        for (let i = 0; i < queue_prod; i++)
+          data[i][p] = members[p].function({genAPI, dataAPI, local: data[i]})
+      })
+      
+      return members !== null ? {data, model, component: true} : {}
+    }
+
+object_members
+  = head:member tail:(value_separator m:member { return m; })* {
+    var result = {};
+    [head].concat(tail).forEach(function(element) { result[element.name] = element.value })
+    return result
+  }
 
 member
   = name:member_key name_separator value:value_or_interpolation {
+    if (open_structs == 1) cur_collection = ""
     value = createComponent(name, value)
     return { name, value }
   }
@@ -253,20 +250,19 @@ array
     )?
     end_array
     {
-      var dataModel = !queue.length ? {} : {component: true}
-      var model = {attributes: {}}, values = []
-      for (let i = 0; i < queue_prod; i++) values.push([])
+      var model = {attributes: {}}, data = []
+      for (let i = 0; i < queue_prod; i++) data.push([])
       if (arr == null) arr = []
 
       for (let j = 0; j < arr.length; j++) {
         arr[j] = createComponent("elem"+j, arr[j])
         model.attributes["elem"+j] = arr[j].model
 
-        for (let k = 0; k < queue_prod; k++) values[k].push(arr[j].data[k])
+        for (let k = 0; k < queue_prod; k++) data[k].push(arr[j].data[k])
       }
-      
-      dataModel.data = values
-      dataModel.model = model
+
+      var dataModel = {data, model}
+      if (--open_structs > 1) dataModel.component = true
       return dataModel
     }
 
@@ -316,13 +312,13 @@ latitude
   = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
 
 lat_interval
-  = begin_array min:latitude value_separator max:latitude end_array { return [min, max] }
+  = ws '[' ws min:latitude value_separator max:latitude ws ']' ws { return [min, max] }
 
 longitude
   = (minus / plus)?("180"(".""0"+)?/(("1"[0-7][0-9])/([1-9]?[0-9]))("."[0-9]+)?) { return parseFloat(text()); }
 
 long_interval
-  = begin_array min:longitude value_separator max:longitude end_array { return [min, max] }
+  = ws '[' ws min:longitude value_separator max:longitude ws ']' ws { return [min, max] }
 
 // ----- 7. Strings -----
 
@@ -397,13 +393,14 @@ date_format
   / quotation_mark ws format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") ws quotation_mark { return format.join(""); }
 
 member_key = chars:([a-zA-Z_][a-zA-Z0-9_]*) {
-    var key = chars.flat().join("")
-    if (!queue.length) {
-      cur_collection = key + "_" + uuidv4()
+    member_key = chars.flat().join("")
+
+    if (open_structs == 1) {
+      cur_collection = member_key + "_" + uuidv4()
       collections.push(cur_collection)
       components[cur_collection] = {}
     }
-    return key
+    return member_key
   }
 
 char
@@ -591,31 +588,35 @@ directive
   / range
 
 repeat
-  = begin_array repeat_signature ws ":" ws val:value_or_interpolation end_array {
-    if (queue.length > 1) { 
-      val.model = {type: Array(num).fill(val.model), required: true}
-      val.data = chunk(val.data, queue[queue.length-1])
-    }
-    
+  = ws '[' ws repeat_signature ws repeat_separator ws val:value_or_interpolation ws ']' ws {
     var num = queue.pop(); queue_prod /= num
-    if (!queue.length) cur_collection = ""
-    uniq_queue.pop()
+    uniq_queue.pop(); --open_structs
+    
+    var model = {attributes: {}}
+    if (open_structs > 1) {
+      val.data = chunk(val.data, num)
+      val = createComponent("repeat_elem", val)
+      for (let i = 0; i < num; i++) model.attributes["repeat_elem"+i] = val.model
+    }
 
-    return val
+    return {data: val.data, model: open_structs > 1 ? model : val.model, component: true}
   }
 
 repeat_signature 
   = "'" ws "repeat" unique:"_unique"? "(" ws min:int ws max:("," ws m:int ws { return m })? ")" ws "'" {
     var num = max === null ? min : Math.floor(Math.random() * (max - min + 1)) + min
+    
     uniq_queue.push(unique != null ? num : null)
     queue_prod *= num; queue.push(num)
+
+    repeat_keys.push(member_key)
   }
 
 range
   = "range(" ws data:range_args ws ")" {
-    var dataModel = !queue.length ? {} : {component: true}
+    var dataModel = open_structs > 1 ? {component: true} : {}
     var model = {attributes: {}}
-    for (let i = 0; i < data.length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
+    for (let i = 0; i < data[0].length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
 
     dataModel.data = data
     dataModel.model = model
