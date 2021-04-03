@@ -13,12 +13,28 @@
   var queue_prod = 1 //número de cópias de uma folha que é preciso produzir em qualquer momento
   
   var open_structs = 0 //para saber o nível de profundidade de estruturas em que está atualmente; incrementa ao abrir um objeto, array ou repeat
+  var struct_types = [] //tipo das estruturas dentro das quais está, para saber se um index() pertence a um array ou a um repeat
+  var array_indexes = [] //índices atuais onde se encontra dos arrays dentro dos quais está, para conseguir fazer o index() de um array
 
   var member_key = "" //chave do membro que está a processar no momento, para guardar na array abaixo ao começar um repeat
   var repeat_keys = [] //lista das chaves dos repeats, para ao fechar o objeto principal conseguir distinguir um objeto de um repeat (a data do objeto simples vem em Array(1))
 
   function mapToString(arr) {
     return arr.map(x => Array.isArray(x) ? mapToString(x) : (typeof x == "object" ? JSON.stringify(x) : String(x)))
+  }
+
+  function getIndexes(num) {
+    if (struct_types[struct_types.length-1] == "repeat") return [...Array(num).keys()]
+    else if (struct_types[struct_types.length-1] == "array") return Array(num).fill(array_indexes[array_indexes.length-1])
+    else {
+      var index = struct_types.length-1
+      while (index >= 0 && struct_types[index] == "object") index--
+      if (index >= 0) {
+        if (struct_types[index] == "repeat") return [...Array(num).keys()]
+        else return Array(num).fill(array_indexes[array_indexes.length-1])
+      }
+      //else erro não pode usar index aqui
+    }
   }
 
   function trimArg(arg, marks) {
@@ -145,12 +161,12 @@
 
 DSL_text = language value:collection_object { return {dataModel: value, components} }
 
-begin_array      = ws "[" ws { ++open_structs }
-begin_object     = ws "{" ws { ++open_structs }
-end_array        = ws "]" ws
-end_object       = ws "}" ws { --open_structs }
+begin_array      = ws "[" ws { ++open_structs; array_indexes.push(0); struct_types.push("array") }
+begin_object     = ws "{" ws { ++open_structs; struct_types.push("object") }
+end_array        = ws "]" ws { array_indexes.pop(); struct_types.pop() }
+end_object       = ws "}" ws { --open_structs; struct_types.pop() }
 name_separator   = ws ":" ws
-repeat_separator = ws ":" ws { ++open_structs }
+repeat_separator = ws ":" ws { ++open_structs; struct_types.push("repeat") }
 value_separator  = ws "," ws
 date_separator   = ws sep:("/" / "-" / ".") ws { return sep }
 
@@ -236,8 +252,10 @@ member
   }
   / probability / function_prop
 
-value_or_interpolation
-  = value / interpolation
+value_or_interpolation = val:(value / interpolation) {
+    if (struct_types[struct_types.length-1] == "array") array_indexes[array_indexes.length-1]++
+    return val
+  }
 
 // ----- 5. Arrays -----
 
@@ -465,9 +483,10 @@ gen_moustaches
   / "index(" ws offset:(i:int ws { return i })? ")" {
     var queue_last = queue[queue.length-1]
     if (offset == null) offset = 0
+
     return {
       model: {type: "integer", required: true},
-      data: Array(queue_prod/queue_last).fill([...Array(queue_last).keys()]).flat().map(k => k + offset)
+      data: Array(queue_prod/queue_last).fill(getIndexes(queue_last)).flat().map(k => k + offset)
     }
   }
   / "integer(" ws min:int_neg ws "," ws max:int_neg ws unit:("," quotation_mark u:[^"]* quotation_mark {return u})? ")" {
@@ -591,6 +610,7 @@ repeat
   = ws '[' ws repeat_signature ws repeat_separator ws val:value_or_interpolation ws ']' ws {
     var num = queue.pop(); queue_prod /= num
     uniq_queue.pop(); --open_structs
+    struct_types.pop()
     
     var model = {attributes: {}}
     if (open_structs > 1) {
