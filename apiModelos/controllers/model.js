@@ -16,6 +16,7 @@ module.exports.consultar = id => {
 module.exports.consultarTodos = user => {
     return Model
         .find({user})
+        .sort('-dataCriacao')
         .exec()
 }
 

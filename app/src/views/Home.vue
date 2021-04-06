@@ -62,6 +62,9 @@ import {convert} from '../grammar/convert.js'
 import ButtonGroup from '../components/ButtonGroup'
 import parser from '../grammar/parser.js'
 import axios from 'axios';
+
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
+
 import { jsonToXml } from '../grammar/jsonToXML.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -240,8 +243,21 @@ export default {
         .then(dados => console.log("Zip criado"))
         .catch(erro => console.log(erro))
       },
-      saveModel(){
-        console.log("xd modelo is saved pog")
+      async saveModel(){
+        var json = {}
+        var md = document.getElementById("md").getAttribute("modelo")
+        var cp = document.getElementById("md").getAttribute("componentes")
+        var cname = document.getElementById("md").getAttribute("colname")
+        var data = new Date()
+        json.colname = cname
+        json.modelo = md
+        json.componentes = cp
+        json.visibilidade = false
+        json.titulo = cname //PLACHOLDER
+        json.descricao = cname
+        json.dataCriacao = data
+        json.user = JSON.parse(localStorage.getItem('user'))._id
+        await axios.post('http://localhost:3000/modelos/adicionar', json)
       },
       createAPI(){
         var md = document.getElementById("md").getAttribute("modelo")

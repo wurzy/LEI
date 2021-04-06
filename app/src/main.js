@@ -12,11 +12,9 @@ import moment from 'moment'
 library.add(fas)
 moment.locale('pt');
 Vue.config.productionTip = false
-
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.use(VueCodeMirror)
 Vue.use(VueMoment, { moment });
-
 new Vue({
   router,
   render: h => h(App)
