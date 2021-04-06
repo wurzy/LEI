@@ -5620,6 +5620,9 @@ var aaa = [
   {indice: 4}
 ]
 
-console.log({
-  Ü: "ola"
-})
+function integer(min, max, unit) {
+  var rand = Math.floor(Math.random() * ((max+1) - min) + min)
+  return unit == null ? rand : (rand + unit)
+}
+
+console.log(integer(3,7,null))

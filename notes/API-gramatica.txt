@@ -79,10 +79,8 @@ POR IMPLEMENTAR:
 
 IDEIAS AUTOS:
 - integer com x número de algarismos (padding de zeros à esquerda)
-- dois atributos em que pelo menos 1 deles tem de estar preenchido
-- null = atributo não existe
-- repeat_unique com moustaches
-- aceder a prorpiedades de níveis superiores
+- aceder a propriedades de níveis superiores
+- dar ao repeat um var local de argumento em vez de int direto
 
 - ver se o random novo funciona direito em função
 
@@ -101,6 +99,8 @@ PROGRESSO DESTA SEMANA:
 	- dar moustaches como argumentos ao random -> generalizar os args para qualquer coisa
 	- atributo on condition
 	- atributos mutuamente exclusivos
+	- pelo menos x de um conjunto de atributos
+	- repeat_unique com moustaches (precário)
 
 
 

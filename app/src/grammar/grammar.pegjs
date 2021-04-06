@@ -143,8 +143,15 @@
     }
     else {
       for (let i = 0; i < queue_prod; i++) {
-        if (api == "gen") arr.push(genAPI[moustaches](...args))
-        if (api == "data") arr.push(dataAPI[sub_api][moustaches](language, ...args))
+        let elem
+        if (api == "gen") elem = genAPI[moustaches](...args)
+        if (api == "data") elem = dataAPI[sub_api][moustaches](language, ...args)
+
+        if (uniq_queue[uniq_queue.length-1] != null) {
+          if (arr.includes(elem)) --i
+          else arr.push(elem)
+        }
+        else arr.push(elem)
       }
     }
 
@@ -234,10 +241,26 @@ object
         for (let prop in members[p].or.model.attributes) 
           model.attributes[prop] = members[p].or.model.attributes[prop]
 
-        var keys = Object.keys(members[p].or.model.attributes)
+        let keys = Object.keys(members[p].or.model.attributes)
         for (let i = 0; i < queue_prod; i++) {
-          var key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+          let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
           data[i][key] = members[p].or.data[i][key]
+        }
+      }
+      else if ("at_least" in members[p]) {
+        for (let prop in members[p].value.model.attributes) 
+          model.attributes[prop] = members[p].value.model.attributes[prop]
+
+        for (let i = 0; i < queue_prod; i++) {
+          let keys = Object.keys(members[p].value.model.attributes)
+          var num = Math.floor(Math.random() * ((keys.length+1) - members[p].at_least) + members[p].at_least)
+          if (members[p].at_least > keys.length) num = keys.length
+
+          for (let j = 0; j < num; j++) {
+            let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+            data[i][key] = members[p].value.data[i][key]
+            keys.splice(keys.indexOf(key), 1)
+          }
         }
       }
       else {
@@ -272,7 +295,7 @@ member
     value = createComponent(name, value)
     return { name, value }
   }
-  / probability / function_prop / if / or
+  / probability / function_prop / if / or / at_least
 
 value_or_interpolation = val:(value / interpolation) {
     if (struct_types[struct_types.length-1] == "array") array_indexes[array_indexes.length-1]++
@@ -387,7 +410,6 @@ generic_key
   / "car_brand"
   / "continent"
   / "cultural_center"
-  / "day"
   / "hacker"
   / "job"
   / "month"
@@ -397,6 +419,7 @@ generic_key
   / "religion"
   / "soccer_player"
   / "sport"
+  / "weekday"
   / "writer"
   ) { return text() + 's' }
   / ("country"
@@ -695,12 +718,17 @@ probability
 
 or = "or(" ws ")" ws obj:object {
     for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-    return { name: "or_properties", value: { or: obj }}
+    return { name: "properties", value: { or: obj }}
+  }
+
+at_least = "at_least(" ws num:int ws ")" obj:object {
+    for (let p in obj.model.attributes) obj.model.attributes[p].required = false
+    return { name: "properties", value: { at_least: num, value: obj }}
   }
 
 if = "if" ws code:if_code ws obj:object {
     for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-    return { name: "if_properties", value: { if: new Function("gen", "return " + code), value: obj } }
+    return { name: "properties", value: { if: new Function("gen", "return " + code), value: obj } }
   }
 
 function_prop
