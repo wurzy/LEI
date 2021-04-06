@@ -71,20 +71,36 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
-- index() deve funcionar só dentro de repeats ou arrays também?
-
 - map, filter, reduce
-- lista de erros para apresentar de maneira user-friendly no vue
-- XML/CSV
+- lista de erros para apresentar de maneira user-friendly no vue -> keywords reservadas do Strapi
+- CSV
 
 - repeats diretos de probabilities?
+
+IDEIAS AUTOS:
+- integer com x número de algarismos (padding de zeros à esquerda)
+- dois atributos em que pelo menos 1 deles tem de estar preenchido
+- null = atributo não existe
+- repeat_unique com moustaches
+- aceder a prorpiedades de níveis superiores
+
+- ver se o random novo funciona direito em função
+
 
 --------------------------------------------------------
 
 PROGRESSO DESTA SEMANA:
 
-
-
+- XML
+- gramática bullet-proof (Strapi)
+- funcionalidades novas dos PPD e Autos
+	- index(offset)
+	- .string()
+	- dataset pt_entities -> sigla ou designacao
+	- caracteres não-ASCII em nomes de atributos
+	- dar moustaches como argumentos ao random -> generalizar os args para qualquer coisa
+	- atributo on condition
+	- atributos mutuamente exclusivos
 
 
 

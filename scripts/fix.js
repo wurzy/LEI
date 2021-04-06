@@ -5620,4 +5620,6 @@ var aaa = [
   {indice: 4}
 ]
 
-console.log(chunk(aaa,5))
+console.log({
+  Ü: "ola"
+})
