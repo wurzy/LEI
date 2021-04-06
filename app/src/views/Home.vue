@@ -209,14 +209,14 @@ export default {
 
         var model = JSON.stringify(generated.dataModel.model, null, 2)
         var componentes = JSON.stringify(generated.components, null, 2)
-        
+        var dataset = JSON.stringify(generated.dataModel.data, null, 2)
         var mkeys = Object.keys(generated.dataModel.model)
         var ckeys = Object.keys(generated.components)
         
         var elem = document.createElement('boas');
         elem.setAttribute("id","md")
         elem.setAttribute("colname", mkeys[0])
-
+        console.log("colname:", mkeys[0])
         elem.setAttribute("mkeys",mkeys.length)
         elem.setAttribute("ckeys",ckeys.length)
         var i;
@@ -228,6 +228,9 @@ export default {
         for (i = 0; i < ckeys.length; i++) {
           elem.setAttribute("componentes", componentes)
         }
+
+        elem.setAttribute("dataset", dataset)
+
 
         document.body.appendChild(elem)
         document.getElementById("saveModelButton").disabled = false;
@@ -262,14 +265,18 @@ export default {
       createAPI(){
         var md = document.getElementById("md").getAttribute("modelo")
         var cp = document.getElementById("md").getAttribute("componentes")
+        var dataset = document.getElementById("md").getAttribute("dataset")
+
 
       
         var body = {}
-        body["apiName"]=document.getElementById('filename').value
+        body["apiName"]= document.getElementById("md").getAttribute("colname")
         body["model"]=JSON.parse(md)
         body["componentes"]=JSON.parse(cp)
+        body["dataset"]=JSON.parse(dataset)
 
-        //console.log("modelo aquii",JSON.stringify(body, null, 2))
+
+        //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
         axios.post('http://localhost:3000/genAPI/',body)
         .then(dados => console.log("Modelo criado"))
         .catch(erro => console.log(erro))
