@@ -29,7 +29,7 @@ export default {
 			if(this.$props.type=="login"){
 				this.$emit('login_ok')
 			}
-			else {
+			else if (this.$props.type=="login"){
 				this.$emit('register_ok')
 			}
         }
