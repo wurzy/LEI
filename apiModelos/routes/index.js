@@ -4,6 +4,8 @@ const fs = require("fs")
 const fsEx = require('fs-extra')
 const AdmZip = require('adm-zip')
 const archiver = require('archiver');
+var execSync = require('child_process').execSync;
+
 
 const model123 = `{
   "kind": "collectionType",
@@ -72,16 +74,19 @@ module.exports = {};
 
 
 
-//router.get('/dir/:nome', function(req, res, next) {
-//  fs.mkdir("../api/api/"+req.params.nome, (err) => { 
-//    if (err) { 
-//        return console.error(err); 
-//    } 
-//    return console.log('Directory created successfully!'); 
-//  }); 
-//  return  console.error(""); 
-//
-//});
+router.get('/import', function(req, res, next) {
+  child = exec('mongoimport --db StrapiAPI --collection boas_8ce757e2-ab2f-49fe-83eb-1f5b38b4ca53 --file ./jsons/boas_8ce757e2-ab2f-49fe-83eb-1f5b38b4ca53.json --jsonArray',
+  function (error, stdout, stderr) {
+      console.log('stdout: ' + stdout);
+      console.log('stderr: ' + stderr);
+      if (error !== null) {
+           console.log('exec error: ' + error);
+      }
+  });
+  child();
+  res.status(200).jsonp("Import dado!")
+  res.end()
+});
 
 router.get('/download/:id', function(req, res, next) {
  
@@ -141,6 +146,7 @@ router.get('/download/:id', function(req, res, next) {
   }
 });
 
+
 /*//var zip = new AdmZip()
   //zip.addLocalFolder("./teste")
   //zip.writeZip("./testezipado.zip");
@@ -169,133 +175,126 @@ router.get('/download/:id', function(req, res, next) {
 router.post('/genAPI', function(req, res, next) {
   var mkeys = Object.keys(req.body["model"])
   var apiname = mkeys[0]
+
+  var dkeys = Object.keys(req.body["dataset"])
+  var dataName = dkeys[0]
+
   var model = JSON.stringify(req.body["model"][`${apiname}`], null, 2)
-
+  var dataset = JSON.stringify(req.body["dataset"][`${dataName}`], null, 2)
   
-  fs.mkdir("../StrapiAPI/api/"+apiname, (err) => { 
-    if (err) { 
-        return console.error(err); 
-    }
-    fs.mkdir("../StrapiAPI/api/"+apiname+"/config", (err) => { 
-      if (err) { 
-          return console.error(err); 
-      }
+  try {
+    fs.mkdirSync("../StrapiAPI/api/"+apiname) 
+
+    fs.mkdirSync("../StrapiAPI/api/"+apiname+"/config")
+  
       // Data which will write in a file. 
-      let data = `{
-  "routes": [
-    {
-      "method": "GET",
-      "path": "/${apiname}s",
-      "handler": "${apiname}.find",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "GET",
-      "path": "/${apiname}s/count",
-      "handler": "${apiname}.count",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "GET",
-      "path": "/${apiname}s/:id",
-      "handler": "${apiname}.findOne",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "POST",
-      "path": "/${apiname}s",
-      "handler": "${apiname}.create",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "PUT",
-      "path": "/${apiname}s/:id",
-      "handler": "${apiname}.update",
-      "config": {
-        "policies": []
-      }
-    },
-    {
-      "method": "DELETE",
-      "path": "/${apiname}s/:id",
-      "handler": "${apiname}.delete",
-      "config": {
-        "policies": []
-      }
+    let data = `{
+"routes": [
+  {
+    "method": "GET",
+    "path": "/${apiname}s",
+    "handler": "${apiname}.find",
+    "config": {
+      "policies": []
     }
-  ]
+  },
+  {
+    "method": "GET",
+    "path": "/${apiname}s/count",
+    "handler": "${apiname}.count",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/${apiname}s/:id",
+    "handler": "${apiname}.findOne",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/${apiname}s",
+    "handler": "${apiname}.create",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/${apiname}s/:id",
+    "handler": "${apiname}.update",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/${apiname}s/:id",
+    "handler": "${apiname}.delete",
+    "config": {
+      "policies": []
+    }
+  }
+]
 }`
+ 
+    fs.writeFileSync("../StrapiAPI/api/"+apiname+"/config/routes.json", data) 
 
-      fs.writeFile("../StrapiAPI/api/"+apiname+"/config/routes.json", data, (err) => { 
-          if (err) throw err; 
-      }) 
-      return console.log('Config created successfully!'); 
-    });  
+    console.log('Config created successfully!'); 
 
-    fs.mkdir("../StrapiAPI/api/"+apiname+"/controllers", (err) => { 
-      if (err) { 
-          return console.error(err); 
-      } 
-      fs.writeFile("../StrapiAPI/api/"+apiname+"/controllers/"+apiname+".js", strContro, (err) => { 
-        if (err) throw err; 
-      })  
-      return console.log('controllers created successfully!'); 
-    }); 
-
-    fs.mkdir("../StrapiAPI/api/"+apiname+"/models", (err) => { 
-      if (err) { 
-          return console.error(err); 
-      } 
-      fs.writeFile("../StrapiAPI/api/"+apiname+"/models/"+apiname+".js", strModels, (err) => { 
-        if (err) throw err; 
-      })  
-      fs.writeFile("../StrapiAPI/api/"+apiname+"/models/"+apiname+".settings.json", model, (err) => { 
-        if (err) throw err; 
-      })
-      return console.log('models created successfully!'); 
-    }); 
-
-    fs.mkdir("../StrapiAPI/api/"+apiname+"/services", (err) => { 
-      if (err) { 
-          return console.error(err); 
-      } 
-      fs.writeFile("../StrapiAPI/api/"+apiname+"/services/"+apiname+".js", strServices, (err) => { 
-        if (err) throw err; 
-      }) 
+    fs.mkdirSync("../StrapiAPI/api/"+apiname+"/controllers") 
+    
+    fs.writeFileSync("../StrapiAPI/api/"+apiname+"/controllers/"+apiname+".js", strContro) 
        
-      return console.log('services created successfully!'); 
-    }); 
+    console.log('controllers created successfully!'); 
 
-    return console.log('Directory created successfully!'); 
-  }); 
+    fs.mkdirSync("../StrapiAPI/api/"+apiname+"/models")
+     
+    fs.writeFileSync("../StrapiAPI/api/"+apiname+"/models/"+apiname+".js", strModels)
+    fs.writeFileSync("../StrapiAPI/api/"+apiname+"/models/"+apiname+".settings.json", model)
 
-  var ckeys = Object.keys(req.body["componentes"])
-  var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
-  var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
+    fs.mkdirSync("../StrapiAPI/api/"+apiname+"/services")
+    fs.writeFileSync("../StrapiAPI/api/"+apiname+"/services/"+apiname+".js", strServices)
 
-  fs.mkdir("../StrapiAPI/components/"+apiname, (err) => { 
-    if (err) { 
-        return console.error(err); 
-    }       
-    console.log("key:"+compKeys[0])
+    console.log('services created successfully!'); 
+    console.log('Directory created successfully!'); 
 
-    compKeys.forEach(k => {
-      var str =  JSON.stringify(req.body["componentes"][`${ckeys[0]}`][`${k}`], null, 2)
+    var ckeys = Object.keys(req.body["componentes"])
+    var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
+    var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
 
-      fs.writeFile("../StrapiAPI/components/"+apiname+"/"+k+".json", str, (err) => { 
-        if (err) throw err; 
-      }) 
-    });
-    return console.log('components created successfully!'); 
-  }); 
+    if(!compKeys){
+      fs.mkdirSync("../StrapiAPI/components/"+apiname) 
+      compKeys.forEach(k => {
+        var str =  JSON.stringify(req.body["componentes"][`${ckeys[0]}`][`${k}`], null, 2)
+
+        fs.writeFileSync("../StrapiAPI/components/"+apiname+"/"+k+".json", str)        
+      });
+      console.log('components created successfully!');  
+    }
+
+      fs.writeFileSync("./jsons/"+apiname+".json", dataset) 
+      var child = execSync('mongoimport --db StrapiAPI --collection '+apiname+' --file ./jsons/'+apiname+'.json --jsonArray',
+        function (error, stdout, stderr) {
+          console.log('stdout: ' + stdout);
+          console.log('stderr: ' + stderr);
+          if (error !== null) {
+            console.log('exec error: ' + error);
+          }
+      });
+      res.status(200).jsonp("Geração api done!")
+      res.end()
+    } catch (error) {
+      res.status(500).jsonp({error: error})
+      console.log("teyy:"+error)
+      res.end()
+    }
+
+    console.log("geração done!")
+
   //console.log("req.body :"+ apiname)
   // Sync:
   //try {

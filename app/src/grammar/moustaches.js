@@ -40,7 +40,7 @@ function guid() {
 function boolean() { return Math.random() < 0.5 }
 
 function integer(min, max, unit) {
-    var rand = Math.floor(Math.random() * (min - max + 1) + max)
+    var rand = Math.floor(Math.random() * ((max+1) - min) + min)
     return unit == null ? rand : (rand + unit)
 }
 

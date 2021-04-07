@@ -975,6 +975,7 @@ export default {
         "Alfeu",
         "Alfie",
         "Alfonso",
+        "Alfrânio",
         "Alfred",
         "Alfred Ionut",
         "Alfreda",

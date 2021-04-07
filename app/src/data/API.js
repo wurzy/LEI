@@ -7,7 +7,6 @@ import car_brands from './controllers/cars'
 import continents from './controllers/continents'
 import countries from './controllers/countries'
 import cultural_centers from './controllers/cultural_centers'
-import days from './controllers/days'
 import gov_entities from './controllers/gov_entities'
 import hackers from './controllers/hackers'
 import jobs from './controllers/jobs'
@@ -28,6 +27,7 @@ import soccer_clubs from './controllers/soccer_clubs'
 import soccer_players from './controllers/soccer_players'
 import sports from './controllers/sports'
 import top100_celebrities from './controllers/top100_celebrities'
+import weekdays from './controllers/weekdays'
 import writers from './controllers/writers'
 
 export default {
@@ -40,7 +40,6 @@ export default {
     continents,
     countries,
     cultural_centers,
-    days,
     gov_entities,
     hackers,
     jobs,
@@ -61,5 +60,6 @@ export default {
     soccer_players,
     sports,
     top100_celebrities,
+    weekdays,
     writers
 }

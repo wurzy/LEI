@@ -117,7 +117,7 @@
         while (keys.includes(filename)) filename = name + i++
 
         components[cur_collection][filename] = lodash.cloneDeep(value.model)
-        value.model = { "type": "component", "repeatable": false, "component": cur_collection + '.' + filename }
+        value.model = { "type": "component", "repeatable": false, required: true, "component": cur_collection + '.' + filename }
       }
 
       delete value.component
@@ -143,8 +143,15 @@
     }
     else {
       for (let i = 0; i < queue_prod; i++) {
-        if (api == "gen") arr.push(genAPI[moustaches](...args))
-        if (api == "data") arr.push(dataAPI[sub_api][moustaches](language, ...args))
+        let elem
+        if (api == "gen") elem = genAPI[moustaches](...args)
+        if (api == "data") elem = dataAPI[sub_api][moustaches](language, ...args)
+
+        if (uniq_queue[uniq_queue.length-1] != null) {
+          if (arr.includes(elem)) --i
+          else arr.push(elem)
+        }
+        else arr.push(elem)
       }
     }
 
@@ -187,7 +194,7 @@ value
   / string
 
 simple_value
-  = val:(false / null / true / number / string) { return val.data[0] }
+  = val:(false / null / true / number / string / interpolation) { return val.data[0] }
 
 false = "false" { return {model: {type: "boolean", required: true}, data: Array(queue_prod).fill(false)} }
 null  = "null"  { return {model: {type: "string", required: false, default: null}, data: Array(queue_prod).fill(null)} }
@@ -196,7 +203,7 @@ true  = "true"  { return {model: {type: "boolean", required: true}, data: Array(
 // ----- 4. Objects -----
 
 collection_object
-  = begin_object members:object_members? end_object {
+  = begin_object members:object_members end_object {
       var data = [], model = {}, i = 0
 
       for (let p in members) {
@@ -215,30 +222,68 @@ collection_object
     }
 
 object
-  = begin_object members:object_members? end_object {
-      var data = [], model = {attributes: {}}
-      for (let i = 0; i < queue_prod; i++) data.push({})
+  = begin_object members:object_members end_object {
+    var data = [], model = {attributes: {}}
+    for (let i = 0; i < queue_prod; i++) data.push({})
 
-      for (let p in members) {
+    for (let p in members) {
+      if ("if" in members[p]) {
+        for (let prop in members[p].value.model.attributes) 
+          model.attributes[prop] = members[p].value.model.attributes[prop]
+
+        for (let i = 0; i < queue_prod; i++) {
+          if (members[p].if({genAPI, dataAPI, local: data[i]})) {
+            for (let prop in members[p].value.data[i]) data[i][prop] = members[p].value.data[i][prop]
+          }
+        }
+      } 
+      else if ("or" in members[p]) {
+        for (let prop in members[p].or.model.attributes) 
+          model.attributes[prop] = members[p].or.model.attributes[prop]
+
+        let keys = Object.keys(members[p].or.model.attributes)
+        for (let i = 0; i < queue_prod; i++) {
+          let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+          data[i][key] = members[p].or.data[i][key]
+        }
+      }
+      else if ("at_least" in members[p]) {
+        for (let prop in members[p].value.model.attributes) 
+          model.attributes[prop] = members[p].value.model.attributes[prop]
+
+        for (let i = 0; i < queue_prod; i++) {
+          let keys = Object.keys(members[p].value.model.attributes)
+          var num = Math.floor(Math.random() * ((keys.length+1) - members[p].at_least) + members[p].at_least)
+          if (members[p].at_least > keys.length) num = keys.length
+
+          for (let j = 0; j < num; j++) {
+            let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+            data[i][key] = members[p].value.data[i][key]
+            keys.splice(keys.indexOf(key), 1)
+          }
+        }
+      }
+      else {
         model.attributes[p] = members[p].model
         var prob = "probability" in members[p]
 
         for (let i = 0; i < queue_prod; i++) {
-          if ((prob && members[p].data[i] !== null) || (!prob && !("function" in members[p])))
+          if ((prob && members[p].data[i] !== null) || (!prob && !("function" in members[p]) && !("if" in members[p])))
             data[i][p] = members[p].data[i]
         }
       }
-
-      Object.keys(members).filter(key => "function" in members[key]).forEach(p => {
-        for (let i = 0; i < queue_prod; i++)
-          data[i][p] = members[p].function({genAPI, dataAPI, local: data[i]})
-      })
-      
-      return members !== null ? {data, model, component: true} : {}
     }
 
+    Object.keys(members).filter(key => "function" in members[key]).forEach(p => {
+      for (let i = 0; i < queue_prod; i++)
+        data[i][p] = members[p].function({genAPI, dataAPI, local: data[i]})
+    })
+    
+    return members !== null ? {data, model, component: true} : {}
+  }
+
 object_members
-  = head:member tail:(value_separator m:member { return m; })* {
+  = head:member tail:(value_separator m:member { return m })* {
     var result = {};
     [head].concat(tail).forEach(function(element) { result[element.name] = element.value })
     return result
@@ -250,7 +295,7 @@ member
     value = createComponent(name, value)
     return { name, value }
   }
-  / probability / function_prop
+  / probability / function_prop / if / or / at_least
 
 value_or_interpolation = val:(value / interpolation) {
     if (struct_types[struct_types.length-1] == "array") array_indexes[array_indexes.length-1]++
@@ -365,7 +410,6 @@ generic_key
   / "car_brand"
   / "continent"
   / "cultural_center"
-  / "day"
   / "hacker"
   / "job"
   / "month"
@@ -375,18 +419,18 @@ generic_key
   / "religion"
   / "soccer_player"
   / "sport"
+  / "weekday"
   / "writer"
   ) { return text() + 's' }
   / ("country"
   / "gov_entity"
   / "nationality"
   / "top100_celebrity"
-  / "pt_entity"
   / "pt_top100_celebrity"
   ) { return text().slice(0, -1) + 'ies' }
   / "pt_businessman" { return text().slice(0, -2) + 'en' }
 
-pparty_type
+nameOrAbbr
   = ws quotation_mark ws arg:(("name") / ("abbr")) ws quotation_mark ws { return arg }
 
 string_arg
@@ -410,7 +454,7 @@ date_format
   / quotation_mark ws format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) ws quotation_mark { return format.join(""); }
   / quotation_mark ws format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") ws quotation_mark { return format.join(""); }
 
-member_key = chars:([a-zA-Z_][a-zA-Z0-9_]*) {
+member_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) {
     member_key = chars.flat().join("")
 
     if (open_structs == 1) {
@@ -489,7 +533,7 @@ gen_moustaches
       data: Array(queue_prod/queue_last).fill(getIndexes(queue_last)).flat().map(k => k + offset)
     }
   }
-  / "integer(" ws min:int_neg ws "," ws max:int_neg ws unit:("," quotation_mark u:[^"]* quotation_mark {return u})? ")" {
+  / "integer(" ws min:int_neg ws "," ws max:int_neg ws unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u})? ")" {
     return {
       model: { type: unit === null ? "integer" : "string", required: true }, 
       data: fillArray("gen", null, "integer", [min, max, unit])
@@ -521,9 +565,9 @@ gen_moustaches
     }
   }
   / "random(" ws values:(
-      head:simple_value
-      tail:(value_separator v:simple_value { return v; })*
-      { return [head].concat(tail); }
+      head:(value/moustaches)
+      tail:(value_separator v:(value/moustaches) { return v.data[0] })*
+      { return [head.data[0]].concat(tail); }
     )? ")" {
       return {
         model: {type: "json", required: true},
@@ -536,7 +580,7 @@ gen_moustaches
       data: fillArray("gen", null, "lorem", [count, units])
     }
   }
-  
+
 api_moustaches
   = simple_api_key
   / "pt_county(" district:string_arg ")" {
@@ -552,7 +596,7 @@ api_moustaches
       data: fillArray("data", "pt_districts", moustaches, [name])
     }
   }
-  / "pt_political_party(" ws arg:pparty_type? ")" {
+  / "pt_political_party(" ws arg:nameOrAbbr? ")" {
     var moustaches = !arg ? "pt_political_party" : ("pt_political_party_" + arg)
     return {
       objectType: arg === null,
@@ -566,8 +610,8 @@ api_moustaches
       data: fillArray("data", "pt_political_parties", moustaches, [])
     }
   }
-  / "political_party(" ws args:( t:pparty_type {return [t]}
-                            / (country:string_arg type:("," t:pparty_type {return t})? {return type == null ? [country] : [country,type]}))? ")" {
+  / "political_party(" ws args:( t:nameOrAbbr {return [t]}
+                            / (country:string_arg type:("," t:nameOrAbbr {return t})? {return type == null ? [country] : [country,type]}))? ")" {
     var objectType = true, moustaches, model = {
       type: {
         party_abbr: {type: "string", required: true},
@@ -597,6 +641,12 @@ api_moustaches
     return {
       model: {type: "string", required: true},
       data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg.toLowerCase()])
+    }
+  }
+  / "pt_entity(" ws arg:nameOrAbbr? ")" {
+    return {
+      model: {type: "string", required: true},
+      data: fillArray("data", "pt_entities", "pt_entity" + (!arg ? '' : ('_'+arg)), [])
     }
   }
 
@@ -666,8 +716,23 @@ probability
     }
   }
 
+or = "or(" ws ")" ws obj:object {
+    for (let p in obj.model.attributes) obj.model.attributes[p].required = false
+    return { name: "properties", value: { or: obj }}
+  }
+
+at_least = "at_least(" ws num:int ws ")" obj:object {
+    for (let p in obj.model.attributes) obj.model.attributes[p].required = false
+    return { name: "properties", value: { at_least: num, value: obj }}
+  }
+
+if = "if" ws code:if_code ws obj:object {
+    for (let p in obj.model.attributes) obj.model.attributes[p].required = false
+    return { name: "properties", value: { if: new Function("gen", "return " + code), value: obj } }
+  }
+
 function_prop
-  = name:function_key "(" ws "gen" ws ")" ws code:code {
+  = name:function_key "(" ws "gen" ws ")" ws code:function_code {
     return {
       name, value: {
         model: {type: "json", required: true},
@@ -678,7 +743,9 @@ function_prop
   
 function_key = chars:([a-zA-Z_][a-zA-Z0-9_]*) { return chars.flat().join("") }
 
-code = CODE_START str:(gen_call / local_var / not_code / code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
+function_code = CODE_START str:(gen_call / local_var / not_code / function_code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
+
+if_code = ARGS_START str:(gen_call / local_var / not_parentheses / if_code)* ARGS_STOP { return str.join("") }
 
 not_code = !CODE_START !CODE_STOP. { return text() }
 
@@ -686,7 +753,7 @@ code_key = key:([a-zA-Z_][a-zA-Z0-9_.]*) { return key.flat().join("") }
 
 local_var = "this." key:code_key { return "gen.local." + key }
 
-gen_call = "gen." key:code_key ARGS_START args:(gen_call / not_gen_call)* ARGS_STOP {
+gen_call = "gen." key:code_key ARGS_START args:(gen_call / not_parentheses)* ARGS_STOP {
     args = args.join("").split(",")
     
     var split = [], build = "", i = 0
@@ -703,7 +770,7 @@ gen_call = "gen." key:code_key ARGS_START args:(gen_call / not_gen_call)* ARGS_S
     return `gen.${obj.path}(` + (obj.path.includes('dataAPI') ? `"${language}", ` : '') + `${obj.args})`
   }
 
-not_gen_call = !ARGS_START !ARGS_STOP. { return text() }
+not_parentheses = !ARGS_START !ARGS_STOP. { return text() }
 
 ARGS_START = "("
 ARGS_STOP = ")"

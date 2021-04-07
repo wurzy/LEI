@@ -11,7 +11,7 @@
         sistemasInfo: [
             {
                 visto: '{{boolean()}}',
-                numeroSI: '{{index(1)}}'.string(),
+                numeroSI: '{{index(1)}}',
                 nomeSI: 'si{{index(1)}}',
                 identificacao: {
                     adminSistema: [ 'repeat(1,5)': '{{pt_entity()}}' ],
@@ -20,15 +20,15 @@
                     propSistemaPrivado: '{{pt_entity()}}',
                     propDados: [ 'repeat(1,5)': '{{pt_entity()}}' ],
                     localDadosPublico: [ 'repeat(1,5)': '{{pt_entity()}}' ],
-                    localDadosPrivado: "",
+                    localDadosPrivado: '{{pt_entity()}}',
                     userList: [ 'repeat(1,20)': '{{pt_entity()}}' ],
-                    defResponsavel: "",
-                    insourcing: "",
-                    outsourcing: "",
+                    defResponsavel: '{{random("Sim", "Não")}}',
+                    insourcing: '{{random("Sim", "Não")}}',
+                    outsourcing: '{{random("Sim", "Não")}}',
                     notas: ""
                 },
                 avaliacao: {
-                    descricao: "",
+                    descricao: '{{lorem(1,"paragraphs")}}',
                     tabelaDecomposicao: [],
                     selecionadosTabelaFL: [],
                     sistemasRelacionados: [],
