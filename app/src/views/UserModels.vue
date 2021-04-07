@@ -180,7 +180,6 @@ a:hover,a:focus{
   margin-left: 40px;
   background: #fff;
   border-top: none;
-  font-size: 15px;
   color: #6f6f6f;
   line-height: 28px;
   letter-spacing: 1px;
