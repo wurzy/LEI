@@ -265,8 +265,8 @@ router.post('/genAPI', function(req, res, next) {
     var ckeys = Object.keys(req.body["componentes"])
     var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
     var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
-
-    if(!compKeys){
+    
+    if(compKeys){
       fs.mkdirSync("../StrapiAPI/components/"+apiname) 
       compKeys.forEach(k => {
         var str =  JSON.stringify(req.body["componentes"][`${ckeys[0]}`][`${k}`], null, 2)

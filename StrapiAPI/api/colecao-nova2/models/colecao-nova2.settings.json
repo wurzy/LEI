@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "colecao_nova2s",
+  "info": {
+    "name": "ColeçãoNova2"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "textoNice": {
+      "type": "string"
+    },
+    "boolNice": {
+      "type": "boolean"
+    }
+  }
+}

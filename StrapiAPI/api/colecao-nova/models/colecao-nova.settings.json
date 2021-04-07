@@ -1,0 +1,20 @@
+{
+  "kind": "collectionType",
+  "collectionName": "colecao_nova",
+  "info": {
+    "name": "ColeçãoNova"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "texto": {
+      "type": "string"
+    },
+    "numero": {
+      "type": "integer"
+    }
+  }
+}
