@@ -34,10 +34,10 @@
                                     </span>
                                 </p> 
                                 <codemirror
-                                    ref="idx"
+                                    ref="cmEditor"
                                     :value="model.modelo"
                                     :options="cmOption"
-                                ></codemirror>
+                                />
                             </div>
                         </div>
                     </div>
@@ -104,12 +104,12 @@ export default {
         }
     },
     mounted() {
-        this.getUserModels()
+      this.getUserModels()
     }
 }
 </script>
 
-<style scoped>
+<style>
 a:hover,a:focus{
   text-decoration: none;
   outline: none;
@@ -252,5 +252,9 @@ input:checked + .slider:before {
 
 p{
     color:#404040;
+}
+.vue-codemirror{height:100%;}
+.CodeMirror {
+  height: 100% !important
 }
 </style>
