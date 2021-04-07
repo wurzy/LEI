@@ -86,6 +86,9 @@ export default {
   data() {
       return {
         output_format: "JSON",
+        colname: null,
+        model: null,
+        components: null,
         parser: parser,
         result: "",
         code: `<!LANGUAGE pt>
@@ -208,44 +211,25 @@ export default {
           this.cmOutput.mode == 'text/csv'
         } */
 
-        var model = JSON.stringify(generated.dataModel.model, null, 2)
-        var componentes = JSON.stringify(generated.components, null, 2)
-        var dataset = JSON.stringify(generated.dataModel.data, null, 2)
         var mkeys = Object.keys(generated.dataModel.model)
-        var ckeys = Object.keys(generated.components)
+        //var ckeys = Object.keys(generated.components)
         
-        var elem = document.createElement('boas');
-        elem.setAttribute("id","md")
-        elem.setAttribute("colname", mkeys[0])
-        console.log("colname:", mkeys[0])
-        elem.setAttribute("mkeys",mkeys.length)
-        elem.setAttribute("ckeys",ckeys.length)
-        var i;
+        this.colname = mkeys[0]
+        this.model = generated.dataModel.model
+        this.components = generated.components
 
-        for (i = 0; i < mkeys.length; i++) {
-          elem.setAttribute("modelo", model)
-        }
-
-        for (i = 0; i < ckeys.length; i++) {
-          elem.setAttribute("componentes", componentes)
-        }
-
-        elem.setAttribute("dataset", dataset)
-
-
-        document.body.appendChild(elem)
         document.getElementById("saveModelButton").disabled = false;
         document.getElementById("defaultDownloadButton").disabled = false;
         document.getElementById("generateAPIButton").disabled = false;
       },
       downloadAPI(){
-        var cname = document.getElementById("md").getAttribute("colname")
+        var cname = this.colname
         console.log("collection name:"+cname)
 
         //var id = "colecao_c400bb89-41a0-4a94-80de-a0f29100afc9"
         axios.get('http://localhost:3000/download/'+cname)
-        .then(dados => console.log("Zip criado"))
-        .catch(erro => console.log(erro))
+          .then(dados => console.log("Zip criado"))
+          .catch(erro => console.log(erro))
       },
       async saveModel(){
         $("#savemodels_modal").modal("show");
@@ -253,25 +237,18 @@ export default {
         //await axios.post('http://localhost:3000/modelos/adicionar', json)
       },
       createAPI(){
-        var md = document.getElementById("md").getAttribute("modelo")
-        var cp = document.getElementById("md").getAttribute("componentes")
-        var dataset = document.getElementById("md").getAttribute("dataset")
-
-
-      
-        var body = {}
-        body["apiName"]= document.getElementById("md").getAttribute("colname")
-        body["model"]=JSON.parse(md)
-        body["componentes"]=JSON.parse(cp)
-        body["dataset"]=JSON.parse(dataset)
-
+        var body = {
+          apiName: this.colname,
+          model: this.model,
+          componentes: this.components,
+          dataset: JSON.parse(this.result)
+        }
 
         //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
         axios.post('http://localhost:3000/genAPI/',body)
-        .then(dados => console.log("Modelo criado"))
-        .catch(erro => console.log(erro))
+          .then(dados => console.log("Modelo criado"))
+          .catch(erro => console.log(erro))
 
-        
         //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
         //.then(dados => console.log("Modelo criado"))
         //.catch(erro => console.log(erro))
