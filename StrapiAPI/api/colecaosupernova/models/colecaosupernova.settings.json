@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "colecaosupernova",
+  "info": {
+    "name": "Coleçãosupernova"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "num": {
+      "type": "integer"
+    }
+  }
+}
