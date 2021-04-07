@@ -14,8 +14,8 @@ TODO LIST
 - Colocar a blacklist a remover tokens expirados;
 - Meter tokens na parte do cunha
 - Meter como variaveis a parte do cunha em vez de html injections
-- Meter o guardar modelos funcional
-- Tirar a projeçao das componentes dos modelos
+- Meter o guardar modelos funcional                                   || DONE
+- Tirar a projeçao das componentes dos modelos                        || DONE
 
 ///NEW///
 (https://stackoverflow.com/questions/55420366/vuetify-css-crushes-bootstrap-css)
