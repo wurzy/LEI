@@ -240,10 +240,10 @@ export default {
         var body = {
           apiName: this.colname,
           model: this.model,
-          components: this.components,
-          dataset: this.result
+          componentes: this.components,
+          dataset: JSON.parse(this.result)
         }
-        
+
         //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
         axios.post('http://localhost:3000/genAPI/',body)
           .then(dados => console.log("Modelo criado"))
