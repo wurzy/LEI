@@ -60,7 +60,7 @@ router.post('/adicionar', function(req,res){
         req.body["user"] = token._id
         Model.inserir(req.body)
             .then(dados => res.status(201).jsonp(dados))
-            .catch(e => res.status(500).jsonp(e))
+            .catch(e => res.status(500).jsonp({error: "Não foi possível guardar o modelo."}))
     }
 })
 

@@ -1,0 +1,52 @@
+{
+  "routes": [
+    {
+      "method": "GET",
+      "path": "/colecao-nova-2-s",
+      "handler": "colecao-nova2.find",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/colecao-nova-2-s/count",
+      "handler": "colecao-nova2.count",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "GET",
+      "path": "/colecao-nova-2-s/:id",
+      "handler": "colecao-nova2.findOne",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "POST",
+      "path": "/colecao-nova-2-s",
+      "handler": "colecao-nova2.create",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "PUT",
+      "path": "/colecao-nova-2-s/:id",
+      "handler": "colecao-nova2.update",
+      "config": {
+        "policies": []
+      }
+    },
+    {
+      "method": "DELETE",
+      "path": "/colecao-nova-2-s/:id",
+      "handler": "colecao-nova2.delete",
+      "config": {
+        "policies": []
+      }
+    }
+  ]
+}

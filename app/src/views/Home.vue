@@ -62,7 +62,7 @@ import {convert} from '../grammar/convert.js'
 import ButtonGroup from '../components/ButtonGroup'
 import parser from '../grammar/parser.js'
 import axios from 'axios';
-
+import $ from 'jquery'
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 import { jsonToXml } from '../grammar/jsonToXML.js'
@@ -86,6 +86,9 @@ export default {
   data() {
       return {
         output_format: "JSON",
+        colname: null,
+        model: null,
+        components: null,
         parser: parser,
         result: "",
         code: `<!LANGUAGE pt>
@@ -191,6 +194,7 @@ export default {
       },
       generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
+        localStorage.setItem('model',this.code)
         var generated = convert(this.code,this.parser)
         console.log(generated)
         
@@ -207,74 +211,44 @@ export default {
           this.cmOutput.mode == 'text/csv'
         } */
 
-        var model = JSON.stringify(generated.dataModel.model, null, 2)
-        var componentes = JSON.stringify(generated.components, null, 2)
-        
         var mkeys = Object.keys(generated.dataModel.model)
-        var ckeys = Object.keys(generated.components)
+        //var ckeys = Object.keys(generated.components)
         
-        var elem = document.createElement('boas');
-        elem.setAttribute("id","md")
-        elem.setAttribute("colname", mkeys[0])
+        this.colname = mkeys[0]
+        this.model = generated.dataModel.model
+        this.components = generated.components
 
-        elem.setAttribute("mkeys",mkeys.length)
-        elem.setAttribute("ckeys",ckeys.length)
-        var i;
-
-        for (i = 0; i < mkeys.length; i++) {
-          elem.setAttribute("modelo", model)
-        }
-
-        for (i = 0; i < ckeys.length; i++) {
-          elem.setAttribute("componentes", componentes)
-        }
-
-        document.body.appendChild(elem)
         document.getElementById("saveModelButton").disabled = false;
         document.getElementById("defaultDownloadButton").disabled = false;
         document.getElementById("generateAPIButton").disabled = false;
       },
       downloadAPI(){
-        var cname = document.getElementById("md").getAttribute("colname")
+        var cname = this.colname
         console.log("collection name:"+cname)
 
         //var id = "colecao_c400bb89-41a0-4a94-80de-a0f29100afc9"
         axios.get('http://localhost:3000/download/'+cname)
-        .then(dados => console.log("Zip criado"))
-        .catch(erro => console.log(erro))
+          .then(dados => console.log("Zip criado"))
+          .catch(erro => console.log(erro))
       },
       async saveModel(){
-        var json = {}
-        var md = document.getElementById("md").getAttribute("modelo")
-        var cp = document.getElementById("md").getAttribute("componentes")
-        var cname = document.getElementById("md").getAttribute("colname")
-        var data = new Date()
-        json.colname = cname
-        json.modelo = md
-        json.componentes = cp
-        json.visibilidade = false
-        json.titulo = cname //PLACHOLDER
-        json.descricao = cname
-        json.dataCriacao = data
-        json.user = JSON.parse(localStorage.getItem('user'))._id
-        await axios.post('http://localhost:3000/modelos/adicionar', json)
+        $("#savemodels_modal").modal("show");
+        $("#savemodels_modal").css("z-index", "1500");
+        //await axios.post('http://localhost:3000/modelos/adicionar', json)
       },
       createAPI(){
-        var md = document.getElementById("md").getAttribute("modelo")
-        var cp = document.getElementById("md").getAttribute("componentes")
+        var body = {
+          apiName: this.colname,
+          model: this.model,
+          componentes: this.components,
+          dataset: JSON.parse(this.result)
+        }
 
-      
-        var body = {}
-        body["apiName"]=document.getElementById('filename').value
-        body["model"]=JSON.parse(md)
-        body["componentes"]=JSON.parse(cp)
-
-        //console.log("modelo aquii",JSON.stringify(body, null, 2))
+        //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
         axios.post('http://localhost:3000/genAPI/',body)
-        .then(dados => console.log("Modelo criado"))
-        .catch(erro => console.log(erro))
+          .then(dados => console.log("Modelo criado"))
+          .catch(erro => console.log(erro))
 
-        
         //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
         //.then(dados => console.log("Modelo criado"))
         //.catch(erro => console.log(erro))
