@@ -1,4 +1,6 @@
-function jsonToXml(obj) { return jsonToXml2(obj,0) }
+function jsonToXml(obj) {
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + jsonToXml2(obj,0)
+}
 
 function jsonToXml2(obj, depth) {
     var xml = ''
