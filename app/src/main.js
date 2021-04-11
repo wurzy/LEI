@@ -9,10 +9,13 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import VueMoment from 'vue-moment'
 import moment from 'moment'
+import VuePaginate from 'vuejs-paginate'
+
+Vue.config.productionTip = false
 library.add(fas)
 moment.locale('pt');
-Vue.config.productionTip = false
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('paginate', VuePaginate)
 Vue.use(VueCodeMirror)
 Vue.use(VueMoment, { moment });
 new Vue({

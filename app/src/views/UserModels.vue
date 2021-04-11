@@ -2,10 +2,24 @@
 <div class="container" >
     <h2 style="margin-top:85px" >Modelos Guardados</h2>
     <hr/>
+    <div class="form-outline" style="margin-top:15px">
+      <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
+    </div>
+    <paginate     
+      :page-count="pages"
+      :page-range="3"
+      :margin-pages="2"
+      :click-handler="clickCallback"
+      :prev-text="''"
+      :next-text="''"
+      :container-class="'pagination'"
+      :page-class="'page-item'"
+      style="margin-top:15px">
+    </paginate>
     <div class="row">
-        <div class="col-md-12" style="margin-top:25px">
+        <div class="col-md-12">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default" v-for="(model, idx) in userModels" :key="idx">
+                    <div class="panel panel-default" v-for="(model, idx) in getSlicedUserModels" :key="idx">
                         <div class="panel-heading" role="tab" :id="'heading' + model._id">
                             <h4 class="panel-title">
                                 <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse' + model._id" aria-expanded="false" :aria-controls="'collapse' + model._id">
@@ -59,7 +73,10 @@ import axios from 'axios'
 import "codemirror/theme/dracula.css";
 import 'codemirror/keymap/sublime'
 import 'codemirror/mode/javascript/javascript.js'
-import "codemirror/addon/display/autorefresh.js";
+import "codemirror/addon/display/autorefresh.js"
+
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 axios.defaults.baseURL = "http://localhost:3000/";
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
@@ -68,7 +85,11 @@ export default {
     name: "UserModels",
     data() {
         return {
-            userModels: null,
+            userModels: [],
+            perPage: 10,
+            currentPage: 1,
+            search: '',
+            pages: 1,
             cmOption: {
                 tabSize: 4,
                 readOnly: true,
@@ -95,6 +116,13 @@ export default {
             const user = JSON.parse(localStorage.getItem('user'))._id
             const res = await axios.get('modelos/utilizador/' + user)
             this.userModels = res.data
+            this.changePage(this.userModels)
+        },
+        clickCallback(pageNum) {
+          this.currentPage = Number(pageNum);
+        },
+        changePage(array){
+          this.pages = Math.ceil(array.length / this.perPage);
         },
         isEmpty(){
             return this.userModels==null
@@ -111,10 +139,24 @@ export default {
         async deleteModel(id){
           await axios.delete('modelos/'+id)
           this.userModels = this.userModels.filter(m=>m._id!=id)
+          this.changePage(this.userModels)
         }
     },
     mounted() {
       this.getUserModels()
+    },
+    computed: {
+     getSlicedUserModels() {
+      let current = this.currentPage * this.perPage;
+      let start = current - this.perPage;
+      let filtered = [...this.userModels]
+              .filter(modelo => {
+                return modelo.titulo.toLowerCase().includes(this.search.toLowerCase())
+              })
+              .slice(start, current)
+      console.log("f",filtered)
+      return filtered
+     }
     }
 }
 </script>
@@ -266,5 +308,82 @@ p{
 .vue-codemirror{height:100%;}
 .CodeMirror {
   height: 100% !important
+}
+
+.pagination > .active > a {
+    z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.pagination > .active > a:hover {
+    z-index: 3;
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.pagination > li > a, .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #337ab7;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.pagination > li:last-child > a, .pagination > li:last-child > span {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+li:last-child > a::before {
+    font-family: "Font Awesome 5 Free"; 
+    font-weight: 900; 
+    content: "\f105";
+    font-size: 17px;
+    width: 40px;
+    height: 100%;
+    line-height: 20px;
+}
+
+li:first-child > a::before {
+    font-family: "Font Awesome 5 Free"; 
+    font-weight: 900; 
+    content: "\f104";
+    font-size: 17px;
+    width: 40px;
+    height: 100%;
+    line-height: 20px;
+}
+
+.pagination > li:first-child > a, .pagination > li:first-child > span {
+    margin-left: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
+    color: #777;
+    cursor: not-allowed;
+    background-color: #fff;
+    border-color: #ddd;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    z-index: 3;
+    color: #23527c;
+    background-color: #eee;
+    border-color: #ddd;
 }
 </style>
