@@ -5,7 +5,8 @@
     <div class="form-outline" style="margin-top:15px">
       <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
     </div>
-    <paginate     
+    <paginate 
+      id="pagination1"    
       :page-count="pages"
       :page-range="3"
       :margin-pages="2"
@@ -122,7 +123,17 @@ export default {
           this.currentPage = Number(pageNum);
         },
         changePage(array){
-          this.pages = Math.ceil(array.length / this.perPage);
+          let sel, selDoc
+          let newPages = Math.ceil(array.length / this.perPage);
+          if(this.pages > newPages){
+            this.currentPage = 1
+            sel = '#pagination1 li:nth-child(2) > a';
+            selDoc = document.querySelector(sel)
+            if(selDoc) {
+              selDoc.click()
+            }
+          }
+          this.pages = newPages
         },
         isEmpty(){
             return this.userModels==null
