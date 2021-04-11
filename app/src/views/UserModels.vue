@@ -153,9 +153,8 @@ export default {
               .filter(modelo => {
                 return modelo.titulo.toLowerCase().includes(this.search.toLowerCase())
               })
-              .slice(start, current)
-      console.log("f",filtered)
-      return filtered
+      this.changePage(filtered)
+      return filtered.slice(start, current)
      }
     }
 }
