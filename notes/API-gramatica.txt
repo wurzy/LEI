@@ -78,12 +78,10 @@ POR IMPLEMENTAR:
 - repeats diretos de probabilities?
 
 IDEIAS AUTOS:
-- integer com x número de algarismos (padding de zeros à esquerda)
-- aceder a propriedades de níveis superiores
-- dar ao repeat um var local de argumento em vez de int direto
+- aceder a propriedades de níveis superiores (global?)
+- dar ao repeat uma var local de argumento em vez de int direto
 
-- ver se o random novo funciona direito em função
-
+- ver se o random e o integer novos funcionam direito em função
 
 --------------------------------------------------------
 
@@ -94,6 +92,7 @@ PROGRESSO DESTA SEMANA:
 - funcionalidades novas dos PPD e Autos
 	- index(offset)
 	- .string()
+	- integer com x número de algarismos (padding de zeros à esquerda)
 	- dataset pt_entities -> sigla ou designacao
 	- caracteres não-ASCII em nomes de atributos
 	- dar moustaches como argumentos ao random -> generalizar os args para qualquer coisa

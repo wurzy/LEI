@@ -1,0 +1,14 @@
+dataset cidades
+	- nome cidade
+	- paragrafo descritivo
+	- população
+	- distrito
+
+
+	- conjunto de ligações a outras cidades
+		- origem
+		- destino
+		- distância (5-600)
+
+50 cidades
+2000 ligações

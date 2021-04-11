@@ -1,3 +1,79 @@
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+        index: '{{index()}}',
+        index_offset: '{{index(3)}}',
+    	
+    	integer: '{{integer(5,10)}}',
+    	integer_string: '{{integer(5,10)}}'.string(),
+    	integer_pad: '{{integer(5,10,4)}}',
+  
+  		fonteLegitimação: "teste",
+  		random: '{{random(1,2,"string",[1,2,3],{prop: "prop"}, {{boolean()}}, {{random("A","B","C")}}) }}',
+  
+  		if (true) {
+            if (gen.integer(5,10) > 5) {
+            	if_2: "adeus"
+            },
+            demo: "wow!"
+        },
+          
+        or() {
+        	or_1: "or_1",
+            or_2: "or_2",
+            or_3: "or_3",
+            or_4: "or_4"
+        },
+          
+        at_least(1) {
+        	at_least_1: "at_least_1",
+        	at_least_2: "at_least_2",
+        	at_least_3: "at_least_3"
+        },
+          
+        repeat: [ 'repeat_unique(5)': '{{pt_entity("abbr")}}' ]
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IFS COM CONDIÇOES DE PROPS LOCAIS NÃO FUNCIONAM
+if (true) {
+          	bool: '{{boolean()}}',
+        	if (this.bool) {
+            	if_1: "ola"
+            },
+            if (gen.integer(5,10) > 5) {
+            	if_2: "adeus"
+            }
+        }
+
+
 FUNÇÕES:
 
 <!LANGUAGE pt>

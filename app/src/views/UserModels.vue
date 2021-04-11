@@ -32,7 +32,13 @@
                                     <span v-else>
                                         (<font-awesome-icon icon="lock"/> Privado)
                                     </span>
-                                </p> 
+                                </p>
+                                <p>
+                                <router-link :to="{name: 'Home', params: {userModel: model.modelo}}">
+                                  <button  class="btn btn-primary" style="margin-right: 5px"><font-awesome-icon icon="external-link-alt"/> Usar Modelo</button>
+                                </router-link>
+                                <button  class="btn btn-danger" @click="deleteModel(model._id)"><font-awesome-icon icon="trash"/> Eliminar</button>
+                                </p>
                                 <codemirror
                                     ref="cmEditor"
                                     :value="model.modelo"
@@ -97,10 +103,14 @@ export default {
             for(let [k, m] of Object.entries(this.userModels)){
                 if(m._id==id){
                     m.visibilidade = !m.visibilidade
-                    await axios.post('modelos/visibilidade/'+id,{visibilidade: m.visibilidade})
+                    await axios.put('modelos/visibilidade/'+id,{visibilidade: m.visibilidade})
                     return
                 }
             }
+        },
+        async deleteModel(id){
+          await axios.delete('modelos/'+id)
+          this.userModels = this.userModels.filter(m=>m._id!=id)
         }
     },
     mounted() {

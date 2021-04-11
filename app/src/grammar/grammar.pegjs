@@ -533,10 +533,10 @@ gen_moustaches
       data: Array(queue_prod/queue_last).fill(getIndexes(queue_last)).flat().map(k => k + offset)
     }
   }
-  / "integer(" ws min:int_neg ws "," ws max:int_neg ws unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u})? ")" {
+  / "integer(" ws min:int_neg ws "," ws max:int_neg ws size:("," ws c:int ws {return c})? unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u.join("")})? ")" {
     return {
-      model: { type: unit === null ? "integer" : "string", required: true }, 
-      data: fillArray("gen", null, "integer", [min, max, unit])
+      model: { type: (size == null && unit === null) ? "integer" : "string", required: true }, 
+      data: fillArray("gen", null, "integer", [min, max, size, unit])
     }
   }
   / "floating(" ws min:number ws "," ws max:number ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
@@ -673,14 +673,18 @@ repeat
   }
 
 repeat_signature 
-  = "'" ws "repeat" unique:"_unique"? "(" ws min:int ws max:("," ws m:int ws { return m })? ")" ws "'" {
-    var num = max === null ? min : Math.floor(Math.random() * (max - min + 1)) + min
-    
+  = "'" ws "repeat" unique:"_unique"? "(" num:repeat_args  ")" ws "'" {
     uniq_queue.push(unique != null ? num : null)
     queue_prod *= num; queue.push(num)
 
     repeat_keys.push(member_key)
   }
+
+repeat_args
+  = ws min:int ws max:("," ws m:int ws { return m })? {
+    return max === null ? min : Math.floor(Math.random() * ((max+1) - min) + min)
+  }
+  // ws "this." key:code_key ws { return key }
 
 range
   = "range(" ws data:range_args ws ")" {
@@ -741,7 +745,7 @@ function_prop
     }
   }
   
-function_key = chars:([a-zA-Z_][a-zA-Z0-9_]*) { return chars.flat().join("") }
+function_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) { return chars.flat().join("") }
 
 function_code = CODE_START str:(gen_call / local_var / not_code / function_code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
 
@@ -749,7 +753,7 @@ if_code = ARGS_START str:(gen_call / local_var / not_parentheses / if_code)* ARG
 
 not_code = !CODE_START !CODE_STOP. { return text() }
 
-code_key = key:([a-zA-Z_][a-zA-Z0-9_.]*) { return key.flat().join("") } 
+code_key = key:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_.]/[^\x00-\x7F])*) { return key.flat().join("") } 
 
 local_var = "this." key:code_key { return "gen.local." + key }
 
