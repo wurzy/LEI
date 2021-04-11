@@ -24,7 +24,7 @@
                     <div class="panel panel-default" v-for="(model, idx) in getSlicedUserModels" :key="idx">
                         <div class="panel-heading" role="tab" :id="'heading' + model._id">
                             <h4 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse' + model._id" aria-expanded="false" :aria-controls="'collapse' + model._id">
+                                <a :id="'idCollapsible' + model._id" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse' + model._id" aria-expanded="false" :aria-controls="'collapse' + model._id">
                                     {{model.titulo}} 
                                     <span style="color:gray">({{model.dataCriacao | moment("calendar")}})</span>
                                 </a>
@@ -160,6 +160,8 @@ export default {
           $("#deleteModel_confirm_modal").css("z-index", "1500");
         },
         async confirm(){
+          const selDoc = document.querySelector(`#idCollapsible${this.toDelete.id}`)
+          if(selDoc) selDoc.click()
           await axios.delete('modelos/'+this.toDelete.id)
           this.userModels = this.userModels.filter(m=>m._id!=this.toDelete.id)
           this.changePage(this.userModels)
