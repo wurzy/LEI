@@ -51,6 +51,7 @@ axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem(
 
 export default {
     name: "SaveModel",
+    props:["model"],
     components:{
         Success
     },
@@ -66,7 +67,7 @@ export default {
             try{
                 await axios.post('modelos/adicionar', {
                     user: JSON.parse(localStorage.getItem('user'))._id,
-                    modelo: localStorage.getItem('model'),
+                    modelo: this.$props.model,
                     visibilidade: this.switch,
                     titulo: this.title,
                     descricao: this.description,

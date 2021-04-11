@@ -1,7 +1,6 @@
 <template>
 <div>
   <Login v-on:logged_in="loggedIn"/>
-  <SaveModel/>
   <Register v-on:register_ok="registerOk" :key="registerKey"/>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
@@ -94,7 +93,6 @@
 <script>
 import Register from './Register.vue';
 import Login from './Login.vue';
-import SaveModel from '../components/SaveModel.vue';
 
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -107,8 +105,7 @@ export default {
   name: "Navbar",
   components: {
     Register,
-    Login,
-    SaveModel
+    Login
   },
   data(){
     return {

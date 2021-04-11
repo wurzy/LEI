@@ -1,5 +1,6 @@
 <template>
 <div class="container" >
+    <Confirm :msg="getConfirmMsg" id="deleteModel_confirm_modal" @confirm="confirm"/>
     <h2 style="margin-top:85px" >Modelos Guardados</h2>
     <hr/>
     <div class="form-outline" style="margin-top:15px">
@@ -52,7 +53,7 @@
                                 <router-link :to="{name: 'Home', params: {userModel: model.modelo}}">
                                   <button  class="btn btn-primary" style="margin-right: 5px"><font-awesome-icon icon="external-link-alt"/> Usar Modelo</button>
                                 </router-link>
-                                <button  class="btn btn-danger" @click="deleteModel(model._id)"><font-awesome-icon icon="trash"/> Eliminar</button>
+                                <button  class="btn btn-danger" @click="deleteModel(model._id,model.titulo)"><font-awesome-icon icon="trash"/> Eliminar</button>
                                 </p>
                                 <codemirror
                                     ref="cmEditor"
@@ -70,6 +71,7 @@
 
 <script>
 import axios from 'axios'
+import Confirm from '../components/Confirm.vue'
 
 import "codemirror/theme/dracula.css";
 import 'codemirror/keymap/sublime'
@@ -79,11 +81,16 @@ import "codemirror/addon/display/autorefresh.js"
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+import $ from 'jquery'
+
 axios.defaults.baseURL = "http://localhost:3000/";
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 export default {
     name: "UserModels",
+    components:{
+      Confirm
+    },
     data() {
         return {
             userModels: [],
@@ -91,6 +98,8 @@ export default {
             currentPage: 1,
             search: '',
             pages: 1,
+            toDelete: {},
+            confirmMsg: "Esta ação é irreversível. Tem a certeza que pretende remover o modelo \"-\"?",
             cmOption: {
                 tabSize: 4,
                 readOnly: true,
@@ -145,9 +154,14 @@ export default {
                 }
             }
         },
-        async deleteModel(id){
-          await axios.delete('modelos/'+id)
-          this.userModels = this.userModels.filter(m=>m._id!=id)
+        deleteModel(id, titulo){
+          this.toDelete = {id, titulo}
+          $("#deleteModel_confirm_modal").modal("show");
+          $("#deleteModel_confirm_modal").css("z-index", "1500");
+        },
+        async confirm(){
+          await axios.delete('modelos/'+this.toDelete.id)
+          this.userModels = this.userModels.filter(m=>m._id!=this.toDelete.id)
           this.changePage(this.userModels)
         }
     },
@@ -164,6 +178,9 @@ export default {
               })
       this.changePage(filtered)
       return filtered.slice(start, current)
+     },
+     getConfirmMsg(){
+       return this.confirmMsg.replace("-",this.toDelete.titulo)
      }
     }
 }
