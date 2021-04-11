@@ -123,12 +123,10 @@ export default {
           this.currentPage = Number(pageNum);
         },
         changePage(array){
-          let sel, selDoc
           let newPages = Math.ceil(array.length / this.perPage);
           if(this.pages > newPages){
             this.currentPage = 1
-            sel = '#pagination1 li:nth-child(2) > a';
-            selDoc = document.querySelector(sel)
+            const selDoc = document.querySelector('#pagination1 li:nth-child(2) > a')
             if(selDoc) {
               selDoc.click()
             }
