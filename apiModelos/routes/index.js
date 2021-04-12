@@ -4,7 +4,10 @@ const fs = require("fs")
 const fsEx = require('fs-extra')
 const AdmZip = require('adm-zip')
 const archiver = require('archiver');
+const axios = require('axios')
+const isReachable = require('is-reachable');
 var execSync = require('child_process').execSync;
+const { cachedDataVersionTag } = require('v8');
 
 
 const model123 = `{
@@ -174,13 +177,12 @@ router.get('/download/:id', function(req, res, next) {
 
 router.post('/genAPI', function(req, res, next) {
   var mkeys = Object.keys(req.body["model"])
-  var apiname = mkeys[0]
-
+  var apiname = req.body["apiName"]
   var dkeys = Object.keys(req.body["dataset"])
   var dataName = dkeys[0]
-
+  var dataset = req.body["dataset"][`${dataName}`]
+  
   var model = JSON.stringify(req.body["model"][`${apiname}`], null, 2)
-  var dataset = JSON.stringify(req.body["dataset"][`${dataName}`], null, 2)
   
   try {
     fs.mkdirSync("../StrapiAPI/api/"+apiname) 
@@ -275,7 +277,7 @@ router.post('/genAPI', function(req, res, next) {
       });
       console.log('components created successfully!');  
     }
-
+      /*
       fs.writeFileSync("./jsons/"+apiname+".json", dataset) 
       var child = execSync('mongoimport --db StrapiAPI --collection '+apiname+' --file ./jsons/'+apiname+'.json --jsonArray',
         function (error, stdout, stderr) {
@@ -284,7 +286,67 @@ router.post('/genAPI', function(req, res, next) {
           if (error !== null) {
             console.log('exec error: ' + error);
           }
-      });
+      });*/
+//
+    //(async () => {
+    ////  var bol = await isReachable('http://localhost:1337/')
+    ////  while(!bol){
+    ////    bol = await isReachable('http://localhost:1337/')
+    ////    console.log("esperando")
+    ////  }   
+    //  //var t = new Date().getTime(); 
+    //  //while (new Date().getTime() < t + 5000);  
+    //  console.log("apiname: ",apiname)
+    //  for (var key in dataset) {
+    //    if (dataset.hasOwnProperty(key)) {
+    //      var val = JSON.stringify(dataset[key]);
+    //      console.log("val:"+ val)
+    //      console.log("iteração:"+val)
+    //      
+    //     
+    //      axios.post('http://localhost:1337/'+apiname+"s", val, {
+    //        headers: {
+    //            'Content-Type': 'application/json',
+    //        }
+    //      })
+    //      .then(dados => console.log("postado"))
+    //      .catch(erro => {
+    //        if(erro.toString().includes("connect ECONNREFUSED 127.0.0.1:1337") || erro.toString().includes("read ECONNRESET") || erro.toString().includes("Request failed with status code 405")) {
+    //         let tr=false;
+    //         console.log("TR = falso cima")
+//
+    //         while(!tr){
+    //          console.log("entrou no while")
+    //          axios.post('http://localhost:1337/'+apiname+"s", val, {
+    //            headers: {
+    //              'Content-Type': 'application/json',
+    //            }
+    //          })
+    //          .then(dados => {
+    //            tr=true;
+    //            console.log("postado")
+    //          })
+    //          .catch(erro => {
+    //            if(erro.toString().includes("connect ECONNREFUSED 127.0.0.1:1337") || erro.toString().includes("read ECONNRESET") || erro.toString().includes("Request failed with status code 405")) {
+    //              tr=false;
+    //              console.log("TR = falso baixo")
+    //             }
+    //            console.log("---------erro no for----------"+erro);
+    //          })
+    //        }
+    //        }
+    //        console.log("---------erro no for----------"+erro);
+    //      })
+//
+    //      
+    //      
+    //    }
+//
+    //  }
+    //})();
+
+    
+   
       res.status(200).jsonp("Geração api done!")
       res.end()
     } catch (error) {
@@ -313,5 +375,54 @@ router.post('/genAPI', function(req, res, next) {
   //  return res.status(201).jsonp({msg: "Directory created successfully!"})
   //}); 
 })   
+
+
+router.post('/import', function(req, res, next) {
+  var apiname = req.body["apiName"]
+
+  var dkeys = Object.keys(req.body["dataset"])
+  var dataName = dkeys[0]
+  var dataset = req.body["dataset"][`${dataName}`]
+  
+  function povoar() {
+    (async () => {
+      var bol = await isReachable('http://localhost:1337/')
+      console.log("esperando")
+      while(!bol){
+        bol = await isReachable('http://localhost:1337/')
+      } 
+    
+    for (var key in dataset) {
+      if (dataset.hasOwnProperty(key)) {
+        var val = JSON.stringify(dataset[key]);
+        console.log("val:"+ val)
+
+        axios.post('http://localhost:1337/'+apiname+"s", val, {
+          headers: {
+              'Content-Type': 'application/json',
+          }
+        })
+        .then(dados => console.log("postado"))
+        .catch(erro => {
+          console.log("---------erro no for----------",erro);
+        })
+      }
+    }  
+  })();
+  }
+
+  try {
+    let pov = setTimeout(povoar, 3500);
+    
+    res.status(200).jsonp("Import done!")
+    res.end()
+  } catch (error) {
+    res.status(500).jsonp({error: error})
+    console.log("teyy:"+error)
+    res.end()
+  }
+})
+
+
 
 module.exports = router;

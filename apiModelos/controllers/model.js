@@ -34,7 +34,7 @@ module.exports.inserir = model => {
 
 module.exports.remover = id => {
     return Model
-        .deleteOne({id})
+        .deleteOne({_id: id})
         .exec()
 }
 

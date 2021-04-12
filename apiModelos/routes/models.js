@@ -65,7 +65,7 @@ router.post('/adicionar', function(req,res){
 })
 
 // Altera a visibilidade de um modelo
-router.post('/visibilidade/:id', function(req,res){
+router.put('/visibilidade/:id', function(req,res){
     var token = unveilToken(req.headers.authorization)
     Model.consultar(req.params.id)
         .then(dados => {
@@ -77,6 +77,20 @@ router.post('/visibilidade/:id', function(req,res){
             }
         })
         .catch(e => res.status(500).jsonp(e))
+})
+
+router.delete('/:id', function(req,res){
+    var token = unveilToken(req.headers.authorization)
+    Model.consultar(req.params.id)
+        .then(dados => {
+            if(!token || dados.user != token._id) forbidden(res)
+            else {
+                Model.remover(req.params.id)
+                    .then(dados => res.status(201).jsonp(dados))
+                    .catch(e => res.status(500).jsonp(e))
+            }
+        })
+    .catch(e => res.status(500).jsonp(e))
 })
 
 module.exports = router;

@@ -47,10 +47,10 @@ import axios from 'axios'
 import Success from '../components/Success';
 
 axios.defaults.baseURL = "http://localhost:3000/";
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 export default {
     name: "SaveModel",
+    props:["model"],
     components:{
         Success
     },
@@ -66,7 +66,7 @@ export default {
             try{
                 await axios.post('modelos/adicionar', {
                     user: JSON.parse(localStorage.getItem('user'))._id,
-                    modelo: localStorage.getItem('model'),
+                    modelo: this.$props.model,
                     visibilidade: this.switch,
                     titulo: this.title,
                     descricao: this.description,
@@ -100,7 +100,7 @@ export default {
         isToggled(){
             return this.switch
         }
-    },
+    }
 }
 </script>
 <style scoped>

@@ -1,5 +1,6 @@
 <template>
   <div>
+  <SaveModel :model="code"/>
     <div class="row">
       <div class="col-md-6">
         <div class="row">
@@ -9,7 +10,7 @@
               <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
             </div>
             <div class="input-group-append">
-              <input id="saveModelButton" class="btn btn-danger float-left" type="button" value="Guardar Modelo" @click="saveModel" disabled/>
+              <input id="saveModelButton" class="btn btn-danger float-left" type="button" value="Guardar Modelo" @click="saveModel"/>
             </div>
             </div>
           </div>
@@ -60,6 +61,8 @@
 <script>
 import {convert} from '../grammar/convert.js'
 import ButtonGroup from '../components/ButtonGroup'
+import SaveModel from '../components/SaveModel.vue';
+
 import parser from '../grammar/parser.js'
 import axios from 'axios';
 import $ from 'jquery'
@@ -81,8 +84,10 @@ import 'codemirror/mode/xml/xml.js'
 export default {
   name: 'Home',
   components: {
-    ButtonGroup
+    ButtonGroup,
+    SaveModel
   },
+  props: ["userModel"],
   data() {
       return {
         output_format: "JSON",
@@ -194,7 +199,6 @@ export default {
       },
       generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
-        localStorage.setItem('model',this.code)
         var generated = convert(this.code,this.parser)
         console.log(generated)
         
@@ -218,7 +222,7 @@ export default {
         this.model = generated.dataModel.model
         this.components = generated.components
 
-        document.getElementById("saveModelButton").disabled = false;
+        //document.getElementById("saveModelButton").disabled = false;
         document.getElementById("defaultDownloadButton").disabled = false;
         document.getElementById("generateAPIButton").disabled = false;
       },
@@ -234,7 +238,6 @@ export default {
       async saveModel(){
         $("#savemodels_modal").modal("show");
         $("#savemodels_modal").css("z-index", "1500");
-        //await axios.post('http://localhost:3000/modelos/adicionar', json)
       },
       createAPI(){
         var body = {
@@ -244,10 +247,26 @@ export default {
           dataset: JSON.parse(this.result)
         }
 
-        //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
-        axios.post('http://localhost:3000/genAPI/',body)
+        var bodyImp= {
+            apiName: this.colname,
+            dataset: JSON.parse(this.result)
+        }
+
+        let promises = [];
+        promises.push(
+          axios.post('http://localhost:3000/genAPI/',body)
           .then(dados => console.log("Modelo criado"))
           .catch(erro => console.log(erro))
+        )
+        promises.push(
+          axios.post('http://localhost:3000/import/',bodyImp)
+          .then(dados => console.log("Import feito"))
+          .catch(erro => console.log(erro))
+        )
+        Promise.all(promises).then(() => console.log("API gerada!"));
+
+        //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
+       
 
         //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
         //.then(dados => console.log("Modelo criado"))
@@ -280,6 +299,7 @@ export default {
       }
     },
     mounted() {
+      if(this.$props.userModel) this.code = this.$props.userModel
       this.codemirror.setSize("100%", "100%")
       this.codemirror2.setSize("100%", "100%")
     }
