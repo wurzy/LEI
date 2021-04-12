@@ -243,8 +243,8 @@ a:hover,a:focus{
   width: 40px;
   height: 100%;
   line-height: 40px;
-  background: #8a8ac3;
-  border: 1px solid #8a8ac3;
+  background: #2196F3;
+  border: 1px solid #2196F3;
   border-radius: 3px;
   font-size: 17px;
   color: #fff;
@@ -347,13 +347,13 @@ p{
     z-index: 2;
     color: #fff;
     cursor: default;
-    background-color: #337ab7;
-    border-color: #337ab7;
+    background-color: #2196F3;
+    border-color: #2196F3;
 }
 
 .pagination > .active > a:hover {
     z-index: 3;
-    color: #23527c;
+    color: #2196F3;
     background-color: #eee;
     border-color: #ddd;
 }
@@ -363,7 +363,7 @@ p{
     padding: 6px 12px;
     margin-left: -1px;
     line-height: 1.42857143;
-    color: #337ab7;
+    color: #2196F3;
     text-decoration: none;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -409,13 +409,13 @@ li:first-child > a::before {
     z-index: 2;
     color: #fff;
     cursor: default;
-    background-color: #337ab7;
-    border-color: #337ab7;
+    background-color: #2196F3;
+    border-color: #2196F3;
 }
 
 .pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
     z-index: 3;
-    color: #23527c;
+    color: #2196F3;
     background-color: #eee;
     border-color: #ddd;
 }
