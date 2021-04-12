@@ -1,7 +1,6 @@
 <template>
 <div>
   <Login v-on:logged_in="loggedIn"/>
-  <SaveModel/>
   <Register v-on:register_ok="registerOk" :key="registerKey"/>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
@@ -75,14 +74,18 @@
           </li>
         </div>
         <div>
-          <li v-if="!isLoggedIn" class="nav-item">
-            <a href="#" class="nav-link" @click="login">Login</a>
-          </li>
+          <router-link to="" v-if="!isLoggedIn" class="nav-link" @click.native="login">
+            <li class="nav-item">
+              <font-awesome-icon icon="sign-out-alt"/> Login
+            </li>
+          </router-link>
         </div>
         <div>
-          <li v-if="!isLoggedIn" class="nav-item">
-            <a href="#" class="nav-link" @click="registar">Registar</a>
-          </li>
+          <router-link to="" v-if="!isLoggedIn" class="nav-link" @click.native="registar">
+            <li class="nav-item">
+              <font-awesome-icon icon="user-plus"/> Registar
+            </li>
+          </router-link>
         </div>
       </ul>
     </div>
@@ -94,7 +97,6 @@
 <script>
 import Register from './Register.vue';
 import Login from './Login.vue';
-import SaveModel from '../components/SaveModel.vue';
 
 import "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -107,8 +109,7 @@ export default {
   name: "Navbar",
   components: {
     Register,
-    Login,
-    SaveModel
+    Login
   },
   data(){
     return {
@@ -132,14 +133,10 @@ export default {
   },
   async created() {
     const token = localStorage.getItem('token')
-    console.log("render")
     if(token){
       const res = await axios.get('utilizadores/' + localStorage.getItem('token'))
       localStorage.setItem('user', JSON.stringify(res.data))
       this.utilizador = res.data
-    }
-    else {
-      console.log("not logged in")
     }
   },
   methods: {
@@ -160,7 +157,6 @@ export default {
         .catch(error => console.log(error))
     },
     loggedIn(){
-      console.log("emiti")
       this.$emit('update')
     },
     registerOk(){

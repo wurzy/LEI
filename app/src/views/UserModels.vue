@@ -1,14 +1,21 @@
 <template>
 <div class="container" >
+    <Confirm :msg="getConfirmMsg" id="deleteModel_confirm_modal" @confirm="confirm"/>
     <h2 style="margin-top:85px" >Modelos Guardados</h2>
     <hr/>
+    <div class="input-group">
+          <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
+          <div class="input-group-append">
+            <datepicker placeholder="Procurar entre..." v-model="dateInt" style="height: 100%;" range></datepicker>
+          </div>
+    </div>
     <div class="row">
-        <div class="col-md-12" style="margin-top:25px">
+        <div class="col-md-12" style="margin-top:15px">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                    <div class="panel panel-default" v-for="(model, idx) in userModels" :key="idx">
+                    <div class="panel panel-default" v-for="(model, idx) in getSlicedUserModels" :key="idx">
                         <div class="panel-heading" role="tab" :id="'heading' + model._id">
                             <h4 class="panel-title">
-                                <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse' + model._id" aria-expanded="false" :aria-controls="'collapse' + model._id">
+                                <a :id="'idCollapsible' + model._id" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse' + model._id" aria-expanded="false" :aria-controls="'collapse' + model._id">
                                     {{model.titulo}} 
                                     <span style="color:gray">({{model.dataCriacao | moment("calendar")}})</span>
                                 </a>
@@ -37,7 +44,7 @@
                                 <router-link :to="{name: 'Home', params: {userModel: model.modelo}}">
                                   <button  class="btn btn-primary" style="margin-right: 5px"><font-awesome-icon icon="external-link-alt"/> Usar Modelo</button>
                                 </router-link>
-                                <button  class="btn btn-danger" @click="deleteModel(model._id)"><font-awesome-icon icon="trash"/> Eliminar</button>
+                                <button  class="btn btn-danger" @click="deleteModel(model._id,model.titulo)"><font-awesome-icon icon="trash"/> Eliminar</button>
                                 </p>
                                 <codemirror
                                     ref="cmEditor"
@@ -49,26 +56,52 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
+    <paginate 
+      id="pagination1"    
+      :page-count="pages"
+      :page-range="3"
+      :margin-pages="2"
+      :click-handler="clickCallback"
+      :prev-text="''"
+      :next-text="''"
+      :container-class="'pagination'"
+      :page-class="'page-item'">
+    </paginate>
+</div>
 </template>
 
 <script>
 import axios from 'axios'
+import Confirm from '../components/Confirm.vue'
 
 import "codemirror/theme/dracula.css";
 import 'codemirror/keymap/sublime'
 import 'codemirror/mode/javascript/javascript.js'
-import "codemirror/addon/display/autorefresh.js";
+import "codemirror/addon/display/autorefresh.js"
+
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+
+import $ from 'jquery'
 
 axios.defaults.baseURL = "http://localhost:3000/";
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 export default {
     name: "UserModels",
+    components:{
+      Confirm
+    },
     data() {
         return {
-            userModels: null,
+            userModels: [],
+            perPage: 10,
+            currentPage: 1,
+            search: '',
+            dateInt: [null, new Date()],
+            pages: 1,
+            toDelete: {},
+            confirmMsg: "Esta ação é irreversível. Tem a certeza que pretende remover o modelo \"-\"?",
             cmOption: {
                 tabSize: 4,
                 readOnly: true,
@@ -92,9 +125,26 @@ export default {
     },
     methods: {
         async getUserModels(){
-            const user = JSON.parse(localStorage.getItem('user'))._id
-            const res = await axios.get('modelos/utilizador/' + user)
-            this.userModels = res.data
+            if(localStorage.getItem('token')) { 
+              const user = JSON.parse(localStorage.getItem('user'))._id
+              const res = await axios.get('modelos/utilizador/' + user)
+              this.userModels = res.data
+              this.changePage(this.userModels)
+            }
+        },
+        clickCallback(pageNum) {
+          this.currentPage = Number(pageNum);
+        },
+        changePage(array){
+          let newPages = Math.ceil(array.length / this.perPage);
+          if(this.pages > newPages){
+            this.currentPage = 1
+            const selDoc = document.querySelector('#pagination1 li:nth-child(2) > a')
+            if(selDoc) {
+              selDoc.click()
+            }
+          }
+          this.pages = newPages
         },
         isEmpty(){
             return this.userModels==null
@@ -108,13 +158,37 @@ export default {
                 }
             }
         },
-        async deleteModel(id){
-          await axios.delete('modelos/'+id)
-          this.userModels = this.userModels.filter(m=>m._id!=id)
+        deleteModel(id, titulo){
+          this.toDelete = {id, titulo}
+          $("#deleteModel_confirm_modal").modal("show");
+          $("#deleteModel_confirm_modal").css("z-index", "1500");
+        },
+        async confirm(){
+          const selDoc = document.querySelector(`#idCollapsible${this.toDelete.id}`)
+          if(selDoc) selDoc.click()
+          await axios.delete('modelos/'+this.toDelete.id)
+          this.userModels = this.userModels.filter(m=>m._id!=this.toDelete.id)
+          this.changePage(this.userModels)
         }
     },
     mounted() {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
       this.getUserModels()
+    },
+    computed: {
+     getSlicedUserModels() {
+      let current = this.currentPage * this.perPage;
+      let start = current - this.perPage;
+      let filtered = [...this.userModels]
+              .filter(modelo => {
+                return modelo.titulo.toLowerCase().includes(this.search.toLowerCase()) && new Date(modelo.dataCriacao) >= this.dateInt[0] && new Date(modelo.dataCriacao) <= this.dateInt[1]
+              })
+      this.changePage(filtered)
+      return filtered.slice(start, current)
+     },
+     getConfirmMsg(){
+       return this.confirmMsg.replace("-",this.toDelete.titulo)
+     }
     }
 }
 </script>
@@ -168,8 +242,8 @@ a:hover,a:focus{
   width: 40px;
   height: 100%;
   line-height: 40px;
-  background: #8a8ac3;
-  border: 1px solid #8a8ac3;
+  background: #2196F3;
+  border: 1px solid #2196F3;
   border-radius: 3px;
   font-size: 17px;
   color: #fff;
@@ -267,4 +341,95 @@ p{
 .CodeMirror {
   height: 100% !important
 }
+
+.pagination > .active > a {
+    z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+
+.pagination > .active > a:hover {
+    z-index: 3;
+    color: #2196F3;
+    background-color: #eee;
+    border-color: #ddd;
+}
+.pagination > li > a, .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: #2196F3;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.pagination > li:last-child > a, .pagination > li:last-child > span {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+li:last-child > a::before {
+    font-family: "Font Awesome 5 Free"; 
+    font-weight: 900; 
+    content: "\f105";
+    font-size: 17px;
+    width: 40px;
+    height: 100%;
+    line-height: 20px;
+}
+
+li:first-child > a::before {
+    font-family: "Font Awesome 5 Free"; 
+    font-weight: 900; 
+    content: "\f104";
+    font-size: 17px;
+    width: 40px;
+    height: 100%;
+    line-height: 20px;
+}
+
+.pagination > li:first-child > a, .pagination > li:first-child > span {
+    margin-left: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.pagination > .disabled > span, .pagination > .disabled > span:hover, .pagination > .disabled > span:focus, .pagination > .disabled > a, .pagination > .disabled > a:hover, .pagination > .disabled > a:focus {
+    color: #777;
+    cursor: not-allowed;
+    background-color: #fff;
+    border-color: #ddd;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    z-index: 2;
+    color: #fff;
+    cursor: default;
+    background-color: #2196F3;
+    border-color: #2196F3;
+}
+
+.pagination > li > a:hover, .pagination > li > span:hover, .pagination > li > a:focus, .pagination > li > span:focus {
+    z-index: 3;
+    color: #2196F3;
+    background-color: #eee;
+    border-color: #ddd;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.mx-input{
+  height: 100% !important;
+  font-size: 1rem !important;
+}
+.mx-input-wrapper{
+  height:100% !important
+}
+
 </style>
