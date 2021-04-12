@@ -8,21 +8,9 @@
           <div class="input-group-append">
             <datepicker placeholder="Procurar entre..." v-model="dateInt" style="height: 100%;" range></datepicker>
           </div>
-      </div>
-    <paginate 
-      id="pagination1"    
-      :page-count="pages"
-      :page-range="3"
-      :margin-pages="2"
-      :click-handler="clickCallback"
-      :prev-text="''"
-      :next-text="''"
-      :container-class="'pagination'"
-      :page-class="'page-item'"
-      style="margin-top:15px">
-    </paginate>
+    </div>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" style="margin-top:15px">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                     <div class="panel panel-default" v-for="(model, idx) in getSlicedUserModels" :key="idx">
                         <div class="panel-heading" role="tab" :id="'heading' + model._id">
@@ -68,8 +56,19 @@
                     </div>
                 </div>
             </div>
-        </div>
     </div>
+    <paginate 
+      id="pagination1"    
+      :page-count="pages"
+      :page-range="3"
+      :margin-pages="2"
+      :click-handler="clickCallback"
+      :prev-text="''"
+      :next-text="''"
+      :container-class="'pagination'"
+      :page-class="'page-item'">
+    </paginate>
+</div>
 </template>
 
 <script>
@@ -419,6 +418,12 @@ li:first-child > a::before {
     background-color: #eee;
     border-color: #ddd;
 }
+
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
 .mx-input{
   height: 100% !important;
   font-size: 1rem !important;
