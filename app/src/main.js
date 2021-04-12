@@ -10,12 +10,23 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import VueMoment from 'vue-moment'
 import moment from 'moment'
 import VuePaginate from 'vuejs-paginate'
+import DatePicker from 'vue2-datepicker';
+import 'vue2-datepicker/index.css';
+import 'vue2-datepicker/locale/pt';
+
+DatePicker.methods.displayPopup = function () {
+  this.position = {
+    left: 0,
+    right: '100%'
+  }
+}
 
 Vue.config.productionTip = false
 library.add(fas)
 moment.locale('pt');
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 Vue.component('paginate', VuePaginate)
+Vue.component('datepicker', DatePicker)
 Vue.use(VueCodeMirror)
 Vue.use(VueMoment, { moment });
 new Vue({

@@ -3,9 +3,12 @@
     <Confirm :msg="getConfirmMsg" id="deleteModel_confirm_modal" @confirm="confirm"/>
     <h2 style="margin-top:85px" >Modelos Guardados</h2>
     <hr/>
-    <div class="form-outline" style="margin-top:15px">
-      <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
-    </div>
+    <div class="input-group">
+          <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
+          <div class="input-group-append">
+            <datepicker placeholder="Procurar entre..." v-model="dateInt" style="height: 100%;" range></datepicker>
+          </div>
+      </div>
     <paginate 
       id="pagination1"    
       :page-count="pages"
@@ -84,7 +87,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import $ from 'jquery'
 
 axios.defaults.baseURL = "http://localhost:3000/";
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 export default {
     name: "UserModels",
@@ -97,6 +99,7 @@ export default {
             perPage: 10,
             currentPage: 1,
             search: '',
+            dateInt: [null, new Date()],
             pages: 1,
             toDelete: {},
             confirmMsg: "Esta ação é irreversível. Tem a certeza que pretende remover o modelo \"-\"?",
@@ -123,10 +126,12 @@ export default {
     },
     methods: {
         async getUserModels(){
-            const user = JSON.parse(localStorage.getItem('user'))._id
-            const res = await axios.get('modelos/utilizador/' + user)
-            this.userModels = res.data
-            this.changePage(this.userModels)
+            if(localStorage.getItem('token')) { 
+              const user = JSON.parse(localStorage.getItem('user'))._id
+              const res = await axios.get('modelos/utilizador/' + user)
+              this.userModels = res.data
+              this.changePage(this.userModels)
+            }
         },
         clickCallback(pageNum) {
           this.currentPage = Number(pageNum);
@@ -168,6 +173,7 @@ export default {
         }
     },
     mounted() {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
       this.getUserModels()
     },
     computed: {
@@ -176,7 +182,7 @@ export default {
       let start = current - this.perPage;
       let filtered = [...this.userModels]
               .filter(modelo => {
-                return modelo.titulo.toLowerCase().includes(this.search.toLowerCase())
+                return modelo.titulo.toLowerCase().includes(this.search.toLowerCase()) && new Date(modelo.dataCriacao) >= this.dateInt[0] && new Date(modelo.dataCriacao) <= this.dateInt[1]
               })
       this.changePage(filtered)
       return filtered.slice(start, current)
@@ -413,4 +419,12 @@ li:first-child > a::before {
     background-color: #eee;
     border-color: #ddd;
 }
+.mx-input{
+  height: 100% !important;
+  font-size: 1rem !important;
+}
+.mx-input-wrapper{
+  height:100% !important
+}
+
 </style>

@@ -47,7 +47,6 @@ import axios from 'axios'
 import Success from '../components/Success';
 
 axios.defaults.baseURL = "http://localhost:3000/";
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
 export default {
     name: "SaveModel",
@@ -101,7 +100,7 @@ export default {
         isToggled(){
             return this.switch
         }
-    },
+    }
 }
 </script>
 <style scoped>
