@@ -245,6 +245,108 @@ export default {
             "União das freguesias de Vila Chã, Codal e Vila Cova de Perrinho"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Aveiro",
+          "lat": "40.6389",
+          "lng": "-8.6553"
+        },
+        {
+          "city": "Ílhavo",
+          "lat": "40.6000",
+          "lng": "-8.6667"
+        },
+        {
+          "city": "Espinho",
+          "lat": "41.0100",
+          "lng": "-8.6400"
+        },
+        {
+          "city": "Anadia",
+          "lat": "40.4333",
+          "lng": "-8.4333"
+        },
+        {
+          "city": "Estarreja",
+          "lat": "40.7500",
+          "lng": "-8.5667"
+        },
+        {
+          "city": "Albergaria-a-Velha",
+          "lat": "40.6936",
+          "lng": "-8.4806"
+        },
+        {
+          "city": "Oliveira do Bairro",
+          "lat": "40.5167",
+          "lng": "-8.5000"
+        },
+        {
+          "city": "Vale de Cambra",
+          "lat": "40.8500",
+          "lng": "-8.4000"
+        },
+        {
+          "city": "São João da Madeira",
+          "lat": "40.9000",
+          "lng": "-8.5000"
+        },
+        {
+          "city": "Sever do Vouga",
+          "lat": "40.7167",
+          "lng": "-8.3667"
+        },
+        {
+          "city": "Murtosa",
+          "lat": "40.7369",
+          "lng": "-8.6386"
+        },
+        {
+          "city": "Argoncilhe",
+          "lat": "41.0167",
+          "lng": "-8.5500"
+        },
+        {
+          "city": "Oliveira de Azemeis",
+          "lat": "40.8400",
+          "lng": "-8.4764"
+        },
+        {
+          "city": "Ovar",
+          "lat": "40.8597",
+          "lng": "-8.6253"
+        },
+        {
+          "city": "Águeda",
+          "lat": "40.5745",
+          "lng": "-8.4480"
+        },
+        {
+          "city": "Arouca",
+          "lat": "40.9289",
+          "lng": "-8.2436"
+        },
+        {
+          "city": "Feira",
+          "lat": "40.9254",
+          "lng": "-8.5428"
+        },
+        {
+          "city": "Vagos",
+          "lat": "40.5553",
+          "lng": "-8.6814"
+        },
+        {
+          "city": "Mealhada",
+          "lat": "40.3781",
+          "lng": "-8.4514"
+        },
+        {
+          "city": "Castelo de Paiva",
+          "lat": "41.0630",
+          "lng": "-8.2647"
+        }
       ]
     },
     {
@@ -394,6 +496,83 @@ export default {
             "Vidigueira",
             "Vila de Frades"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Beja",
+          "lat": "38.0333",
+          "lng": "-7.8833"
+        },
+        {
+          "city": "Odemira",
+          "lat": "37.5833",
+          "lng": "-8.6333"
+        },
+        {
+          "city": "Serpa",
+          "lat": "37.9333",
+          "lng": "-7.5833"
+        },
+        {
+          "city": "Moura",
+          "lat": "38.1397",
+          "lng": "-7.4505"
+        },
+        {
+          "city": "Aljustrel",
+          "lat": "37.8785",
+          "lng": "-8.1614"
+        },
+        {
+          "city": "Castro Verde",
+          "lat": "37.6976",
+          "lng": "-8.0819"
+        },
+        {
+          "city": "Mértola",
+          "lat": "37.6333",
+          "lng": "-7.6500"
+        },
+        {
+          "city": "Vidigueira",
+          "lat": "38.2000",
+          "lng": "-7.8000"
+        },
+        {
+          "city": "Ourique",
+          "lat": "37.6500",
+          "lng": "-8.2250"
+        },
+        {
+          "city": "Cuba",
+          "lat": "38.1500",
+          "lng": "-7.8833"
+        },
+        {
+          "city": "Vila Nova de Milfontes",
+          "lat": "37.7167",
+          "lng": "-8.7833"
+        },
+        {
+          "city": "Barrancos",
+          "lat": "38.1307",
+          "lng": "-6.9761"
+        },
+        {
+          "city": "Almodôvar",
+          "lat": "37.5128",
+          "lng": "-8.0601"
+        },
+        {
+          "city": "Alvito",
+          "lat": "38.2561",
+          "lng": "-7.9916"
+        },
+        {
+          "city": "Ferreira do Alentejo",
+          "lat": "38.0500",
+          "lng": "-8.1000"
         }
       ]
     },
@@ -817,6 +996,98 @@ export default {
             "União das freguesias de Tagilde e Vizela (São Paio)"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Braga",
+          "lat": "41.5333",
+          "lng": "-8.4167"
+        },
+        {
+          "city": "Guimarães",
+          "lat": "41.4450",
+          "lng": "-8.2908"
+        },
+        {
+          "city": "Fafe",
+          "lat": "41.4500",
+          "lng": "-8.1667"
+        },
+        {
+          "city": "Vila Verde",
+          "lat": "41.6500",
+          "lng": "-8.4333"
+        },
+        {
+          "city": "Esposende",
+          "lat": "41.5333",
+          "lng": "-8.7833"
+        },
+        {
+          "city": "Póvoa de Lanhoso",
+          "lat": "41.5667",
+          "lng": "-8.2667"
+        },
+        {
+          "city": "Celorico de Basto",
+          "lat": "41.3869",
+          "lng": "-8.0022"
+        },
+        {
+          "city": "Cabeceiras de Basto",
+          "lat": "41.5167",
+          "lng": "-8.0000"
+        },
+        {
+          "city": "Vieira do Minho",
+          "lat": "41.6333",
+          "lng": "-8.1333"
+        },
+        {
+          "city": "Joane",
+          "lat": "41.4333",
+          "lng": "-8.4167"
+        },
+        {
+          "city": "Terras de Bouro",
+          "lat": "41.7167",
+          "lng": "-8.3000"
+        },
+        {
+          "city": "Riba de Ave",
+          "lat": "41.3933",
+          "lng": "-8.3883"
+        },
+        {
+          "city": "Ferreiros",
+          "lat": "41.6308",
+          "lng": "-8.3686"
+        },
+        {
+          "city": "Barcelos",
+          "lat": "41.5347",
+          "lng": "-8.6150"
+        },
+        {
+          "city": "Famalicão",
+          "lat": "41.4144",
+          "lng": "-8.5222"
+        },
+        {
+          "city": "Amares",
+          "lat": "41.6309",
+          "lng": "-8.3512"
+        },
+        {
+          "city": "Trofa",
+          "lat": "41.4878",
+          "lng": "-7.9613"
+        },
+        {
+          "city": "Vizela",
+          "lat": "41.3828",
+          "lng": "-8.2647"
+        }
       ]
     },
     {
@@ -1108,6 +1379,68 @@ export default {
             "União das freguesias de Vilar de Lomba e São Jomil"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Bragança",
+          "lat": "41.8000",
+          "lng": "-6.7500"
+        },
+        {
+          "city": "Mirandela",
+          "lat": "41.4833",
+          "lng": "-7.1833"
+        },
+        {
+          "city": "Macedo de Cavaleiros",
+          "lat": "41.5333",
+          "lng": "-6.9500"
+        },
+        {
+          "city": "Vinhais",
+          "lat": "41.8167",
+          "lng": "-7.0000"
+        },
+        {
+          "city": "Torre de Moncorvo",
+          "lat": "41.2000",
+          "lng": "-7.1333"
+        },
+        {
+          "city": "Miranda do Douro",
+          "lat": "41.5000",
+          "lng": "-6.2667"
+        },
+        {
+          "city": "Carrazeda de Anciães",
+          "lat": "41.2500",
+          "lng": "-7.3000"
+        },
+        {
+          "city": "Vimioso",
+          "lat": "41.5667",
+          "lng": "-6.5167"
+        },
+        {
+          "city": "Freixo de Espada à Cinta",
+          "lat": "41.0833",
+          "lng": "-6.8000"
+        },
+        {
+          "city": "Mogadouro",
+          "lat": "41.3392",
+          "lng": "-6.7200"
+        },
+        {
+          "city": "Alfândega da Fé",
+          "lat": "41.3431",
+          "lng": "-6.9611"
+        },
+        {
+          "city": "Vila Flor",
+          "lat": "41.3067",
+          "lng": "-7.1522"
+        }
       ]
     },
     {
@@ -1287,6 +1620,63 @@ export default {
             "Sarnadas de Ródão",
             "Vila Velha de Ródão"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Castelo Branco",
+          "lat": "39.8230",
+          "lng": "-7.4931"
+        },
+        {
+          "city": "Covilhã",
+          "lat": "40.2833",
+          "lng": "-7.5000"
+        },
+        {
+          "city": "Sertã",
+          "lat": "39.8008",
+          "lng": "-8.1003"
+        },
+        {
+          "city": "Idanha-a-Nova",
+          "lat": "39.9167",
+          "lng": "-7.2333"
+        },
+        {
+          "city": "Proença-a-Nova",
+          "lat": "39.7500",
+          "lng": "-7.9167"
+        },
+        {
+          "city": "Oleiros",
+          "lat": "39.9167",
+          "lng": "-7.9167"
+        },
+        {
+          "city": "Penamacor",
+          "lat": "40.1667",
+          "lng": "-7.1667"
+        },
+        {
+          "city": "Vila Velha de Ródão",
+          "lat": "39.6500",
+          "lng": "-7.6667"
+        },
+        {
+          "city": "Vila de Rei",
+          "lat": "39.6833",
+          "lng": "-8.1500"
+        },
+        {
+          "city": "Fundão",
+          "lat": "40.1392",
+          "lng": "-7.5019"
+        },
+        {
+          "city": "Belmonte",
+          "lat": "40.3583",
+          "lng": "-7.3514"
         }
       ]
     },
@@ -1533,6 +1923,103 @@ export default {
             "São Miguel de Poiares"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Coimbra",
+          "lat": "40.2111",
+          "lng": "-8.4291"
+        },
+        {
+          "city": "Figueira da Foz",
+          "lat": "40.1508",
+          "lng": "-8.8618"
+        },
+        {
+          "city": "Montemor-o-Velho",
+          "lat": "40.1667",
+          "lng": "-8.6833"
+        },
+        {
+          "city": "Soure",
+          "lat": "40.0500",
+          "lng": "-8.6333"
+        },
+        {
+          "city": "Lousã",
+          "lat": "40.1125",
+          "lng": "-8.2469"
+        },
+        {
+          "city": "Condeixa-a-Nova",
+          "lat": "40.1167",
+          "lng": "-8.5000"
+        },
+        {
+          "city": "Penacova",
+          "lat": "40.2667",
+          "lng": "-8.2667"
+        },
+        {
+          "city": "Miranda do Corvo",
+          "lat": "40.1000",
+          "lng": "-8.3333"
+        },
+        {
+          "city": "Mira",
+          "lat": "40.4285",
+          "lng": "-8.7363"
+        },
+        {
+          "city": "Arganil",
+          "lat": "40.2167",
+          "lng": "-8.0500"
+        },
+        {
+          "city": "Tábua",
+          "lat": "40.3667",
+          "lng": "-8.0333"
+        },
+        {
+          "city": "Poiares",
+          "lat": "40.2167",
+          "lng": "-8.2500"
+        },
+        {
+          "city": "Penela",
+          "lat": "40.0333",
+          "lng": "-8.3833"
+        },
+        {
+          "city": "Pampilhosa da Serra",
+          "lat": "40.0500",
+          "lng": "-7.9500"
+        },
+        {
+          "city": "Góis",
+          "lat": "40.1500",
+          "lng": "-8.1167"
+        },
+        {
+          "city": "Lorvão",
+          "lat": "40.2594",
+          "lng": "-8.3168"
+        },
+        {
+          "city": "Trouxemil",
+          "lat": "40.2756",
+          "lng": "-8.4528"
+        },
+        {
+          "city": "Oliveira do Hospital",
+          "lat": "40.3597",
+          "lng": "-7.8617"
+        },
+        {
+          "city": "Cantanhede",
+          "lat": "40.3464",
+          "lng": "-8.5942"
+        }
       ]
     },
     {
@@ -1676,6 +2163,78 @@ export default {
             "Pardais",
             "Nossa Senhora da Conceição e São Bartolomeu"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Évora",
+          "lat": "38.5667",
+          "lng": "-7.9000"
+        },
+        {
+          "city": "Montemor-o-Novo",
+          "lat": "38.6500",
+          "lng": "-8.2167"
+        },
+        {
+          "city": "Estremoz",
+          "lat": "38.8422",
+          "lng": "-7.5881"
+        },
+        {
+          "city": "Vendas Novas",
+          "lat": "38.6833",
+          "lng": "-8.4500"
+        },
+        {
+          "city": "Reguengos de Monsaraz",
+          "lat": "38.4167",
+          "lng": "-7.5333"
+        },
+        {
+          "city": "Vila Viçosa",
+          "lat": "38.7500",
+          "lng": "-7.4333"
+        },
+        {
+          "city": "Arraiolos",
+          "lat": "38.7229",
+          "lng": "-7.9843"
+        },
+        {
+          "city": "Borba",
+          "lat": "38.8000",
+          "lng": "-7.4500"
+        },
+        {
+          "city": "Redondo",
+          "lat": "38.6464",
+          "lng": "-7.5464"
+        },
+        {
+          "city": "Portel",
+          "lat": "38.3000",
+          "lng": "-7.7000"
+        },
+        {
+          "city": "Viana do Alentejo",
+          "lat": "38.3342",
+          "lng": "-8.0014"
+        },
+        {
+          "city": "Mora",
+          "lat": "38.9333",
+          "lng": "-8.1500"
+        },
+        {
+          "city": "Mourão",
+          "lat": "38.3333",
+          "lng": "-7.3667"
+        },
+        {
+          "city": "Alandroal",
+          "lat": "38.7020",
+          "lng": "-7.4031"
         }
       ]
     },
@@ -1828,6 +2387,103 @@ export default {
             "Vila Real de Santo António",
             "Monte Gordo"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Loulé",
+          "lat": "37.1440",
+          "lng": "-8.0235"
+        },
+        {
+          "city": "Faro",
+          "lat": "37.0167",
+          "lng": "-7.9333"
+        },
+        {
+          "city": "Portimão",
+          "lat": "37.1333",
+          "lng": "-8.5333"
+        },
+        {
+          "city": "Olhão",
+          "lat": "37.0278",
+          "lng": "-7.8389"
+        },
+        {
+          "city": "Silves",
+          "lat": "37.1833",
+          "lng": "-8.4333"
+        },
+        {
+          "city": "Lagos",
+          "lat": "37.1000",
+          "lng": "-8.6667"
+        },
+        {
+          "city": "Tavira",
+          "lat": "37.1309",
+          "lng": "-7.6506"
+        },
+        {
+          "city": "Vila Real de Santo António",
+          "lat": "37.2000",
+          "lng": "-7.4167"
+        },
+        {
+          "city": "Quarteira",
+          "lat": "37.0695",
+          "lng": "-8.1006"
+        },
+        {
+          "city": "São Brás de Alportel",
+          "lat": "37.1500",
+          "lng": "-7.8833"
+        },
+        {
+          "city": "Castro Marim",
+          "lat": "37.2167",
+          "lng": "-7.4500"
+        },
+        {
+          "city": "Monchique",
+          "lat": "37.3167",
+          "lng": "-8.6000"
+        },
+        {
+          "city": "Vila do Bispo",
+          "lat": "37.0825",
+          "lng": "-8.9119"
+        },
+        {
+          "city": "Armação de Pêra",
+          "lat": "37.1000",
+          "lng": "-8.3667"
+        },
+        {
+          "city": "Carvoeiro",
+          "lat": "37.1000",
+          "lng": "-8.4667"
+        },
+        {
+          "city": "Lagoa",
+          "lat": "37.1347",
+          "lng": "-8.4528"
+        },
+        {
+          "city": "Albufeira",
+          "lat": "37.0889",
+          "lng": "-8.2511"
+        },
+        {
+          "city": "Alcoutim",
+          "lat": "37.4717",
+          "lng": "-7.4722"
+        },
+        {
+          "city": "Aljezur",
+          "lat": "37.3192",
+          "lng": "-8.8033"
         }
       ]
     },
@@ -2146,6 +2802,78 @@ export default {
             "Vila Nova de Foz Côa"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Guarda",
+          "lat": "40.5364",
+          "lng": "-7.2683"
+        },
+        {
+          "city": "Gouveia",
+          "lat": "40.5000",
+          "lng": "-7.6000"
+        },
+        {
+          "city": "Sabugal",
+          "lat": "40.3500",
+          "lng": "-7.0833"
+        },
+        {
+          "city": "Trancoso",
+          "lat": "40.7833",
+          "lng": "-7.3500"
+        },
+        {
+          "city": "Pinhel",
+          "lat": "40.7833",
+          "lng": "-7.0667"
+        },
+        {
+          "city": "Celorico da Beira",
+          "lat": "40.6333",
+          "lng": "-7.4000"
+        },
+        {
+          "city": "Vila Nova de Foz Côa",
+          "lat": "41.0833",
+          "lng": "-7.1333"
+        },
+        {
+          "city": "Figueira de Castelo Rodrigo",
+          "lat": "40.9000",
+          "lng": "-6.9667"
+        },
+        {
+          "city": "Aguiar da Beira",
+          "lat": "40.8180",
+          "lng": "-7.5414"
+        },
+        {
+          "city": "Fornos de Algodres",
+          "lat": "40.6167",
+          "lng": "-7.5333"
+        },
+        {
+          "city": "Manteigas",
+          "lat": "40.4000",
+          "lng": "-7.5333"
+        },
+        {
+          "city": "Seia",
+          "lat": "40.4203",
+          "lng": "-7.7033"
+        },
+        {
+          "city": "Mêda",
+          "lat": "40.9631",
+          "lng": "-7.2631"
+        },
+        {
+          "city": "Almeida",
+          "lat": "40.7257",
+          "lng": "-6.9061"
+        }
       ]
     },
     {
@@ -2340,6 +3068,98 @@ export default {
             "União das freguesias de Alvados e Alcaria",
             "União das freguesias de Arrimal e Mendiga"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Leiria",
+          "lat": "39.7431",
+          "lng": "-8.8069"
+        },
+        {
+          "city": "Pombal",
+          "lat": "39.9162",
+          "lng": "-8.6279"
+        },
+        {
+          "city": "Caldas da Rainha",
+          "lat": "39.4069",
+          "lng": "-9.1363"
+        },
+        {
+          "city": "Marinha Grande",
+          "lat": "39.7500",
+          "lng": "-8.9333"
+        },
+        {
+          "city": "Porto de Mós",
+          "lat": "39.6000",
+          "lng": "-8.8167"
+        },
+        {
+          "city": "Batalha",
+          "lat": "39.6500",
+          "lng": "-8.8167"
+        },
+        {
+          "city": "Nazaré",
+          "lat": "39.6000",
+          "lng": "-9.0667"
+        },
+        {
+          "city": "Bombarral",
+          "lat": "39.2667",
+          "lng": "-9.1500"
+        },
+        {
+          "city": "Ansião",
+          "lat": "39.9167",
+          "lng": "-8.4333"
+        },
+        {
+          "city": "Óbidos",
+          "lat": "39.3585",
+          "lng": "-9.1760"
+        },
+        {
+          "city": "Figueiró dos Vinhos",
+          "lat": "39.9000",
+          "lng": "-8.2667"
+        },
+        {
+          "city": "Caranguejeira",
+          "lat": "39.7500",
+          "lng": "-8.7000"
+        },
+        {
+          "city": "Pedrógão Grande",
+          "lat": "39.9167",
+          "lng": "-8.1500"
+        },
+        {
+          "city": "Valado de Frades",
+          "lat": "39.5892",
+          "lng": "-9.0194"
+        },
+        {
+          "city": "Castanheira de Pêra",
+          "lat": "40.0000",
+          "lng": "-8.2167"
+        },
+        {
+          "city": "Peniche",
+          "lat": "39.3633",
+          "lng": "-9.3792"
+        },
+        {
+          "city": "Alcobaça",
+          "lat": "39.5522",
+          "lng": "-8.9775"
+        },
+        {
+          "city": "Alvaiázere",
+          "lat": "39.8226",
+          "lng": "-8.3800"
         }
       ]
     },
@@ -2560,6 +3380,138 @@ export default {
             "União das freguesias de Ramada e Caneças"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Lisbon",
+          "lat": "38.7452",
+          "lng": "-9.1604"
+        },
+        {
+          "city": "Amadora",
+          "lat": "38.7500",
+          "lng": "-9.2333"
+        },
+        {
+          "city": "Oeiras",
+          "lat": "38.6970",
+          "lng": "-9.3017"
+        },
+        {
+          "city": "Odivelas",
+          "lat": "38.8000",
+          "lng": "-9.1833"
+        },
+        {
+          "city": "Vila Franca de Xira",
+          "lat": "38.9500",
+          "lng": "-8.9833"
+        },
+        {
+          "city": "Torres Vedras",
+          "lat": "39.0833",
+          "lng": "-9.2667"
+        },
+        {
+          "city": "Queluz",
+          "lat": "38.7566",
+          "lng": "-9.2545"
+        },
+        {
+          "city": "Mafra",
+          "lat": "38.9333",
+          "lng": "-9.3333"
+        },
+        {
+          "city": "Agualva",
+          "lat": "38.7700",
+          "lng": "-9.2988"
+        },
+        {
+          "city": "Massamá",
+          "lat": "38.7568",
+          "lng": "-9.2748"
+        },
+        {
+          "city": "Estoril",
+          "lat": "38.7057",
+          "lng": "-9.3977"
+        },
+        {
+          "city": "Azambuja",
+          "lat": "39.0667",
+          "lng": "-8.8667"
+        },
+        {
+          "city": "Cacém",
+          "lat": "38.7704",
+          "lng": "-9.3081"
+        },
+        {
+          "city": "Sacavém",
+          "lat": "38.7944",
+          "lng": "-9.1053"
+        },
+        {
+          "city": "Falagueira",
+          "lat": "38.7590",
+          "lng": "-9.2199"
+        },
+        {
+          "city": "Cadaval",
+          "lat": "39.2500",
+          "lng": "-9.1000"
+        },
+        {
+          "city": "Arruda dos Vinhos",
+          "lat": "38.9833",
+          "lng": "-9.0667"
+        },
+        {
+          "city": "Sobral de Monte Agraço",
+          "lat": "39.0167",
+          "lng": "-9.1500"
+        },
+        {
+          "city": "Almargem",
+          "lat": "38.8475",
+          "lng": "-9.2714"
+        },
+        {
+          "city": "São Martinho",
+          "lat": "38.8125",
+          "lng": "-9.4208"
+        },
+        {
+          "city": "Terrujem",
+          "lat": "38.8511",
+          "lng": "-9.3747"
+        },
+        {
+          "city": "Loures",
+          "lat": "38.8309",
+          "lng": "-9.1684"
+        },
+        {
+          "city": "Sintra",
+          "lat": "38.8144",
+          "lng": "-9.3837"
+        },
+        {
+          "city": "Cascais",
+          "lat": "38.6972",
+          "lng": "-9.4217"
+        },
+        {
+          "city": "Alenquer",
+          "lat": "39.0531",
+          "lng": "-9.0092"
+        },
+        {
+          "city": "Lourinhã",
+          "lat": "39.2425",
+          "lng": "-9.3122"
+        }
       ]
     },
     {
@@ -2708,6 +3660,83 @@ export default {
             "Santo Amaro",
             "Sousel"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Portalegre",
+          "lat": "39.3167",
+          "lng": "-7.4167"
+        },
+        {
+          "city": "Elvas",
+          "lat": "38.8800",
+          "lng": "-7.1628"
+        },
+        {
+          "city": "Ponte de Sôr",
+          "lat": "39.2500",
+          "lng": "-8.0167"
+        },
+        {
+          "city": "Campo Maior",
+          "lat": "39.0167",
+          "lng": "-7.0667"
+        },
+        {
+          "city": "Nisa",
+          "lat": "39.5167",
+          "lng": "-7.6500"
+        },
+        {
+          "city": "Sousel",
+          "lat": "38.9532",
+          "lng": "-7.6757"
+        },
+        {
+          "city": "Avis",
+          "lat": "39.0500",
+          "lng": "-7.8833"
+        },
+        {
+          "city": "Marvão",
+          "lat": "39.3942",
+          "lng": "-7.3772"
+        },
+        {
+          "city": "Fronteira",
+          "lat": "39.0500",
+          "lng": "-7.6500"
+        },
+        {
+          "city": "Castelo de Vide",
+          "lat": "39.4167",
+          "lng": "-7.4500"
+        },
+        {
+          "city": "Monforte",
+          "lat": "39.0500",
+          "lng": "-7.4333"
+        },
+        {
+          "city": "Arronches",
+          "lat": "39.1167",
+          "lng": "-7.2833"
+        },
+        {
+          "city": "Crato",
+          "lat": "39.2844",
+          "lng": "-7.6444"
+        },
+        {
+          "city": "Gavião",
+          "lat": "39.4650",
+          "lng": "-7.9369"
+        },
+        {
+          "city": "Alter do Chão",
+          "lat": "39.1974",
+          "lng": "-7.6589"
         }
       ]
     },
@@ -3047,6 +4076,143 @@ export default {
             "União das freguesias de Coronado (São Romão e São Mamede)"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Vila Nova de Gaia",
+          "lat": "41.1333",
+          "lng": "-8.6167"
+        },
+        {
+          "city": "Porto",
+          "lat": "41.1495",
+          "lng": "-8.6108"
+        },
+        {
+          "city": "Matosinhos",
+          "lat": "41.2077",
+          "lng": "-8.6674"
+        },
+        {
+          "city": "Gondomar",
+          "lat": "41.1500",
+          "lng": "-8.5333"
+        },
+        {
+          "city": "Maia",
+          "lat": "41.2333",
+          "lng": "-8.6167"
+        },
+        {
+          "city": "Valongo",
+          "lat": "41.1833",
+          "lng": "-8.5000"
+        },
+        {
+          "city": "Paredes",
+          "lat": "41.2000",
+          "lng": "-8.3333"
+        },
+        {
+          "city": "Vila do Conde",
+          "lat": "41.3500",
+          "lng": "-8.7500"
+        },
+        {
+          "city": "Penafiel",
+          "lat": "41.2000",
+          "lng": "-8.2833"
+        },
+        {
+          "city": "Póvoa de Varzim",
+          "lat": "41.3916",
+          "lng": "-8.7571"
+        },
+        {
+          "city": "Felgueiras",
+          "lat": "41.3667",
+          "lng": "-8.1833"
+        },
+        {
+          "city": "Paços de Ferreira",
+          "lat": "41.2833",
+          "lng": "-8.3833"
+        },
+        {
+          "city": "Amarante",
+          "lat": "41.2667",
+          "lng": "-8.0833"
+        },
+        {
+          "city": "Marco de Canavezes",
+          "lat": "41.1833",
+          "lng": "-8.1500"
+        },
+        {
+          "city": "Rio Tinto",
+          "lat": "41.1833",
+          "lng": "-8.5667"
+        },
+        {
+          "city": "Lousada",
+          "lat": "41.2833",
+          "lng": "-8.2833"
+        },
+        {
+          "city": "Trofa",
+          "lat": "41.3374",
+          "lng": "-8.5596"
+        },
+        {
+          "city": "Ermezinde",
+          "lat": "41.2133",
+          "lng": "-8.5472"
+        },
+        {
+          "city": "Vizela",
+          "lat": "41.3833",
+          "lng": "-8.3000"
+        },
+        {
+          "city": "Baião",
+          "lat": "41.1667",
+          "lng": "-8.0333"
+        },
+        {
+          "city": "Alfena",
+          "lat": "41.2395",
+          "lng": "-8.5244"
+        },
+        {
+          "city": "Arcozelo",
+          "lat": "41.0555",
+          "lng": "-8.6395"
+        },
+        {
+          "city": "Valadares",
+          "lat": "41.0997",
+          "lng": "-8.6403"
+        },
+        {
+          "city": "Aver-o-Mar",
+          "lat": "41.4039",
+          "lng": "-8.7690"
+        },
+        {
+          "city": "Castelões de Cepeda",
+          "lat": "41.2008",
+          "lng": "-8.3306"
+        },
+        {
+          "city": "Olival",
+          "lat": "41.0711",
+          "lng": "-8.5272"
+        },
+        {
+          "city": "Santo Tirso",
+          "lat": "41.3428",
+          "lng": "-8.4775"
+        }
       ]
     },
     {
@@ -3298,6 +4464,118 @@ export default {
             "União das freguesias de Rio de Couros e Casal dos Bernardos"
           ]
         }
+      ],
+      "cities": [
+        {
+          "city": "Santarém",
+          "lat": "39.2369",
+          "lng": "-8.6850"
+        },
+        {
+          "city": "Ourém",
+          "lat": "39.6500",
+          "lng": "-8.5833"
+        },
+        {
+          "city": "Tomar",
+          "lat": "39.6000",
+          "lng": "-8.4167"
+        },
+        {
+          "city": "Torres Novas",
+          "lat": "39.4833",
+          "lng": "-8.5333"
+        },
+        {
+          "city": "Benavente",
+          "lat": "38.9833",
+          "lng": "-8.8167"
+        },
+        {
+          "city": "Almeirim",
+          "lat": "39.2167",
+          "lng": "-8.6333"
+        },
+        {
+          "city": "Rio Maior",
+          "lat": "39.3333",
+          "lng": "-8.9333"
+        },
+        {
+          "city": "Entroncamento",
+          "lat": "39.4667",
+          "lng": "-8.4667"
+        },
+        {
+          "city": "Ferreira do Zêzere",
+          "lat": "39.7000",
+          "lng": "-8.2833"
+        },
+        {
+          "city": "Alpiarça",
+          "lat": "39.2593",
+          "lng": "-8.5850"
+        },
+        {
+          "city": "Vila Nova da Barquinha",
+          "lat": "39.4500",
+          "lng": "-8.4333"
+        },
+        {
+          "city": "Golegã",
+          "lat": "39.4000",
+          "lng": "-8.4833"
+        },
+        {
+          "city": "Riachos",
+          "lat": "39.4453",
+          "lng": "-8.5142"
+        },
+        {
+          "city": "Constância",
+          "lat": "39.4833",
+          "lng": "-8.3333"
+        },
+        {
+          "city": "Sardoal",
+          "lat": "39.5333",
+          "lng": "-8.1667"
+        },
+        {
+          "city": "Cartaxo",
+          "lat": "39.1619",
+          "lng": "-8.7864"
+        },
+        {
+          "city": "Salvaterra de Magos",
+          "lat": "39.0253",
+          "lng": "-8.7933"
+        },
+        {
+          "city": "Abrantes",
+          "lat": "39.4667",
+          "lng": "-8.2000"
+        },
+        {
+          "city": "Coruche",
+          "lat": "38.9581",
+          "lng": "-8.5283"
+        },
+        {
+          "city": "Chamusca",
+          "lat": "39.3594",
+          "lng": "-8.4808"
+        },
+        {
+          "city": "Mação",
+          "lat": "39.5533",
+          "lng": "-7.9986"
+        },
+        {
+          "city": "Alcanena",
+          "lat": "39.4589",
+          "lng": "-8.6689"
+        }
       ]
     },
     {
@@ -3422,6 +4700,78 @@ export default {
             "Sines",
             "Porto Covo"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Almada",
+          "lat": "38.6803",
+          "lng": "-9.1583"
+        },
+        {
+          "city": "Setúbal",
+          "lat": "38.5243",
+          "lng": "-8.8926"
+        },
+        {
+          "city": "Barreiro",
+          "lat": "38.6609",
+          "lng": "-9.0733"
+        },
+        {
+          "city": "Moita",
+          "lat": "38.6500",
+          "lng": "-8.9833"
+        },
+        {
+          "city": "Palmela",
+          "lat": "38.5667",
+          "lng": "-8.9000"
+        },
+        {
+          "city": "Montijo",
+          "lat": "38.7049",
+          "lng": "-8.9757"
+        },
+        {
+          "city": "Sesimbra",
+          "lat": "38.4437",
+          "lng": "-9.0996"
+        },
+        {
+          "city": "Amora",
+          "lat": "38.6265",
+          "lng": "-9.1189"
+        },
+        {
+          "city": "Alcochete",
+          "lat": "38.7553",
+          "lng": "-8.9608"
+        },
+        {
+          "city": "Sines",
+          "lat": "37.9536",
+          "lng": "-8.8712"
+        },
+        {
+          "city": "Alcácer do Sal",
+          "lat": "38.3725",
+          "lng": "-8.5133"
+        },
+        {
+          "city": "Santiago do Cacém",
+          "lat": "38.0167",
+          "lng": "-8.7000"
+        },
+        {
+          "city": "Grândola",
+          "lat": "38.1833",
+          "lng": "-8.5667"
+        },
+        {
+          "city": "Seixal",
+          "lat": "38.6428",
+          "lng": "-9.1061"
         }
       ]
     },
@@ -3685,6 +5035,63 @@ export default {
             "União das freguesias de Reboreda e Nogueira",
             "União das freguesias de Vila Nova de Cerveira e Lovelhe"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Viana do Castelo",
+          "lat": "41.7000",
+          "lng": "-8.8333"
+        },
+        {
+          "city": "Ponte de Lima",
+          "lat": "41.7667",
+          "lng": "-8.5833"
+        },
+        {
+          "city": "Monção",
+          "lat": "42.0733",
+          "lng": "-8.4800"
+        },
+        {
+          "city": "Melgaço",
+          "lat": "42.1167",
+          "lng": "-8.2667"
+        },
+        {
+          "city": "Arcozelo",
+          "lat": "41.7917",
+          "lng": "-8.5944"
+        },
+        {
+          "city": "Caminha",
+          "lat": "41.8779",
+          "lng": "-8.8382"
+        },
+        {
+          "city": "Ponte da Barca",
+          "lat": "41.8078",
+          "lng": "-8.4194"
+        },
+        {
+          "city": "Paredes de Coura",
+          "lat": "41.9111",
+          "lng": "-8.5597"
+        },
+        {
+          "city": "Vila Nova de Cerveira",
+          "lat": "41.9400",
+          "lng": "-8.7444"
+        },
+        {
+          "city": "Arcos de Valdevez",
+          "lat": "41.8442",
+          "lng": "-8.4264"
+        },
+        {
+          "city": "Valença",
+          "lat": "42.0301",
+          "lng": "-8.6411"
         }
       ]
     },
@@ -3957,6 +5364,78 @@ export default {
             "União das freguesias de São Tomé do Castelo e Justes",
             "Vila Real"
           ]
+        }
+      ],
+      "cities": [
+        {
+          "city": "Vila Real",
+          "lat": "41.3002",
+          "lng": "-7.7398"
+        },
+        {
+          "city": "Chaves",
+          "lat": "41.7399",
+          "lng": "-7.4707"
+        },
+        {
+          "city": "Peso da Régua",
+          "lat": "41.1632",
+          "lng": "-7.7890"
+        },
+        {
+          "city": "Vila Pouca de Aguiar",
+          "lat": "41.4833",
+          "lng": "-7.6333"
+        },
+        {
+          "city": "Mondim de Basto",
+          "lat": "41.4000",
+          "lng": "-7.9500"
+        },
+        {
+          "city": "Santa Marta de Penaguião",
+          "lat": "41.2000",
+          "lng": "-7.7833"
+        },
+        {
+          "city": "Ribeira de Pena",
+          "lat": "41.5167",
+          "lng": "-7.8000"
+        },
+        {
+          "city": "Sabrosa",
+          "lat": "41.2651",
+          "lng": "-7.5751"
+        },
+        {
+          "city": "Murça",
+          "lat": "41.4000",
+          "lng": "-7.4500"
+        },
+        {
+          "city": "Mesão Frio",
+          "lat": "41.1667",
+          "lng": "-7.8833"
+        },
+        {
+          "city": "Valpaços",
+          "lat": "41.6075",
+          "lng": "-7.3100"
+        },
+        {
+          "city": "Boticas",
+          "lat": "41.6889",
+          "lng": "-7.6650"
+        },
+        {
+          "city": "Alijó",
+          "lat": "41.2768",
+          "lng": "-7.4749"
+        },
+        {
+          "city": "Montalegre",
+          "lat": "41.8239",
+          "lng": "-7.7900"
         }
       ]
     },
@@ -4360,420 +5839,127 @@ export default {
             "União das freguesias de Vouzela e Paços de Vilharigues"
           ]
         }
-      ]
-    },
-    {
-      "district": "Ilha da Madeira",
-      "counties": [
+      ],
+      "cities": [
         {
-          "county": "Calheta",
-          "parishes": [
-            "Arco da Calheta",
-            "Calheta",
-            "Estreito da Calheta",
-            "Fajã da Ovelha",
-            "Jardim do Mar",
-            "Paul do Mar",
-            "Ponta do Pargo",
-            "Prazeres"
-          ]
+          "city": "Viseu",
+          "lat": "40.6667",
+          "lng": "-7.9167"
         },
         {
-          "county": "Câmara de Lobos",
-          "parishes": [
-            "Câmara de Lobos",
-            "Curral das Freiras",
-            "Estreito de Câmara de Lobos",
-            "Quinta Grande",
-            "Jardim da Serra"
-          ]
+          "city": "Lamego",
+          "lat": "41.0833",
+          "lng": "-7.8667"
         },
         {
-          "county": "Funchal",
-          "parishes": [
-            "Imaculado Coração de Maria",
-            "Monte",
-            "Funchal (Santa Luzia)",
-            "Funchal (Santa Maria Maior)",
-            "Santo António",
-            "São Gonçalo",
-            "São Martinho",
-            "Funchal (São Pedro)",
-            "São Roque",
-            "Funchal (Sé)"
-          ]
+          "city": "Cinfães",
+          "lat": "41.0667",
+          "lng": "-8.0833"
         },
         {
-          "county": "Machico",
-          "parishes": [
-            "Água de Pena",
-            "Caniçal",
-            "Machico",
-            "Porto da Cruz",
-            "Santo António da Serra"
-          ]
+          "city": "Castro Daire",
+          "lat": "40.9000",
+          "lng": "-7.9333"
         },
         {
-          "county": "Ponta do Sol",
-          "parishes": [
-            "Canhas",
-            "Madalena do Mar",
-            "Ponta do Sol"
-          ]
+          "city": "Nelas",
+          "lat": "40.5167",
+          "lng": "-7.8500"
         },
         {
-          "county": "Porto Moniz",
-          "parishes": [
-            "Achadas da Cruz",
-            "Porto Moniz",
-            "Ribeira da Janela",
-            "Seixal"
-          ]
+          "city": "Sátão",
+          "lat": "40.7333",
+          "lng": "-7.7167"
         },
         {
-          "county": "Ribeira Brava",
-          "parishes": [
-            "Campanário",
-            "Ribeira Brava",
-            "Serra de Água",
-            "Tábua"
-          ]
+          "city": "Resende",
+          "lat": "41.1000",
+          "lng": "-7.9500"
         },
         {
-          "county": "Santa Cruz",
-          "parishes": [
-            "Camacha",
-            "Caniço",
-            "Gaula",
-            "Santa Cruz",
-            "Santo António da Serra"
-          ]
+          "city": "Moimenta da Beira",
+          "lat": "40.9819",
+          "lng": "-7.6158"
         },
         {
-          "county": "Santana",
-          "parishes": [
-            "Arco de São Jorge",
-            "Faial",
-            "Santana",
-            "São Jorge",
-            "São Roque do Faial",
-            "Ilha"
-          ]
+          "city": "Carregal do Sal",
+          "lat": "40.4333",
+          "lng": "-8.0000"
         },
         {
-          "county": "São Vicente",
-          "parishes": [
-            "Boa Ventura",
-            "Ponta Delgada",
-            "São Vicente"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha de Porto Santo",
-      "counties": [
-        {
-          "county": "Porto Santo",
-          "parishes": [
-            "Porto Santo"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha de Santa Maria",
-      "counties": [
-        {
-          "county": "Vila do Porto",
-          "parishes": [
-            "Almagreira",
-            "Santa Bárbara",
-            "Santo Espírito",
-            "São Pedro",
-            "Vila do Porto"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha de São Miguel",
-      "counties": [
-        {
-          "county": "Lagoa",
-          "parishes": [
-            "Água de Pau",
-            "Cabouco",
-            "Lagoa (Nossa Senhora do Rosário)",
-            "Lagoa (Santa Cruz)",
-            "Ribeira Chã"
-          ]
+          "city": "Tarouca",
+          "lat": "41.0167",
+          "lng": "-7.7833"
         },
         {
-          "county": "Nordeste",
-          "parishes": [
-            "Achada",
-            "Achadinha",
-            "Lomba da Fazenda",
-            "Nordeste",
-            "Salga",
-            "Santana",
-            "Algarvia",
-            "Santo António de Nordestinho",
-            "São Pedro de Nordestinho"
-          ]
+          "city": "Penalva do Castelo",
+          "lat": "40.6667",
+          "lng": "-7.6833"
         },
         {
-          "county": "Ponta Delgada",
-          "parishes": [
-            "Arrifes",
-            "Candelária",
-            "Capelas",
-            "Covoada",
-            "Fajã de Baixo",
-            "Fajã de Cima",
-            "Fenais da Luz",
-            "Feteiras",
-            "Ginetes",
-            "Mosteiros",
-            "Ponta Delgada (São Sebastião)",
-            "Ponta Delgada (São José)",
-            "Ponta Delgada (São Pedro)",
-            "Relva",
-            "Remédios",
-            "Rosto do Cão (Livramento)",
-            "Rosto do Cão (São Roque)",
-            "Santa Bárbara",
-            "Santo António",
-            "São Vicente Ferreira",
-            "Sete Cidades",
-            "Ajuda da Bretanha",
-            "Pilar da Bretanha",
-            "Santa Clara"
-          ]
+          "city": "São João da Pesqueira",
+          "lat": "41.1333",
+          "lng": "-7.4000"
         },
         {
-          "county": "Povoação",
-          "parishes": [
-            "Água Retorta",
-            "Faial da Terra",
-            "Furnas",
-            "Nossa Senhora dos Remédios",
-            "Povoação",
-            "Ribeira Quente"
-          ]
+          "city": "Tabuaço",
+          "lat": "41.1167",
+          "lng": "-7.5667"
         },
         {
-          "county": "Ribeira Grande",
-          "parishes": [
-            "Calhetas",
-            "Fenais da Ajuda",
-            "Lomba da Maia",
-            "Lomba de São Pedro",
-            "Maia",
-            "Pico da Pedra",
-            "Porto Formoso",
-            "Rabo de Peixe",
-            "Ribeira Grande (Conceição)",
-            "Ribeira Grande (Matriz)",
-            "Ribeira Seca",
-            "Ribeirinha",
-            "Santa Bárbara",
-            "São Brás"
-          ]
+          "city": "Armamar",
+          "lat": "41.1167",
+          "lng": "-7.6833"
         },
         {
-          "county": "Vila Franca do Campo",
-          "parishes": [
-            "Água de Alto",
-            "Ponta Garça",
-            "Ribeira das Tainhas",
-            "Vila Franca do Campo (São Miguel)",
-            "Vila Franca do Campo (São Pedro)",
-            "Ribeira Seca"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha Terceira",
-      "counties": [
-        {
-          "county": "Angra do Heroísmo",
-          "parishes": [
-            "Altares",
-            "Angra (Nossa Senhora da Conceição)",
-            "Angra (Santa Luzia)",
-            "Angra (São Pedro)",
-            "Angra (Sé)",
-            "Cinco Ribeiras",
-            "Doze Ribeiras",
-            "Feteira",
-            "Porto Judeu",
-            "Posto Santo",
-            "Raminho",
-            "Ribeirinha",
-            "Santa Bárbara",
-            "São Bartolomeu de Regatos",
-            "São Bento",
-            "São Mateus da Calheta",
-            "Serreta",
-            "Terra Chã",
-            "Vila de São Sebastião"
-          ]
+          "city": "Vila Nova de Paiva",
+          "lat": "40.8500",
+          "lng": "-7.7333"
         },
         {
-          "county": "Vila da Praia da Vitória",
-          "parishes": [
-            "Agualva",
-            "Biscoitos",
-            "Cabo da Praia",
-            "Fonte do Bastardo",
-            "Fontinhas",
-            "Lajes",
-            "Praia da Vitória (Santa Cruz)",
-            "Quatro Ribeiras",
-            "São Brás",
-            "Vila Nova",
-            "Porto Martins"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha Graciosa",
-      "counties": [
-        {
-          "county": "Santa Cruz da Graciosa",
-          "parishes": [
-            "Guadalupe",
-            "Luz",
-            "São Mateus",
-            "Santa Cruz da Graciosa"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha de São Jorge",
-      "counties": [
-        {
-          "county": "Calheta",
-          "parishes": [
-            "Calheta",
-            "Norte Pequeno",
-            "Ribeira Seca",
-            "Santo Antão",
-            "Topo (Nossa Senhora do Rosário)"
-          ]
+          "city": "Mangualde",
+          "lat": "40.6058",
+          "lng": "-7.7658"
         },
         {
-          "county": "Velas",
-          "parishes": [
-            "Manadas (Santa Bárbara)",
-            "Norte Grande (Neves)",
-            "Rosais",
-            "Santo Amaro",
-            "Urzelina (São Mateus)",
-            "Velas (São Jorge)"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha do Pico",
-      "counties": [
-        {
-          "county": "Lajes do Pico",
-          "parishes": [
-            "Calheta de Nesquim",
-            "Lajes do Pico",
-            "Piedade",
-            "Ribeiras",
-            "Ribeirinha",
-            "São João"
-          ]
+          "city": "Tondela",
+          "lat": "40.5164",
+          "lng": "-8.0808"
         },
         {
-          "county": "Madalena",
-          "parishes": [
-            "Bandeiras",
-            "Candelária",
-            "Criação Velha",
-            "Madalena",
-            "São Caetano",
-            "São Mateus"
-          ]
+          "city": "Santa Comba Dão",
+          "lat": "40.3981",
+          "lng": "-8.1303"
         },
         {
-          "county": "São Roque do Pico",
-          "parishes": [
-            "Prainha",
-            "Santa Luzia",
-            "Santo Amaro",
-            "Santo António",
-            "São Roque do Pico"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha do Faial",
-      "counties": [
-        {
-          "county": "Horta",
-          "parishes": [
-            "Capelo",
-            "Castelo Branco",
-            "Cedros",
-            "Feteira",
-            "Flamengos",
-            "Horta (Angústias)",
-            "Horta (Conceição)",
-            "Horta (Matriz)",
-            "Pedro Miguel",
-            "Praia do Almoxarife",
-            "Praia do Norte",
-            "Ribeirinha",
-            "Salão"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha das Flores",
-      "counties": [
-        {
-          "county": "Lajes das Flores",
-          "parishes": [
-            "Fajã Grande",
-            "Fajãzinha",
-            "Fazenda",
-            "Lajedo",
-            "Lajes das Flores",
-            "Lomba",
-            "Mosteiro"
-          ]
+          "city": "Vouzela",
+          "lat": "40.7231",
+          "lng": "-8.1122"
         },
         {
-          "county": "Santa Cruz das Flores",
-          "parishes": [
-            "Caveira",
-            "Cedros",
-            "Ponta Delgada",
-            "Santa Cruz das Flores"
-          ]
-        }
-      ]
-    },
-    {
-      "district": "Ilha do Corvo",
-      "counties": [
+          "city": "São Pedro do Sul",
+          "lat": "40.7408",
+          "lng": "-8.0914"
+        },
         {
-          "county": "Corvo",
-          "parishes": [
-            "Corvo"
-          ]
+          "city": "Mortágua",
+          "lat": "40.3947",
+          "lng": "-8.2328"
+        },
+        {
+          "city": "Sernancelhe",
+          "lat": "40.9003",
+          "lng": "-7.4942"
+        },
+        {
+          "city": "Penedono",
+          "lat": "40.9889",
+          "lng": "-7.3922"
+        },
+        {
+          "city": "Oliveira de Frades",
+          "lat": "40.7314",
+          "lng": "-8.1767"
         }
       ]
     }

@@ -77,11 +77,18 @@ POR IMPLEMENTAR:
 
 - repeats diretos de probabilities?
 
+- fazer o modelo para os casos especiais de coleções
+- preciso de mudar o missing para não usar um member e calcular as probabilidades logo nessa parte
+
 IDEIAS AUTOS:
 - aceder a propriedades de níveis superiores (global?)
 - dar ao repeat uma var local de argumento em vez de int direto
 
 - ver se o random e o integer novos funcionam direito em função
+
+
+
+
 
 --------------------------------------------------------
 

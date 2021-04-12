@@ -7,6 +7,7 @@
 
   var collections = [] //nomes das coleções
   var cur_collection = "" //nome da coleção atual durante a travessia
+  var collectionsData = {}
 
   var queue = [] //queue com os números dos repeats (aninhados)
   var uniq_queue = [] //queue para fazer repeats de randoms sem elementos repetidos; ao entrar num repeat, pusha null se for normal, ou o nº do repeat se for unique
@@ -19,8 +20,14 @@
   var member_key = "" //chave do membro que está a processar no momento, para guardar na array abaixo ao começar um repeat
   var repeat_keys = [] //lista das chaves dos repeats, para ao fechar o objeto principal conseguir distinguir um objeto de um repeat (a data do objeto simples vem em Array(1))
 
+  var values_map = []
+
   function mapToString(arr) {
     return arr.map(x => Array.isArray(x) ? mapToString(x) : (typeof x == "object" ? JSON.stringify(x) : String(x)))
+  }
+
+  function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
   function getIndexes(num) {
@@ -84,14 +91,18 @@
     }
     else if (['pt_district','pt_county','pt_parish'].includes(key)) {
       if (args[0].length > 0) {
-        if (key == "pt_county") { key += "FromDistrict"; join = trimArg(args[0], true) }
-        else {
-          var from = trimArg(args[0], false)
-          key += "From" + from.charAt(0).toUpperCase() + from.slice(1)
-          join = trimArg(args[1], true)
-        }
+        var from = capitalize(trimArg(args[0], false))
+        join = trimArg(args[1], true)
+
+        if (key == "pt_district") key += "Of" + from
+        if (key == "pt_county") key += (from == "District" ? "From" : "Of") + from
+        if (key == "pt_parish") key += "From" + from
       }
       path = "dataAPI.pt_districts." + key
+    }
+    else if (key == "pt_city") {
+      path = "dataAPI.pt_districts." + key + (!args[0].length ? "" : "Coordinates")
+      if (args[0].length > 0) join = trimArg(args[1], true)
     }
     else if (key == "soccer_club") {
       path = "dataAPI.soccer_clubs." + key + (!args[0].length ? "" : "_from")
@@ -123,6 +134,68 @@
       delete value.component
     }
     return value
+  }
+
+  function propException(members, p, model, data) {
+    if (model == null && data == null) {
+      model = {attributes: {}}
+      data = []
+      for (let i = 0; i < queue_prod; i++) data.push({})
+    }
+
+    if ("if" in members[p]) {
+      for (let prop in members[p].value.model.attributes) {
+        model.attributes[prop] = members[p].value.model.attributes[prop]
+        values_map[values_map.length-1].data[prop] = []
+      }
+
+      for (let i = 0; i < queue_prod; i++) {
+        if (members[p].if({genAPI, dataAPI, local: Object.assign(...values_map), i})) {
+          for (let prop in members[p].value.data[i]) {
+            data[i][prop] = members[p].value.data[i][prop]
+            values_map[values_map.length-1].data[prop].push(data[i][prop])
+          }
+          var null_keys = Object.keys(values_map[values_map.length-1].data).filter(e => !Object.keys(members[p].value.data[i]).includes(e))
+          null_keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
+        }
+        else {
+          for (let prop in members[p].value.data[i]) values_map[values_map.length-1].data[prop].push(null)
+        }
+      }
+    } 
+    else if ("or" in members[p]) {
+      for (let prop in members[p].or.model.attributes) 
+        model.attributes[prop] = members[p].or.model.attributes[prop]
+
+      let keys = Object.keys(members[p].or.model.attributes)
+      for (let i = 0; i < queue_prod; i++) {
+        let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+        data[i][key] = members[p].or.data[i][key]
+      }
+    }
+    else if ("at_least" in members[p]) {
+      for (let prop in members[p].value.model.attributes) 
+        model.attributes[prop] = members[p].value.model.attributes[prop]
+
+      for (let i = 0; i < queue_prod; i++) {
+        let keys = Object.keys(members[p].value.model.attributes)
+        var num = Math.floor(Math.random() * ((keys.length+1) - members[p].at_least) + members[p].at_least)
+        if (members[p].at_least > keys.length) num = keys.length
+
+        for (let j = 0; j < num; j++) {
+          let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+          data[i][key] = members[p].value.data[i][key]
+          keys.splice(keys.indexOf(key), 1)
+        }
+      }
+    }
+    else if ("function" in members[p]) {
+      model.attributes[p] = members[p].model
+      for (let i = 0; i < queue_prod; i++)
+        data[i][p] = members[p].function({genAPI, dataAPI, local: Object.assign(...values_map), i})
+    }
+
+    return {model, data}
   }
 
   function fillArray(api, sub_api, moustaches, args) {
@@ -168,9 +241,9 @@
 
 DSL_text = language value:collection_object { return {dataModel: value, components} }
 
-begin_array      = ws "[" ws { ++open_structs; array_indexes.push(0); struct_types.push("array") }
-begin_object     = ws "{" ws { ++open_structs; struct_types.push("object") }
-end_array        = ws "]" ws { array_indexes.pop(); struct_types.pop() }
+begin_array      = ws "[" ws { ++open_structs; struct_types.push("array"); array_indexes.push(0); values_map.push({type: "array", data: []}) }
+begin_object     = ws "{" ws { ++open_structs; struct_types.push("object"); values_map.push({type: "object", data: {}}) }
+end_array        = ws "]" ws { struct_types.pop(); array_indexes.pop() }
 end_object       = ws "}" ws { --open_structs; struct_types.pop() }
 name_separator   = ws ":" ws
 repeat_separator = ws ":" ws { ++open_structs; struct_types.push("repeat") }
@@ -185,11 +258,11 @@ language = ws "<!LANGUAGE " lang:("pt" / "en") ">" ws { language = lang }
 
 value
   = directive
+  / object
+  / array
   / false
   / null
   / true
-  / object
-  / array
   / number
   / string
 
@@ -204,21 +277,32 @@ true  = "true"  { return {model: {type: "boolean", required: true}, data: Array(
 
 collection_object
   = begin_object members:object_members end_object {
-      var data = [], model = {}, i = 0
+      var model = {}, i = 0
 
       for (let p in members) {
-        model[collections[i]] = {
-          kind: "collectionType",
-          collectionName: collections[i],
-          info: {name: collections[i++]},
-          options: {},
-          attributes: members[p].model.attributes
-        }
-        members[p] = repeat_keys.includes(p) ? members[p].data : members[p].data[0]
-      }
-      data = members
+        if ("if" in members[p] || "or" in members[p] || "at_least" in members[p] || "function" in members[p]) {
+          let dataModel = propException(members, p, null, null)
 
-      return members !== null ? {data, model} : {}
+          if ("function" in members[p]) collectionsData[p] = dataModel.data[0][p]
+          else {
+            //model
+            for (var prop in dataModel.data[0]) collectionsData[prop] = dataModel.data[0][prop]
+          }
+        }
+        else {
+          model[collections[i]] = {
+            kind: "collectionType",
+            collectionName: collections[i],
+            info: {name: collections[i++]},
+            options: {},
+            attributes: members[p].model.attributes
+          }
+
+          collectionsData[p] = repeat_keys.includes(p) ? members[p].data : members[p].data[0]
+        }
+      }
+
+      return members !== null ? {data: collectionsData, model} : {}
     }
 
 object
@@ -227,58 +311,22 @@ object
     for (let i = 0; i < queue_prod; i++) data.push({})
 
     for (let p in members) {
-      if ("if" in members[p]) {
-        for (let prop in members[p].value.model.attributes) 
-          model.attributes[prop] = members[p].value.model.attributes[prop]
-
-        for (let i = 0; i < queue_prod; i++) {
-          if (members[p].if({genAPI, dataAPI, local: data[i]})) {
-            for (let prop in members[p].value.data[i]) data[i][prop] = members[p].value.data[i][prop]
-          }
-        }
-      } 
-      else if ("or" in members[p]) {
-        for (let prop in members[p].or.model.attributes) 
-          model.attributes[prop] = members[p].or.model.attributes[prop]
-
-        let keys = Object.keys(members[p].or.model.attributes)
-        for (let i = 0; i < queue_prod; i++) {
-          let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
-          data[i][key] = members[p].or.data[i][key]
-        }
-      }
-      else if ("at_least" in members[p]) {
-        for (let prop in members[p].value.model.attributes) 
-          model.attributes[prop] = members[p].value.model.attributes[prop]
-
-        for (let i = 0; i < queue_prod; i++) {
-          let keys = Object.keys(members[p].value.model.attributes)
-          var num = Math.floor(Math.random() * ((keys.length+1) - members[p].at_least) + members[p].at_least)
-          if (members[p].at_least > keys.length) num = keys.length
-
-          for (let j = 0; j < num; j++) {
-            let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
-            data[i][key] = members[p].value.data[i][key]
-            keys.splice(keys.indexOf(key), 1)
-          }
-        }
+      if ("if" in members[p] || "or" in members[p] || "at_least" in members[p] || "function" in members[p]) {
+        let dataModel = propException(members, p, model, data)
+        model = dataModel.model
+        data = dataModel.data
       }
       else {
         model.attributes[p] = members[p].model
         var prob = "probability" in members[p]
 
         for (let i = 0; i < queue_prod; i++) {
-          if ((prob && members[p].data[i] !== null) || (!prob && !("function" in members[p]) && !("if" in members[p])))
-            data[i][p] = members[p].data[i]
+          if ((prob && members[p].data[i] !== null) || !prob) data[i][p] = members[p].data[i]
         }
       }
     }
-
-    Object.keys(members).filter(key => "function" in members[key]).forEach(p => {
-      for (let i = 0; i < queue_prod; i++)
-        data[i][p] = members[p].function({genAPI, dataAPI, local: data[i]})
-    })
     
+    values_map[values_map.length-1].delete = true
     return members !== null ? {data, model, component: true} : {}
   }
 
@@ -290,16 +338,38 @@ object_members
   }
 
 member
-  = name:member_key name_separator value:value_or_interpolation {
+  = probability / function_prop / if / or / at_least
+  / name:member_key name_separator value:value_or_interpolation {
+    if ("delete" in values_map[values_map.length-1]) values_map.pop()
+    values_map[values_map.length-1].data[name] = value.data
+
     if (open_structs == 1) cur_collection = ""
     value = createComponent(name, value)
     return { name, value }
   }
-  / probability / function_prop / if / or / at_least
 
 value_or_interpolation = val:(value / interpolation) {
     if (struct_types[struct_types.length-1] == "array") array_indexes[array_indexes.length-1]++
+
+    if ("delete" in values_map[values_map.length-1] && values_map[values_map.length-2].type == "array") {
+      let popped = values_map.pop()
+      values_map[values_map.length-1].data.push(popped.data)
+    }
+    else if (!("delete" in values_map[values_map.length-1]) && values_map[values_map.length-1].type == "array") {
+      values_map[values_map.length-1].data.push(val.data)
+    }
+
     return val
+  }
+
+member_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) {
+    member_key = chars.flat().join("")
+    if (open_structs == 1) {
+      cur_collection = member_key + "_" + uuidv4()
+      collections.push(cur_collection)
+      components[cur_collection] = {}
+    }
+    return member_key
   }
 
 // ----- 5. Arrays -----
@@ -326,6 +396,8 @@ array
 
       var dataModel = {data, model}
       if (--open_structs > 1) dataModel.component = true
+      
+      values_map[values_map.length-1].delete = true
       return dataModel
     }
 
@@ -436,8 +508,12 @@ nameOrAbbr
 string_arg
   = ws quotation_mark chars:[^"]* quotation_mark ws { return chars.flat().join("").trim() }
 
+district_keyword = "pt_district" / "pt_county" / "pt_parish"
+
 place_label
-  = ws quotation_mark ws label:(("district") / ("county")) ws quotation_mark ws { return label }
+  = ws quotation_mark ws label:(("district") / ("county") / ("parish") / ("city")) ws quotation_mark ws {
+    return capitalize(label)
+  }
 
 lorem_string
   = quotation_mark ws word:"words" ws quotation_mark { return word }
@@ -453,17 +529,6 @@ date_format
   = quotation_mark ws format:("DD" date_separator "MM" date_separator ("AAAA" / "YYYY")) ws quotation_mark { return format.join(""); }
   / quotation_mark ws format:("MM" date_separator "DD" date_separator ("AAAA" / "YYYY")) ws quotation_mark { return format.join(""); }
   / quotation_mark ws format:(("AAAA" / "YYYY") date_separator "MM" date_separator "DD") ws quotation_mark { return format.join(""); }
-
-member_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) {
-    member_key = chars.flat().join("")
-
-    if (open_structs == 1) {
-      cur_collection = member_key + "_" + uuidv4()
-      collections.push(cur_collection)
-      components[cur_collection] = {}
-    }
-    return member_key
-  }
 
 char
   = unescaped
@@ -565,8 +630,8 @@ gen_moustaches
     }
   }
   / "random(" ws values:(
-      head:(value/moustaches)
-      tail:(value_separator v:(value/moustaches) { return v.data[0] })*
+      head:(value/moustaches_value)
+      tail:(value_separator v:(value/moustaches_value) { return v.data[0] })*
       { return [head.data[0]].concat(tail); }
     )? ")" {
       return {
@@ -583,17 +648,26 @@ gen_moustaches
 
 api_moustaches
   = simple_api_key
-  / "pt_county(" district:string_arg ")" {
-    return {
-      model: {type: "string", required: true},
-      data: fillArray("data", "pt_districts", "pt_countyFromDistrict", [district])
-    }
-  }
-  / "pt_parish(" keyword:place_label "," name:string_arg ")" {
-    var moustaches = keyword == "county" ? "pt_parishFromCounty" : "pt_parishFromDistrict"
+  / key:district_keyword "(" moustaches:place_label "," name:string_arg ")" {
+    if (key == "pt_district") moustaches = key + "Of" + moustaches
+    if (key == "pt_county") moustaches = key + (moustaches == "District" ? "From" : "Of") + moustaches
+    if (key == "pt_parish") moustaches = key + "From" + moustaches
+    
     return {
       model: {type: "string", required: true},
       data: fillArray("data", "pt_districts", moustaches, [name])
+    }
+  }
+  / "pt_city(" ws city:(quotation_mark ws "coords" ws quotation_mark ws "," name:string_arg ws {return name})? ")" {
+    return {
+      model: {
+        type: city === null ? "string" : {
+          latitude: {type: "string", required: true},
+          longitude: {type: "string", required: true}
+        },
+        required: true
+      },
+      data: fillArray("data", "pt_districts", "pt_city" + (city == null ? "" : "Coordinates"), city == null ? [] : [city])
     }
   }
   / "pt_political_party(" ws arg:nameOrAbbr? ")" {
@@ -713,7 +787,9 @@ probability
       arr.push(bool ? m.value.data[i] : null)
     }
 
+    values_map[values_map.length-1].data[m.name] = arr
     m.value.model.required = false
+
     return {
       name: m.name,
       value: { probability: true, model: m.value.model, data: arr }
@@ -722,17 +798,17 @@ probability
 
 or = "or(" ws ")" ws obj:object {
     for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-    return { name: "properties", value: { or: obj }}
+    return { name: uuidv4(), value: { or: obj }}
   }
 
 at_least = "at_least(" ws num:int ws ")" obj:object {
     for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-    return { name: "properties", value: { at_least: num, value: obj }}
+    return { name: uuidv4(), value: { at_least: num, value: obj }}
   }
 
 if = "if" ws code:if_code ws obj:object {
     for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-    return { name: "properties", value: { if: new Function("gen", "return " + code), value: obj } }
+    return { name: uuidv4(), value: { if: new Function("gen", "return " + code), value: obj } }
   }
 
 function_prop
@@ -755,9 +831,16 @@ not_code = !CODE_START !CODE_STOP. { return text() }
 
 code_key = key:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_.]/[^\x00-\x7F])*) { return key.flat().join("") } 
 
-local_var = "this." key:code_key { return "gen.local." + key }
+local_var = "this" char:("."/"[") key:code_key {
+    if (char == "[") key = char + key
+    
+    var keySplit = key.split(/\.(.+)/)
+    var path = `gen.local.data${char=="."?".":""}${keySplit[0]}[gen.i]`
+    if (keySplit.length > 1) path += (keySplit[1][0] != "[" ? "." : "") + keySplit[1]
+    return path
+  }
 
-gen_call = "gen." key:code_key ARGS_START args:(gen_call / not_parentheses)* ARGS_STOP {
+gen_call = "gen." key:code_key ARGS_START args:(gen_call / local_var / not_parentheses)* ARGS_STOP {
     args = args.join("").split(",")
     
     var split = [], build = "", i = 0

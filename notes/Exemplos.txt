@@ -10,7 +10,7 @@
     	integer_pad: '{{integer(5,10,4)}}',
   
   		fonteLegitimação: "teste",
-  		random: '{{random(1,2,"string",[1,2,3],{prop: "prop"}, {{boolean()}}, {{random("A","B","C")}}) }}',
+  		random: '{{random(1,2,"string",[1,2,3],{prop: "prop"}, boolean(), random("A","B","C")) }}',
   
   		if (true) {
             if (gen.integer(5,10) > 5) {
@@ -298,8 +298,11 @@ MOUSTACHES DE DATASETS:
 	colecao: [
       'repeat(3)': {
           distrito: '{{pt_district()}}',
+          distrito2: '{{pt_district("county","Braga")}}',
+          distrito3: '{{pt_district("parish","Sequeira")}}',
           concelho: '{{pt_county()}}',
-          concelho2: '{{pt_county("Braga")}}',
+          concelho2: '{{pt_county("district","Braga")}}',
+          concelho3: '{{pt_county("parish","Sequeira")}}',
           freguesia: '{{pt_parish()}}',
           freguesia2: '{{pt_parish("district","Braga")}}',
           freguesia3: '{{pt_parish("county","Braga")}}',

@@ -3,7 +3,7 @@ const jobs = jobsJS.jobs
 
 const jobsAPI = {
     job(lang) {
-        return jobs[Math.floor(Math.random() * jobs.length)]
+        return jobs[lang][Math.floor(Math.random() * jobs.length)]
     }
 }
 
