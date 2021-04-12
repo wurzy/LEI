@@ -247,10 +247,26 @@ export default {
           dataset: JSON.parse(this.result)
         }
 
-        //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
-        axios.post('http://localhost:3000/genAPI/',body)
+        var bodyImp= {
+            apiName: this.colname,
+            dataset: JSON.parse(this.result)
+        }
+
+        let promises = [];
+        promises.push(
+          axios.post('http://localhost:3000/genAPI/',body)
           .then(dados => console.log("Modelo criado"))
           .catch(erro => console.log(erro))
+        )
+        promises.push(
+          axios.post('http://localhost:3000/import/',bodyImp)
+          .then(dados => console.log("Import feito"))
+          .catch(erro => console.log(erro))
+        )
+        Promise.all(promises).then(() => console.log("API gerada!"));
+
+        //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
+       
 
         //axios.get('http://localhost:3000/dir/'+document.getElementById('filename').value,optionAxios)
         //.then(dados => console.log("Modelo criado"))

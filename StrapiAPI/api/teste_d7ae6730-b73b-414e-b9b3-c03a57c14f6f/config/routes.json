@@ -1,0 +1,52 @@
+{
+"routes": [
+  {
+    "method": "GET",
+    "path": "/teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6fs",
+    "handler": "teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6f.find",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6fs/count",
+    "handler": "teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6f.count",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "GET",
+    "path": "/teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6fs/:id",
+    "handler": "teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6f.findOne",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "POST",
+    "path": "/teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6fs",
+    "handler": "teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6f.create",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "PUT",
+    "path": "/teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6fs/:id",
+    "handler": "teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6f.update",
+    "config": {
+      "policies": []
+    }
+  },
+  {
+    "method": "DELETE",
+    "path": "/teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6fs/:id",
+    "handler": "teste_d7ae6730-b73b-414e-b9b3-c03a57c14f6f.delete",
+    "config": {
+      "policies": []
+    }
+  }
+]
+}
