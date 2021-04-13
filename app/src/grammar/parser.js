@@ -181,13 +181,13 @@ const parser = (function() {
         peg$c37 = function(val) { return val.data[0] },
         peg$c38 = "false",
         peg$c39 = peg$literalExpectation("false", false),
-        peg$c40 = function() { return {model: {type: "boolean", required: true}, data: Array(queue_prod).fill(false)} },
+        peg$c40 = function() { return {model: {type: "boolean", required: true}, data: Array(nr_copies).fill(false)} },
         peg$c41 = "null",
         peg$c42 = peg$literalExpectation("null", false),
-        peg$c43 = function() { return {model: {type: "string", required: false, default: null}, data: Array(queue_prod).fill(null)} },
+        peg$c43 = function() { return {model: {type: "string", required: false, default: null}, data: Array(nr_copies).fill(null)} },
         peg$c44 = "true",
         peg$c45 = peg$literalExpectation("true", false),
-        peg$c46 = function() { return {model: {type: "boolean", required: true}, data: Array(queue_prod).fill(true)} },
+        peg$c46 = function() { return {model: {type: "boolean", required: true}, data: Array(nr_copies).fill(true)} },
         peg$c47 = function(members) {
               var model = {}, i = 0
 
@@ -218,7 +218,7 @@ const parser = (function() {
             },
         peg$c48 = function(members) {
             var data = [], model = {attributes: {}}
-            for (let i = 0; i < queue_prod; i++) data.push({})
+            for (let i = 0; i < nr_copies; i++) data.push({})
 
             for (let p in members) {
               if ("if" in members[p] || "or" in members[p] || "at_least" in members[p] || "function" in members[p]) {
@@ -230,7 +230,7 @@ const parser = (function() {
                 model.attributes[p] = members[p].model
                 var prob = "probability" in members[p]
 
-                for (let i = 0; i < queue_prod; i++) {
+                for (let i = 0; i < nr_copies; i++) {
                   if ((prob && members[p].data[i] !== null) || !prob) data[i][p] = members[p].data[i]
                 }
               }
@@ -285,14 +285,14 @@ const parser = (function() {
         peg$c61 = function(head, tail) { return [head].concat(tail) },
         peg$c62 = function(arr) {
               var model = {attributes: {}}, data = []
-              for (let i = 0; i < queue_prod; i++) data.push([])
+              for (let i = 0; i < nr_copies; i++) data.push([])
               if (arr == null) arr = []
 
               for (let j = 0; j < arr.length; j++) {
                 arr[j] = createComponent("elem"+j, arr[j])
                 model.attributes["elem"+j] = arr[j].model
 
-                for (let k = 0; k < queue_prod; k++) data[k].push(arr[j].data[k])
+                for (let k = 0; k < nr_copies; k++) data[k].push(arr[j].data[k])
               }
 
               var dataModel = {data, model}
@@ -304,7 +304,7 @@ const parser = (function() {
         peg$c63 = peg$otherExpectation("number"),
         peg$c64 = function() {
             var num = parseFloat(text())
-            return {model: {type: !(num%1) ? "integer" : "float", required: true}, data: Array(queue_prod).fill(num)}
+            return {model: {type: !(num%1) ? "integer" : "float", required: true}, data: Array(nr_copies).fill(num)}
           },
         peg$c65 = /^[1-9]/,
         peg$c66 = peg$classExpectation([["1", "9"]], false, false),
@@ -342,7 +342,7 @@ const parser = (function() {
         peg$c96 = peg$otherExpectation("string"),
         peg$c97 = function(chars) {
             var str = chars.join("")
-            return { model: {type: "string", required: true}, data: Array(queue_prod).fill(str) }
+            return { model: {type: "string", required: true}, data: Array(nr_copies).fill(str) }
           },
         peg$c98 = "(",
         peg$c99 = peg$literalExpectation("(", false),
@@ -567,7 +567,7 @@ const parser = (function() {
         peg$c307 = function(val, str) {
           var model = { type: "string", required: true }, data
 
-          if (!val.length) data = Array(queue_prod).fill("")
+          if (!val.length) data = Array(nr_copies).fill("")
           else if (val.length == 1) {
             model = val[0].model; data = val[0].data
             data = !str ? val[0].data : mapToString(val[0].data)
@@ -582,7 +582,7 @@ const parser = (function() {
         peg$c308 = function(v) { return v },
         peg$c309 = peg$anyExpectation(),
         peg$c310 = function() {
-          return { model: {type: "string", required: true}, data: Array(queue_prod).fill(text()) }
+          return { model: {type: "string", required: true}, data: Array(nr_copies).fill(text()) }
         },
         peg$c311 = "{{",
         peg$c312 = peg$literalExpectation("{{", false),
@@ -601,12 +601,15 @@ const parser = (function() {
         peg$c325 = peg$literalExpectation("index(", false),
         peg$c326 = function(i) { return i },
         peg$c327 = function(offset) {
-            var queue_last = queue[queue.length-1]
+            var arrays = [], queue_last = queue[queue.length-1]
             if (offset == null) offset = 0
+
+            if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n)))
+            else arrays = Array(queue_last.value).fill(getIndexes(queue_last.value))
 
             return {
               model: {type: "integer", required: true},
-              data: Array(queue_prod/queue_last).fill(getIndexes(queue_last)).flat().map(k => k + offset)
+              data: arrays.flat().map(k => k + offset)
             }
           },
         peg$c328 = "integer(",
@@ -765,18 +768,18 @@ const parser = (function() {
               data: fillArray("data", "pt_entities", "pt_entity" + (!arg ? '' : ('_'+arg)), [])
             }
           },
-        peg$c380 = function(val) {
-            var num = queue.pop(); queue_prod /= num
-            uniq_queue.pop(); --open_structs
-            struct_types.pop()
+        peg$c380 = function(num, val) {
+            queue.pop(); nr_copies = queue[queue.length-1].total
+            struct_types.pop(); --open_structs
             
             var model = {attributes: {}}
             if (open_structs > 1) {
-              val.data = chunk(val.data, num)
+              val.data = Array.isArray(num) ? chunkDifferent(val.data, num) : chunk(val.data, num)
               val = createComponent("repeat_elem", val)
               for (let i = 0; i < num; i++) model.attributes["repeat_elem"+i] = val.model
             }
 
+            cleanMapValues()
             return {data: val.data, model: open_structs > 1 ? model : val.model, component: true}
           },
         peg$c381 = "repeat",
@@ -784,12 +787,13 @@ const parser = (function() {
         peg$c383 = "_unique",
         peg$c384 = peg$literalExpectation("_unique", false),
         peg$c385 = function(unique, num) {
-          uniq_queue.push(unique != null ? num : null)
-          queue_prod *= num; queue.push(num)
-      
-          repeat_keys.push(member_key)
-          updateValuesMap()
-        },
+            nr_copies = Array.isArray(num) ? num.reduce((a,b) => a+b, 0) : nr_copies*num
+            queue.push({ value: num, unique: unique != null, total: nr_copies })
+
+            repeat_keys.push(member_key)
+            replicateMapValues()
+            return num
+          },
         peg$c386 = function(min, m) { return m },
         peg$c387 = function(min, max) {
             return max === null ? min : Math.floor(Math.random() * ((max+1) - min) + min)
@@ -800,15 +804,14 @@ const parser = (function() {
             if (char == "[") key = char + key
 
             let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
-            console.log(_.cloneDeep(local))
             let args = key.match(/([a-zA-Z_]|[^\x00-\x7F])([a-zA-Z0-9_]|[^\x00-\x7F])*/g)
 
             for (let i = 0; i < args.length; i++) {
               if (args[i] in local) local = local[args[i]]
               else break//erro
             }
-            console.log(_.cloneDeep(local))
-            return local
+
+            return local.map(x => parseInt(x))
           },
         peg$c391 = "range(",
         peg$c392 = peg$literalExpectation("range(", false),
@@ -836,7 +839,7 @@ const parser = (function() {
         peg$c402 = function(sign, probability, m) {
             var prob = parseInt(probability.join(""))/100, arr = []
 
-            for (let i = 0; i < queue_prod; i++) {
+            for (let i = 0; i < nr_copies; i++) {
               var bool = (sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob)
               arr.push(bool ? m.value.data[i] : null)
             }
@@ -6709,7 +6712,7 @@ const parser = (function() {
                           s11 = peg$parsews();
                           if (s11 !== peg$FAILED) {
                             peg$savedPos = s0;
-                            s1 = peg$c380(s8);
+                            s1 = peg$c380(s4, s8);
                             s0 = s1;
                           } else {
                             peg$currPos = s0;
@@ -8128,9 +8131,8 @@ const parser = (function() {
       var cur_collection = "" //nome da coleção atual durante a travessia
       var collectionsData = {}
 
-      var queue = [] //queue com os números dos repeats (aninhados)
-      var uniq_queue = [] //queue para fazer repeats de randoms sem elementos repetidos; ao entrar num repeat, pusha null se for normal, ou o nº do repeat se for unique
-      var queue_prod = 1 //número de cópias de uma folha que é preciso produzir em qualquer momento
+      var queue = [{value: 1, unique: false, total: 1}] //queue com {argumento original do repeat, se é um repeat unique ou não, total de cópias que é necessário criar nesse repeat}
+      var nr_copies = 1 //número de cópias de uma folha que é preciso produzir em qualquer momento
       
       var open_structs = 0 //para saber o nível de profundidade de estruturas em que está atualmente; incrementa ao abrir um objeto, array ou repeat
       var struct_types = [] //tipo das estruturas dentro das quais está, para saber se um index() pertence a um array ou a um repeat
@@ -8259,7 +8261,7 @@ const parser = (function() {
         if (model == null && data == null) {
           model = {attributes: {}}
           data = []
-          for (let i = 0; i < queue_prod; i++) data.push({})
+          for (let i = 0; i < nr_copies; i++) data.push({})
         }
 
         if ("if" in members[p]) {
@@ -8268,7 +8270,7 @@ const parser = (function() {
             values_map[values_map.length-1].data[prop] = []
           }
 
-          for (let i = 0; i < queue_prod; i++) {
+          for (let i = 0; i < nr_copies; i++) {
             let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
             
             if (members[p].if({genAPI, dataAPI, local, i})) {
@@ -8290,7 +8292,7 @@ const parser = (function() {
             values_map[values_map.length-1].data[prop] = []
           }
 
-          for (let i = 0; i < queue_prod; i++) {
+          for (let i = 0; i < nr_copies; i++) {
             let keys = Object.keys(members[p].or.model.attributes)
             let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
 
@@ -8307,7 +8309,7 @@ const parser = (function() {
             values_map[values_map.length-1].data[prop] = []
           }
 
-          for (let i = 0; i < queue_prod; i++) {
+          for (let i = 0; i < nr_copies; i++) {
             let keys = Object.keys(members[p].value.model.attributes)
             var num = Math.floor(Math.random() * ((keys.length+1) - members[p].at_least) + members[p].at_least)
             if (members[p].at_least > keys.length) num = keys.length
@@ -8326,7 +8328,7 @@ const parser = (function() {
           model.attributes[p] = members[p].model
           values_map[values_map.length-1].data[p] = []
 
-          for (let i = 0; i < queue_prod; i++) {
+          for (let i = 0; i < nr_copies; i++) {
             let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
             data[i][p] = members[p].function({genAPI, dataAPI, local, i})
             values_map[values_map.length-1].data[p].push(data[i][p])
@@ -8336,10 +8338,10 @@ const parser = (function() {
         return {model, data}
       }
 
-      function updateValuesMap() {
+      function replicateMapValues() {
         for (let i = 0; i < values_map.length; i++) {
           for (var prop in values_map[i].data) {
-            let arr = [], len = queue_prod/(values_map[i].data[prop].length)
+            let arr = [], len = nr_copies/(values_map[i].data[prop].length)
             
             for (let j = 0; j < values_map[i].data[prop].length; j++) {
               for (let k = 0; k < len; k++) arr.push(values_map[i].data[prop][j])
@@ -8349,15 +8351,30 @@ const parser = (function() {
         }
       }
 
+      function cleanMapValues() {
+        for (let i = 0; i < values_map.length; i++) {
+          for (var prop in values_map[i].data) {
+            if (!("delete" in values_map[i].data[prop])) {
+              let arr = [], step = (values_map[i].data[prop].length)/nr_copies
+              
+              for (let j = 0; j < values_map[i].data[prop].length; j += step)
+                arr.push(values_map[i].data[prop][j])
+
+              if (arr.length) values_map[i].data[prop] = arr
+            }
+          }
+        }
+      }
+
       function fillArray(api, sub_api, moustaches, args) {
         var arr = []
 
-        if (moustaches == "random" && uniq_queue[uniq_queue.length-1] != null) {
-          for (let i = 0; i < queue_prod; i++) {
+        if (moustaches == "random" && queue[queue.length-1].unique) {
+          for (let i = 0; i < nr_copies; i++) {
             var arg = _.cloneDeep(args[0])
             var elem = []
 
-            for (let j = 0; j < uniq_queue[uniq_queue.length-1]; j++) {
+            for (let j = 0; j < queue[queue.length-1].total; j++) {
               var rand = genAPI[moustaches](arg); elem.push(rand)
               arg.splice(arg.indexOf(rand), 1)
               if (!arg.length) break
@@ -8366,12 +8383,12 @@ const parser = (function() {
           }
         }
         else {
-          for (let i = 0; i < queue_prod; i++) {
+          for (let i = 0; i < nr_copies; i++) {
             let elem
             if (api == "gen") elem = genAPI[moustaches](...args)
             if (api == "data") elem = dataAPI[sub_api][moustaches](language, ...args)
 
-            if (uniq_queue[uniq_queue.length-1] != null) {
+            if (queue[queue.length-1].unique) {
               if (arr.includes(elem)) --i
               else arr.push(elem)
             }
@@ -8383,9 +8400,16 @@ const parser = (function() {
       }
 
       var chunk = (arr, size) =>
-        Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-          arr.slice(i * size, i * size + size)
-        );
+        Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size))
+
+      var chunkDifferent = (arr, sizes) => {
+        sizes = sizes.map((sum => value => sum += value)(0))
+        sizes.unshift(0)
+        
+        var chunks = []
+        for (var i = 0; i < sizes.length - 1; i++) chunks.push(arr.slice(sizes[i], sizes[i+1]))
+        return chunks
+      }
 
 
     peg$result = peg$startRuleFunction();

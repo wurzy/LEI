@@ -9,9 +9,8 @@
   var cur_collection = "" //nome da coleção atual durante a travessia
   var collectionsData = {}
 
-  var queue = [] //queue com os números dos repeats (aninhados)
-  var uniq_queue = [] //queue para fazer repeats de randoms sem elementos repetidos; ao entrar num repeat, pusha null se for normal, ou o nº do repeat se for unique
-  var queue_prod = 1 //número de cópias de uma folha que é preciso produzir em qualquer momento
+  var queue = [{value: 1, unique: false, total: 1}] //queue com {argumento original do repeat, se é um repeat unique ou não, total de cópias que é necessário criar nesse repeat}
+  var nr_copies = 1 //número de cópias de uma folha que é preciso produzir em qualquer momento
   
   var open_structs = 0 //para saber o nível de profundidade de estruturas em que está atualmente; incrementa ao abrir um objeto, array ou repeat
   var struct_types = [] //tipo das estruturas dentro das quais está, para saber se um index() pertence a um array ou a um repeat
@@ -140,7 +139,7 @@
     if (model == null && data == null) {
       model = {attributes: {}}
       data = []
-      for (let i = 0; i < queue_prod; i++) data.push({})
+      for (let i = 0; i < nr_copies; i++) data.push({})
     }
 
     if ("if" in members[p]) {
@@ -149,7 +148,7 @@
         values_map[values_map.length-1].data[prop] = []
       }
 
-      for (let i = 0; i < queue_prod; i++) {
+      for (let i = 0; i < nr_copies; i++) {
         let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
         
         if (members[p].if({genAPI, dataAPI, local, i})) {
@@ -171,7 +170,7 @@
         values_map[values_map.length-1].data[prop] = []
       }
 
-      for (let i = 0; i < queue_prod; i++) {
+      for (let i = 0; i < nr_copies; i++) {
         let keys = Object.keys(members[p].or.model.attributes)
         let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
 
@@ -188,7 +187,7 @@
         values_map[values_map.length-1].data[prop] = []
       }
 
-      for (let i = 0; i < queue_prod; i++) {
+      for (let i = 0; i < nr_copies; i++) {
         let keys = Object.keys(members[p].value.model.attributes)
         var num = Math.floor(Math.random() * ((keys.length+1) - members[p].at_least) + members[p].at_least)
         if (members[p].at_least > keys.length) num = keys.length
@@ -207,7 +206,7 @@
       model.attributes[p] = members[p].model
       values_map[values_map.length-1].data[p] = []
 
-      for (let i = 0; i < queue_prod; i++) {
+      for (let i = 0; i < nr_copies; i++) {
         let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
         data[i][p] = members[p].function({genAPI, dataAPI, local, i})
         values_map[values_map.length-1].data[p].push(data[i][p])
@@ -217,10 +216,10 @@
     return {model, data}
   }
 
-  function updateValuesMap() {
+  function replicateMapValues() {
     for (let i = 0; i < values_map.length; i++) {
       for (var prop in values_map[i].data) {
-        let arr = [], len = queue_prod/(values_map[i].data[prop].length)
+        let arr = [], len = nr_copies/(values_map[i].data[prop].length)
         
         for (let j = 0; j < values_map[i].data[prop].length; j++) {
           for (let k = 0; k < len; k++) arr.push(values_map[i].data[prop][j])
@@ -230,15 +229,30 @@
     }
   }
 
+  function cleanMapValues() {
+    for (let i = 0; i < values_map.length; i++) {
+      for (var prop in values_map[i].data) {
+        if (!("delete" in values_map[i].data[prop])) {
+          let arr = [], step = (values_map[i].data[prop].length)/nr_copies
+          
+          for (let j = 0; j < values_map[i].data[prop].length; j += step)
+            arr.push(values_map[i].data[prop][j])
+
+          if (arr.length) values_map[i].data[prop] = arr
+        }
+      }
+    }
+  }
+
   function fillArray(api, sub_api, moustaches, args) {
     var arr = []
 
-    if (moustaches == "random" && uniq_queue[uniq_queue.length-1] != null) {
-      for (let i = 0; i < queue_prod; i++) {
+    if (moustaches == "random" && queue[queue.length-1].unique) {
+      for (let i = 0; i < nr_copies; i++) {
         var arg = _.cloneDeep(args[0])
         var elem = []
 
-        for (let j = 0; j < uniq_queue[uniq_queue.length-1]; j++) {
+        for (let j = 0; j < queue[queue.length-1].total; j++) {
           var rand = genAPI[moustaches](arg); elem.push(rand)
           arg.splice(arg.indexOf(rand), 1)
           if (!arg.length) break
@@ -247,12 +261,12 @@
       }
     }
     else {
-      for (let i = 0; i < queue_prod; i++) {
+      for (let i = 0; i < nr_copies; i++) {
         let elem
         if (api == "gen") elem = genAPI[moustaches](...args)
         if (api == "data") elem = dataAPI[sub_api][moustaches](language, ...args)
 
-        if (uniq_queue[uniq_queue.length-1] != null) {
+        if (queue[queue.length-1].unique) {
           if (arr.includes(elem)) --i
           else arr.push(elem)
         }
@@ -264,9 +278,16 @@
   }
 
   var chunk = (arr, size) =>
-    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
-      arr.slice(i * size, i * size + size)
-    );
+    Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size))
+
+  var chunkDifferent = (arr, sizes) => {
+    sizes = sizes.map((sum => value => sum += value)(0))
+    sizes.unshift(0)
+    
+    var chunks = []
+    for (var i = 0; i < sizes.length - 1; i++) chunks.push(arr.slice(sizes[i], sizes[i+1]))
+    return chunks
+  }
 }
 
 // ----- 2. DSL Grammar -----
@@ -301,9 +322,9 @@ value
 simple_value
   = val:(false / null / true / number / string / interpolation) { return val.data[0] }
 
-false = "false" { return {model: {type: "boolean", required: true}, data: Array(queue_prod).fill(false)} }
-null  = "null"  { return {model: {type: "string", required: false, default: null}, data: Array(queue_prod).fill(null)} }
-true  = "true"  { return {model: {type: "boolean", required: true}, data: Array(queue_prod).fill(true)} }
+false = "false" { return {model: {type: "boolean", required: true}, data: Array(nr_copies).fill(false)} }
+null  = "null"  { return {model: {type: "string", required: false, default: null}, data: Array(nr_copies).fill(null)} }
+true  = "true"  { return {model: {type: "boolean", required: true}, data: Array(nr_copies).fill(true)} }
 
 // ----- 4. Objects -----
 
@@ -340,7 +361,7 @@ collection_object
 object
   = begin_object members:object_members end_object {
     var data = [], model = {attributes: {}}
-    for (let i = 0; i < queue_prod; i++) data.push({})
+    for (let i = 0; i < nr_copies; i++) data.push({})
 
     for (let p in members) {
       if ("if" in members[p] || "or" in members[p] || "at_least" in members[p] || "function" in members[p]) {
@@ -352,7 +373,7 @@ object
         model.attributes[p] = members[p].model
         var prob = "probability" in members[p]
 
-        for (let i = 0; i < queue_prod; i++) {
+        for (let i = 0; i < nr_copies; i++) {
           if ((prob && members[p].data[i] !== null) || !prob) data[i][p] = members[p].data[i]
         }
       }
@@ -416,14 +437,14 @@ array
     end_array
     {
       var model = {attributes: {}}, data = []
-      for (let i = 0; i < queue_prod; i++) data.push([])
+      for (let i = 0; i < nr_copies; i++) data.push([])
       if (arr == null) arr = []
 
       for (let j = 0; j < arr.length; j++) {
         arr[j] = createComponent("elem"+j, arr[j])
         model.attributes["elem"+j] = arr[j].model
 
-        for (let k = 0; k < queue_prod; k++) data[k].push(arr[j].data[k])
+        for (let k = 0; k < nr_copies; k++) data[k].push(arr[j].data[k])
       }
 
       var dataModel = {data, model}
@@ -438,7 +459,7 @@ array
 number "number"
   = minus? int frac? exp? {
     var num = parseFloat(text())
-    return {model: {type: !(num%1) ? "integer" : "float", required: true}, data: Array(queue_prod).fill(num)}
+    return {model: {type: !(num%1) ? "integer" : "float", required: true}, data: Array(nr_copies).fill(num)}
   }
 
 decimal_point
@@ -492,7 +513,7 @@ long_interval
 string "string"
   = quotation_mark chars:char* quotation_mark {
     var str = chars.join("")
-    return { model: {type: "string", required: true}, data: Array(queue_prod).fill(str) }
+    return { model: {type: "string", required: true}, data: Array(nr_copies).fill(str) }
   }
 
 simple_api_key
@@ -593,7 +614,7 @@ unescaped
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
   var model = { type: "string", required: true }, data
 
-  if (!val.length) data = Array(queue_prod).fill("")
+  if (!val.length) data = Array(nr_copies).fill("")
   else if (val.length == 1) {
     model = val[0].model; data = val[0].data
     data = !str ? val[0].data : mapToString(val[0].data)
@@ -609,7 +630,7 @@ interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".
 moustaches = moustaches_start ws v:moustaches_value ws moustaches_stop { return v }
 
 not_moustaches = (!(moustaches_start / "'").)+ {
-  return { model: {type: "string", required: true}, data: Array(queue_prod).fill(text()) }
+  return { model: {type: "string", required: true}, data: Array(nr_copies).fill(text()) }
 }
 
 moustaches_start = "{{"
@@ -622,14 +643,17 @@ gen_moustaches
   / "guid(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "guid", []) } }
   / "boolean(" ws ")" { return { model: {type: "boolean", required: true}, data: fillArray("gen", null, "boolean", []) } }
   / "index(" ws offset:(i:int ws { return i })? ")" {
-    var queue_last = queue[queue.length-1]
-    if (offset == null) offset = 0
+      var arrays = [], queue_last = queue[queue.length-1]
+      if (offset == null) offset = 0
 
-    return {
-      model: {type: "integer", required: true},
-      data: Array(queue_prod/queue_last).fill(getIndexes(queue_last)).flat().map(k => k + offset)
+      if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n)))
+      else arrays = Array(queue_last.value).fill(getIndexes(queue_last.value))
+
+      return {
+        model: {type: "integer", required: true},
+        data: arrays.flat().map(k => k + offset)
+      }
     }
-  }
   / "integer(" ws min:int_neg ws "," ws max:int_neg ws size:("," ws c:int ws {return c})? unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u.join("")})? ")" {
     return {
       model: { type: (size == null && unit === null) ? "integer" : "string", required: true }, 
@@ -763,47 +787,48 @@ directive
   / range
 
 repeat
-  = ws '[' ws repeat_signature ws repeat_separator ws val:value_or_interpolation ws ']' ws {
-    var num = queue.pop(); queue_prod /= num
-    uniq_queue.pop(); --open_structs
-    struct_types.pop()
+  = ws '[' ws num:repeat_signature ws repeat_separator ws val:value_or_interpolation ws ']' ws {
+    queue.pop(); nr_copies = queue[queue.length-1].total
+    struct_types.pop(); --open_structs
     
     var model = {attributes: {}}
     if (open_structs > 1) {
-      val.data = chunk(val.data, num)
+      val.data = Array.isArray(num) ? chunkDifferent(val.data, num) : chunk(val.data, num)
       val = createComponent("repeat_elem", val)
       for (let i = 0; i < num; i++) model.attributes["repeat_elem"+i] = val.model
     }
 
+    cleanMapValues()
     return {data: val.data, model: open_structs > 1 ? model : val.model, component: true}
   }
 
 repeat_signature 
   = "'" ws "repeat" unique:"_unique"? "(" num:repeat_args  ")" ws "'" {
-    uniq_queue.push(unique != null ? num : null)
-    queue_prod *= num; queue.push(num)
+    nr_copies = Array.isArray(num) ? num.reduce((a,b) => a+b, 0) : nr_copies*num
+    queue.push({ value: num, unique: unique != null, total: nr_copies })
 
     repeat_keys.push(member_key)
-    updateValuesMap()
+    replicateMapValues()
+    return num
   }
 
 repeat_args
   = ws min:int ws max:("," ws m:int ws { return m })? {
     return max === null ? min : Math.floor(Math.random() * ((max+1) - min) + min)
   }
-//  / ws "this" char:("."/"[") key:code_key ws {
-//    if (char == "[") key = char + key
-//
-//    let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
-//    let args = key.match(/([a-zA-Z_]|[^\x00-\x7F])([a-zA-Z0-9_]|[^\x00-\x7F])*/g)
-//
-//    for (let i = 0; i < args.length; i++) {
-//      if (args[i] in local) local = local[args[i]]
-//      else break//erro
-//    }
-//
-//    return local
-//  }
+  / ws "this" char:("."/"[") key:code_key ws {
+    if (char == "[") key = char + key
+
+    let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+    let args = key.match(/([a-zA-Z_]|[^\x00-\x7F])([a-zA-Z0-9_]|[^\x00-\x7F])*/g)
+
+    for (let i = 0; i < args.length; i++) {
+      if (args[i] in local) local = local[args[i]]
+      else break//erro
+    }
+
+    return local.map(x => parseInt(x))
+  }
 
 range
   = "range(" ws data:range_args ws ")" {
@@ -827,7 +852,7 @@ probability
   = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
     var prob = parseInt(probability.join(""))/100, arr = []
 
-    for (let i = 0; i < queue_prod; i++) {
+    for (let i = 0; i < nr_copies; i++) {
       var bool = (sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob)
       arr.push(bool ? m.value.data[i] : null)
     }

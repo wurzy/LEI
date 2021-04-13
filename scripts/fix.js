@@ -1,10 +1,17 @@
 var x = {if_2: true, demo: false}
 var y = {demo: false}
 
-const filteredArray = Object.keys(x).filter(e => !Object.keys(y).includes(e))
-var x
 
-console.log(a["['b']['c']".match(/([a-zA-Z_]|[^\x00-\x7F])([a-zA-Z0-9_]|[^\x00-\x7F])*/g).map(x => [x])])
+var chunkDifferent = (arr, sizes) => {
+  sizes = sizes.map((sum => value => sum += value)(0))
+  sizes.unshift(0)
+  
+  var chunks = []
+  for (var i = 0; i < sizes.length - 1; i++) chunks.push(arr.slice(sizes[i], sizes[i+1]))
+  return chunks
+}
+
+console.log(chunkDifferent([0,1,2,3,4,5,6,7,8,9],[2,3,4,1]))
 
 "ola.x"
 "['ola'].x"
