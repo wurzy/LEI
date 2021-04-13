@@ -27,7 +27,7 @@
                   var nivel4 = gen.random("01","02")
 
                   var classe = nivel1 + '.' + nivel2 + '.' + nivel3
-                  if (Math.random() > 0.5) classe += '.' nivel4
+                  if (Math.random() > 0.5) classe += '.' + nivel4
 				  return classe
               }
   			},
@@ -40,24 +40,22 @@
                         var nivel4 = gen.random("01","02")
 
                         var classe = nivel1 + '.' + nivel2 + '.' + nivel3
-                        if (Math.random() > 0.5) classe += '.' nivel4
+                        if (Math.random() > 0.5) classe += '.' + nivel4
                         return classe
                     },
             		referência: '{{random(1,2,3,55,56)}}'
                 }
             },
             if (["PGD/LC","TS/LC"].includes(this.fonteLegitimação.tipo)) {
-            	naturezaIntervenção: '{{random("DONO", "PARTICIPANTE", "DONO/PARTICIPANTE")}}'
-            },
-            if (["PGD/LC","TS/LC"].includes(this.fonteLegitimação.tipo)) {
-              	if (["PARTICIPANTE","DONO/PARTICIPANTE"].includes(this.naturezaIntervenção)) {
-                	donos: [ 'repeat(1,5)': '{{pt_entity("abbr"}}' ]
-                }            	
+            	naturezaIntervenção: '{{random("DONO", "PARTICIPANTE", "DONO/PARTICIPANTE")}}',
+				if (["PARTICIPANTE","DONO/PARTICIPANTE"].includes(this.naturezaIntervenção)) {
+                	donos: [ 'repeat(1,5)': '{{pt_entity("abbr")}}' ]
+                }
             },
             anoInício: '{{integer(1921,2021)}}',
             anoFim(gen) {
             	var ano = gen.integer(1921,2021)
-                while (ano < this.anoInicio) ano = gen.integer(1921,2021)
+                while (ano < this.anoInício) ano = gen.integer(1921,2021)
               	return ano
             },
             dimensãoSuporte: {

@@ -127,7 +127,7 @@
         var keys = Object.keys(components[cur_collection])
         while (keys.includes(filename)) filename = name + i++
 
-        components[cur_collection][filename] = lodash.cloneDeep(value.model)
+        components[cur_collection][filename] = _.cloneDeep(value.model)
         value.model = { "type": "component", "repeatable": false, required: true, "component": cur_collection + '.' + filename }
       }
 
@@ -150,7 +150,9 @@
       }
 
       for (let i = 0; i < queue_prod; i++) {
-        if (members[p].if({genAPI, dataAPI, local: Object.assign(...values_map), i})) {
+        let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+        
+        if (members[p].if({genAPI, dataAPI, local, i})) {
           for (let prop in members[p].value.data[i]) {
             data[i][prop] = members[p].value.data[i][prop]
             values_map[values_map.length-1].data[prop].push(data[i][prop])
@@ -164,18 +166,27 @@
       }
     } 
     else if ("or" in members[p]) {
-      for (let prop in members[p].or.model.attributes) 
+      for (let prop in members[p].or.model.attributes) {
         model.attributes[prop] = members[p].or.model.attributes[prop]
+        values_map[values_map.length-1].data[prop] = []
+      }
 
-      let keys = Object.keys(members[p].or.model.attributes)
       for (let i = 0; i < queue_prod; i++) {
+        let keys = Object.keys(members[p].or.model.attributes)
         let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+
         data[i][key] = members[p].or.data[i][key]
+        values_map[values_map.length-1].data[key].push(members[p].or.data[i][key])
+
+        keys.splice(keys.indexOf(key), 1)
+        keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
       }
     }
     else if ("at_least" in members[p]) {
-      for (let prop in members[p].value.model.attributes) 
+      for (let prop in members[p].value.model.attributes) {
         model.attributes[prop] = members[p].value.model.attributes[prop]
+        values_map[values_map.length-1].data[prop] = []
+      }
 
       for (let i = 0; i < queue_prod; i++) {
         let keys = Object.keys(members[p].value.model.attributes)
@@ -185,17 +196,38 @@
         for (let j = 0; j < num; j++) {
           let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
           data[i][key] = members[p].value.data[i][key]
+          values_map[values_map.length-1].data[key].push(members[p].value.data[i][key])
           keys.splice(keys.indexOf(key), 1)
         }
+
+        keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
       }
     }
     else if ("function" in members[p]) {
       model.attributes[p] = members[p].model
-      for (let i = 0; i < queue_prod; i++)
-        data[i][p] = members[p].function({genAPI, dataAPI, local: Object.assign(...values_map), i})
+      values_map[values_map.length-1].data[p] = []
+
+      for (let i = 0; i < queue_prod; i++) {
+        let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+        data[i][p] = members[p].function({genAPI, dataAPI, local, i})
+        values_map[values_map.length-1].data[p].push(data[i][p])
+      }
     }
 
     return {model, data}
+  }
+
+  function updateValuesMap() {
+    for (let i = 0; i < values_map.length; i++) {
+      for (var prop in values_map[i].data) {
+        let arr = [], len = queue_prod/(values_map[i].data[prop].length)
+        
+        for (let j = 0; j < values_map[i].data[prop].length; j++) {
+          for (let k = 0; k < len; k++) arr.push(values_map[i].data[prop][j])
+        }
+        if (arr.length) values_map[i].data[prop] = arr
+      }
+    }
   }
 
   function fillArray(api, sub_api, moustaches, args) {
@@ -203,7 +235,7 @@
 
     if (moustaches == "random" && uniq_queue[uniq_queue.length-1] != null) {
       for (let i = 0; i < queue_prod; i++) {
-        var arg = lodash.cloneDeep(args[0])
+        var arg = _.cloneDeep(args[0])
         var elem = []
 
         for (let j = 0; j < uniq_queue[uniq_queue.length-1]; j++) {
@@ -752,13 +784,26 @@ repeat_signature
     queue_prod *= num; queue.push(num)
 
     repeat_keys.push(member_key)
+    updateValuesMap()
   }
 
 repeat_args
   = ws min:int ws max:("," ws m:int ws { return m })? {
     return max === null ? min : Math.floor(Math.random() * ((max+1) - min) + min)
   }
-  // ws "this." key:code_key ws { return key }
+//  / ws "this" char:("."/"[") key:code_key ws {
+//    if (char == "[") key = char + key
+//
+//    let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+//    let args = key.match(/([a-zA-Z_]|[^\x00-\x7F])([a-zA-Z0-9_]|[^\x00-\x7F])*/g)
+//
+//    for (let i = 0; i < args.length; i++) {
+//      if (args[i] in local) local = local[args[i]]
+//      else break//erro
+//    }
+//
+//    return local
+//  }
 
 range
   = "range(" ws data:range_args ws ")" {
@@ -825,7 +870,7 @@ function_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) { re
 
 function_code = CODE_START str:(gen_call / local_var / not_code / function_code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
 
-if_code = ARGS_START str:(gen_call / local_var / not_parentheses / if_code)* ARGS_STOP { return str.join("") }
+if_code = ARGS_START str:(gen_call / local_var / not_parentheses / if_code)* ARGS_STOP { return "(" + str.join("") + ")" }
 
 not_code = !CODE_START !CODE_STOP. { return text() }
 
@@ -835,7 +880,7 @@ local_var = "this" char:("."/"[") key:code_key {
     if (char == "[") key = char + key
     
     var keySplit = key.split(/\.(.+)/)
-    var path = `gen.local.data${char=="."?".":""}${keySplit[0]}[gen.i]`
+    var path = `gen.local${char=="."?".":""}${keySplit[0]}[gen.i]`
     if (keySplit.length > 1) path += (keySplit[1][0] != "[" ? "." : "") + keySplit[1]
     return path
   }

@@ -86,7 +86,9 @@ IDEIAS AUTOS:
 
 - ver se o random e o integer novos funcionam direito em função
 
-
+-- coleções
+-- casos especiais em parcelas de arrays?
+-- tirar os repetidos no values_map ao acabar um repeat
 
 
 
