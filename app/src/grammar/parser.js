@@ -601,17 +601,17 @@ const parser = (function() {
         peg$c325 = peg$literalExpectation("index(", false),
         peg$c326 = function(i) { return i },
         peg$c327 = function(offset) {
-            var arrays = [], queue_last = queue[queue.length-1]
-            if (offset == null) offset = 0
+              var arrays = [], queue_last = queue[queue.length-1]
+              if (offset == null) offset = 0
 
-            if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n)))
-            else arrays = Array(queue_last.value).fill(getIndexes(queue_last.value))
+              if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n)))
+              else arrays = Array(queue_last.total/queue_last.value).fill(getIndexes(queue_last.value))
 
-            return {
-              model: {type: "integer", required: true},
-              data: arrays.flat().map(k => k + offset)
-            }
-          },
+              return {
+                model: {type: "integer", required: true},
+                data: arrays.flat().map(k => k + offset)
+              }
+            },
         peg$c328 = "integer(",
         peg$c329 = peg$literalExpectation("integer(", false),
         peg$c330 = function(min, max, c) {return c},
@@ -787,8 +787,10 @@ const parser = (function() {
         peg$c383 = "_unique",
         peg$c384 = peg$literalExpectation("_unique", false),
         peg$c385 = function(unique, num) {
+          console.log(num)
             nr_copies = Array.isArray(num) ? num.reduce((a,b) => a+b, 0) : nr_copies*num
             queue.push({ value: num, unique: unique != null, total: nr_copies })
+            console.log(_.cloneDeep(queue))
 
             repeat_keys.push(member_key)
             replicateMapValues()
@@ -796,7 +798,24 @@ const parser = (function() {
           },
         peg$c386 = function(min, m) { return m },
         peg$c387 = function(min, max) {
-            return max === null ? min : Math.floor(Math.random() * ((max+1) - min) + min)
+            var minArr = Array.isArray(min), maxArr = Array.isArray(max)
+
+            
+    if (max === null) return min
+    else if (!minArr && !maxArr) return Math.floor(Math.random() * ((max+1) - min) + min)
+    else {
+      if (!minArr) min = Array(max.length).fill(min)
+      if (!maxArr) max = Array(min.length).fill(max)
+      
+      if (min.length == max.length) {
+        var nums = []
+        for (let i = 0; i < min.length; i++) {
+          nums.push(Math.floor(Math.random() * ((max[i]+1) - min[i]) + min[i]))
+        }
+        return nums
+      }
+      //else erro
+    }
           },
         peg$c388 = "this",
         peg$c389 = peg$literalExpectation("this", false),
@@ -6873,6 +6892,9 @@ const parser = (function() {
       s1 = peg$parsews();
       if (s1 !== peg$FAILED) {
         s2 = peg$parseint();
+        if (s2 === peg$FAILED) {
+          s2 = peg$parselocal_arg();
+        }
         if (s2 !== peg$FAILED) {
           s3 = peg$parsews();
           if (s3 !== peg$FAILED) {
@@ -6888,6 +6910,9 @@ const parser = (function() {
               s6 = peg$parsews();
               if (s6 !== peg$FAILED) {
                 s7 = peg$parseint();
+                if (s7 === peg$FAILED) {
+                  s7 = peg$parselocal_arg();
+                }
                 if (s7 !== peg$FAILED) {
                   s8 = peg$parsews();
                   if (s8 !== peg$FAILED) {
@@ -6933,46 +6958,48 @@ const parser = (function() {
         peg$currPos = s0;
         s0 = peg$FAILED;
       }
-      if (s0 === peg$FAILED) {
-        s0 = peg$currPos;
-        s1 = peg$parsews();
-        if (s1 !== peg$FAILED) {
-          if (input.substr(peg$currPos, 4) === peg$c388) {
-            s2 = peg$c388;
-            peg$currPos += 4;
+
+      return s0;
+    }
+
+    function peg$parselocal_arg() {
+      var s0, s1, s2, s3, s4, s5;
+
+      s0 = peg$currPos;
+      s1 = peg$parsews();
+      if (s1 !== peg$FAILED) {
+        if (input.substr(peg$currPos, 4) === peg$c388) {
+          s2 = peg$c388;
+          peg$currPos += 4;
+        } else {
+          s2 = peg$FAILED;
+          if (peg$silentFails === 0) { peg$fail(peg$c389); }
+        }
+        if (s2 !== peg$FAILED) {
+          if (input.charCodeAt(peg$currPos) === 46) {
+            s3 = peg$c22;
+            peg$currPos++;
           } else {
-            s2 = peg$FAILED;
-            if (peg$silentFails === 0) { peg$fail(peg$c389); }
+            s3 = peg$FAILED;
+            if (peg$silentFails === 0) { peg$fail(peg$c23); }
           }
-          if (s2 !== peg$FAILED) {
-            if (input.charCodeAt(peg$currPos) === 46) {
-              s3 = peg$c22;
+          if (s3 === peg$FAILED) {
+            if (input.charCodeAt(peg$currPos) === 91) {
+              s3 = peg$c1;
               peg$currPos++;
             } else {
               s3 = peg$FAILED;
-              if (peg$silentFails === 0) { peg$fail(peg$c23); }
+              if (peg$silentFails === 0) { peg$fail(peg$c2); }
             }
-            if (s3 === peg$FAILED) {
-              if (input.charCodeAt(peg$currPos) === 91) {
-                s3 = peg$c1;
-                peg$currPos++;
-              } else {
-                s3 = peg$FAILED;
-                if (peg$silentFails === 0) { peg$fail(peg$c2); }
-              }
-            }
-            if (s3 !== peg$FAILED) {
-              s4 = peg$parsecode_key();
-              if (s4 !== peg$FAILED) {
-                s5 = peg$parsews();
-                if (s5 !== peg$FAILED) {
-                  peg$savedPos = s0;
-                  s1 = peg$c390(s3, s4);
-                  s0 = s1;
-                } else {
-                  peg$currPos = s0;
-                  s0 = peg$FAILED;
-                }
+          }
+          if (s3 !== peg$FAILED) {
+            s4 = peg$parsecode_key();
+            if (s4 !== peg$FAILED) {
+              s5 = peg$parsews();
+              if (s5 !== peg$FAILED) {
+                peg$savedPos = s0;
+                s1 = peg$c390(s3, s4);
+                s0 = s1;
               } else {
                 peg$currPos = s0;
                 s0 = peg$FAILED;
@@ -6989,6 +7016,9 @@ const parser = (function() {
           peg$currPos = s0;
           s0 = peg$FAILED;
         }
+      } else {
+        peg$currPos = s0;
+        s0 = peg$FAILED;
       }
 
       return s0;

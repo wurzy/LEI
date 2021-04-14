@@ -647,7 +647,7 @@ gen_moustaches
       if (offset == null) offset = 0
 
       if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n)))
-      else arrays = Array(queue_last.value).fill(getIndexes(queue_last.value))
+      else arrays = Array(queue_last.total/queue_last.value).fill(getIndexes(queue_last.value))
 
       return {
         model: {type: "integer", required: true},
@@ -813,10 +813,27 @@ repeat_signature
   }
 
 repeat_args
-  = ws min:int ws max:("," ws m:int ws { return m })? {
-    return max === null ? min : Math.floor(Math.random() * ((max+1) - min) + min)
+  = ws min:(int/local_arg) ws max:("," ws m:(int/local_arg) ws { return m })? {
+    var minArr = Array.isArray(min), maxArr = Array.isArray(max)
+
+    if (max === null) return min
+    else if (!minArr && !maxArr) return Math.floor(Math.random() * ((max+1) - min) + min)
+    else {
+      if (!minArr) min = Array(max.length).fill(min)
+      if (!maxArr) max = Array(min.length).fill(max)
+      
+      if (min.length == max.length) {
+        var nums = []
+        for (let i = 0; i < min.length; i++) {
+          nums.push(Math.floor(Math.random() * ((max[i]+1) - min[i]) + min[i]))
+        }
+        return nums
+      }
+      //else erro
+    }
   }
-  / ws "this" char:("."/"[") key:code_key ws {
+
+local_arg = ws "this" char:("."/"[") key:code_key ws {
     if (char == "[") key = char + key
 
     let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))

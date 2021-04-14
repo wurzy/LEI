@@ -2,16 +2,12 @@ var x = {if_2: true, demo: false}
 var y = {demo: false}
 
 
-var chunkDifferent = (arr, sizes) => {
-  sizes = sizes.map((sum => value => sum += value)(0))
-  sizes.unshift(0)
-  
-  var chunks = []
-  for (var i = 0; i < sizes.length - 1; i++) chunks.push(arr.slice(sizes[i], sizes[i+1]))
-  return chunks
-}
+var minArr, maxArr
+var min = [1,2], max = 3
+if ((minArr = Array.isArray(min)) || (maxArr = Array.isArray(max))) {}
 
-console.log(parseInt("-00009"))
+console.log(minArr)
+console.log(maxArr)
 
 "ola.x"
 "['ola'].x"
