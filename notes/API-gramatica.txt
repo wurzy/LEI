@@ -86,6 +86,8 @@ POR IMPLEMENTAR:
 -- argumentos dos moustaches poderem ser props locais
 -- argumentos de qualquer ferramenta serem código (gen ou this)
 
+--- como fica o modelo se puser uma cena básica como coleção?
+
 
 -> pt_district("county"/"parish"/"city", _)
 -> pt_county("district"/"parish", _)

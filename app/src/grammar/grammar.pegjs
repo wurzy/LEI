@@ -7,7 +7,6 @@
 
   var collections = [] //nomes das coleções
   var cur_collection = "" //nome da coleção atual durante a travessia
-  var collectionsData = {}
 
   var queue = [{value: 1, unique: false, total: 1}] //queue com {argumento original do repeat, se é um repeat unique ou não, total de cópias que é necessário criar nesse repeat}
   var nr_copies = 1 //número de cópias de uma folha que é preciso produzir em qualquer momento
@@ -135,6 +134,16 @@
     return value
   }
 
+  function getFunctionData(code) {
+    var data = [], f = new Function("gen", code)
+
+    for (let i = 0; i < nr_copies; i++) {
+      let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+      data.push(f({genAPI, dataAPI, local, i}))
+    }
+    return data
+  }
+
   function propException(members, p, model, data) {
     if (model == null && data == null) {
       model = {attributes: {}}
@@ -163,23 +172,6 @@
           for (let prop in members[p].value.data[i]) values_map[values_map.length-1].data[prop].push(null)
         }
       }
-    } 
-    else if ("or" in members[p]) {
-      for (let prop in members[p].or.model.attributes) {
-        model.attributes[prop] = members[p].or.model.attributes[prop]
-        values_map[values_map.length-1].data[prop] = []
-      }
-
-      for (let i = 0; i < nr_copies; i++) {
-        let keys = Object.keys(members[p].or.model.attributes)
-        let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
-
-        data[i][key] = members[p].or.data[i][key]
-        values_map[values_map.length-1].data[key].push(members[p].or.data[i][key])
-
-        keys.splice(keys.indexOf(key), 1)
-        keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
-      }
     }
     else if ("at_least" in members[p]) {
       for (let prop in members[p].value.model.attributes) {
@@ -200,16 +192,6 @@
         }
 
         keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
-      }
-    }
-    else if ("function" in members[p]) {
-      model.attributes[p] = members[p].model
-      values_map[values_map.length-1].data[p] = []
-
-      for (let i = 0; i < nr_copies; i++) {
-        let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
-        data[i][p] = members[p].function({genAPI, dataAPI, local, i})
-        values_map[values_map.length-1].data[p].push(data[i][p])
       }
     }
 
@@ -330,16 +312,28 @@ true  = "true"  { return {model: {type: "boolean", required: true}, data: Array(
 
 collection_object
   = begin_object members:object_members end_object {
-      var model = {}, i = 0
+      var model = {}, data = {}, i = 0
 
       for (let p in members) {
-        if ("if" in members[p] || "or" in members[p] || "at_least" in members[p] || "function" in members[p]) {
+        if ("or" in members[p]) {
+          var name = members[p].data[0].key + "_" + uuidv4(); i++
+          data[members[p].data[0].key] = members[p].data[0].value
+
+          model[name] = {
+            kind: "collectionType",
+            collectionName: name,
+            info: {name: name},
+            options: {},
+            attributes: members[p].model
+          }
+        }
+        else if ("if" in members[p] || "at_least" in members[p]) {
           let dataModel = propException(members, p, null, null)
 
-          if ("function" in members[p]) collectionsData[p] = dataModel.data[0][p]
+          if ("function" in members[p]) data[p] = dataModel.data[0][p]
           else {
             //model
-            for (var prop in dataModel.data[0]) collectionsData[prop] = dataModel.data[0][prop]
+            for (var prop in dataModel.data[0]) data[prop] = dataModel.data[0][prop]
           }
         }
         else {
@@ -351,11 +345,11 @@ collection_object
             attributes: members[p].model.attributes
           }
 
-          collectionsData[p] = repeat_keys.includes(p) ? members[p].data : members[p].data[0]
+          data[p] = repeat_keys.includes(p) ? members[p].data : members[p].data[0]
         }
       }
 
-      return members !== null ? {data: collectionsData, model} : {}
+      return members !== null ? {data, model} : {}
     }
 
 object
@@ -364,7 +358,11 @@ object
     for (let i = 0; i < nr_copies; i++) data.push({})
 
     for (let p in members) {
-      if ("if" in members[p] || "or" in members[p] || "at_least" in members[p] || "function" in members[p]) {
+      if ("or" in members[p]) {
+        for (let prop in members[p].model) model.attributes[prop] = members[p].model[prop]
+        for (let i = 0; i < nr_copies; i++) data[i][members[p].data[i].key] = members[p].data[i].value
+      }
+      else if ("if" in members[p] || "at_least" in members[p]) {
         let dataModel = propException(members, p, model, data)
         model = dataModel.model
         data = dataModel.data
@@ -401,7 +399,7 @@ member
     return { name, value }
   }
 
-value_or_interpolation = val:(value / interpolation) {
+value_or_interpolation = val:(value / interpolation / anon_function) {
     if (struct_types[struct_types.length-1] == "array") array_indexes[array_indexes.length-1]++
 
     if ("delete" in values_map[values_map.length-1] && values_map[values_map.length-2].type == "array") {
@@ -884,8 +882,26 @@ probability
   }
 
 or = "or(" ws ")" ws obj:object {
-    for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-    return { name: uuidv4(), value: { or: obj }}
+    var model = {}, data = []
+
+    for (let prop in obj.model.attributes) {
+      obj.model.attributes[prop].required = false
+      model[prop] = obj.model.attributes[prop]
+      values_map[values_map.length-1].data[prop] = []
+    }
+
+    for (let i = 0; i < nr_copies; i++) {
+      let keys = Object.keys(model)
+      let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+
+      data.push({key, value: obj.data[i][key]})
+      values_map[values_map.length-1].data[key].push(obj.data[i][key])
+
+      keys.splice(keys.indexOf(key), 1)
+      keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
+    }
+
+    return { name: uuidv4(), value: { or: true, model, data } }
   }
 
 at_least = "at_least(" ws num:int ws ")" obj:object {
@@ -900,12 +916,13 @@ if = "if" ws code:if_code ws obj:object {
 
 function_prop
   = name:function_key "(" ws "gen" ws ")" ws code:function_code {
-    return {
-      name, value: {
-        model: {type: "json", required: true},
-        function: new Function("gen", code)
-      }
-    }
+    var data = getFunctionData(code)
+    values_map[values_map.length-1].data[name] = data
+    return { name, value: { model: {type: "json", required: true}, data } }
+  }
+
+anon_function = "gen" ws "=>" ws code:function_code {
+    return { model: {type: "json", required: true}, data: getFunctionData(code) }
   }
   
 function_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) { return chars.flat().join("") }
