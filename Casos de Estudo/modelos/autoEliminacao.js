@@ -11,14 +11,14 @@
         },
     	fundos(gen) {
         	if (["PGD/LC","TS/LC","PGD"].includes(this.fonteLegitimação.tipo))
-            	return gen.pt_entity()
+            	return [gen.pt_entity()]
           	else {
             	var arr = []
                 for (var i = 0; i < gen.integer(1,5); i++) arr.push(gen.pt_entity())
             	return arr
             }
         },
-    	classes: [ 'repeat(3)': {
+    	classes: [ 'repeat(2,5)': {
             if (["PGD/LC","TS/LC"].includes(this.fonteLegitimação.tipo)) {
               código(gen) {
                   var nivel1 = gen.random(100,150,200,250,300,350,400,450,500,550,600,650,700,710,750,800,850,900,950)
@@ -63,16 +63,16 @@
                     papel: '{{integer(1,2000)}}',
                     digital: '{{integer(1,2000)}}',
                     outro: {
-                        valor: '{{lorem(1,"words")}}',
-                        unidade: '{{integer(1,2000)}}'
+                        valor: '{{integer(1,2000)}}',
+                        unidade: '{{lorem(1,"words")}}'
                     }
               	}
             },
-  			númeroAgregações: '{{integer(1,200)}}',
+  			númeroAgregações: '{{integer(1,50)}}',
             agregações: [ 'repeat(this.númeroAgregações)': {
             	código: '{{pt_entity("abbr")}} - {{integer(1,200)}}',
               	título: '{{lorem(3,"words")}}',
-              	ano: '{{integer(2020,2050)}}',
+              	ano: '{{integer(1921,2021)}}',
               	if (["PGD/LC","TS/LC"].includes(this.fonteLegitimação.tipo)) {
             		naturezaIntervenção: '{{random("PARTICIPANTE","DONO")}}'
             	}

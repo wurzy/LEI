@@ -11,7 +11,7 @@ var chunkDifferent = (arr, sizes) => {
   return chunks
 }
 
-console.log(chunkDifferent([0,1,2,3,4,5,6,7,8,9],[2,3,4,1]))
+console.log(parseInt("-00009"))
 
 "ola.x"
 "['ola'].x"

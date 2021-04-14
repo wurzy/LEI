@@ -41,11 +41,13 @@ function boolean() { return Math.random() < 0.5 }
 
 function integer(min, max, size, unit) {
     var rand = Math.floor(Math.random() * ((max+1) - min) + min).toString()
-    var negative = false
+    var negative = false, pad = false
 
     if (rand[0] == '-') {negative = true; rand = rand.substr(1)}
-    while (rand.length < size) rand = "0" + rand
+    while (rand.length < size) {pad = true; rand = "0" + rand}
+
     if (negative) rand = '-' + rand
+    if (!pad) rand = parseInt(rand)
     
     return unit == null ? rand : (rand + unit)
 }
