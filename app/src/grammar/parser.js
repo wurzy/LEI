@@ -193,7 +193,7 @@ const parser = (function() {
 
               for (let p in members) {
                 if ("or" in members[p]) {
-                  var name = members[p].data[0].key + "_" + uuidv4(); i++
+                  let name = members[p].data[0].key + "_" + uuidv4(); i++
                   data[members[p].data[0].key] = members[p].data[0].value
 
                   model[name] = {
@@ -204,7 +204,22 @@ const parser = (function() {
                     attributes: members[p].model
                   }
                 }
-                else if ("if" in members[p] || "at_least" in members[p]) {
+                else if ("at_least" in members[p]) {
+                  for (let prop in members[p].data[0]) {
+                    let name = prop + "_" + uuidv4()
+                    data[prop] = members[p].data[0][prop]
+
+                    model[name] = {
+                      kind: "collectionType",
+                      collectionName: name,
+                      info: {name: name},
+                      options: {},
+                      attributes: members[p].model[prop]
+                    }
+                  }
+                  i++
+                }
+                else if ("if" in members[p]) {
                   let dataModel = propException(members, p, null, null)
 
                   if ("function" in members[p]) data[p] = dataModel.data[0][p]
@@ -237,7 +252,13 @@ const parser = (function() {
                 for (let prop in members[p].model) model.attributes[prop] = members[p].model[prop]
                 for (let i = 0; i < nr_copies; i++) data[i][members[p].data[i].key] = members[p].data[i].value
               }
-              else if ("if" in members[p] || "at_least" in members[p]) {
+              else if ("at_least" in members[p]) {
+                for (let prop in members[p].model) model.attributes[prop] = members[p].model[prop]
+                for (let i = 0; i < nr_copies; i++) {
+                  for (let prop in members[p].data[i]) data[i][prop] = members[p].data[i][prop]
+                }
+              }
+              else if ("if" in members[p]) {
                 let dataModel = propException(members, p, model, data)
                 model = dataModel.model
                 data = dataModel.data
@@ -911,8 +932,33 @@ const parser = (function() {
         peg$c406 = "at_least(",
         peg$c407 = peg$literalExpectation("at_least(", false),
         peg$c408 = function(num, obj) {
-            for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-            return { name: uuidv4(), value: { at_least: num, value: obj }}
+            var model = {}, data = []
+
+            for (let prop in obj.model.attributes) {
+              obj.model.attributes[prop].required = false
+              model[prop] = obj.model.attributes[prop]
+              values_map[values_map.length-1].data[prop] = []
+            }
+
+            for (let i = 0; i < nr_copies; i++) {
+              let keys = Object.keys(model)
+              var n = Math.floor(Math.random() * ((keys.length+1) - num) + num)
+              if (num > keys.length) n = keys.length
+              data.push({})
+
+              for (let j = 0; j < n; j++) {
+                let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
+
+                data[i][key] = obj.data[i][key]
+                values_map[values_map.length-1].data[key].push(obj.data[i][key])
+
+                keys.splice(keys.indexOf(key), 1)
+              }
+
+              keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
+            }
+            
+            return { name: uuidv4(), value: { at_least: true, model, data }}
           },
         peg$c409 = "if",
         peg$c410 = peg$literalExpectation("if", false),
@@ -8412,27 +8458,6 @@ const parser = (function() {
             else {
               for (let prop in members[p].value.data[i]) values_map[values_map.length-1].data[prop].push(null)
             }
-          }
-        }
-        else if ("at_least" in members[p]) {
-          for (let prop in members[p].value.model.attributes) {
-            model.attributes[prop] = members[p].value.model.attributes[prop]
-            values_map[values_map.length-1].data[prop] = []
-          }
-
-          for (let i = 0; i < nr_copies; i++) {
-            let keys = Object.keys(members[p].value.model.attributes)
-            var num = Math.floor(Math.random() * ((keys.length+1) - members[p].at_least) + members[p].at_least)
-            if (members[p].at_least > keys.length) num = keys.length
-
-            for (let j = 0; j < num; j++) {
-              let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
-              data[i][key] = members[p].value.data[i][key]
-              values_map[values_map.length-1].data[key].push(members[p].value.data[i][key])
-              keys.splice(keys.indexOf(key), 1)
-            }
-
-            keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
           }
         }
 
