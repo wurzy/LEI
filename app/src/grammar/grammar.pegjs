@@ -922,7 +922,7 @@ local_var = "this" char:("."/"[") key:code_key {
     if (char == "[") key = char + key
     
     var keySplit = key.split(/\.(.+)/)
-    var path = `gen.local${char=="."?".":""}${keySplit[0]}[gen.i]`
+    var path = `gen.local${char=="."?".":""}${keySplit[0]}${nr_copies>1?"[gen.i]":""}`
     if (keySplit.length > 1) path += (keySplit[1][0] != "[" ? "." : "") + keySplit[1]
     return path
   }

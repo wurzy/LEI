@@ -82,12 +82,41 @@ POR IMPLEMENTAR:
 
 -- ver se o random e o integer novos funcionam direito em função
 
--- coleções
 -- casos especiais em parcelas de arrays?
 -- argumentos dos moustaches poderem ser props locais
 -- argumentos de qualquer ferramenta serem código (gen ou this)
 
 
+-> pt_district("county"/"parish"/"city", _)
+-> pt_county("district"/"parish", _)
+-> pt_parish("district"/"county", _)
+-> political_party("abbr"/"name")
+-> political_party(_)
+-> political_party(_, "abbr"/"name")
+-> soccer_club(_)
+
+-> integer(30,70)
+-> integer(100,400,"$")
+-> integer(100,400,5)
+-> integer(100,400,5,"$")
+-> floating(-180.0451, 180)
+-> floating(-180.0451, 180, 2)
+-> floating(1000, 4000, 2, "0,0.00€")
+-> position([0,30.5], [-50,-25.4])
+-> phone(true/false)
+-> date("10/01/2015")
+-> date("10/01/2015", "YYYY-MM-DD")
+-> date("10/05/2019","10/01/2018")
+-> date("10/05/2019","10/01/2018", "MM.DD.AAAA")
+-> random("blue", null, true, false, 23, 17.56)
+-> lorem(3, "words"/"sentences"/"paragraphs")
+
+-> at_least(x)
+-> repeat(x)
+-> repeat(x,y)
+-> range(x)
+-> range(x,y)
+-> range(x,y,z)
 
 --------------------------------------------------------
 

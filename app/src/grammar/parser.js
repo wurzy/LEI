@@ -787,10 +787,8 @@ const parser = (function() {
         peg$c383 = "_unique",
         peg$c384 = peg$literalExpectation("_unique", false),
         peg$c385 = function(unique, num) {
-          console.log(num)
             nr_copies = Array.isArray(num) ? num.reduce((a,b) => a+b, 0) : nr_copies*num
             queue.push({ value: num, unique: unique != null, total: nr_copies })
-            console.log(_.cloneDeep(queue))
 
             repeat_keys.push(member_key)
             replicateMapValues()
@@ -910,7 +908,7 @@ const parser = (function() {
             if (char == "[") key = char + key
             
             var keySplit = key.split(/\.(.+)/)
-            var path = `gen.local${char=="."?".":""}${keySplit[0]}[gen.i]`
+            var path = `gen.local${char=="."?".":""}${keySplit[0]}${nr_copies>1?"[gen.i]":""}`
             if (keySplit.length > 1) path += (keySplit[1][0] != "[" ? "." : "") + keySplit[1]
             return path
           },
