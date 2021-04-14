@@ -238,6 +238,15 @@
     return arr
   }
 
+  function addCollectionModel(model, name, attributes) {
+    model[name] = {
+      kind: "collectionType",
+      collectionName: name, info: {name},
+      options: {}, attributes
+    }
+    return model
+  }
+
   var chunk = (arr, size) =>
     Array.from({ length: Math.ceil(arr.length / size) }, (v, i) => arr.slice(i * size, i * size + size))
 
@@ -295,50 +304,22 @@ collection_object
 
       for (let p in members) {
         if ("or" in members[p]) {
-          let name = members[p].data[0].key + "_" + uuidv4(); i++
           data[members[p].data[0].key] = members[p].data[0].value
-
-          model[name] = {
-            kind: "collectionType",
-            collectionName: name,
-            info: {name: name},
-            options: {},
-            attributes: members[p].model
-          }
+          model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model)
         }
         else if ("at_least" in members[p]) {
           for (let prop in members[p].data[0]) {
-            let name = prop + "_" + uuidv4()
             data[prop] = members[p].data[0][prop]
-
-            model[name] = {
-              kind: "collectionType",
-              collectionName: name,
-              info: {name: name},
-              options: {},
-              attributes: members[p].model[prop]
-            }
+            model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model[prop])
           }
           i++
         }
         else if ("if" in members[p]) {
           let dataModel = propException(members, p, null, null)
-
-          if ("function" in members[p]) data[p] = dataModel.data[0][p]
-          else {
-            //model
-            for (var prop in dataModel.data[0]) data[prop] = dataModel.data[0][prop]
-          }
+          for (var prop in dataModel.data[0]) data[prop] = dataModel.data[0][prop]
         }
         else {
-          model[collections[i]] = {
-            kind: "collectionType",
-            collectionName: collections[i],
-            info: {name: collections[i++]},
-            options: {},
-            attributes: members[p].model.attributes
-          }
-
+          model = addCollectionModel(model, collections[i++], members[p].model.attributes)
           data[p] = repeat_keys.includes(p) ? members[p].data : members[p].data[0]
         }
       }

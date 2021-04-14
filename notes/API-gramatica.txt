@@ -78,11 +78,12 @@ POR IMPLEMENTAR:
 - repeats diretos de probabilities?
 
 - fazer o modelo para os casos especiais de coleções
+-> FALTA IF E PROBABILITY
 
 
 -- ver se o random e o integer novos funcionam direito em função
 
--- casos especiais em parcelas de arrays?
+-- casos especiais em parcelas de arrays? - function feito
 -- argumentos dos moustaches poderem ser props locais
 -- argumentos de qualquer ferramenta serem código (gen ou this)
 
