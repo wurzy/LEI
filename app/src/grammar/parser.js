@@ -197,7 +197,7 @@ const parser = (function() {
                   model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model)
                 }
                 else if ("at_least" in members[p]) {
-                  for (let prop in members[p].data[0]) {
+                  for (let prop in members[p].model) {
                     data[prop] = members[p].data[0][prop]
                     model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model[prop])
                   }
@@ -206,6 +206,13 @@ const parser = (function() {
                 else if ("if" in members[p]) {
                   let dataModel = propException(members, p, null, null)
                   for (var prop in dataModel.data[0]) data[prop] = dataModel.data[0][prop]
+                }
+                else if ("probability" in members[p]) {
+                  for (let prop in members[p].model) {
+                    if (members[p].probability[0]) data[prop] = members[p].data[0][prop]
+                    model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model[prop])
+                  }
+                  i++
                 }
                 else {
                   model = addCollectionModel(model, collections[i++], members[p].model.attributes)
@@ -235,13 +242,17 @@ const parser = (function() {
                 model = dataModel.model
                 data = dataModel.data
               }
+              else if ("probability" in members[p]) {
+                for (let prop in members[p].model) model.attributes[prop] = members[p].model[prop]
+                for (let i = 0; i < nr_copies; i++) {
+                  if (members[p].probability[i]) {
+                    for (let prop in members[p].data[i]) data[i][prop] = members[p].data[i][prop]
+                  }
+                }
+              }
               else {
                 model.attributes[p] = members[p].model
-                var prob = "probability" in members[p]
-
-                for (let i = 0; i < nr_copies; i++) {
-                  if ((prob && members[p].data[i] !== null) || !prob) data[i][p] = members[p].data[i]
-                }
+                for (let i = 0; i < nr_copies; i++) data[i][p] = members[p].data[i]
               }
             }
             
@@ -861,20 +872,27 @@ const parser = (function() {
         peg$c399 = "having",
         peg$c400 = peg$literalExpectation("having", false),
         peg$c401 = function() {return text()},
-        peg$c402 = function(sign, probability, m) {
-            var prob = parseInt(probability.join(""))/100, arr = []
-
-            for (let i = 0; i < nr_copies; i++) {
-              var bool = (sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob)
-              arr.push(bool ? m.value.data[i] : null)
+        peg$c402 = function(sign, probability, obj) {
+            var prob = parseInt(probability.join(""))/100, data = [], probArr = []
+            
+            for (let p in obj.model.attributes) {
+              obj.model.attributes[p].required = false
+              values_map[values_map.length-1].data[p] = []
             }
 
-            values_map[values_map.length-1].data[m.name] = arr
-            m.value.model.required = false
+            for (let i = 0; i < nr_copies; i++) {
+              probArr.push((sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob))
+              data.push(probArr[i] ? obj.data[i] : null)
+
+              for (let p in obj.data[i]) {
+                if (nr_copies == 1) values_map[values_map.length-1].data[p] = probArr[i] ? obj.data[i][p] : null
+                else values_map[values_map.length-1].data[p].push(probArr[i] ? obj.data[i][p] : null)
+              }
+            }
 
             return {
-              name: m.name,
-              value: { probability: true, model: m.value.model, data: arr }
+              name: uuidv4(),
+              value: { probability: probArr, model: obj.model.attributes, data }
             }
           },
         peg$c403 = "or(",
@@ -893,10 +911,15 @@ const parser = (function() {
               let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
 
               data.push({key, value: obj.data[i][key]})
-              values_map[values_map.length-1].data[key].push(obj.data[i][key])
+
+              if (nr_copies == 1) values_map[values_map.length-1].data[key] = obj.data[i][key]
+              else values_map[values_map.length-1].data[key].push(obj.data[i][key])
 
               keys.splice(keys.indexOf(key), 1)
-              keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
+              keys.forEach(k => {
+                if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
+                else values_map[values_map.length-1].data[k].push(null)
+              })
             }
 
             return { name: uuidv4(), value: { or: true, model, data } }
@@ -920,14 +943,18 @@ const parser = (function() {
 
               for (let j = 0; j < n; j++) {
                 let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
-
                 data[i][key] = obj.data[i][key]
-                values_map[values_map.length-1].data[key].push(obj.data[i][key])
-
+                
+                if (nr_copies == 1) values_map[values_map.length-1].data[key] = obj.data[i][key]
+                else values_map[values_map.length-1].data[key].push(obj.data[i][key])
+                
                 keys.splice(keys.indexOf(key), 1)
               }
 
-              keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
+              keys.forEach(k => {
+                if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
+                else values_map[values_map.length-1].data[k].push(null)
+              })
             }
             
             return { name: uuidv4(), value: { at_least: true, model, data }}
@@ -942,7 +969,7 @@ const parser = (function() {
         peg$c413 = peg$literalExpectation("gen", false),
         peg$c414 = function(name, code) {
             var data = getFunctionData(code)
-            values_map[values_map.length-1].data[name] = data
+            values_map[values_map.length-1].data[name] = nr_copies == 1 ? data[0] : data
             return { name, value: { model: {type: "json", required: true}, data } }
           },
         peg$c415 = "=>",
@@ -7233,7 +7260,7 @@ const parser = (function() {
     }
 
     function peg$parseprobability() {
-      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, s14;
+      var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
 
       s0 = peg$currPos;
       if (input.substr(peg$currPos, 7) === peg$c397) {
@@ -7322,47 +7349,11 @@ const parser = (function() {
                     if (s8 !== peg$FAILED) {
                       s9 = peg$parsews();
                       if (s9 !== peg$FAILED) {
-                        if (input.charCodeAt(peg$currPos) === 123) {
-                          s10 = peg$c4;
-                          peg$currPos++;
-                        } else {
-                          s10 = peg$FAILED;
-                          if (peg$silentFails === 0) { peg$fail(peg$c5); }
-                        }
+                        s10 = peg$parseobject();
                         if (s10 !== peg$FAILED) {
-                          s11 = peg$parsews();
-                          if (s11 !== peg$FAILED) {
-                            s12 = peg$parsemember();
-                            if (s12 !== peg$FAILED) {
-                              s13 = peg$parsews();
-                              if (s13 !== peg$FAILED) {
-                                if (input.charCodeAt(peg$currPos) === 125) {
-                                  s14 = peg$c10;
-                                  peg$currPos++;
-                                } else {
-                                  s14 = peg$FAILED;
-                                  if (peg$silentFails === 0) { peg$fail(peg$c11); }
-                                }
-                                if (s14 !== peg$FAILED) {
-                                  peg$savedPos = s0;
-                                  s1 = peg$c402(s1, s4, s12);
-                                  s0 = s1;
-                                } else {
-                                  peg$currPos = s0;
-                                  s0 = peg$FAILED;
-                                }
-                              } else {
-                                peg$currPos = s0;
-                                s0 = peg$FAILED;
-                              }
-                            } else {
-                              peg$currPos = s0;
-                              s0 = peg$FAILED;
-                            }
-                          } else {
-                            peg$currPos = s0;
-                            s0 = peg$FAILED;
-                          }
+                          peg$savedPos = s0;
+                          s1 = peg$c402(s1, s4, s10);
+                          s0 = s1;
                         } else {
                           peg$currPos = s0;
                           s0 = peg$FAILED;

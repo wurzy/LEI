@@ -308,7 +308,7 @@ collection_object
           model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model)
         }
         else if ("at_least" in members[p]) {
-          for (let prop in members[p].data[0]) {
+          for (let prop in members[p].model) {
             data[prop] = members[p].data[0][prop]
             model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model[prop])
           }
@@ -317,6 +317,13 @@ collection_object
         else if ("if" in members[p]) {
           let dataModel = propException(members, p, null, null)
           for (var prop in dataModel.data[0]) data[prop] = dataModel.data[0][prop]
+        }
+        else if ("probability" in members[p]) {
+          for (let prop in members[p].model) {
+            if (members[p].probability[0]) data[prop] = members[p].data[0][prop]
+            model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model[prop])
+          }
+          i++
         }
         else {
           model = addCollectionModel(model, collections[i++], members[p].model.attributes)
@@ -348,13 +355,17 @@ object
         model = dataModel.model
         data = dataModel.data
       }
+      else if ("probability" in members[p]) {
+        for (let prop in members[p].model) model.attributes[prop] = members[p].model[prop]
+        for (let i = 0; i < nr_copies; i++) {
+          if (members[p].probability[i]) {
+            for (let prop in members[p].data[i]) data[i][prop] = members[p].data[i][prop]
+          }
+        }
+      }
       else {
         model.attributes[p] = members[p].model
-        var prob = "probability" in members[p]
-
-        for (let i = 0; i < nr_copies; i++) {
-          if ((prob && members[p].data[i] !== null) || !prob) data[i][p] = members[p].data[i]
-        }
+        for (let i = 0; i < nr_copies; i++) data[i][p] = members[p].data[i]
       }
     }
     
@@ -845,20 +856,27 @@ range_args
   }
 
 probability
-  = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws ":" ws "{" ws m:member ws "}" {
-    var prob = parseInt(probability.join(""))/100, arr = []
-
-    for (let i = 0; i < nr_copies; i++) {
-      var bool = (sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob)
-      arr.push(bool ? m.value.data[i] : null)
+  = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws ":" ws obj:object {
+    var prob = parseInt(probability.join(""))/100, data = [], probArr = []
+    
+    for (let p in obj.model.attributes) {
+      obj.model.attributes[p].required = false
+      values_map[values_map.length-1].data[p] = []
     }
 
-    values_map[values_map.length-1].data[m.name] = arr
-    m.value.model.required = false
+    for (let i = 0; i < nr_copies; i++) {
+      probArr.push((sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob))
+      data.push(probArr[i] ? obj.data[i] : null)
+
+      for (let p in obj.data[i]) {
+        if (nr_copies == 1) values_map[values_map.length-1].data[p] = probArr[i] ? obj.data[i][p] : null
+        else values_map[values_map.length-1].data[p].push(probArr[i] ? obj.data[i][p] : null)
+      }
+    }
 
     return {
-      name: m.name,
-      value: { probability: true, model: m.value.model, data: arr }
+      name: uuidv4(),
+      value: { probability: probArr, model: obj.model.attributes, data }
     }
   }
 
@@ -876,10 +894,15 @@ or = "or(" ws ")" ws obj:object {
       let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
 
       data.push({key, value: obj.data[i][key]})
-      values_map[values_map.length-1].data[key].push(obj.data[i][key])
+
+      if (nr_copies == 1) values_map[values_map.length-1].data[key] = obj.data[i][key]
+      else values_map[values_map.length-1].data[key].push(obj.data[i][key])
 
       keys.splice(keys.indexOf(key), 1)
-      keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
+      keys.forEach(k => {
+        if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
+        else values_map[values_map.length-1].data[k].push(null)
+      })
     }
 
     return { name: uuidv4(), value: { or: true, model, data } }
@@ -902,14 +925,18 @@ at_least = "at_least(" ws num:int ws ")" obj:object {
 
       for (let j = 0; j < n; j++) {
         let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
-
         data[i][key] = obj.data[i][key]
-        values_map[values_map.length-1].data[key].push(obj.data[i][key])
-
+        
+        if (nr_copies == 1) values_map[values_map.length-1].data[key] = obj.data[i][key]
+        else values_map[values_map.length-1].data[key].push(obj.data[i][key])
+        
         keys.splice(keys.indexOf(key), 1)
       }
 
-      keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
+      keys.forEach(k => {
+        if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
+        else values_map[values_map.length-1].data[k].push(null)
+      })
     }
     
     return { name: uuidv4(), value: { at_least: true, model, data }}
@@ -923,7 +950,7 @@ if = "if" ws code:if_code ws obj:object {
 function_prop
   = name:function_key "(" ws "gen" ws ")" ws code:function_code {
     var data = getFunctionData(code)
-    values_map[values_map.length-1].data[name] = data
+    values_map[values_map.length-1].data[name] = nr_copies == 1 ? data[0] : data
     return { name, value: { model: {type: "json", required: true}, data } }
   }
 
