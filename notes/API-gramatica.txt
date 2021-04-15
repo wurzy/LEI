@@ -77,9 +77,6 @@ POR IMPLEMENTAR:
 
 - repeats diretos de probabilities?
 
-- fazer o modelo para os casos especiais de coleções
--> FALTA IF E PROBABILITY
-
 
 -- ver se o random e o integer novos funcionam direito em função
 

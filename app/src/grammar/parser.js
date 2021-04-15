@@ -194,7 +194,7 @@ const parser = (function() {
               for (let p in members) {
                 if ("or" in members[p]) {
                   data[members[p].data[0].key] = members[p].data[0].value
-                  model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model)
+                  model = addCollectionModel(model, p+"_"+uuidv4(), members[p].model)
                 }
                 else if ("at_least" in members[p]) {
                   for (let prop in members[p].model) {
@@ -204,8 +204,11 @@ const parser = (function() {
                   i++
                 }
                 else if ("if" in members[p]) {
-                  let dataModel = propException(members, p, null, null)
-                  for (var prop in dataModel.data[0]) data[prop] = dataModel.data[0][prop]
+                  for (let prop in members[p].data[0]) {
+                    data[prop] = members[p].data[0][prop]
+                    model = addCollectionModel(model, prop+"_"+uuidv4(), members[p].model[prop])
+                  }
+                  i++
                 }
                 else if ("probability" in members[p]) {
                   for (let prop in members[p].model) {
@@ -238,9 +241,10 @@ const parser = (function() {
                 }
               }
               else if ("if" in members[p]) {
-                let dataModel = propException(members, p, model, data)
-                model = dataModel.model
-                data = dataModel.data
+                for (let prop in members[p].model) model.attributes[prop] = members[p].model[prop]
+                for (let i = 0; i < nr_copies; i++) {
+                  for (let prop in members[p].data[i]) data[i][prop] = members[p].data[i][prop]
+                }        
               }
               else if ("probability" in members[p]) {
                 for (let prop in members[p].model) model.attributes[prop] = members[p].model[prop]
@@ -875,20 +879,28 @@ const parser = (function() {
         peg$c402 = function(sign, probability, obj) {
             var prob = parseInt(probability.join(""))/100, data = [], probArr = []
             
-            for (let p in obj.model.attributes) {
-              obj.model.attributes[p].required = false
-              values_map[values_map.length-1].data[p] = []
-            }
-
-            for (let i = 0; i < nr_copies; i++) {
-              probArr.push((sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob))
-              data.push(probArr[i] ? obj.data[i] : null)
-
-              for (let p in obj.data[i]) {
-                if (nr_copies == 1) values_map[values_map.length-1].data[p] = probArr[i] ? obj.data[i][p] : null
-                else values_map[values_map.length-1].data[p].push(probArr[i] ? obj.data[i][p] : null)
+             for (let p in obj.model.attributes) {
+                obj.model.attributes[p].required = false
+                values_map[values_map.length-1].data[p] = []
               }
-            }
+
+              for (let i = 0; i < nr_copies; i++) {
+                probArr.push((sign == "missing" && Math.random() > prob) || (sign == "having" && Math.random() < prob))
+                data.push(probArr[i] ? obj.data[i] : null)
+
+                let nullKeys = Object.keys(obj.model.attributes)
+                for (let p in obj.data[i]) {
+                  if (nr_copies == 1) values_map[values_map.length-1].data[p] = probArr[i] ? obj.data[i][p] : null
+                  else values_map[values_map.length-1].data[p].push(probArr[i] ? obj.data[i][p] : null)
+                  
+                  nullKeys.splice(nullKeys.indexOf(p), 1)
+                }
+
+                nullKeys.forEach(k => {
+                  if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
+                  else values_map[values_map.length-1].data[k].push(null)
+                })
+              }
 
             return {
               name: uuidv4(),
@@ -907,7 +919,7 @@ const parser = (function() {
             }
 
             for (let i = 0; i < nr_copies; i++) {
-              let keys = Object.keys(model)
+              let keys = Object.keys(obj.data[i])
               let key = keys[Math.floor(Math.random() * (0 - keys.length) + keys.length)]
 
               data.push({key, value: obj.data[i][key]})
@@ -915,8 +927,9 @@ const parser = (function() {
               if (nr_copies == 1) values_map[values_map.length-1].data[key] = obj.data[i][key]
               else values_map[values_map.length-1].data[key].push(obj.data[i][key])
 
-              keys.splice(keys.indexOf(key), 1)
-              keys.forEach(k => {
+              let nullKeys = Object.keys(model)
+              nullKeys.splice(nullKeys.indexOf(key), 1)
+              nullKeys.forEach(k => {
                 if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
                 else values_map[values_map.length-1].data[k].push(null)
               })
@@ -936,7 +949,9 @@ const parser = (function() {
             }
 
             for (let i = 0; i < nr_copies; i++) {
-              let keys = Object.keys(model)
+              let keys = Object.keys(obj.data[i])
+              let nullKeys = Object.keys(model)
+
               var n = Math.floor(Math.random() * ((keys.length+1) - num) + num)
               if (num > keys.length) n = keys.length
               data.push({})
@@ -949,9 +964,10 @@ const parser = (function() {
                 else values_map[values_map.length-1].data[key].push(obj.data[i][key])
                 
                 keys.splice(keys.indexOf(key), 1)
+                nullKeys.splice(nullKeys.indexOf(key), 1)
               }
 
-              keys.forEach(k => {
+              nullKeys.forEach(k => {
                 if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
                 else values_map[values_map.length-1].data[k].push(null)
               })
@@ -962,8 +978,42 @@ const parser = (function() {
         peg$c409 = "if",
         peg$c410 = peg$literalExpectation("if", false),
         peg$c411 = function(code, obj) {
-            for (let p in obj.model.attributes) obj.model.attributes[p].required = false
-            return { name: uuidv4(), value: { if: new Function("gen", "return " + code), value: obj } }
+            var model = {}, data = []
+            var f = new Function("gen", "return "+code)
+
+            for (let prop in obj.model.attributes) {
+              obj.model.attributes[prop].required = false
+              model[prop] = obj.model.attributes[prop]
+              values_map[values_map.length-1].data[prop] = []
+            }
+
+            for (let i = 0; i < nr_copies; i++) {
+              let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+              data.push({})
+              
+              if (f({genAPI, dataAPI, local, i})) {
+                for (let prop in obj.data[i]) {
+                  data[i][prop] = obj.data[i][prop]
+                  
+                  if (nr_copies == 1) values_map[values_map.length-1].data[prop] = obj.data[i][prop]
+                  else values_map[values_map.length-1].data[prop].push(obj.data[i][prop])
+                }
+              }
+              else {
+                for (let prop in obj.data[i]) {
+                  if (nr_copies == 1) values_map[values_map.length-1].data[prop] = null
+                  else values_map[values_map.length-1].data[prop].push(null)
+                }
+              }
+                
+              var null_keys = Object.keys(obj.model.attributes).filter(e => !Object.keys(obj.data[i]).includes(e))
+              null_keys.forEach(k => {
+                if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
+                else values_map[values_map.length-1].data[k].push(null)
+              })
+            }
+
+            return { name: uuidv4(), value: { if: true, model, data } }
           },
         peg$c412 = "gen",
         peg$c413 = peg$literalExpectation("gen", false),
@@ -8392,39 +8442,6 @@ const parser = (function() {
           data.push(f({genAPI, dataAPI, local, i}))
         }
         return data
-      }
-
-      function propException(members, p, model, data) {
-        if (model == null && data == null) {
-          model = {attributes: {}}
-          data = []
-          for (let i = 0; i < nr_copies; i++) data.push({})
-        }
-
-        if ("if" in members[p]) {
-          for (let prop in members[p].value.model.attributes) {
-            model.attributes[prop] = members[p].value.model.attributes[prop]
-            values_map[values_map.length-1].data[prop] = []
-          }
-
-          for (let i = 0; i < nr_copies; i++) {
-            let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
-            
-            if (members[p].if({genAPI, dataAPI, local, i})) {
-              for (let prop in members[p].value.data[i]) {
-                data[i][prop] = members[p].value.data[i][prop]
-                values_map[values_map.length-1].data[prop].push(data[i][prop])
-              }
-              var null_keys = Object.keys(values_map[values_map.length-1].data).filter(e => !Object.keys(members[p].value.data[i]).includes(e))
-              null_keys.forEach(k => values_map[values_map.length-1].data[k].push(null))
-            }
-            else {
-              for (let prop in members[p].value.data[i]) values_map[values_map.length-1].data[prop].push(null)
-            }
-          }
-        }
-
-        return {model, data}
       }
 
       function replicateMapValues() {
