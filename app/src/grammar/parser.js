@@ -8355,6 +8355,10 @@ const parser = (function() {
         var join = args.join(",")
 
         if (key in genAPI) {
+          if (key == "integer" && args.length == 3 && args[2][0] == '"') {
+            args.splice(2, 0, "null")
+            join = args.join(",")
+          }
           if (key == "floating" && args.length > 3) {
             var format = trimArg(args.slice(3, args.length).join(','), true)
             join = args.slice(0,3).join(',') + ',' + format
