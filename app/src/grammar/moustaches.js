@@ -39,7 +39,11 @@ function guid() {
 
 function boolean() { return Math.random() < 0.5 }
 
-function integer(min, max, size, unit) {
+function integer(min_arg, max_arg, size_arg, unit, i) {
+    var min = Array.isArray(min_arg) ? min_arg[i] : min_arg
+    var max = Array.isArray(max_arg) ? max_arg[i] : max_arg
+    var size = Array.isArray(size_arg) ? size_arg[i] : size_arg
+
     var rand = Math.floor(Math.random() * ((max+1) - min) + min).toString()
     var negative = false, pad = false
 

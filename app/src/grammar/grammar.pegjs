@@ -55,6 +55,13 @@
     var join = args.join(",")
 
     if (key in genAPI) {
+      if (key == "integer") {
+        if (args.length == 2) join += ",null,null"
+        else if (args.length == 3) {
+          if (args[2][0] == '"') { args.splice(2, 0, "null"); join = args.join(",") }
+          else join += ",null"
+        }
+      }
       if (key == "floating" && args.length > 3) {
         var format = trimArg(args.slice(3, args.length).join(','), true)
         join = args.slice(0,3).join(',') + ',' + format
@@ -71,6 +78,7 @@
         if (args.length == 2) join = [args[0],args[1],"null"].join(",")
       }
       path = "genAPI." + key
+      join += ",gen.i"
     }
     else if (key == "political_party") {
       if (args.length == 1) {
@@ -191,7 +199,7 @@
     else {
       for (let i = 0; i < nr_copies; i++) {
         let elem
-        if (api == "gen") elem = genAPI[moustaches](...args)
+        if (api == "gen") elem = genAPI[moustaches](...args, i)
         if (api == "data") elem = dataAPI[sub_api][moustaches](language, ...args)
 
         if (queue[queue.length-1].unique) {
@@ -570,6 +578,9 @@ unescaped
 
 // ----- 8. Moustaches -----
 
+int_or_local = int / int_local_arg
+intneg_or_local = int_neg / int_local_arg
+
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
   var model = { type: "string", required: true }, data
 
@@ -613,7 +624,7 @@ gen_moustaches
         data: arrays.flat().map(k => k + offset)
       }
     }
-  / "integer(" ws min:int_neg ws "," ws max:int_neg ws size:("," ws c:int ws {return c})? unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u.join("")})? ")" {
+  / "integer(" ws min:intneg_or_local ws "," ws max:intneg_or_local ws size:("," ws c:int_or_local ws {return c})? unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u.join("")})? ")" {
     return {
       model: { type: (size == null && unit === null) ? "integer" : "string", required: true }, 
       data: fillArray("gen", null, "integer", [min, max, size, unit])
@@ -772,7 +783,7 @@ repeat_signature
   }
 
 repeat_args
-  = ws min:(int/local_arg) ws max:("," ws m:(int/local_arg) ws { return m })? {
+  = ws min:int_or_local ws max:("," ws m:int_or_local ws { return m })? {
     var minArr = Array.isArray(min), maxArr = Array.isArray(max)
 
     if (max === null) return min
@@ -792,6 +803,8 @@ repeat_args
     }
   }
 
+int_local_arg = arg:local_arg { return arg.map(x => parseInt(x)) }
+
 local_arg = ws "this" char:("."/"[") key:code_key ws {
     if (char == "[") key = char + key
 
@@ -803,7 +816,7 @@ local_arg = ws "this" char:("."/"[") key:code_key ws {
       else break//erro
     }
 
-    return local.map(x => parseInt(x))
+    return local
   }
 
 range
