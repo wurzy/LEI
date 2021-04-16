@@ -2,7 +2,7 @@ import top100JS from '../datasets/top100_celebrities';
 const top100 = top100JS.top100_celebrities
 
 const top100_celebritiesAPI = {
-    top100_celebrity(lang) {
+    top100_celebrity(lang, i) {
         return top100[Math.floor(Math.random() * top100.length)]
     }
 }

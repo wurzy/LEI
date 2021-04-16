@@ -75,14 +75,14 @@ POR IMPLEMENTAR:
 - lista de erros para apresentar de maneira user-friendly no vue -> keywords reservadas do Strapi
 - CSV
 
-- repeats diretos de probabilities?
 
+-- dar fix ao datasets de partidos políticos
 
--- casos especiais em parcelas de arrays? - function feito
--- argumentos dos moustaches poderem ser props locais
 -- argumentos de qualquer ferramenta serem código (gen ou this)
 
 --- como fica o modelo se puser uma cena básica como coleção?
+
+--> fazer um repeat unique de moustaches - .unique()
 
 
 -> pt_district("county"/"parish"/"city", _)
@@ -99,14 +99,13 @@ POR IMPLEMENTAR:
 -> date("10/05/2019","10/01/2018")
 -> date("10/05/2019","10/01/2018", "MM.DD.AAAA")
 -> random("blue", null, true, false, 23, 17.56)
--> lorem(3, "words"/"sentences"/"paragraphs")
+-> lorem(_, "words"/"sentences"/"paragraphs")
 
--> at_least(x)
--> repeat(x)
--> repeat(x,y)
--> range(x)
--> range(x,y)
--> range(x,y,z)
+
+VALERÁ A PENA?
+- repeats diretos de probability / função prop / or / if / at_least
+- parcelas de arrays com probability / or / if / at_least
+
 
 --------------------------------------------------------
 

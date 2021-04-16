@@ -28,21 +28,21 @@ function formatNumber(num) {
     return x1 + x2;
 }
 
-function objectId() {
+function objectId(i) {
     return hex(Date.now() / 1000) + ' '.repeat(16).replace(/./g, () => hex(Math.random() * 16))
 }
 
-function guid() {
+function guid(i) {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16))
 }
 
-function boolean() { return Math.random() < 0.5 }
+function boolean(i) { return Math.random() < 0.5 }
 
-function integer(min_arg, max_arg, size_arg, unit, i) {
-    var min = Array.isArray(min_arg) ? min_arg[i] : min_arg
-    var max = Array.isArray(max_arg) ? max_arg[i] : max_arg
-    var size = Array.isArray(size_arg) ? size_arg[i] : size_arg
+function integer(min, max, size, unit, i) {
+    min = Array.isArray(min) ? min[i] : min
+    max = Array.isArray(max) ? max[i] : max
+    size = Array.isArray(size) ? size[i] : size
 
     var rand = Math.floor(Math.random() * ((max+1) - min) + min).toString()
     var negative = false, pad = false
@@ -56,10 +56,10 @@ function integer(min_arg, max_arg, size_arg, unit, i) {
     return unit == null ? rand : (rand + unit)
 }
 
-function floating(min_arg, max_arg, decimals_arg, format, i) {
-    var min = Array.isArray(min_arg) ? min_arg[i] : min_arg
-    var max = Array.isArray(max_arg) ? max_arg[i] : max_arg
-    var decimals = Array.isArray(decimals_arg) ? decimals_arg[i] : decimals_arg
+function floating(min, max, decimals, format, i) {
+    min = Array.isArray(min) ? min[i] : min
+    max = Array.isArray(max) ? max[i] : max
+    decimals = Array.isArray(decimals) ? decimals[i] : decimals
 
     decimals = decimals == null ? getDecimalsCount(min,max) : decimals
     var random = min + (max - min) * Math.random();
@@ -75,9 +75,9 @@ function floating(min_arg, max_arg, decimals_arg, format, i) {
     return rounded
 }
 
-function position(lat_arg, long_arg, i) {
-    var lat = (lat_arg != null && Array.isArray(lat_arg[0])) ? lat_arg[i] : lat_arg
-    var long = (long_arg != null && Array.isArray(long_arg[0])) ? long_arg[i] : long_arg
+function position(lat, long, i) {
+    lat = (lat != null && Array.isArray(lat[0])) ? lat[i] : lat
+    long = (long != null && Array.isArray(long[0])) ? long[i] : long
 
     if (!lat) return "(" + floating(-90,90,5) + ", " + floating(-180,180,5) + ")"
     else {
@@ -88,7 +88,7 @@ function position(lat_arg, long_arg, i) {
     }
 }
 
-function phone(extension) {
+function phone(extension, i) {
     var number = "9" + random([1,2,3,6])
     while (number.length < 11) {
         if (number.length == 3 || number.length == 7) number += " "
@@ -102,7 +102,7 @@ function newDate(str) {
     return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]))
 }
 
-function date(start, end, format) {
+function date(start, end, format, i) {
     start = newDate(start)
     end = !end ? new Date() : newDate(end)
 
@@ -110,16 +110,25 @@ function date(start, end, format) {
     return moment(random).format(format.replace(/A/g, "Y"))
 }
 
-function lorem(count, units) { return loremIpsum({ count, units }) }
+function lorem(count, units, i) {
+    count = Array.isArray(count) ? count[i] : count
+    return loremIpsum({ count, units })
+}
 
-function random(values) { return values[Math.floor(Math.random() * values.length)] }
+function random(values, i) { return values[Math.floor(Math.random() * values.length)] }
 
-function range(init, end, step) {
+function range(init, end, step, i) {
+    init = Array.isArray(init) ? init[i] : init
+
     if (end == null) {
       end = init; init = 0
       step = init < end ? 1 : -1
     }
-    else if (step == null) step = init < end ? 1 : -1
+    else {
+        end = Array.isArray(end) ? end[i] : end
+        if (step == null) step = init < end ? 1 : -1
+        else step = Array.isArray(step) ? step[i] : step
+    }
 
     var range = []
     for (let i = init; (init < end) ? i < end : i > end; i += step) range.push(i)

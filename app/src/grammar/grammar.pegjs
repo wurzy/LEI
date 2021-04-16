@@ -105,50 +105,56 @@
       if (key == "lorem") { args[1] = trimArg(args[1],true); join = args.join(",") }
       if (key == "random") join = '[' + join + ']'
       if (key == "range") {
-        if (args.length == 1) join = [args[0],"null","null"].join(",")
-        if (args.length == 2) join = [args[0],args[1],"null"].join(",")
+        if (args.length == 1) join += ",null,null"
+        if (args.length == 2) join = ",null"
       }
+
       path = "genAPI." + key
       join += ",gen.i"
     }
-    else if (key == "political_party") {
-      if (args.length == 1) {
-        var arg0 = !args[0].length ? "" : trimArg(args[0], false)
-        if (["abbr","name"].includes(arg0)) { key += "_" + arg0; join = "" }
+    else {
+      if (key == "political_party") {
+        if (args.length == 1) {
+          var arg0 = !args[0].length ? "" : trimArg(args[0], false)
+          if (["abbr","name"].includes(arg0)) { key += "_" + arg0; join = "" }
+          else {
+            key += (!args[0].length ? "" : "_from");
+            join = trimArg(args[0], true)
+          }
+        }
         else {
-          key += (!args[0].length ? "" : "_from");
+          key += "_from_" + trimArg(args[1], false)
           join = trimArg(args[0], true)
         }
+        path = "political_parties." + key
       }
-      else {
-        key += "_from_" + trimArg(args[1], false)
-        join = trimArg(args[0], true)
-      }
-      path = "dataAPI.political_parties." + key
-    }
-    else if (['pt_district','pt_county','pt_parish'].includes(key)) {
-      if (args[0].length > 0) {
-        var from = capitalize(trimArg(args[0], false))
-        join = trimArg(args[1], true)
+      else if (['pt_district','pt_county','pt_parish'].includes(key)) {
+        if (args[0].length > 0) {
+          var from = capitalize(trimArg(args[0], false))
+          join = trimArg(args[1], true)
 
-        if (key == "pt_district") key += "Of" + from
-        if (key == "pt_county") key += (from == "District" ? "From" : "Of") + from
-        if (key == "pt_parish") key += "From" + from
+          if (key == "pt_district") key += "Of" + from
+          if (key == "pt_county") key += (from == "District" ? "From" : "Of") + from
+          if (key == "pt_parish") key += "From" + from
+        }
+        path = "pt_districts." + key
       }
-      path = "dataAPI.pt_districts." + key
+      else if (key == "pt_city") {
+        path = "pt_districts." + key + (!args[0].length ? "" : "Coordinates")
+        if (args[0].length > 0) join = trimArg(args[1], true)
+      }
+      else if (key == "soccer_club") {
+        path = "soccer_clubs." + key + (!args[0].length ? "" : "_from")
+        if (args[0].length > 0 && !args[0].startsWith("this")) join = trimArg(args[0], true)
+      }
+      else if (['firstName','surname','fullName'].includes(key)) path = "names." + key
+      else if (key[key.length-1] == 'y' && key != "day") path = `${key.slice(0,-1)+'ies'}.${key}`
+      else if (key.slice(key.length-3) == "man") path = `${key.slice(0,-2)+'en'}.${key}`
+      else path = `${key+'s'}.${key}`
+      
+      path = "dataAPI." + path
+      join = `"${language}", gen.i, ${join}`
     }
-    else if (key == "pt_city") {
-      path = "dataAPI.pt_districts." + key + (!args[0].length ? "" : "Coordinates")
-      if (args[0].length > 0) join = trimArg(args[1], true)
-    }
-    else if (key == "soccer_club") {
-      path = "dataAPI.soccer_clubs." + key + (!args[0].length ? "" : "_from")
-      if (args[0].length > 0) join = trimArg(args[0], true)
-    }
-    else if (['firstName','surname','fullName'].includes(key)) path = "dataAPI.names." + key
-    else if (key[key.length-1] == 'y' && key != "day") path = `dataAPI.${key.slice(0,-1)+'ies'}.${key}`
-    else if (key.slice(key.length-3) == "man") path = `dataAPI.${key.slice(0,-2)+'en'}.${key}`
-    else path = `dataAPI.${key+'s'}.${key}`
 
     return {path, args: join}
   }
@@ -231,13 +237,13 @@
       for (let i = 0; i < nr_copies; i++) {
         let elem
         if (api == "gen") elem = genAPI[moustaches](...args, i)
-        if (api == "data") elem = dataAPI[sub_api][moustaches](language, ...args)
+        if (api == "data") elem = dataAPI[sub_api][moustaches](language, i, ...args)
 
-        if (queue[queue.length-1].unique) {
+        /* if (queue[queue.length-1].unique) {
           if (arr.includes(elem)) --i
           else arr.push(elem)
         }
-        else arr.push(elem)
+        else */ arr.push(elem)
       }
     }
 
@@ -614,6 +620,7 @@ intneg_or_local = int_neg / int_local_arg
 number_or_local = n:number {return n.data[0]} / num_local_arg
 latitude_or_local = latitude / num_local_arg
 longitude_or_local = longitude / num_local_arg
+string_or_local = string_arg / string_local_arg
 
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
   var model = { type: "string", required: true }, data
@@ -699,7 +706,7 @@ gen_moustaches
         data: fillArray("gen", null, "random", [values])
       }
   }
-  / "lorem(" ws count:int ws "," ws units:lorem_string ws ")" {
+  / "lorem(" ws count:int_or_local ws "," ws units:lorem_string ws ")" {
     return {
       model: {type: "string", required: true},
       data: fillArray("gen", null, "lorem", [count, units])
@@ -708,7 +715,7 @@ gen_moustaches
 
 api_moustaches
   = simple_api_key
-  / key:district_keyword "(" moustaches:place_label "," name:string_arg ")" {
+  / key:district_keyword "(" moustaches:place_label "," name:string_or_local ")" {
     if (key == "pt_district") moustaches = key + "Of" + moustaches
     if (key == "pt_county") moustaches = key + (moustaches == "District" ? "From" : "Of") + moustaches
     if (key == "pt_parish") moustaches = key + "From" + moustaches
@@ -718,7 +725,7 @@ api_moustaches
       data: fillArray("data", "pt_districts", moustaches, [name])
     }
   }
-  / "pt_city(" ws city:(quotation_mark ws "coords" ws quotation_mark ws "," name:string_arg ws {return name})? ")" {
+  / "pt_city(" ws city:(quotation_mark ws "coords" ws quotation_mark ws "," name:string_or_local ws {return name})? ")" {
     return {
       model: {
         type: city === null ? "string" : {
@@ -730,22 +737,8 @@ api_moustaches
       data: fillArray("data", "pt_districts", "pt_city" + (city == null ? "" : "Coordinates"), city == null ? [] : [city])
     }
   }
-  / "pt_political_party(" ws arg:nameOrAbbr? ")" {
-    var moustaches = !arg ? "pt_political_party" : ("pt_political_party_" + arg)
-    return {
-      objectType: arg === null,
-      model: {
-        type: arg !== null ? "string" : {
-          sigla: {type: "string", required: true},
-          partido: {type: "string", required: true}
-        },
-        required: true
-      },
-      data: fillArray("data", "pt_political_parties", moustaches, [])
-    }
-  }
   / "political_party(" ws args:( t:nameOrAbbr {return [t]}
-                            / (country:string_arg type:("," t:nameOrAbbr {return t})? {return type == null ? [country] : [country,type]}))? ")" {
+                            / (country:string_or_local type:("," t:nameOrAbbr {return t})? {return type == null ? [country] : [country,type]}))? ")" {
     var objectType = true, moustaches, model = {
       type: {
         party_abbr: {type: "string", required: true},
@@ -770,11 +763,11 @@ api_moustaches
 
     return { objectType, model, data: fillArray("data", "political_parties", moustaches, !args ? [] : args) }
   }
-  / "soccer_club(" ws arg:string_arg? ")" {
+  / "soccer_club(" ws arg:string_or_local? ")" {
     var moustaches = !arg ? "soccer_club" : "soccer_club_from"
     return {
       model: {type: "string", required: true},
-      data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg.toLowerCase()])
+      data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg])
     }
   }
   / "pt_entity(" ws arg:nameOrAbbr? ")" {
@@ -840,6 +833,7 @@ repeat_args
 int_local_arg = arg:local_arg { return arg.map(x => parseInt(x)) }
 num_local_arg = arg:local_arg { return arg.map(x => parseFloat(x)) }
 pair_local_arg = arg:local_arg { return arg.map(x => x.map(y => parseFloat(y))) }
+string_local_arg = arg:local_arg { return arg.map(x => String(x)) }
 
 local_arg = ws "this" char:("."/"[") key:code_key ws {
     if (char == "[") key = char + key
@@ -867,7 +861,7 @@ range
   }
 
 range_args
-  = init:int_neg args:(ws "," ws end:int_neg step:(ws "," ws s:int_neg { return s })? { return {end, step}})? {
+  = init:intneg_or_local args:(ws "," ws end:intneg_or_local step:(ws "," ws s:intneg_or_local { return s })? { return {end, step}})? {
     var end = !args ? null : args.end
     var step = (!args || args.step == null) ? null : args.step
     return fillArray("gen", null, "range", [init, end, step])
@@ -935,8 +929,9 @@ or = "or(" ws ")" ws obj:object {
     return { name: uuidv4(), value: { or: true, model, data } }
   }
 
-at_least = "at_least(" ws num:int ws ")" obj:object {
+at_least = "at_least(" ws num:int_or_local ws ")" obj:object {
     var model = {}, data = []
+    if (!Array.isArray(num)) num = Array(nr_copies).fill(num)
 
     for (let prop in obj.model.attributes) {
       obj.model.attributes[prop].required = false
@@ -948,8 +943,8 @@ at_least = "at_least(" ws num:int ws ")" obj:object {
       let keys = Object.keys(obj.data[i])
       let nullKeys = Object.keys(model)
 
-      var n = Math.floor(Math.random() * ((keys.length+1) - num) + num)
-      if (num > keys.length) n = keys.length
+      var n = Math.floor(Math.random() * ((keys.length+1) - num[i]) + num[i])
+      if (num[i] > keys.length) n = keys.length
       data.push({})
 
       for (let j = 0; j < n; j++) {
@@ -1055,7 +1050,7 @@ gen_call = "gen." key:code_key ARGS_START args:(gen_call / local_var / not_paren
     }
 
     var obj = getApiPath(key, split.map(x => x.trim()))
-    return `gen.${obj.path}(` + (obj.path.includes('dataAPI') ? `"${language}", ` : '') + `${obj.args})`
+    return `gen.${obj.path}(${obj.args})`
   }
 
 not_parentheses = !ARGS_START !ARGS_STOP. { return text() }

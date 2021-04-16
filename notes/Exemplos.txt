@@ -317,7 +317,7 @@ MOUSTACHES DE DATASETS:
           marca_carro: '{{car_brand()}}',
           continente: '{{continent()}}',
           centro_cultural: '{{cultural_center()}}',
-	  dia: '{{day()}}',
+	  dia: '{{weekday()}}',
           hacker: '{{hacker()}}',
           emprego: '{{job()}}',
 	  mes: '{{month()}}',

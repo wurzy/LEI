@@ -74,3 +74,103 @@
     }
   ]
 }
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+    	x: 5,
+    	y: 15,
+    	z: -50,
+    	k: -7,
+	  	range: range(this.x),
+        range_asc: range(this.x,this.y,5),
+        range_desc: range(this.y,this.z,this.k),
+        f(gen) {
+        	return {
+              range: gen.range(this.x),
+              range_asc: gen.range(this.x,this.y,5),
+              range_desc: gen.range(this.y,this.z,this.k),
+            }
+        }
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+	colecao: [
+      'repeat(3)': {
+          distrito: '{{pt_district()}}',
+          concelho: '{{pt_county()}}',
+          freguesia: '{{pt_parish()}}',
+      	  cidade: '{{pt_city()}}',
+          distrito2: '{{pt_district("county",this.concelho)}}',
+          distrito3: '{{pt_district("parish",this.freguesia)}}',
+          distrito4: '{{pt_district("city",this.cidade)}}',
+          concelho2: '{{pt_county("district",this.distrito)}}',
+          concelho3: '{{pt_county("parish",this.freguesia)}}',
+          freguesia2: '{{pt_parish("district",this.distrito)}}',
+          freguesia3: '{{pt_parish("county",this.concelho)}}',
+      	  cidade2: '{{pt_city("coords",this.cidade)}}',
+          f(gen) {
+            return {
+              distrito: gen.pt_district(),
+              concelho: gen.pt_county(),
+              freguesia: gen.pt_parish(),
+              cidade: gen.pt_city(),
+              distrito2: gen.pt_district("county",this.concelho),
+              distrito3: gen.pt_district("parish",this.freguesia),
+              distrito4: gen.pt_district("city",this.cidade),
+              concelho2: gen.pt_county("district",this.distrito),
+              concelho3: gen.pt_county("parish",this.freguesia),
+              freguesia2: gen.pt_parish("district",this.distrito),
+              freguesia3: gen.pt_parish("county",this.concelho),
+              cidade2: gen.pt_city("coords",this.cidade)
+            }
+          }
+      }
+	]
+}
+
+<!LANGUAGE pt>
+{
+	colecao: [
+      'repeat(3)': {
+      	  país: "Portugal",
+          partido: '{{political_party()}}',
+          partido_abbr: '{{political_party("abbr")}}',
+          partido_nome: '{{political_party("name")}}',
+          partido2: '{{political_party(this.país)}}',
+          partido2_abbr: '{{political_party(this.país,"abbr")}}',
+          partido2_nome: '{{political_party(this.país,"name")}}',
+          f(gen) {
+            return {
+              partido: gen.political_party(),
+              partido_abbr: gen.political_party("abbr"),
+              partido_nome: gen.political_party("name"),
+              partido2: gen.political_party(this.país),
+              partido2_abbr: gen.political_party(this.país,"abbr"),
+              partido2_nome: gen.political_party(this.país,"name")
+            }
+          }
+      }
+	]
+}
+
+<!LANGUAGE pt>
+{
+	colecao: [
+      'repeat(3)': {
+      	  país: "Portugal",
+          clube_futebol: '{{soccer_club()}}',
+          clube_futebol_arg: '{{soccer_club(this.país)}}',
+      	  f(gen) {
+			return {
+				c1: gen.soccer_club(),
+                c2: gen.soccer_club(this.país)
+			}
+		  }
+      }
+	]
+}

@@ -6,11 +6,12 @@ function normalize(str) {
 }
 
 const districtsAPI = {
-    pt_district(lang) {
+    pt_district(lang, i) {
         return districts[Math.floor(Math.random() * districts.length)].district
     },
 
-    pt_districtOfCounty(lang, county) {
+    pt_districtOfCounty(lang, i, county) {
+        if (Array.isArray(county)) county = county[i]
         county = normalize(county)
 
         for (let dist of districts) {
@@ -19,7 +20,8 @@ const districtsAPI = {
         }
     },
 
-    pt_districtOfParish(lang, parish) {
+    pt_districtOfParish(lang, i, parish) {
+        if (Array.isArray(parish)) parish = parish[i]
         parish = normalize(parish)
 
         for (let dist of districts) {
@@ -28,7 +30,8 @@ const districtsAPI = {
         }
     },
 
-    pt_districtOfCity(lang, city) {
+    pt_districtOfCity(lang, i, city) {
+        if (Array.isArray(city)) city = city[i]
         city = normalize(city)
 
         for (let dist of districts) {
@@ -37,12 +40,13 @@ const districtsAPI = {
         }
     },
 
-    pt_county(lang) {
+    pt_county(lang, i) {
         const counties = districts[Math.floor(Math.random() * districts.length)].counties
         return counties[Math.floor(Math.random() * counties.length)].county
     },
 
-    pt_countyOfParish(lang, parish) {
+    pt_countyOfParish(lang, i, parish) {
+        if (Array.isArray(parish)) parish = parish[i]
         parish = normalize(parish)
         
         for (let dist of districts) {
@@ -53,26 +57,28 @@ const districtsAPI = {
         }
     },
 
-    pt_countyFromDistrict(lang, district) {
+    pt_countyFromDistrict(lang, i, district) {
+        if (Array.isArray(district)) district = district[i]
         district = normalize(district)
-        let dists = districts.map(x => normalize(x.district))
 
+        let dists = districts.map(x => normalize(x.district))
         if (dists.includes(district)) {
             let counties = districts[dists.indexOf(district)].counties
             return counties[Math.floor(Math.random() * counties.length)].county
         }
     },
 
-    pt_parish(lang) {
+    pt_parish(lang, i) {
         const counties = districts[Math.floor(Math.random() * districts.length)].counties
         const parishes = counties[Math.floor(Math.random() * counties.length)].parishes
         return parishes[Math.floor(Math.random() * parishes.length)]
     },
 
-    pt_parishFromDistrict(lang, district) {
+    pt_parishFromDistrict(lang, i, district) {
+        if (Array.isArray(district)) district = district[i]
         district = normalize(district)
-        let dists = districts.map(x => normalize(x.district))
 
+        let dists = districts.map(x => normalize(x.district))
         if (dists.includes(district)) {
             let counties = districts[dists.indexOf(district)].counties
             let parishes = counties[Math.floor(Math.random() * counties.length)].parishes
@@ -80,7 +86,8 @@ const districtsAPI = {
         }
     },
 
-    pt_parishFromCounty(lang, county) {
+    pt_parishFromCounty(lang, i, county) {
+        if (Array.isArray(county)) county = county[i]
         county = normalize(county)
 
         for (let d of districts) {
@@ -92,12 +99,13 @@ const districtsAPI = {
         }
     },
 
-    pt_city(lang) {
+    pt_city(lang, i) {
         const cities = districts[Math.floor(Math.random() * districts.length)].cities
         return cities[Math.floor(Math.random() * cities.length)].city
     },
 
-    pt_cityCoordinates(lang, city) {
+    pt_cityCoordinates(lang, i, city) {
+        if (Array.isArray(city)) city = city[i]
         city = normalize(city)
 
         let cities = districts.map(x => x.cities).flat().map(x => { return {

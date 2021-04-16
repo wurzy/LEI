@@ -2,15 +2,15 @@ import namesJS from '../datasets/names';
 const names = namesJS.names
 
 const namesAPI = {
-    firstName(lang) {
+    firstName(lang, i) {
         return names[lang].firstnames[Math.floor(Math.random() * names[lang].firstnames.length)]
     },
 
-    surname(lang) {
+    surname(lang, i) {
         return names[lang].surnames[Math.floor(Math.random() * names[lang].surnames.length)]
     },
 
-    fullName(lang) { return `${this.firstName(lang)} ${this.surname(lang)}` }
+    fullName(lang, i) { return `${this.firstName(lang)} ${this.surname(lang)}` }
 }
 
 export default namesAPI

@@ -18,7 +18,6 @@ import political_parties from './controllers/political_parties'
 import pt_businessmen from './controllers/pt_businessmen'
 import pt_districts from './controllers/pt_districts'
 import pt_entities from './controllers/pt_entities'
-import pt_political_parties from './controllers/pt_political_parties'
 import pt_politicians from './controllers/pt_politicians'
 import pt_public_figures from './controllers/pt_public_figures'
 import pt_top100_celebrities from './controllers/pt_top100_celebrities'
@@ -51,7 +50,6 @@ export default {
     pt_businessmen,
     pt_districts,
     pt_entities,
-    pt_political_parties,
     pt_politicians,
     pt_public_figures,
     pt_top100_celebrities,

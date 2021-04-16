@@ -5,9 +5,7 @@
         nome: '{{pt_city()}}',
         população: '{{integer(1500, 550000)}}',
         descrição: '{{lorem(1, "paragraphs")}}',
-        distrito(gen) {
-			return gen.pt_district("city", this.nome)
-		}
+        distrito: '{{pt_district("city", this.nome)}}'
   	}],
   	ligações(gen) {
       	var cidades = this.cidades.map(x => x.id)
