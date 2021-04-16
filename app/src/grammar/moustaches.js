@@ -56,22 +56,29 @@ function integer(min_arg, max_arg, size_arg, unit, i) {
     return unit == null ? rand : (rand + unit)
 }
 
-function floating(min, max, decimals, format) {
-    decimals = decimals == undefined ? getDecimalsCount(min,max) : decimals
+function floating(min_arg, max_arg, decimals_arg, format, i) {
+    var min = Array.isArray(min_arg) ? min_arg[i] : min_arg
+    var max = Array.isArray(max_arg) ? max_arg[i] : max_arg
+    var decimals = Array.isArray(decimals_arg) ? decimals_arg[i] : decimals_arg
+
+    decimals = decimals == null ? getDecimalsCount(min,max) : decimals
     var random = min + (max - min) * Math.random();
     var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
   
-    if (!(format == undefined || format == null)) {
+    if (format != null) {
         var split = formatNumber(String(rounded)).split('.')
         rounded = split[0].replace(/,/g, format[1])
   
-        if (split[1] != undefined) rounded += format[3] + split[1] 
+        if (split[1] != null) rounded += format[3] + split[1] 
         if (format.length == 7) rounded += format[6]
     }
     return rounded
 }
 
-function position(lat, long) {
+function position(lat_arg, long_arg, i) {
+    var lat = (lat_arg != null && Array.isArray(lat_arg[0])) ? lat_arg[i] : lat_arg
+    var long = (long_arg != null && Array.isArray(long_arg[0])) ? long_arg[i] : long_arg
+
     if (!lat) return "(" + floating(-90,90,5) + ", " + floating(-180,180,5) + ")"
     else {
         if (lat[0] > lat[1]) {var latmax = lat[0]; lat[0] = lat[1]; lat[1] = latmax}

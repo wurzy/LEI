@@ -1,0 +1,76 @@
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+    	x1: 30,
+    	x2: 70,
+    	y1: 100,
+    	y2: 400,
+    	z: 5,
+        inteiro1: '{{integer(this.x1,this.x2)}}',
+        inteiro2: '{{integer(this.y1,this.y2,"$")}}',
+        inteiro3: '{{integer(this.x1,this.x2, this.z)}}',
+        inteiro4: '{{integer(this.y1,this.y2,this.z,"$")}}',
+    	f: gen => {
+    		return {	
+        float_2args: gen.floating(this.x, this.y),
+        float_3args: gen.floating(this.x, this.y, 2),
+        float_4args: gen.floating(this.z, this.k, this.d, "0,0.00€")
+    		}
+    	}
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+    	x: -180.0451,
+    	y: 180,
+    	z: 1000,
+    	k: 4000,
+    	d: 2,
+        float_2args: '{{floating(this.x, this.y)}}',
+        float_3args: '{{floating(this.x, this.y, 2)}}',
+        float_4args: '{{floating(this.z, this.k, this.d, "0,0.00€")}}',
+    	f: gen => {
+    		return {	
+        float_2args: gen.floating(this.x, this.y),
+        float_3args: gen.floating(this.x, this.y, 2),
+        float_4args: gen.floating(this.z, this.k, this.d, "0,0.00€")
+    		}
+    	}
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+    	x1: 0,
+    	y1: 30.5,
+    	x2: -50,
+    	y2: -25.4,
+    	i1: [0,30.5],
+  		i2: [-50,-25.4],
+        posicao: '{{position()}}',
+        posicao_com_limites: '{{position([this.x1,this.x2],[this.y1,this.y2])}}',
+        posicao_com_limites2: '{{position([0,this.x2],[this.y1,this.y2])}}',
+        posicao_com_limites3: '{{position([this.x1,30.5],[this.y1,this.y2])}}',
+        posicao_com_limites4: '{{position([0,30.5],[-50,-25.4])}}',
+        posicao_com_limites5: '{{position(this.i1,this.i2)}}',
+  		f(gen) {
+        	return {
+              p1: gen.position(),
+              p2: gen.position([this.x1,this.x2],[this.y1,this.y2]),
+              p3: gen.position([0,this.x2],[this.y1,this.y2]),
+              p4: gen.position([this.x1,30.5],[this.y1,this.y2]),
+              p5: gen.position(this.i1,this.i2),
+              p6: gen.position([0,30.5],[-50,-25.4])
+        	}
+        }
+    }
+  ]
+}

@@ -28,6 +28,12 @@
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
+  function isInteger(str) {
+    if (typeof str != "string") return false // we only process strings!  
+    return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+          !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+  }
+
   function getIndexes(num) {
     if (struct_types[struct_types.length-1] == "repeat") return [...Array(num).keys()]
     else if (struct_types[struct_types.length-1] == "array") return Array(num).fill(array_indexes[array_indexes.length-1])
@@ -40,6 +46,24 @@
       }
       //else erro não pode usar index aqui
     }
+  }
+
+  function getPositionPairs(min, max) {
+    var minArr = Array.isArray(min), maxArr = Array.isArray(max)
+
+    if (!minArr && !maxArr) return [min, max]
+    else {
+      if (!minArr) min = Array(max.length).fill(min)
+      if (!maxArr) max = Array(min.length).fill(max)
+      
+      if (min.length == max.length) {
+        var pairs = []
+        for (let i = 0; i < min.length; i++) pairs.push([min[i], max[i]])
+        return pairs
+      }
+      //else erro
+    }
+    return [min, max]
   }
 
   function trimArg(arg, marks) {
@@ -62,10 +86,17 @@
           else join += ",null"
         }
       }
-      if (key == "floating" && args.length > 3) {
-        var format = trimArg(args.slice(3, args.length).join(','), true)
-        join = args.slice(0,3).join(',') + ',' + format
+      if (key == "floating") {
+        if (args.length == 2) join += ",null,null"
+        if (args.length == 3) join += ",null"
+        if (args.length == 4) {
+          var format = trimArg(args.slice(3, args.length).join(','), true)
+          join = args.slice(0,3).join(',') + ',' + format
+        }
       }
+      if (key == "position") {
+        if (args.length == 1) join = "null,null"
+      } 
       if (key == "date") {
         if (args.length == 1) join = [args[0],"null",'"DD/MM/YYYY"'].join(",")
         if (args.length == 2) join = (/\d/.test(args[1]) ? [args[0],args[1],'"DD/MM/YYYY"'] : [args[0],"null",trimArg(args[1],true)]).join(",")
@@ -467,13 +498,13 @@ latitude
   = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
 
 lat_interval
-  = ws '[' ws min:latitude value_separator max:latitude ws ']' ws { return [min, max] }
+  = ws '[' ws min:latitude_or_local value_separator max:latitude_or_local ws ']' ws { return getPositionPairs(min,max) }
 
 longitude
   = (minus / plus)?("180"(".""0"+)?/(("1"[0-7][0-9])/([1-9]?[0-9]))("."[0-9]+)?) { return parseFloat(text()); }
 
 long_interval
-  = ws '[' ws min:longitude value_separator max:longitude ws ']' ws { return [min, max] }
+  = ws '[' ws min:longitude_or_local value_separator max:longitude_or_local ws ']' ws { return getPositionPairs(min,max) }
 
 // ----- 7. Strings -----
 
@@ -580,6 +611,9 @@ unescaped
 
 int_or_local = int / int_local_arg
 intneg_or_local = int_neg / int_local_arg
+number_or_local = n:number {return n.data[0]} / num_local_arg
+latitude_or_local = latitude / num_local_arg
+longitude_or_local = longitude / num_local_arg
 
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
   var model = { type: "string", required: true }, data
@@ -630,14 +664,14 @@ gen_moustaches
       data: fillArray("gen", null, "integer", [min, max, size, unit])
     }
   }
-  / "floating(" ws min:number ws "," ws max:number ws others:("," ws decimals:int ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
+  / "floating(" ws min:number_or_local ws "," ws max:number_or_local ws others:("," ws decimals:int_or_local ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
     if (!others) others = {decimals: null, format: null}
     return {
       model: { type: others.format === null ? "float" : "string", required: true }, 
-      data: fillArray("gen", null, "floating", [min.data[0], max.data[0], others.decimals, others.format])
+      data: fillArray("gen", null, "floating", [min, max, others.decimals, others.format])
     }
   }
-  / "position(" ws limits:(lat:lat_interval "," long:long_interval {return {lat, long} })? ")" {
+  / "position(" ws limits:(lat:(lat_interval/pair_local_arg) "," long:(long_interval/pair_local_arg) {return {lat, long} })? ")" {
     return {
       model: {type: "string", required: true},
       data: fillArray("gen", null, "position", [!limits ? null : limits.lat, !limits ? null : limits.long])
@@ -804,6 +838,8 @@ repeat_args
   }
 
 int_local_arg = arg:local_arg { return arg.map(x => parseInt(x)) }
+num_local_arg = arg:local_arg { return arg.map(x => parseFloat(x)) }
+pair_local_arg = arg:local_arg { return arg.map(x => x.map(y => parseFloat(y))) }
 
 local_arg = ws "this" char:("."/"[") key:code_key ws {
     if (char == "[") key = char + key
