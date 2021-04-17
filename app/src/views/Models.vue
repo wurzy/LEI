@@ -1,7 +1,6 @@
 <template>
-<div class="container" >
-    <Confirm :msg="getConfirmMsg" id="deleteModel_confirm_modal" @confirm="confirm"/>
-    <h2 style="margin-top:85px" >Modelos Guardados</h2>
+    <div class="container">
+            <h2 style="margin-top:85px" >Modelos</h2>
     <hr/>
     <div class="input-group">
           <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
@@ -68,12 +67,10 @@
       :container-class="'pagination'"
       :page-class="'page-item'">
     </paginate>
-</div>
+    </div>
 </template>
-
 <script>
 import axios from 'axios'
-import Confirm from '../components/Confirm.vue'
 
 import "codemirror/theme/dracula.css";
 import 'codemirror/keymap/sublime'
@@ -86,23 +83,16 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import $ from 'jquery'
 
 axios.defaults.baseURL = "http://localhost:3000/";
-
 export default {
-    name: "UserModels",
-    components:{
-      Confirm
-    },
     data() {
         return {
-            user: null,
-            userModels: [],
+            models: [],
             perPage: 10,
             currentPage: 1,
             search: '',
             dateInt: [null, new Date()],
             pages: 1,
-            toDelete: {},
-            confirmMsg: "Esta ação é irreversível. Tem a certeza que pretende remover o modelo \"-\"?",
+            user: null,
             cmOption: {
                 tabSize: 4,
                 readOnly: true,
@@ -125,11 +115,11 @@ export default {
         }
     },
     methods: {
-        async getUserModels(){
+        async getModels(){
             if(localStorage.getItem('token')) { 
-              const res = await axios.get('modelos/utilizador/' + this.user._id)
-              this.userModels = res.data
-              this.changePage(this.userModels)
+              const res = await axios.get('modelos/visiveis/' + this.user._id)
+              this.models = res.data
+              this.changePage(this.models)
             }
         },
         clickCallback(pageNum) {
@@ -146,56 +136,28 @@ export default {
           }
           this.pages = newPages
         },
-        isEmpty(){
-            return this.userModels==null
-        },
-        async toggled(id){
-            for(let [k, m] of Object.entries(this.userModels)){
-                if(m._id==id){
-                    m.visibilidade = !m.visibilidade
-                    await axios.put('modelos/visibilidade/'+id,{visibilidade: m.visibilidade})
-                    return
-                }
-            }
-        },
-        deleteModel(id, titulo){
-          this.toDelete = {id, titulo}
-          $("#deleteModel_confirm_modal").modal("show");
-          $("#deleteModel_confirm_modal").css("z-index", "1500");
-        },
-        async confirm(){
-          const selDoc = document.querySelector(`#idCollapsible${this.toDelete.id}`)
-          if(selDoc) selDoc.click()
-          await axios.delete('modelos/'+this.toDelete.id)
-          this.userModels = this.userModels.filter(m=>m._id!=this.toDelete.id)
-          this.changePage(this.userModels)
-        }
     },
-    mounted() {
-      if(localStorage.getItem('user')){
-        this.user = JSON.parse(localStorage.getItem('user'))
-        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
-        this.getUserModels()
-      }
-    },
-    computed: {
+    computed:{
      getSlicedUserModels() {
       let current = this.currentPage * this.perPage;
       let start = current - this.perPage;
-      let filtered = [...this.userModels]
+      let filtered = [...this.models]
               .filter(modelo => {
                 return modelo.titulo.toLowerCase().includes(this.search.toLowerCase()) && new Date(modelo.dataCriacao) >= this.dateInt[0] && new Date(modelo.dataCriacao) <= this.dateInt[1]
               })
       this.changePage(filtered)
       return filtered.slice(start, current)
-     },
-     getConfirmMsg(){
-       return this.confirmMsg.replace("-",this.toDelete.titulo)
      }
-    }
+    },
+    mounted() {
+      if(localStorage.getItem('user')){
+        this.user = JSON.parse(localStorage.getItem('user'))
+        axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
+        this.getModels()
+      }
+    },
 }
 </script>
-
 <style>
 a:hover,a:focus{
   text-decoration: none;
@@ -434,5 +396,4 @@ li:first-child > a::before {
 .mx-input-wrapper{
   height:100% !important
 }
-
 </style>
