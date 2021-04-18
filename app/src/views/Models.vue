@@ -3,9 +3,10 @@
             <h2 style="margin-top:85px" >Modelos</h2>
     <hr/>
     <div class="input-group">
-          <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
+          <input v-model="title" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
+          <input v-model="author" type="search" class="form-control" placeholder="Procurar por autor..." aria-label="Search"/>
           <div class="input-group-append">
-            <datepicker placeholder="Procurar entre..." v-model="dateInt" style="height: 100%;" range></datepicker>
+            <datepicker placeholder="Procurar entre..." v-model="dateInt" style="height: 100%;" range @clear="clearDate"></datepicker>
           </div>
     </div>
     <div class="row">
@@ -17,6 +18,8 @@
                                 <a :id="'idCollapsible' + model._id" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse' + model._id" aria-expanded="false" :aria-controls="'collapse' + model._id">
                                     {{model.titulo}} 
                                     <span style="color:gray">({{model.dataCriacao | moment("calendar")}})</span>
+                                    <span v-if="isEqualIDName(model.user)" style="color:#2196F3; float: right; text-align: left; width: auto;"> Eu <font-awesome-icon icon="user"/></span>
+                                    <span v-else style="color:#2196F3; float: right; text-align: left; width: auto;"> {{ getUserName(model.user) }} <font-awesome-icon icon="user"/></span>
                                 </a>
                             </h4>
                         </div>
@@ -26,24 +29,9 @@
                                     <b>Descrição:</b> {{model.descricao}}
                                 </p>
                                 <p>
-                                    <b>Visibilidade: </b>
-                                    <label class="switch">
-                                      <input :id="'switch' + model._id" v-if="model.visibilidade" type="checkbox" checked @click="toggled(model._id)">
-                                      <input :id="'switch' + model._id" v-else type="checkbox" @click="toggled(model._id)">
-                                      <span class="slider round"></span>
-                                    </label>
-                                    <span v-if="model.visibilidade">
-                                        (<font-awesome-icon icon="lock-open"/> Público)
-                                    </span>
-                                    <span v-else>
-                                        (<font-awesome-icon icon="lock"/> Privado)
-                                    </span>
-                                </p>
-                                <p>
                                 <router-link :to="{name: 'Home', params: {userModel: model.modelo}}">
                                   <button  class="btn btn-primary" style="margin-right: 5px"><font-awesome-icon icon="external-link-alt"/> Usar Modelo</button>
                                 </router-link>
-                                <button  class="btn btn-danger" @click="deleteModel(model._id,model.titulo)"><font-awesome-icon icon="trash"/> Eliminar</button>
                                 </p>
                                 <codemirror
                                     ref="cmEditor"
@@ -57,7 +45,7 @@
             </div>
     </div>
     <paginate 
-      id="pagination1"    
+      id="pagination2"    
       :page-count="pages"
       :page-range="3"
       :margin-pages="2"
@@ -80,8 +68,6 @@ import "codemirror/addon/display/autorefresh.js"
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import $ from 'jquery'
-
 axios.defaults.baseURL = "http://localhost:3000/";
 export default {
     data() {
@@ -89,10 +75,12 @@ export default {
             models: [],
             perPage: 10,
             currentPage: 1,
-            search: '',
+            title: '',
+            author: '',
             dateInt: [null, new Date()],
             pages: 1,
             user: null,
+            users: [],
             cmOption: {
                 tabSize: 4,
                 readOnly: true,
@@ -118,9 +106,22 @@ export default {
         async getModels(){
             if(localStorage.getItem('token')) { 
               const res = await axios.get('modelos/visiveis/' + this.user._id)
-              this.models = res.data
+              this.models = res.data.models 
+              this.users = new Map()
+              res.data.users.forEach(u => {
+                  this.users.set(u._id, u.nome)
+              })
               this.changePage(this.models)
             }
+        },
+        async getVisibleModels(){
+            const res = await axios.get('modelos/publicos/')
+            this.models = res.data.models 
+            this.users = new Map()
+            res.data.users.forEach(u => {
+                this.users.set(u._id, u.nome)
+            })
+            this.changePage(this.models)
         },
         clickCallback(pageNum) {
           this.currentPage = Number(pageNum);
@@ -136,6 +137,15 @@ export default {
           }
           this.pages = newPages
         },
+        getUserName(id){
+           return this.users.get(id)
+        },
+        isEqualIDName(user){
+            return this.user ? this.user._id == user : false
+        },
+        clearDate(){
+            this.dateInt = [null, new Date()]
+        }
     },
     computed:{
      getSlicedUserModels() {
@@ -143,7 +153,8 @@ export default {
       let start = current - this.perPage;
       let filtered = [...this.models]
               .filter(modelo => {
-                return modelo.titulo.toLowerCase().includes(this.search.toLowerCase()) && new Date(modelo.dataCriacao) >= this.dateInt[0] && new Date(modelo.dataCriacao) <= this.dateInt[1]
+                let name = this.users.get(modelo.user)
+                return modelo.titulo.toLowerCase().includes(this.title.toLowerCase()) && name.includes(this.author.toLowerCase()) && new Date(modelo.dataCriacao) >= this.dateInt[0] && new Date(modelo.dataCriacao) <= this.dateInt[1]
               })
       this.changePage(filtered)
       return filtered.slice(start, current)
@@ -154,6 +165,9 @@ export default {
         this.user = JSON.parse(localStorage.getItem('user'))
         axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
         this.getModels()
+      }
+      else {
+        this.getVisibleModels()
       }
     },
 }

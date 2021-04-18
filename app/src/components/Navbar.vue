@@ -165,6 +165,7 @@ export default {
       axios.post('utilizadores/logout', {token: localStorage.getItem('token')})
         .then(dados => {
           localStorage.removeItem('token')
+          localStorage.removeItem('user')
           this.$emit('update')
         })
         .catch(error => console.log(error))

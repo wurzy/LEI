@@ -4,6 +4,7 @@ var router = express.Router();
 
 const secret = 'LEI2021_SECRET_!_HASH'
 const Model = require('../controllers/model')
+const User = require('../controllers/user')
 
 function unveilToken(token){  
     token = token.split(" ")[1] // Bearer ey341...
@@ -26,7 +27,15 @@ function forbidden(res){
 // Todos os modelos disponiveis publicamente
 router.get('/publicos',function(req,res){
     Model.listar()
-        .then(dados => res.status(200).jsonp(dados))
+        .then(dados => {
+            var map = new Map()
+            dados.forEach(m => {
+                map.set(m.user, 0)
+            })
+            User.consultarMuitos([...map.keys()])
+                .then(dados2 => res.status(200).jsonp({models: dados, users: dados2}))
+                .catch(e => res.status(500).jsonp(e))
+        })
         .catch(e => res.status(500).jsonp(e))
 })
 
@@ -47,7 +56,15 @@ router.get('/visiveis/:id', function(req,res){
     if(!token || token._id != req.params.id) forbidden(res)
     else {
         Model.consultarVisiveis(token._id)
-            .then(dados => res.status(200).jsonp(dados))
+            .then(dados => {
+                var map = new Map()
+                dados.forEach(m => {
+                    map.set(m.user, 0)
+                })
+                User.consultarMuitos([...map.keys()])
+                    .then(dados2 => res.status(200).jsonp({models: dados, users: dados2}))
+                    .catch(e => res.status(500).jsonp(e))
+            })
             .catch(e => res.status(500).jsonp(e))
     }
 })

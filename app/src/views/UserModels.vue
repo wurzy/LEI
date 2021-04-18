@@ -6,7 +6,7 @@
     <div class="input-group">
           <input v-model="search" type="search" class="form-control" placeholder="Procurar por título..." aria-label="Search"/>
           <div class="input-group-append">
-            <datepicker placeholder="Procurar entre..." v-model="dateInt" style="height: 100%;" range></datepicker>
+            <datepicker placeholder="Procurar entre..." v-model="dateInt" style="height: 100%;" range @clear="clearDate"></datepicker>
           </div>
     </div>
     <div class="row">
@@ -169,6 +169,9 @@ export default {
           await axios.delete('modelos/'+this.toDelete.id)
           this.userModels = this.userModels.filter(m=>m._id!=this.toDelete.id)
           this.changePage(this.userModels)
+        },
+        clearDate(){
+            this.dateInt = [null, new Date()]
         }
     },
     mounted() {
