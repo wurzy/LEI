@@ -27,6 +27,21 @@
             </li>
           </router-link>
         </div>
+        <div v-if="isModelList">
+          <router-link to="modelos" class="nav-link">
+            <li class="nav-item active">
+              <font-awesome-icon icon="list"/> Modelos
+              <span class="sr-only">(current)</span>
+            </li>
+          </router-link>
+        </div>
+        <div v-else>
+          <router-link to="modelos" class="nav-link">
+            <li class="nav-item">
+              <font-awesome-icon icon="list"/> Modelos
+            </li>
+          </router-link>
+        </div>
         <div v-if="isDocumentation">
           <router-link to="documentacao" class="nav-link">
             <li class="nav-item active">
@@ -61,7 +76,7 @@
           <li v-if="isLoggedIn" class="nav-item">
             <div class="dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropDownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-               <font-awesome-icon icon="user-alt"/> {{utilizador.nome}}
+               <font-awesome-icon icon="user-alt"/> {{user.nome}}
               </a>
 
               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -113,7 +128,7 @@ export default {
   },
   data(){
     return {
-      utilizador: { type: Object, default: () => ({}) },
+      user: { type: Object, default: () => ({}) },
       registerKey: 1
     }
   },
@@ -129,15 +144,13 @@ export default {
     },
     isLoggedIn(){
       return localStorage.getItem('token')!=null
+    },
+    isModelList(){
+      return this.$route.name == "Models"
     }
   },
-  async created() {
-    const token = localStorage.getItem('token')
-    if(token){
-      const res = await axios.get('utilizadores/' + localStorage.getItem('token'))
-      localStorage.setItem('user', JSON.stringify(res.data))
-      this.utilizador = res.data
-    }
+  created() {
+    this.user = JSON.parse(localStorage.getItem('user'))
   },
   methods: {
     login(){
@@ -152,11 +165,18 @@ export default {
       axios.post('utilizadores/logout', {token: localStorage.getItem('token')})
         .then(dados => {
           localStorage.removeItem('token')
+          localStorage.removeItem('user')
           this.$emit('update')
         })
         .catch(error => console.log(error))
     },
-    loggedIn(){
+    async loggedIn(){
+      const token = localStorage.getItem('token')
+      if(token){
+        const res = await axios.get('utilizadores/' + localStorage.getItem('token'))
+        localStorage.setItem('user', JSON.stringify(res.data))
+        this.$emit('update_router')
+      }
       this.$emit('update')
     },
     registerOk(){

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Documentation from '../views/Documentation.vue'
 import UserModels from '../views/UserModels.vue'
+import Models from '../views/Models.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,11 @@ const routes = [
     name: 'Documentation',
     component: Documentation
   },
+  {
+    path: '/modelos',
+    name: 'Models',
+    component: Models
+  }
 ]
 
 const router = new VueRouter({

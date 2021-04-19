@@ -13,6 +13,12 @@ module.exports.consultar = email => {
         .exec()
 }
 
+module.exports.consultarMuitos = ids => {
+    return User
+        .find({_id: {$in: ids}}, {nome: 1})
+        .exec()
+}
+
 module.exports.inserir = user => {
     var novo = new User(user)
     return novo.save()

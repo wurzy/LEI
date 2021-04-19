@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Navbar :key="forceUpdateKey" v-on:update="forceUpdate"/>
+    <Navbar :key="forceUpdateKey" v-on:update="forceUpdate" @update_router="forceUpdate2"/>
     <router-view :key="forceUpdateKey2"></router-view>
   </div>
 </template>
@@ -18,6 +18,9 @@ export default {
   methods: {
     forceUpdate(){
       this.forceUpdateKey++
+      this.forceUpdateKey2++
+    },
+    forceUpdate2(){
       this.forceUpdateKey2++
     }
   },
