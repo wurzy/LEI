@@ -115,7 +115,10 @@ function lorem(count, units, i) {
     return loremIpsum({ count, units })
 }
 
-function random(values, i) { return values[Math.floor(Math.random() * values.length)] }
+function random(values, i) {
+    values = values.map(x => x[i])
+    return values[Math.floor(Math.random() * values.length)]
+}
 
 function range(init, end, step, i) {
     init = Array.isArray(init) ? init[i] : init

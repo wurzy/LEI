@@ -8,6 +8,7 @@
         distrito: '{{pt_district("city", this.nome)}}'
   	}],
   	ligações(gen) {
+		var id = 1
       	var cidades = this.cidades.map(x => x.id)
 		var possiveis = cidades.flatMap((v, i) => cidades.slice(i+1).map( w => v + '|' + w ))
   		var ligs = []
@@ -20,7 +21,11 @@
       		ligs.push({origem: split[0], destino: split[1]})
         }
 
-		ligs.forEach(l => l.distância = gen.floating(5, 600))
+		ligs.forEach(l => {
+			l.id = "l" + id++
+			l.distância = gen.floating(5, 600)
+		})
+		
 		return ligs
   	}
 }

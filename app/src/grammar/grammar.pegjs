@@ -143,6 +143,13 @@
         path = "pt_districts." + key + (!args[0].length ? "" : "Coordinates")
         if (args[0].length > 0) join = trimArg(args[1], true)
       }
+      else if (key == "pt_entity") {
+        if (args[0].length > 0) {
+          args[0] = trimArg(args[0], false)
+          if (["abbr","name"].includes(args[0])) { key += "_" + args[0]; join = '"'+args[0]+'"' }
+        }
+        path = "pt_entities." + key
+      }
       else if (key == "soccer_club") {
         path = "soccer_clubs." + key + (!args[0].length ? "" : "_from")
         if (args[0].length > 0 && !args[0].startsWith("this")) join = trimArg(args[0], true)
@@ -222,7 +229,7 @@
 
     if (moustaches == "random" && queue[queue.length-1].unique) {
       for (let i = 0; i < nr_copies; i++) {
-        var arg = _.cloneDeep(args[0])
+        var arg = args.map(x => x[i])
         var elem = []
 
         for (let j = 0; j < queue[queue.length-1].total; j++) {
@@ -620,7 +627,8 @@ intneg_or_local = int_neg / int_local_arg
 number_or_local = n:number {return n.data[0]} / num_local_arg
 latitude_or_local = latitude / num_local_arg
 longitude_or_local = longitude / num_local_arg
-string_or_local = string_arg / string_local_arg
+string_or_local = string_local_arg / string_arg
+random_arg = v:(value / moustaches_value) {return v.data} / local_arg
 
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
   var model = { type: "string", required: true }, data
@@ -697,9 +705,9 @@ gen_moustaches
     }
   }
   / "random(" ws values:(
-      head:(value/moustaches_value)
-      tail:(value_separator v:(value/moustaches_value) { return v.data[0] })*
-      { return [head.data[0]].concat(tail); }
+      head:random_arg
+      tail:(value_separator v:random_arg { return v })*
+      { return [head].concat(tail) }
     )? ")" {
       return {
         model: {type: "json", required: true},
@@ -967,7 +975,7 @@ at_least = "at_least(" ws num:int_or_local ws ")" obj:object {
     return { name: uuidv4(), value: { at_least: true, model, data }}
   }
 
-if = "if" ws code:if_code ws obj:object {
+if = "if" ws code:if_code obj:object {
     var model = {}, data = []
     var f = new Function("gen", "return "+code)
 
