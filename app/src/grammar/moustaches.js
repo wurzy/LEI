@@ -103,6 +103,9 @@ function newDate(str) {
 }
 
 function date(start, end, format, i) {
+    start = Array.isArray(start) ? start[i] : start
+    end = Array.isArray(end) ? end[i] : end
+    console.log(start)
     start = newDate(start)
     end = !end ? new Date() : newDate(end)
 

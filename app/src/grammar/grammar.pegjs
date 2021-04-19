@@ -585,8 +585,8 @@ lorem_string
   / quotation_mark ws word:"paragraphs" ws quotation_mark { return word }
 
 date
-  = quotation_mark ws date:((((("0"[1-9]/"1"[0-9]/"2"[0-8])"/"("0"[1-9]/"1"[012]))/(("29"/"30"/"31")"/"("0"[13578]/"1"[02]))/(("29"/"30")"/"("0"[4,6,9]/"11")))"/"("19"/[2-9][0-9])[0-9][0-9])/("29""/""02""/"("19"/[2-9][0-9])("00"/"04"/"08"/"12"/"16"/"20"/"24"/"28"/"32"/"36"/"40"/"44"/"48"/"52"/"56"/"60"/"64"/"68"/"72"/"76"/"80"/"84"/"88"/"92"/"96"))) ws quotation_mark {
-    return date.flat(2).join("")
+  = quotation_mark ws date:((((("0"[1-9]/"1"[0-9]/"2"[0-8])("."/"/"/"-")("0"[1-9]/"1"[012]))/(("29"/"30"/"31")("."/"/"/"-")("0"[13578]/"1"[02]))/(("29"/"30")("."/"/"/"-")("0"[4,6,9]/"11")))("."/"/"/"-")("19"/[2-9][0-9])[0-9][0-9])/("29"("."/"/"/"-")"02"("."/"/"/"-")("19"/[2-9][0-9])("00"/"04"/"08"/"12"/"16"/"20"/"24"/"28"/"32"/"36"/"40"/"44"/"48"/"52"/"56"/"60"/"64"/"68"/"72"/"76"/"80"/"84"/"88"/"92"/"96"))) ws quotation_mark {
+    return date.flat(2).join("").replace(/[^\d]/g, "/")
   }
 
 date_format
@@ -628,6 +628,7 @@ number_or_local = n:number {return n.data[0]} / num_local_arg
 latitude_or_local = latitude / num_local_arg
 longitude_or_local = longitude / num_local_arg
 string_or_local = string_local_arg / string_arg
+date_or_local = date / date_local_arg
 random_arg = v:(value / moustaches_value) {return v.data} / local_arg
 
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
@@ -698,7 +699,7 @@ gen_moustaches
       data: fillArray("gen", null, "phone", [extension])
     }
   }
-  / "date(" ws start:date ws end:("," ws e:date ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
+  / "date(" ws start:date_or_local ws end:("," ws e:date_or_local ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
       model: {type: "string", required: true},
       data: fillArray("gen", null, "date", [start, end, !format ? 'DD/MM/YYYY' : format])
@@ -842,6 +843,11 @@ int_local_arg = arg:local_arg { return arg.map(x => parseInt(x)) }
 num_local_arg = arg:local_arg { return arg.map(x => parseFloat(x)) }
 pair_local_arg = arg:local_arg { return arg.map(x => x.map(y => parseFloat(y))) }
 string_local_arg = arg:local_arg { return arg.map(x => String(x)) }
+date_local_arg = arg:local_arg {
+  var match = arg.every((val, i, arr) => /(((((0[1-9]|1[0-9]|2[0-8])[./-](0[1-9]|1[012]))|((29|30|31)[./-](0[13578]|1[02]))|((29|30)[./-](0[4,6,9]|11)))[./-](19|[2-9][0-9])[0-9][0-9])|(29[./-]02[./-](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)))/.test(val))
+  if (match) return arg.map(x => x.replace(/[^\d]/g, "/"))
+  //else erro
+}
 
 local_arg = ws "this" char:("."/"[") key:code_key ws {
     if (char == "[") key = char + key

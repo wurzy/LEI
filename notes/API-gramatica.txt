@@ -71,32 +71,22 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
+- if / else if / else
+- repeat unique de moustaches - .unique()
 - map, filter, reduce
 - lista de erros para apresentar de maneira user-friendly no vue -> keywords reservadas do Strapi
 - CSV
 
 
--- dar fix ao datasets de partidos políticos
-
--- argumentos de qualquer ferramenta serem código (gen ou this)
-
+-- dar fix ao dataset de partidos políticos
 --- como fica o modelo se puser uma cena básica como coleção?
-
---> fazer um repeat unique de moustaches - .unique()
 
 
 -> phone(true/false)
--> date("10/01/2015")
--> date("10/01/2015", "YYYY-MM-DD")
--> date("10/05/2019","10/01/2018")
--> date("10/05/2019","10/01/2018", "MM.DD.AAAA")
+
 -> random("blue", null, true, false, 23, 17.56) --> function
 
-
-VALERÁ A PENA?
-- repeats diretos de probability / função prop / or / if / at_least
-- parcelas de arrays com probability / or / if / at_least
-
+-> data tem de estar no formato DD-MM-YYYY para o this
 
 --------------------------------------------------------
 
