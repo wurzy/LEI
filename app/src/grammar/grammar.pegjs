@@ -981,13 +981,20 @@ at_least = "at_least(" ws num:int_or_local ws ")" obj:object {
     return { name: uuidv4(), value: { at_least: true, model, data }}
   }
 
-if = "if" ws code:if_code obj:object {
+if = "if" ws code:if_code if_obj:object else_obj:("else" o:object {return o})? {
     var model = {}, data = []
     var f = new Function("gen", "return "+code)
+    if (else_obj == null) else_obj = {model: {attributes: {}}, data: Array(nr_copies).fill([])}
 
-    for (let prop in obj.model.attributes) {
-      obj.model.attributes[prop].required = false
-      model[prop] = obj.model.attributes[prop]
+    for (let prop in if_obj.model.attributes) {
+      if_obj.model.attributes[prop].required = false
+      model[prop] = if_obj.model.attributes[prop]
+      values_map[values_map.length-1].data[prop] = []
+    }
+
+    for (let prop in else_obj.model.attributes) {
+      else_obj.model.attributes[prop].required = false
+      model[prop] = else_obj.model.attributes[prop]
       values_map[values_map.length-1].data[prop] = []
     }
 
@@ -996,21 +1003,34 @@ if = "if" ws code:if_code obj:object {
       data.push({})
       
       if (f({genAPI, dataAPI, local, i})) {
-        for (let prop in obj.data[i]) {
-          data[i][prop] = obj.data[i][prop]
+        for (let prop in if_obj.data[i]) {
+          data[i][prop] = if_obj.data[i][prop]
           
-          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = obj.data[i][prop]
-          else values_map[values_map.length-1].data[prop].push(obj.data[i][prop])
+          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = if_obj.data[i][prop]
+          else values_map[values_map.length-1].data[prop].push(if_obj.data[i][prop])
         }
-      }
-      else {
-        for (let prop in obj.data[i]) {
+
+        for (let prop in else_obj.data[i]) {
           if (nr_copies == 1) values_map[values_map.length-1].data[prop] = null
           else values_map[values_map.length-1].data[prop].push(null)
         }
       }
-        
-      var null_keys = Object.keys(obj.model.attributes).filter(e => !Object.keys(obj.data[i]).includes(e))
+      else {
+        for (let prop in else_obj.data[i]) {
+          data[i][prop] = else_obj.data[i][prop]
+          
+          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = else_obj.data[i][prop]
+          else values_map[values_map.length-1].data[prop].push(else_obj.data[i][prop])
+        }
+
+        for (let prop in if_obj.data[i]) {
+          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = null
+          else values_map[values_map.length-1].data[prop].push(null)
+        }
+      }
+      
+      var data_keys = [...Object.keys(if_obj.data[i]), ...Object.keys(else_obj.data[i])]
+      var null_keys = Object.keys(if_obj.model.attributes).filter(e => !data_keys.includes(e))
       null_keys.forEach(k => {
         if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
         else values_map[values_map.length-1].data[k].push(null)
