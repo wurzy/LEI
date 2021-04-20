@@ -666,12 +666,12 @@ const parser = (function() {
               data: fillArray("gen", null, "position", [!limits ? null : limits.lat, !limits ? null : limits.long])
             }
           },
-        peg$c344 = "phone(",
-        peg$c345 = peg$literalExpectation("phone(", false),
+        peg$c344 = "pt_phone_number(",
+        peg$c345 = peg$literalExpectation("pt_phone_number(", false),
         peg$c346 = function(extension) {
             return {
               model: {type: "string", required: true},
-              data: fillArray("gen", null, "phone", [extension])
+              data: fillArray("gen", null, "pt_phone_number", [extension])
             }
           },
         peg$c347 = "date(",
@@ -6252,9 +6252,9 @@ const parser = (function() {
                   }
                   if (s0 === peg$FAILED) {
                     s0 = peg$currPos;
-                    if (input.substr(peg$currPos, 6) === peg$c344) {
+                    if (input.substr(peg$currPos, 16) === peg$c344) {
                       s1 = peg$c344;
-                      peg$currPos += 6;
+                      peg$currPos += 16;
                     } else {
                       s1 = peg$FAILED;
                       if (peg$silentFails === 0) { peg$fail(peg$c345); }
@@ -8801,7 +8801,7 @@ const parser = (function() {
           }
 
           path = "genAPI." + key
-          join += ",gen.i"
+          join += !join.length ? "gen.i" : ",gen.i"
         }
         else {
           if (key == "political_party") {
@@ -8853,7 +8853,7 @@ const parser = (function() {
           path = "dataAPI." + path
           join = `"${language}", gen.i, ${join}`
         }
-
+        console.log(join)
         return {path, args: join}
       }
 

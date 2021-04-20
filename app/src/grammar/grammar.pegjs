@@ -110,7 +110,7 @@
       }
 
       path = "genAPI." + key
-      join += ",gen.i"
+      join += !join.length ? "gen.i" : ",gen.i"
     }
     else {
       if (key == "political_party") {
@@ -693,10 +693,10 @@ gen_moustaches
       data: fillArray("gen", null, "position", [!limits ? null : limits.lat, !limits ? null : limits.long])
     }
   }
-  / "phone(" ws extension:(true/false)? ws ")" {
+  / "pt_phone_number(" ws extension:(true/false)? ws ")" {
     return {
       model: {type: "string", required: true},
-      data: fillArray("gen", null, "phone", [extension])
+      data: fillArray("gen", null, "pt_phone_number", [extension])
     }
   }
   / "date(" ws start:date_or_local ws end:("," ws e:date_or_local ws { return e })? format:("," ws f:date_format ws { return f })? ")" {

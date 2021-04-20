@@ -71,7 +71,6 @@ PS: as funções que levam intervalos de valor funcionam tanto por ordem asc com
 
 POR IMPLEMENTAR:
 
-- if / else if / else
 - repeat unique de moustaches - .unique()
 - map, filter, reduce
 - lista de erros para apresentar de maneira user-friendly no vue -> keywords reservadas do Strapi
@@ -80,13 +79,6 @@ POR IMPLEMENTAR:
 
 -- dar fix ao dataset de partidos políticos
 --- como fica o modelo se puser uma cena básica como coleção?
-
-
--> phone(true/false)
-
--> random("blue", null, true, false, 23, 17.56) --> function
-
--> data tem de estar no formato DD-MM-YYYY para o this
 
 --------------------------------------------------------
 

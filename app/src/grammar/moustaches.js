@@ -88,7 +88,7 @@ function position(lat, long, i) {
     }
 }
 
-function phone(extension, i) {
+function pt_phone_number(extension, i) {
     var number = "9" + random([1,2,3,6])
     while (number.length < 11) {
         if (number.length == 3 || number.length == 7) number += " "
@@ -105,7 +105,7 @@ function newDate(str) {
 function date(start, end, format, i) {
     start = Array.isArray(start) ? start[i] : start
     end = Array.isArray(end) ? end[i] : end
-    console.log(start)
+    
     start = newDate(start)
     end = !end ? new Date() : newDate(end)
 
@@ -119,7 +119,7 @@ function lorem(count, units, i) {
 }
 
 function random(values, i) {
-    values = values.map(x => x[i])
+    values = values.map(x => Array.isArray(x) ? x[i] : x)
     return values[Math.floor(Math.random() * values.length)]
 }
 
@@ -148,7 +148,7 @@ export default {
     integer,
     floating,
     position,
-    phone,
+    pt_phone_number,
     date,
     lorem,
     random,
