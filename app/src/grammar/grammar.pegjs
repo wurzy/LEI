@@ -981,56 +981,54 @@ at_least = "at_least(" ws num:int_or_local ws ")" obj:object {
     return { name: uuidv4(), value: { at_least: true, model, data }}
   }
 
-if = "if" ws code:if_code if_obj:object else_obj:("else" o:object {return o})? {
+if = 
+  conds:(
+    head:("if" ws if_cond:if_code if_obj:object {return {if: if_cond, obj: if_obj}})
+    tail:("else" ws "if" ws eif_cond:if_code eif_obj:object {return {if: eif_cond, obj: eif_obj}})*
+    { return [head].concat(tail) }
+  ) else_obj:("else" o:object {return {if: true, obj: o}})? 
+  {
     var model = {}, data = []
-    var f = new Function("gen", "return "+code)
-    if (else_obj == null) else_obj = {model: {attributes: {}}, data: Array(nr_copies).fill([])}
+    if (else_obj != null) conds.push(else_obj)
+    
+    conds.forEach(x => {
+      x.if = new Function("gen", "return " + x.if)
 
-    for (let prop in if_obj.model.attributes) {
-      if_obj.model.attributes[prop].required = false
-      model[prop] = if_obj.model.attributes[prop]
-      values_map[values_map.length-1].data[prop] = []
-    }
-
-    for (let prop in else_obj.model.attributes) {
-      else_obj.model.attributes[prop].required = false
-      model[prop] = else_obj.model.attributes[prop]
-      values_map[values_map.length-1].data[prop] = []
-    }
+      for (let prop in x.obj.model.attributes) {
+        x.obj.model.attributes[prop].required = false
+        model[prop] = x.obj.model.attributes[prop]
+        values_map[values_map.length-1].data[prop] = []
+      }
+    })
 
     for (let i = 0; i < nr_copies; i++) {
       let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+      let found = false, data_keys = []
       data.push({})
-      
-      if (f({genAPI, dataAPI, local, i})) {
-        for (let prop in if_obj.data[i]) {
-          data[i][prop] = if_obj.data[i][prop]
-          
-          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = if_obj.data[i][prop]
-          else values_map[values_map.length-1].data[prop].push(if_obj.data[i][prop])
-        }
 
-        for (let prop in else_obj.data[i]) {
-          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = null
-          else values_map[values_map.length-1].data[prop].push(null)
-        }
-      }
-      else {
-        for (let prop in else_obj.data[i]) {
-          data[i][prop] = else_obj.data[i][prop]
-          
-          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = else_obj.data[i][prop]
-          else values_map[values_map.length-1].data[prop].push(else_obj.data[i][prop])
-        }
+      for (let j = 0; j < conds.length; j++) {
+        if (!found && conds[j].if({genAPI, dataAPI, local, i})) {
+          data_keys = data_keys.concat(Object.keys(conds[j].obj.data[i]))
+          found = true
 
-        for (let prop in if_obj.data[i]) {
-          if (nr_copies == 1) values_map[values_map.length-1].data[prop] = null
-          else values_map[values_map.length-1].data[prop].push(null)
+          for (let prop in conds[j].obj.data[i]) {
+            data[i][prop] = conds[j].obj.data[i][prop]
+            
+            if (nr_copies == 1) values_map[values_map.length-1].data[prop] = conds[j].obj.data[i][prop]
+            else values_map[values_map.length-1].data[prop].push(conds[j].obj.data[i][prop])
+          }
+        }
+        else {
+          data_keys = data_keys.concat(Object.keys(conds[j].obj.data[i]))
+
+          for (let prop in conds[j].obj.data[i]) {
+            if (nr_copies == 1) values_map[values_map.length-1].data[prop] = null
+            else values_map[values_map.length-1].data[prop].push(null)
+          }
         }
       }
       
-      var data_keys = [...Object.keys(if_obj.data[i]), ...Object.keys(else_obj.data[i])]
-      var null_keys = Object.keys(if_obj.model.attributes).filter(e => !data_keys.includes(e))
+      var null_keys = Object.keys(model).filter(x => !data_keys.includes(x))
       null_keys.forEach(k => {
         if (nr_copies == 1) values_map[values_map.length-1].data[k] = null
         else values_map[values_map.length-1].data[k].push(null)
