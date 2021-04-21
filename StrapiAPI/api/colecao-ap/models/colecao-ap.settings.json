@@ -1,0 +1,17 @@
+{
+  "kind": "collectionType",
+  "collectionName": "colecao_aps",
+  "info": {
+    "name": "ColecaoAp"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "aaa": {
+      "type": "integer"
+    }
+  }
+}
