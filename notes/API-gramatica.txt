@@ -76,7 +76,6 @@ POR IMPLEMENTAR:
 - lista de erros para apresentar de maneira user-friendly no vue -> keywords reservadas do Strapi
 - CSV
 
-
 -- dar fix ao dataset de partidos políticos
 --- como fica o modelo se puser uma cena básica como coleção?
 

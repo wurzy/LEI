@@ -629,7 +629,11 @@ latitude_or_local = latitude / num_local_arg
 longitude_or_local = longitude / num_local_arg
 string_or_local = string_local_arg / string_arg
 date_or_local = date / date_local_arg
-random_arg = v:(value / moustaches_value) {return v.data} / local_arg
+random_arg = v:(directive / object / array / false / true / number / string / moustaches_value) {return v.data} / local_arg
+
+/* uniq_interpolation 
+  = "unique(" ws ")" ws "{" interpolation "}" {}
+  / interpolation */
 
 interpolation = apostrophe val:(moustaches / not_moustaches)* apostrophe str:(".string(" ws ")")? {
   var model = { type: "string", required: true }, data
