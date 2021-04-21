@@ -18,7 +18,7 @@
                                 <a :id="'idCollapsible' + model._id" class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" :href="'#collapse' + model._id" aria-expanded="false" :aria-controls="'collapse' + model._id">
                                     {{model.titulo}} 
                                     <span style="color:gray">({{model.dataCriacao | moment("calendar")}})</span>
-                                    <span v-if="isEqualIDName(model.user)" style="color:#2196F3; float: right; text-align: left; width: auto;"> Eu <font-awesome-icon icon="user"/></span>
+                                    <span v-if="isEqualIDName(model.user)" style="color:#2196F3; float: right; text-align: left; width: auto;">{{ getUserName(model.user) }} (Eu) <font-awesome-icon icon="user"/></span>
                                     <span v-else style="color:#2196F3; float: right; text-align: left; width: auto;"> {{ getUserName(model.user) }} <font-awesome-icon icon="user"/></span>
                                 </a>
                             </h4>
