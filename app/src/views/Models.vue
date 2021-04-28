@@ -203,7 +203,7 @@ a:hover,a:focus{
 }
 #accordion .panel-title a{
   display: block;
-  padding: 10px 30px 10px 60px;
+  padding: 10px 0px 10px 60px;
   margin: 0;
   background: #fff;
   font-size: 18px;

@@ -1,10 +1,10 @@
 <template>
   <div>
   <SaveModel :model="code"/>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="row">
-          <div class="col-md-6">
+    <div class="row row1">
+      <div class="col-md-6 col-md-6-1">
+        <div class="row row1">
+          <div class="col-md-6 col-md-6-1">
             <div class="input-group" style="margin-left: -5px">
             <div class="input-group-append">
               <input class="btn btn-primary float-left" type="button" value="Gerar" @click="generate"/>
@@ -14,12 +14,12 @@
             </div>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 col-md-6-1">
             <ButtonGroup @toggleConversionType="toggleConversionType"/>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 col-md-6-1">
         <div class="input-group">
           <div class="input-group-prepend ">
             <span class="input-group-text" id="basic-addon1">Nome:</span>
@@ -37,8 +37,8 @@
         </div>
       </div>
     </div>
-    <div class="row">
-      <div class="col-md-6 stretcher">
+    <div class="row row1">
+      <div class="col-md-6 col-md-6-1 stretcher">
         <codemirror 
                 ref="input"
                 :value= "code"
@@ -46,7 +46,7 @@
                 @input="onCmCodeChange"
         />
       </div>
-      <div class="col-md-6 col-md-offset-2 stretcher">
+      <div class="col-md-6 col-md-6-1 col-md-offset-2 stretcher">
         <codemirror
                 ref="output"
                 :value="result"
@@ -306,9 +306,12 @@ export default {
   }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.row {margin-left: -8px; max-width: 100%; margin-bottom: 3px;}
-.col-md-6 {padding-right: 0px;}
-.stretcher {padding-right: 0px; height: 89vh !important;}
+<style>
+.row1 {margin-left: -8px !important; max-width: 100% !important; margin-bottom: 3px !important;}
+.col-md-6-1 {padding-right: 0px !important;}
+.stretcher {padding-right: 0px !important; height: 89vh !important;}
 .vue-codemirror{height:100%;}
+.CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
+  font-size: smaller !important; 
+}
 </style>

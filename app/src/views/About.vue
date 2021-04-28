@@ -141,7 +141,6 @@ section {
     filter: grayscale(0%);
 }
 
-.
 .team-post img {
     max-width: 200px;
     border-top-left-radius: 4px;
