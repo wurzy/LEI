@@ -1,8 +1,8 @@
 <!LANGUAGE pt>
 {
-  	cidades: [ 'repeat_unique(100)': {
+  	cidades: [ 'repeat(100)': {
         id: 'c{{index(1)}}',
-        nome: '{{pt_city()}}',
+        nome: unique('{{pt_city()}}'),
         população: '{{integer(1500, 550000)}}',
         descrição: '{{lorem(1, "paragraphs")}}',
         distrito: '{{pt_district("city", this.nome)}}'

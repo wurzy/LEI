@@ -1,19 +1,23 @@
 import clubsJS from '../datasets/soccer_clubs.js';
 const clubs = clubsJS.soccer_clubs
 
+import _ from 'lodash'
+
 const soccer_clubsAPI = {
-    soccer_club(lang, i) {
-        const clubArray = clubs[Math.floor(Math.random() * clubs.length)].clubs
+    soccer_club(lang, i, sample) {
+        let clubArray = clubs.map(x => x.clubs).flat()
+        if (sample > -1) return _.sampleSize(clubArray, sample)
         return clubArray[Math.floor(Math.random() * clubArray.length)]
     },
 
-    soccer_club_from(lang, i, country) {
+    soccer_club_from(lang, i, sample, country) {
         if (Array.isArray(country)) country = country[i]
         country = country.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
         
         for (let c of clubs) {
-            for (let i = 0; i < c.country.length; i++) {
-                if (c.country[i] == country) return c.clubs[Math.floor(Math.random() * c.clubs.length)]
+            if (c.country.includes(country)) {
+                if (sample > -1) return _.sampleSize(c.clubs, sample)
+                return c.clubs[Math.floor(Math.random() * c.clubs.length)]
             }
         }
     }

@@ -1,5 +1,6 @@
 import {loremIpsum} from 'lorem-ipsum'
 import moment from 'moment'
+import _ from 'lodash'
 
 function hex(x) { return Math.floor(x).toString(16) }
 
@@ -118,8 +119,9 @@ function lorem(count, units, i) {
     return loremIpsum({ count, units })
 }
 
-function random(values, i) {
+function random(values, i, sample) {
     values = values.map(x => Array.isArray(x) ? x[i] : x)
+    if (sample > -1) return _.sampleSize(values, sample)
     return values[Math.floor(Math.random() * values.length)]
 }
 
