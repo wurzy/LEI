@@ -496,7 +496,7 @@ zero
   = "0"
 
 float_format
-  = ws quotation_mark ws f:("0" int_sep:[^0-9] "0" dec_sep:[^0-9] "00" unit:[^0-9]? { return text() }) ws quotation_mark ws { return f }
+  = ws quotation_mark ws f:("0" int_sep:[^0-9"] "0" dec_sep:[^0-9"] "00" unit:[^0-9"]* { return text() }) ws quotation_mark ws { return f }
 
 latitude
   = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
