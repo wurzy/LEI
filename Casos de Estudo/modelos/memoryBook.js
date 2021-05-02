@@ -5,9 +5,7 @@
         username(gen) {
         	return gen.fullName().toLowerCase().replace(/ /g, "_")
         },
-        email(gen) {
-          return `${this.username}${gen.integer(1,30)}@${gen.random("gmail","outlook","hotmail")}.com`
-        },
+        email: '{{this.username}}{{integer(1,30)}}@{{random("gmail","outlook","hotmail")}}.com',
         having(60) {
         	about: '{{lorem(1,"paragraphs")}}'
         },

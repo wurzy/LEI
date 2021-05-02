@@ -649,6 +649,7 @@ interpolation_signature = apostrophe val:(moustaches / not_moustaches)* apostrop
 }
 
 moustaches = moustaches_start ws v:moustaches_value ws moustaches_stop { return v }
+           / moustaches_start v:local_arg moustaches_stop {return {data: v} }
 
 not_moustaches = (!(moustaches_start / "'").)+ {
   return { model: {type: "string", required: true}, data: Array(nr_copies).fill(text()) }
