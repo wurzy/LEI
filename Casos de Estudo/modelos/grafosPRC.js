@@ -1,8 +1,8 @@
 <!LANGUAGE pt>
 {
-  	cidades: [ 'repeat_unique(100)': {
+  	cidades: [ 'repeat(100)': {
         id: 'c{{index(1)}}',
-        nome: '{{pt_city()}}',
+        nome: unique('{{pt_city()}}'),
         população: '{{integer(1500, 550000)}}',
         descrição: '{{lorem(1, "paragraphs")}}',
         distrito: '{{pt_district("city", this.nome)}}'
@@ -18,13 +18,13 @@
 			possiveis.splice(possiveis.indexOf(l), 1)
 
 			var split = l.split('|')
-      		ligs.push({origem: split[0], destino: split[1]})
+      		ligs.push({
+				id: `l${id++}-${split[0]}-${split[1]}`,
+				origem: split[0],
+				destino: split[1],
+				distância: gen.floating(5, 600)
+			})
         }
-
-		ligs.forEach(l => {
-			l.id = "l" + id++
-			l.distância = gen.floating(5, 600)
-		})
 		
 		return ligs
   	}

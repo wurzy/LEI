@@ -30,8 +30,8 @@
                   if (Math.random() > 0.5) classe += '.' + nivel4
 				  return classe
               }
-  			},
-            if (["PGD","RADA","RADA/CLAV"].includes(this.fonteLegitimação.tipo)) {
+  			}
+            else {
               	at_least(1) {
                   	código(gen) {
                   		var nivel1 = gen.random(100,150,200,250,300,350,400,450,500,550,600,650,700,710,750,800,850,900,950)

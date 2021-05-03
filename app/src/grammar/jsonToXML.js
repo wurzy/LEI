@@ -34,25 +34,4 @@ function convertXMLString(input, outputFormat, depth) {
     return xml + '\n' //not a string
 }
 
-
-function jsonToStrapi(obj) {
-    var res = {}
-  
-    if (Array.isArray(obj)) {
-      for (let i = 0; i < obj.length; i++) res["elem"+i] = jsonToStrapi(obj[i])
-    }
-    else if (typeof obj == "object" && obj != null) {
-      for (var prop in obj) {
-          if (!Object.prototype.hasOwnProperty.call(obj, prop) || (obj[prop] != null && obj[prop] == undefined)) continue
-  
-          if (Array.isArray(obj[prop])) res[prop] = jsonToStrapi(obj[prop])
-          else if (typeof obj[prop] == "object" && obj[prop] != null) res[prop] = jsonToStrapi(obj[prop])
-          else res[prop] = obj[prop]
-      }
-    }
-    else res = obj
-  
-    return res
-  }
-
-module.exports = { jsonToXml, jsonToStrapi }
+module.exports = { jsonToXml }

@@ -66,7 +66,7 @@ import axios from 'axios';
 import $ from 'jquery'
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
-import { jsonToXml } from '../util/jsonToXML.js'
+import { jsonToXml, jsonToStrapi } from '../grammar/conversions.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -100,7 +100,7 @@ export default {
         _id: '{{objectId()}}',
         guid: '{{guid()}}',
   		indice: '{{index()}}',
-  		missing(50): {
+  		missing(50) {
         	boleano: '{{boolean()}}'
         },
         inteiro_2args: '{{integer(30,70)}}',
@@ -116,7 +116,7 @@ export default {
         data2: '{{date("10/01/2015", "YYYY-MM-DD")}}',
         data3: '{{date("10/05/2019","10/01/2018")}}',
         data4: '{{date("10/05/2019","10/01/2018", "MM.DD.AAAA")}}',
-        aleatorio: '{{random("blue", null, true, false, 23, 17.56)}}',
+        aleatorio: '{{random("blue", true, false, 23, 17.56)}}',
         lorem_palavras: '{{lorem(3,"words")}}',
         lorem_frases: '{{lorem(2,"sentences")}}',
         lorem_paragrafos: '{{lorem(1,"paragraphs")}}',

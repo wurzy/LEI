@@ -1,3 +1,5 @@
+actors, animals, brands, buzzwords, capitals, car brands, continents, countries, cultural landmarks, governmental entities, hackers, job titles, months, musicians, names, nationalities, political parties, portuguese bussinessmen, portuguese districts, cities, counties and parishes, portuguese public entities, portuguese politicians, portuguese public figures, portuguese top 100 celebrities, religions, soccer clubs, soccer players, sports, top 100 celebrities, weekdays and writers. 
+
 <!LANGUAGE pt>
 {
   colecao: [
@@ -298,14 +300,16 @@ MOUSTACHES DE DATASETS:
 	colecao: [
       'repeat(3)': {
           distrito: '{{pt_district()}}',
-          distrito2: '{{pt_district("county","Braga")}}',
-          distrito3: '{{pt_district("parish","Sequeira")}}',
           concelho: '{{pt_county()}}',
-          concelho2: '{{pt_county("district","Braga")}}',
-          concelho3: '{{pt_county("parish","Sequeira")}}',
           freguesia: '{{pt_parish()}}',
-          freguesia2: '{{pt_parish("district","Braga")}}',
-          freguesia3: '{{pt_parish("county","Braga")}}',
+      	  cidade: '{{pt_city()}}',
+          distrito2: '{{pt_district("county",this.concelho)}}',
+          distrito3: '{{pt_district("parish",this.freguesia)}}',
+      	  distrito4: '{{pt_district("city",this.cidade)}}',
+          concelho2: '{{pt_county("district",this.distrito)}}',
+          concelho3: '{{pt_county("parish",this.freguesia)}}',
+          freguesia2: '{{pt_parish("district",this.distrito)}}',
+          freguesia3: '{{pt_parish("county",this.concelho)}}',
           nome_proprio: '{{firstName()}}',
           apelido: '{{surname()}}',
           nome: '{{fullName()}}',

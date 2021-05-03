@@ -1,5 +1,6 @@
 import {loremIpsum} from 'lorem-ipsum'
 import moment from 'moment'
+import _ from 'lodash'
 
 function hex(x) { return Math.floor(x).toString(16) }
 
@@ -60,7 +61,7 @@ function floating(min, max, decimals, format, i) {
     min = Array.isArray(min) ? min[i] : min
     max = Array.isArray(max) ? max[i] : max
     decimals = Array.isArray(decimals) ? decimals[i] : decimals
-
+    
     decimals = decimals == null ? getDecimalsCount(min,max) : decimals
     var random = min + (max - min) * Math.random();
     var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
@@ -70,7 +71,7 @@ function floating(min, max, decimals, format, i) {
         rounded = split[0].replace(/,/g, format[1])
   
         if (split[1] != null) rounded += format[3] + split[1] 
-        if (format.length == 7) rounded += format[6]
+        if (format.length > 6) rounded += format.substring(6)
     }
     return rounded
 }
@@ -118,8 +119,9 @@ function lorem(count, units, i) {
     return loremIpsum({ count, units })
 }
 
-function random(values, i) {
+function random(values, i, sample) {
     values = values.map(x => Array.isArray(x) ? x[i] : x)
+    if (sample > -1) return _.sampleSize(values, sample)
     return values[Math.floor(Math.random() * values.length)]
 }
 
