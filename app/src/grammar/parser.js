@@ -284,12 +284,12 @@ const parser = (function() {
 
             return val
           },
-        peg$c53 = /^[a-zA-Z_]/,
-        peg$c54 = peg$classExpectation([["a", "z"], ["A", "Z"], "_"], false, false),
+        peg$c53 = /^[$a-zA-Z_]/,
+        peg$c54 = peg$classExpectation(["$", ["a", "z"], ["A", "Z"], "_"], false, false),
         peg$c55 = /^[^\0-\x7F]/,
         peg$c56 = peg$classExpectation([["\0", "\x7F"]], true, false),
-        peg$c57 = /^[a-zA-Z0-9_]/,
-        peg$c58 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"], "_"], false, false),
+        peg$c57 = /^[$a-zA-Z0-9_]/,
+        peg$c58 = peg$classExpectation(["$", ["a", "z"], ["A", "Z"], ["0", "9"], "_"], false, false),
         peg$c59 = function(chars) {
             member_key = chars.flat().join("")
             if (open_structs == 1) {
@@ -825,7 +825,7 @@ const parser = (function() {
             if (char == "[") key = char + key
 
             let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
-            let args = key.match(/([a-zA-Z_]|[^\x00-\x7F])([a-zA-Z0-9_]|[^\x00-\x7F])*/g)
+            let args = key.match(/([$a-zA-Z_]|[^\x00-\x7F])([$a-zA-Z0-9_]|[^\x00-\x7F])*/g)
 
             for (let i = 0; i < args.length; i++) {
               if (args[i] in local) local = local[args[i]]
@@ -1030,8 +1030,8 @@ const parser = (function() {
         peg$c425 = function(str) { return "\x7B" + str.join("") + "\x7D" },
         peg$c426 = function(str) { return "(" + str.join("") + ")" },
         peg$c427 = function() { return text() },
-        peg$c428 = /^[a-zA-Z0-9_.]/,
-        peg$c429 = peg$classExpectation([["a", "z"], ["A", "Z"], ["0", "9"], "_", "."], false, false),
+        peg$c428 = /^[$a-zA-Z0-9_.]/,
+        peg$c429 = peg$classExpectation(["$", ["a", "z"], ["A", "Z"], ["0", "9"], "_", "."], false, false),
         peg$c430 = function(key) { return key.flat().join("") },
         peg$c431 = function(char, key) {
             if (char == "[") key = char + key

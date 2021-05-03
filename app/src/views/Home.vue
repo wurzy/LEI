@@ -68,7 +68,7 @@ import axios from 'axios';
 import $ from 'jquery'
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
-import { jsonToXml } from '../grammar/jsonToXML.js'
+import { jsonToXml, jsonToStrapi } from '../grammar/conversions.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 

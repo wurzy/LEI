@@ -1,7 +1,9 @@
 <!LANGUAGE pt>
 {
 	user: [ 'repeat(200)': {
-  		_id: '{{objectId()}}',
+  		_id: {
+           $oid: '{{objectId()}}'
+        },
         username(gen) {
         	return gen.fullName().toLowerCase().replace(/ /g, "_")
         },
@@ -15,30 +17,38 @@
         	var end = new Date(2000,1,1)
         	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
         },
-        createdAt: gen => {
-        	var start = new Date(2010,1,1)
-        	var end = new Date(2021,5,1)
-        	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        createdAt: {
+        	$date: gen => {
+            	var start = new Date(2010,1,1)
+            	var end = new Date(2021,5,1)
+            	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            }
         },
         profile_picture: null,
         level: "consumer"
 	}],
 	collection: [ 'repeat(200)': {
-        _id: '{{objectId()}}',
+  		_id: {
+           $oid: '{{objectId()}}'
+        },
         name: 'Coleção {{index(1)}}',
         public: '{{boolean()}}',
         missing(30) {
         	description: '{{lorem(1, "sentences")}}'
         },
-        createdAt: gen => {
-          	var start = new Date(2010,1,1)
-          	var end = new Date(2021,5,1)
-          	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        createdAt: {
+        	$date: gen => {
+            	var start = new Date(2010,1,1)
+            	var end = new Date(2021,5,1)
+            	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            }
         },
         collection_picture: null
 	}],
 	memory: [ 'repeat(500)': {
-        _id: '{{objectId()}}',
+  		_id: {
+           $oid: '{{objectId()}}'
+        },
         title: 'Memória {{index(1)}}',
         local: '{{pt_parish()}}',
         date_of_memory: gen => {
@@ -46,20 +56,26 @@
             var end = new Date(2021,1,1)
             return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
         },
-        createdAt: gen => {
-            var start = new Date(2010,1,1)
-            var end = new Date(2021,5,1)
-            return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        createdAt: {
+        	$date: gen => {
+            	var start = new Date(2010,1,1)
+            	var end = new Date(2021,5,1)
+            	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            }
         },
         content: '{{lorem(1, "paragraphs")}}'
 	}],
 	person: [ 'repeat(300)': {
-        _id: '{{objectId()}}',
+  		_id: {
+           $oid: '{{objectId()}}'
+        },
         name: '{{fullName()}}',
-        createdAt: gen => {
-            var start = new Date(2010,1,1)
-            var end = new Date(2021,5,1)
-            return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+        createdAt: {
+        	$date: gen => {
+            	var start = new Date(2010,1,1)
+            	var end = new Date(2021,5,1)
+            	return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+            }
         },
         missing(20) {
           	local_of_birth: '{{pt_city()}}'

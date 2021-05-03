@@ -417,7 +417,7 @@ value_or_interpolation = val:(value / interpolation / anon_function) {
     return val
   }
 
-member_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) {
+member_key = chars:(([$a-zA-Z_]/[^\x00-\x7F])([$a-zA-Z0-9_]/[^\x00-\x7F])*) {
     member_key = chars.flat().join("")
     if (open_structs == 1) {
       cur_collection = member_key + "_" + uuidv4()
@@ -845,7 +845,7 @@ local_arg = ws "this" char:("."/"[") key:code_key ws {
     if (char == "[") key = char + key
 
     let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
-    let args = key.match(/([a-zA-Z_]|[^\x00-\x7F])([a-zA-Z0-9_]|[^\x00-\x7F])*/g)
+    let args = key.match(/([$a-zA-Z_]|[^\x00-\x7F])([$a-zA-Z0-9_]|[^\x00-\x7F])*/g)
 
     for (let i = 0; i < args.length; i++) {
       if (args[i] in local) local = local[args[i]]
@@ -1041,7 +1041,7 @@ anon_function = "gen" ws "=>" ws code:function_code {
     return { model: {type: "json", required: true}, data: getFunctionData(code) }
   }
   
-function_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) { return chars.flat().join("") }
+function_key = chars:(([$a-zA-Z_]/[^\x00-\x7F])([$a-zA-Z0-9_]/[^\x00-\x7F])*) { return chars.flat().join("") }
 
 function_code = CODE_START str:(gen_call / local_var / not_code / function_code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
 
@@ -1049,7 +1049,7 @@ if_code = ARGS_START str:(gen_call / local_var / not_parentheses / if_code)* ARG
 
 not_code = !CODE_START !CODE_STOP. { return text() }
 
-code_key = key:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_.]/[^\x00-\x7F])*) { return key.flat().join("") } 
+code_key = key:(([$a-zA-Z_]/[^\x00-\x7F])([$a-zA-Z0-9_.]/[^\x00-\x7F])*) { return key.flat().join("") } 
 
 local_var = "this" char:("."/"[") key:code_key {
     if (char == "[") key = char + key
