@@ -1,16 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const parser = require('../grammar/parser')
-const xml = require('../grammar/jsonToXML')
+const converter = require('../grammar/conversions')
 
 // POST front-end route para obter a informação toda
 router.post('/', function(req,res){
-    console.log(req.body)
     let model = req.body 
     try {
         data = parser.parse(model)
         res.status(201).jsonp({...data})
     } catch (err) {
+        console.log(err)
         res.status(404).jsonp(err)
     }
 })
@@ -22,6 +22,7 @@ router.post('/json', function(req,res){
         data = parser.parse(model)
         res.status(201).jsonp(data.dataModel.data)
     } catch (err) {
+        console.log(err)
         res.status(404).jsonp(err)
     }
 })
@@ -31,7 +32,7 @@ router.post('/xml', function(req,res){
     let model = req.body 
     try {
         data = parser.parse(model)
-        xmlData = xml.jsonToXml(data.dataModel.data)
+        xmlData = converter.jsonToXml(data.dataModel.data)
         res.status(201)
         res.type('application/xml')
         res.write(xmlData)

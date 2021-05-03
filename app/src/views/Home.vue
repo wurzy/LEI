@@ -196,6 +196,7 @@ export default {
       },
       async generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
+        console.log(this.code)
         var data = await axios.post('http://localhost:3000/datagen/',this.code, {headers: {'Content-Type': 'text/plain'}})
         var generated = data.data
         
