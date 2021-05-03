@@ -59,16 +59,14 @@
 </template>
 
 <script>
-import {convert} from '../grammar/convert.js'
 import ButtonGroup from '../components/ButtonGroup'
 import SaveModel from '../components/SaveModel.vue';
 
-import parser from '../grammar/parser.js'
 import axios from 'axios';
 import $ from 'jquery'
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`
 
-import { jsonToXml } from '../grammar/jsonToXML.js'
+import { jsonToXml } from '../util/jsonToXML.js'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -94,7 +92,6 @@ export default {
         colname: null,
         model: null,
         components: null,
-        parser: parser,
         result: "",
         code: `<!LANGUAGE pt>
 {
@@ -197,10 +194,10 @@ export default {
       toggleConversionType(arg){
         this.output_format = arg
       },
-      generate(){
+      async generate(){
         //generated é um objeto em que o valor de cada prop é {dataset, model}
-        var generated = convert(this.code,this.parser)
-        console.log(generated)
+        var data = await axios.post('http://localhost:3000/datagen/',this.code, {headers: {'Content-Type': 'text/plain'}})
+        var generated = data.data
         
         if (this.output_format == "JSON") {
           this.cmOutput.mode = 'text/javascript'
@@ -313,5 +310,8 @@ export default {
 .vue-codemirror{height:100%;}
 .CodeMirror pre.CodeMirror-line, .CodeMirror pre.CodeMirror-line-like {
   font-size: smaller !important; 
+}
+.CodeMirror-linenumber{
+  font-size: smaller !important;
 }
 </style>
