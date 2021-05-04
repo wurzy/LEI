@@ -3,7 +3,7 @@ const entitites = pt_entities.pt_entities
 
 const pt_entitiesAPI = {
     pt_entity(lang, i) {
-        var entity = entitites[Math.floor(Math.random() * entitites.length)]
+        var entity = JSON.parse(JSON.stringify(entitites[Math.floor(Math.random() * entitites.length)]))
         return {
             abbr: entity.sigla,
             name: entity.designacao

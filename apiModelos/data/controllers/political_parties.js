@@ -4,8 +4,7 @@ const pparties = politicalPartiesJS.political_parties
 const political_partiesAPI = {
      political_party(lang, i) {
           var country = pparties[Math.floor(Math.random() * pparties.length)]
-          var party = country.parties[Math.floor(Math.random() * country.parties.length)]
-          
+          var party = JSON.parse(JSON.stringify(country.parties[Math.floor(Math.random() * country.parties.length)]))
           party.party_name = party.party_name[lang]
           return party
      },
