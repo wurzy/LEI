@@ -16,6 +16,9 @@ const soccer_clubsAPI = {
                 if (c.country[i] == country) return c.clubs[Math.floor(Math.random() * c.clubs.length)]
             }
         }
+    },
+    get(){
+        return clubs
     }
 }
 

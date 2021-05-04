@@ -4,6 +4,9 @@ const businessmen = businessmenJS.pt_businessmen
 const businessmenAPI = {
     pt_businessman(lang, i) {
         return businessmen[Math.floor(Math.random() * businessmen.length)]
+    },
+    get(){
+        return businessmen
     }
 }
 

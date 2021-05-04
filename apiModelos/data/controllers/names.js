@@ -10,7 +10,10 @@ const namesAPI = {
         return names[lang].surnames[Math.floor(Math.random() * names[lang].surnames.length)]
     },
 
-    fullName(lang, i) { return `${this.firstName(lang)} ${this.surname(lang)}` }
+    fullName(lang, i) { return `${this.firstName(lang)} ${this.surname(lang)}` },
+    get(){
+        return names
+    }
 }
 
 module.exports = namesAPI

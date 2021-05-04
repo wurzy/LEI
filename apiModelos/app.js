@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var modelsRouter = require('./routes/models');
 var datagenRouter = require('./routes/datagen');
+var datasetRouter = require('./routes/datasets');
 
 var app = express();
 
@@ -113,6 +114,7 @@ app.use('/', indexRouter);
 app.use('/utilizadores', usersRouter);
 app.use('/modelos', modelsRouter);
 app.use('/datagen', datagenRouter);
+app.use('/dataset', datasetRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

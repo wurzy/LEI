@@ -4,6 +4,9 @@ const animals = animalsJS.animals
 const animalsAPI = {
     animal(lang, i) {
         return animals[lang][Math.floor(Math.random() * animals[lang].length)]
+    },
+    get(){
+        return animals
     }
 }
 

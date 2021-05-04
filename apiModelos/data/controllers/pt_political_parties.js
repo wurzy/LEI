@@ -12,6 +12,9 @@ const ptPoliticalPartiesAPI = {
 
     pt_political_party(lang, i) {
         return parties[Math.floor(Math.random() * parties.length)] 
+    },
+    get(){
+        return parties
     }
 }
 

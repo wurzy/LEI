@@ -4,6 +4,9 @@ const centers = centersJS.cultural_centers
 const cultural_centersAPI = {
     cultural_center(lang, i) {
         return centers[lang][Math.floor(Math.random() * centers[lang].length)]
+    },
+    get(){
+        return centers
     }
 }
 

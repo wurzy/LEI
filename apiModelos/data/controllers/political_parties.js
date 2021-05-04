@@ -55,6 +55,9 @@ const political_partiesAPI = {
 
           if (index > -1) return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)].party_name[lang]
           else return "Invalid country"
+     },
+     get(){
+         return pparties
      }
 }
 

@@ -117,6 +117,9 @@ const districtsAPI = {
         let c = cities.find(x => x.city == city)
         if (c !== undefined) delete c.city
         return c
+    },
+    get(){
+        return districts
     }
 }
 
