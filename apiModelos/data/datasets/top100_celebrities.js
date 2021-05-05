@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     top100_celebrities: [
         "Sandra Oh",
 		"Indya Moore",

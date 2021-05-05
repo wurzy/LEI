@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     writers: [
         "William Shakespeare",
         "Agatha Christie",

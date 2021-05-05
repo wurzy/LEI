@@ -856,10 +856,18 @@ local_arg = ws "this" char:("."/"[") key:code_key ws {
   }
 
 range
-  = "range(" ws data:range_args ws ")" {
+  = "range(" ws data:range_args ws ")" map:mapFilter? {
     var dataModel = open_structs > 1 ? {component: true} : {}
     var model = {attributes: {}}
     for (let i = 0; i < data[0].length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
+
+    if (map != null) {
+      var f = new Function("gen", "return gen.arr" + map)
+      for (let i = 0; i < data.length; i++) {
+        let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+        data[i] = f({genAPI, dataAPI, local, i, arr: data[i]})
+      }
+    }
 
     dataModel.data = data
     dataModel.model = model
@@ -872,6 +880,10 @@ range_args
     var step = (!args || args.step == null) ? null : args.step
     return fillArray("gen", null, "range", [init, end, step])
   }
+
+mapFilter
+  = "." ("map"/"filter") "(" ws "function(" ws elem:code_key ws ")" ws code:function_code ws ")" { return text() }
+  / "." ("map"/"filter") "(" ws code_key ws "=>" ws function_code ")" { return text() }
 
 probability
   = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws obj:object {
@@ -1041,7 +1053,7 @@ anon_function = "gen" ws "=>" ws code:function_code {
     return { model: {type: "json", required: true}, data: getFunctionData(code) }
   }
   
-function_key = chars:(([$a-zA-Z_]/[^\x00-\x7F])([$a-zA-Z0-9_]/[^\x00-\x7F])*) { return chars.flat().join("") }
+function_key = chars:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_]/[^\x00-\x7F])*) { return chars.flat().join("") }
 
 function_code = CODE_START str:(gen_call / local_var / not_code / function_code)* CODE_STOP { return "\x7B" + str.join("") + "\x7D" }
 
@@ -1049,7 +1061,7 @@ if_code = ARGS_START str:(gen_call / local_var / not_parentheses / if_code)* ARG
 
 not_code = !CODE_START !CODE_STOP. { return text() }
 
-code_key = key:(([$a-zA-Z_]/[^\x00-\x7F])([$a-zA-Z0-9_.]/[^\x00-\x7F])*) { return key.flat().join("") } 
+code_key = key:(([a-zA-Z_]/[^\x00-\x7F])([a-zA-Z0-9_.]/[^\x00-\x7F])*) { return key.flat().join("") } 
 
 local_var = "this" char:("."/"[") key:code_key {
     if (char == "[") key = char + key

@@ -1,13 +1,14 @@
 const weekdaysJS = require('../datasets/weekdays.js');
 const weekdays = weekdaysJS.weekdays
 
+const _ = require('lodash')
+
 const weekdaysAPI = {
-    weekday(lang, i) {
+    get() { return weekdays },
+    weekday(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(weekdays[lang], sample)
         return weekdays[lang][Math.floor(Math.random() * weekdays[lang].length)]
-    },
-    get(){
-        return weekdays
     }
 }
 
-module.exports = weekdaysAPI
+module.exports =  weekdaysAPI

@@ -1,13 +1,14 @@
-const hackerJS = require('../datasets/hackers');
-const hackers = hackerJS.hackers
+const hackersJS = require('../datasets/hackers.js');
+const hackers = hackersJS.hackers
+
+const _ = require('lodash')
 
 const hackersAPI = {
-    hacker(lang, i) {
+    get() { return hackers },
+    hacker(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(hackers, sample)
         return hackers[Math.floor(Math.random() * hackers.length)]
-    },
-    get(){
-        return hackers
     }
 }
 
-module.exports = hackersAPI
+module.exports =  hackersAPI

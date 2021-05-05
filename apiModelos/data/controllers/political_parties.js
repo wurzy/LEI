@@ -1,63 +1,104 @@
-const politicalPartiesJS = require('../datasets/political_parties');
+const politicalPartiesJS = require('../datasets/political_parties.js');
 const pparties = politicalPartiesJS.political_parties
 
+const _ = require('lodash')
+
+function normalize(str) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+}
+
 const political_partiesAPI = {
-     political_party(lang, i) {
-          var country = pparties[Math.floor(Math.random() * pparties.length)]
-          var party = JSON.parse(JSON.stringify(country.parties[Math.floor(Math.random() * country.parties.length)]))
+     get() { return pparties },
+
+     political_party(lang, i, sample) {
+          var parties = pparties.map(x => x.parties).flat()
+          if (sample > -1) return _.sampleSize(pparties, sample).map(x => x.party_name = x.party_name[lang])
+          
+          var party = parties[Math.floor(Math.random() * parties.length)]
           party.party_name = party.party_name[lang]
           return party
      },
 
-     political_party_abbr(lang, i) {
-          var country = pparties[Math.floor(Math.random() * pparties.length)]
-          return country.parties[Math.floor(Math.random() * country.parties.length)].party_abbr
+     political_party_abbr(lang, i, sample) {
+          var parties = pparties.map(x => x.parties).flat()
+          if (sample > -1) return _.sampleSize(pparties, sample).map(x => x.party_abbr)
+          return parties[Math.floor(Math.random() * parties.length)].party_abbr
      },
 
-     political_party_name(lang, i) {
-          var country = pparties[Math.floor(Math.random() * pparties.length)]
-          return country.parties[Math.floor(Math.random() * country.parties.length)].party_name[lang]
+     political_party_name(lang, i, sample) {
+          var parties = pparties.map(x => x.parties).flat()
+          if (sample > -1) return _.sampleSize(pparties, sample).map(x => x.party_name)
+          return parties[Math.floor(Math.random() * parties.length)].party_name[lang]
      },
 
-     political_party_from(lang, i, country) {
-          if (Array.isArray(country)) country = country[i]
-          country = country.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+     political_party_from(lang, i, sample, country) {
+          if (Array.isArray(country)) country = (sample > -1) ? country.map(x => normalize(x)) : normalize(country[i])
+          else country = normalize(country)
 
-          var countries = pparties.map(r => r.country)
-          var index = countries.findIndex(arr => arr.includes(country))
+          let countries = pparties.map(r => r.country)
+          
+          if (Array.isArray(country)) return country.map(c => {
+               let index = countries.findIndex(arr => arr.includes(c))
+               if (index > -1) {
+                    let party = pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)]
+                    party.party_name = party.party_name[lang]
+                    return party
+               }
+          })
+          else {
+               let index = countries.findIndex(arr => arr.includes(country))
+               if (index > -1) {
+                    let parties = pparties[index].parties
+                    if (sample > -1) return _.sampleSize(parties, sample).map(x => x.party_name = x.party_name[lang])
 
-          if (index > -1) {
-               var party = pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)]
-               party.party_name = party.party_name[lang]
-               return party
+                    let party = parties[Math.floor(Math.random() * parties.length)]
+                    party.party_name = party.party_name[lang]
+                    return party
+               }
           }
-          else return "Invalid country"
      },
 
-     political_party_from_abbr(lang, i, country) {
-          if (Array.isArray(country)) country = country[i]
-          country = country.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+     political_party_from_abbr(lang, i, sample, country) {
+          if (Array.isArray(country)) country = (sample > -1) ? country.map(x => normalize(x)) : normalize(country[i])
+          else country = normalize(country)
 
           var countries = pparties.map(r => r.country)
-          var index = countries.findIndex(arr => arr.includes(country))
-
-          if (index > -1) return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)].party_abbr
-          else return "Invalid country"
+          
+          if (Array.isArray(country)) return country.map(c => {
+               let index = countries.findIndex(arr => arr.includes(c))
+               if (index > -1)
+                    return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)].party_abbr
+          })
+          else {
+               let index = countries.findIndex(arr => arr.includes(country))
+               if (index > -1) {
+                    let parties = pparties[index].parties
+                    if (sample > -1) return _.sampleSize(parties, sample).map(x => x.party_abbr)
+                    return parties[Math.floor(Math.random() * parties.length)].party_abbr
+               }
+          }
      },
      
-     political_party_from_name(lang, i, country) {
-          if (Array.isArray(country)) country = country[i]
-          country = country.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+     political_party_from_name(lang, i, sample, country) {
+          if (Array.isArray(country)) country = (sample > -1) ? country.map(x => normalize(x)) : normalize(country[i])
+          else country = normalize(country)
 
           var countries = pparties.map(r => r.country)
-          var index = countries.findIndex(arr => arr.includes(country))
-
-          if (index > -1) return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)].party_name[lang]
-          else return "Invalid country"
-     },
-     get(){
-         return pparties
+          
+          if (Array.isArray(country)) return country.map(c => {
+               let index = countries.findIndex(arr => arr.includes(c))
+               if (index > -1)
+                    return pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)].party_name[lang]
+          })
+          else {
+               let index = countries.findIndex(arr => arr.includes(country))
+               if (index > -1) {
+                    let parties = pparties[index].parties
+                    if (sample > -1) return _.sampleSize(parties, sample).map(x => x.party_name[lang])
+                    return parties[Math.floor(Math.random() * parties.length)].party_name[lang]
+               }
+          }
      }
 }
 
-module.exports = political_partiesAPI
+module.exports =  political_partiesAPI

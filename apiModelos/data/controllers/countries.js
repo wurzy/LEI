@@ -1,13 +1,14 @@
 const countriesJS = require('../datasets/countries.js');
 const countries = countriesJS.countries
 
+const _ = require('lodash')
+
 const countriesAPI = {
-    country(lang, i) {
+    get() { return countries },
+    country(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(countries[lang], sample)
         return countries[lang][Math.floor(Math.random() * countries[lang].length)]
-    },
-    get(){
-        return countries
     }
 }
 
-module.exports = countriesAPI
+module.exports =  countriesAPI

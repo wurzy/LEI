@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     capitals: [
         "Abu Dhabi",
         "Abuja",

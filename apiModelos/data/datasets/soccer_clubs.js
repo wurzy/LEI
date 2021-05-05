@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     soccer_clubs: [
       {
         "country": ["germany", "alemanha"],

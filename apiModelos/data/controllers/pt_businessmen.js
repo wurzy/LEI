@@ -1,13 +1,14 @@
 const businessmenJS = require('../datasets/pt_businessmen.js');
 const businessmen = businessmenJS.pt_businessmen
 
+const _ = require('lodash')
+
 const businessmenAPI = {
-    pt_businessman(lang, i) {
+    get() { return businessmen },
+    pt_businessman(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(businessmen, sample)
         return businessmen[Math.floor(Math.random() * businessmen.length)]
-    },
-    get(){
-        return businessmen
     }
 }
 
-module.exports = businessmenAPI
+module.exports =  businessmenAPI

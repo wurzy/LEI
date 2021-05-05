@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     pt_entities: [
         {
           "estado": "Ativa",

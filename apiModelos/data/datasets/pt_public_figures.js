@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     public_figures: [
         "Ana Guiomar",
         "Andreia Rodrigues",

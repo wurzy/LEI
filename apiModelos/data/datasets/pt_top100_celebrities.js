@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     pt_top100_celebrities: [
         "António de Oliveira Salazar",
         "Álvaro Cunhal",

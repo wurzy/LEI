@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     politicians: [
         "Abel Augusto de Almeida Carneiro",
 		"Abel Lima Baptista",

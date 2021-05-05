@@ -1,13 +1,14 @@
 const continentsJS = require('../datasets/continents.js');
 const continents = continentsJS.continents
 
+const _ = require('lodash')
+
 const continentsAPI = {
-    continent(lang, i) {
+    get() { return continents },
+    continent(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(continents[lang], sample)
         return continents[lang][Math.floor(Math.random() * continents[lang].length)]
-    },
-    get(){
-        return continents
     }
 }
 
-module.exports = continentsAPI
+module.exports =  continentsAPI

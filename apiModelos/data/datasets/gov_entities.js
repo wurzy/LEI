@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     gov_entities: [
         "ONU",
         "NATO",

@@ -1,13 +1,14 @@
 const nationalitiesJS = require('../datasets/nationalities.js');
 const nationalities = nationalitiesJS.nationalities
 
+const _ = require('lodash')
+
 const nationalitiesAPI = {
-    nationality(lang, i) {
+    get() { return nationalities },
+    nationality(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(nationalities[lang], sample)
         return nationalities[lang][Math.floor(Math.random() * nationalities[lang].length)]
-    },
-    get(){
-        return nationalities
     }
 }
 
-module.exports = nationalitiesAPI
+module.exports =  nationalitiesAPI

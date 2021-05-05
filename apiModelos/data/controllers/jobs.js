@@ -1,13 +1,14 @@
-const jobsJS = require('../datasets/jobs');
+const jobsJS = require('../datasets/jobs.js');
 const jobs = jobsJS.jobs
 
+const _ = require('lodash')
+
 const jobsAPI = {
-    job(lang, i) {
-        return jobs[lang][Math.floor(Math.random() * jobs.length)]
-    },
-    get(){
-        return jobs
+    get() { return jobs },
+    job(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(jobs[lang], sample)
+        return jobs[lang][Math.floor(Math.random() * jobs[lang].length)]
     }
 }
 
-module.exports = jobsAPI
+module.exports =  jobsAPI

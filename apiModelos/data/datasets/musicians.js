@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     musicians: [
         "Adele",
 		"Joey + Rory",

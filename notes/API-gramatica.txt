@@ -4,12 +4,62 @@ POR IMPLEMENTAR:
 - lista de erros para apresentar de maneira user-friendly no vue -> keywords reservadas do Strapi
 - CSV
 
--- dar fix ao dataset de partidos políticos
 --- como fica o modelo se puser uma cena básica como coleção?
 
 --------------------------------------------------------
 
+
+MAP:
+- map(function(x) {...})
+- map(x => {...})
+
+
+
 PROGRESSO DESTA SEMANA:
+
+- repeats sem repetir elementos (para 1 moustache)
+- dataset memoryBook
+- conversão JSON para Strapi
+- referenciação local em interpolação
+- protótipo inicial do map e filter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 - Autos
 - dataset de PRC

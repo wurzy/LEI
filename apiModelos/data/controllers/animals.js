@@ -1,13 +1,14 @@
 const animalsJS = require('../datasets/animals.js');
 const animals = animalsJS.animals
 
+const _ = require('lodash')
+
 const animalsAPI = {
-    animal(lang, i) {
-        return animals[lang][Math.floor(Math.random() * animals[lang].length)]
-    },
-    get(){
-        return animals
+    get() { return animals },
+    animal(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(animals, sample)
+        return animals[Math.floor(Math.random() * animals.length)]
     }
 }
 
-module.exports = animalsAPI
+module.exports =  animalsAPI

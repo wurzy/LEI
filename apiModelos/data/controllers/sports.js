@@ -1,13 +1,14 @@
-const sportsJS =  require('../datasets/sports.js');
+const sportsJS = require('../datasets/sports.js');
 const sports = sportsJS.sports
 
+const _ = require('lodash')
+
 const sportsAPI = {
-    sport(lang, i) {
+    get() { return sports },
+    sport(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(sports[lang], sample)
         return sports[lang][Math.floor(Math.random() * sports[lang].length)]
-    },
-    get(){
-        return sports
     }
 }
 
-module.exports = sportsAPI
+module.exports =  sportsAPI

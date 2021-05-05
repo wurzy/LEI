@@ -1,13 +1,14 @@
 const religionsJS = require('../datasets/religions.js');
 const religions = religionsJS.religions
 
+const _ = require('lodash')
+
 const religionsAPI = {
-    religion(lang, i) {
+    get() { return religions },
+    religion(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(religions[lang], sample)
         return religions[lang][Math.floor(Math.random() * religions[lang].length)]
-    },
-    get(){
-        return religions
     }
 }
 
-module.exports = religionsAPI
+module.exports =  religionsAPI

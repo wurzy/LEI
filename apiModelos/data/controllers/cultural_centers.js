@@ -1,13 +1,14 @@
 const centersJS = require('../datasets/cultural_centers.js');
 const centers = centersJS.cultural_centers
 
+const _ = require('lodash')
+
 const cultural_centersAPI = {
-    cultural_center(lang, i) {
+    get() { return centers },
+    cultural_center(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(centers[lang], sample)
         return centers[lang][Math.floor(Math.random() * centers[lang].length)]
-    },
-    get(){
-        return centers
     }
 }
 
-module.exports = cultural_centersAPI
+module.exports =  cultural_centersAPI

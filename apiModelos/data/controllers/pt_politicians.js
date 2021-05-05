@@ -1,13 +1,14 @@
-const politiciansJS = require('../datasets/pt_politicians');
+const politiciansJS = require('../datasets/pt_politicians.js');
 const politicians = politiciansJS.politicians
 
+const _ = require('lodash')
+
 const pt_politicianAPI = {
-    pt_politician(lang, i) {
+    get() { return politicians },
+    pt_politician(lang, i, sample) {
+        if (sample > -1) return _.sampleSize(politicians, sample)
         return politicians[Math.floor(Math.random() * politicians.length)]
-    },
-    get(){
-        return politicians
     }
 }
 
-module.exports = pt_politicianAPI
+module.exports =  pt_politicianAPI

@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
     cultural_centers: {
         "pt": [
             "Eurásia", 

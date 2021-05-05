@@ -1,4 +1,4 @@
-module.exports = {
+module.exports =  {
   districts: [
     {
       "district": "Aveiro",
