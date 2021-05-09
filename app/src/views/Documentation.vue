@@ -40,14 +40,14 @@
     </div>
     <div class="method">
         <div class="row margin-0 list-header hidden-sm hidden-xs">
-            <div class="col-md-3"><div class="header">Moustache</div></div>
+            <div class="col-md-2"><div class="header">Moustache</div></div>
             <div class="col-md-2"><div class="header">Tipo</div></div>
             <div class="col-md-3"><div class="header">Argumento(s)</div></div>
-            <div class="col-md-4"><div class="header">Descrição</div></div>
+            <div class="col-md-5"><div class="header">Descrição</div></div>
         </div>
 
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         objectID 
@@ -68,7 +68,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Gera um ID aleatório com 24 bytes. <br/>
@@ -78,7 +78,7 @@
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         guid 
@@ -99,7 +99,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Gera um UUID aleatório. <br/>
@@ -109,7 +109,7 @@
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         index 
@@ -130,7 +130,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Retorna o índice atual do objeto gerado pelo 'repeat'. <br/>
@@ -138,11 +138,11 @@
                 </div>
             </div>
         </div>
-        <div class="row margin-0">
-            <div class="col-md-3">
+        <div class="row margin-0"> 
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
-                        bool
+                        boolean
                     </div>
                 </div>
             </div>
@@ -160,7 +160,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Gera um booleano aleatório.
@@ -169,7 +169,7 @@
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         integer 
@@ -191,7 +191,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Gera um inteiro aleatório entre Min e Max. <br/>
@@ -201,7 +201,7 @@
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         integer 
@@ -224,7 +224,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Gera um inteiro aleatório entre Min e Max, mas acrescenta uma <i>String</i> Unid no final. <br/>
@@ -234,7 +234,78 @@
             </div>
         </div>
         <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>Integer</code><br/>
+                        ou <br/>
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Min:: <code>Integer</code>,<br/>
+                        Max:: <code>Integer</code>,<br/>
+                        Pad:: <code>Integer</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera um inteiro aleatório entre Min e Max e garante que tem pelo menos tantos algarismos quantos especificados no Pad. <br/>
+                        Se o número tiver menos algarismos que o suposto, faz padding de zeros à esquerda. Caso isto necessário, devolve uma <i>String</i>; caso contrário, um inteiro.<br/>
+                        Exemplo1: integer(2,400,3) = 100 <br/>
+                        Exemplo2: integer(2,4,3) = "003"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        integer 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Min:: <code>Integer</code>,<br/>
+                        Max:: <code>Integer</code>,<br/>
+                        Pad:: <code>Integer</code>,<br/>
+                        Unid:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Combinação dos dois moustaches anteriores.<br/>
+                        Exemplo: integer(2,4,3,"$") = "003$"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         floating 
@@ -256,7 +327,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Gera um número decimal aleatório entre Min e Max. <br/>
@@ -266,7 +337,7 @@
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         floating 
@@ -289,7 +360,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Gera um número decimal aleatório entre Min e Max com um total de C casas decimais. <br/>
@@ -299,7 +370,7 @@
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         floating 
@@ -322,20 +393,20 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
-                        Gera um número decimal aleatório entre Min e Max, no formato F indicado. <br/>
+                        Gera um número decimal aleatório entre Min e Max, no formato F indicado.<br/>
                         Exemplo: floating(0, 180, "0,0.00€") = "20.56€"
                     </div>
                 </div>
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
-                        position 
+                        date
                     </div>
                 </div>
             </div>
@@ -349,24 +420,25 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Nenhum
+                        Init:: <code>String</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
-                        Gera um conjunto de coordenadas cartesianas aleatórias. <br/>
-                        Exemplo: position() = "(22.491, 101.037)"
+                        Gera uma data aleatória entre a data atual e a data argumento.<br/>
+                        A <i>String</i> de argumento tem de ter o formato "DD[./-]MM[./-]YYYY".<br/>
+                        Exemplo: date("12-12-2100") = "20/10/2050"
                     </div>
                 </div>
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
-                        position 
+                        date
                     </div>
                 </div>
             </div>
@@ -380,25 +452,26 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        [MinLat,MaxLat]:: <code>[Float]</code>,<br/>
-                        [MinLon,MaxLon]:: <code>[Float]</code>
+                        Init:: <code>String</code>,<br/>
+                        Form:: <code>String</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
-                        Gera um conjunto de coordenadas cartesianas aleatórias, com limites superiores e inferiores. <br/>
-                        Exemplo: position([0.03,3],[-5,-2.4]) = "(1.311, -3.97)"
+                        Gera uma data aleatória entre a data atual e a data argumento, no formato dado.<br/>
+			            Os formatos possíveis são os seguintes: DD.MM.YYYY, DD.MM.AAAA, MM.DD.YYYY, MM.DD.AAAA, YYYY.MM.DD e AAAA.MM.DD, onde o . pode ser / - ou .<br/>
+                        Exemplo: date("12-12-2100","DD.MM.AAAA") = "20/10/2050"
                     </div>
                 </div>
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
-                        phone 
+                        date
                     </div>
                 </div>
             </div>
@@ -412,24 +485,25 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Nenhum
+                        Init:: <code>String</code>,<br/>
+                        Fim:: <code>String</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
-                        Gera um número de telemóvel português. <br/>
-                        Exemplo: phone() = "911 154 239"
+                        Gera uma data aleatória entre as datas argumentos.<br/>
+                        Exemplo: date("12-12-2100","20-12-2100","AAAA.MM.DD") = "2100/12/15"
                     </div>
                 </div>
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
-                        phone 
+                        date
                     </div>
                 </div>
             </div>
@@ -443,21 +517,54 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        bool:: <code>Boolean</code>
+                        Init:: <code>String</code>,<br/>
+                        Fim:: <code>String</code>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
-                        Gera um número de telemóvel português, se bool==true é colocada a extensão. <br/>
-                        Exemplo: phone(true) = "+351 911 154 239"
+                        Combinação dos dois moustaches anteriores.<br/>
+                        Exemplo: date("12-12-2100","20-12-2100") = "15/12/2100"
                     </div>
                 </div>
             </div>
         </div>
         <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        lorem 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
             <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Num:: <code>Integer</code>,<br/>
+                        Parte:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera Num palavras, frases ou parágrafos de <i>lorem ipsum</i>. A varíavel Parte tem de ser igual a "words", "sentences" ou "paragraphs".<br/>
+                        Exemplo: lorem(3,"words") = "mollit fugiat officia"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
                         random 
@@ -480,7 +587,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
                         Retorna aleatoriamente um dos argumentos passados à função. <br/>
@@ -490,10 +597,10 @@
             </div>
         </div>
         <div class="row margin-0">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="cell">
                     <div class="propertyname">
-                        lorem 
+                        position 
                     </div>
                 </div>
             </div>
@@ -507,16 +614,336 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Num:: <code>Integer</code>,<br/>
-                        Parte:: <code>String</code>
+                        Nenhum
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="cell">
                     <div class="description">
-                        Gera Num palavras, frases ou parágrafos de <i>lorem ipsum</i>. A varíavel Parte tem de ser igual a "words", "sentences" ou "paragraphs".<br/>
-                        Exemplo: lorem(3,"words") = "mollit fugiat officia"
+                        Gera um conjunto de coordenadas cartesianas aleatórias. <br/>
+                        Exemplo: position() = "(22.491, 101.037)"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        position 
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        [MinLat,MaxLat]:: <code>[Float]</code>,<br/>
+                        [MinLon,MaxLon]:: <code>[Float]</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera um conjunto de coordenadas cartesianas aleatórias, com limites superiores e inferiores. <br/>
+                        Exemplo: position([0.03,3],[-5,-2.4]) = "(1.311, -3.97)"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_phone_number
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera um número de telemóvel português. <br/>
+                        Exemplo: pt_phone_number() = "911 154 239"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_phone_number
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        bool:: <code>Boolean</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera um número de telemóvel português, se bool==true é colocada a extensão. <br/>
+                        Exemplo: pt_phone_number(true) = "+351 911 154 239"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_district
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera um distrito português aleatório.<br/>
+                        Exemplo: pt_district() = "Braga"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_district
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Def:: <code>String</code>, <br/>
+                        Coun:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera o distrito português do concelho dado em Coun.<br/>
+                        O primeiro argumento tem de corresponder à <i>String</i> "county".<br/>
+                        Exemplo: pt_district("county","Braga") = "Braga"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_district
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Def:: <code>String</code>, <br/>
+                        Par:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera o distrito português da freguesia dada em Par.<br/>
+                        O primeiro argumento tem de corresponder à <i>String</i> "parish".<br/>
+                        Exemplo: pt_district("parish","Tadim") = "Braga"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_district
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Def:: <code>String</code>, <br/>
+                        Cit:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera o distrito português da cidade dada em Cit.<br/>
+                        O primeiro argumento tem de corresponder à <i>String</i> "city".<br/>
+                        Exemplo: pt_district("city","Barcelos") = "Braga"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_county
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Nenhum
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera um concelho português aleatório.<br/>
+                        Exemplo: pt_district() = "Barcelos"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_county
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Def:: <code>String</code>, <br/>
+                        Dis:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera um concelho aleatório do distrito dado em Dis.<br/>
+                        O primeiro argumento tem de corresponder à <i>String</i> "district".<br/>
+                        Exemplo: pt_county("district","Braga") = "Barcelos"
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row margin-0">
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="propertyname">
+                        pt_county
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="cell">
+                    <div class="type">
+                        <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="cell">
+                    <div class="isrequired">
+                        Def:: <code>String</code>, <br/>
+                        Coun:: <code>String</code>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="cell">
+                    <div class="description">
+                        Gera o concelho português da freguesia dada em Coun.<br/>
+                        O primeiro argumento tem de corresponder à <i>String</i> "parish".<br/>
+                        Exemplo: pt_country("parish","Tadim") = "Braga"
                     </div>
                 </div>
             </div>
