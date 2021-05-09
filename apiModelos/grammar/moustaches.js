@@ -40,6 +40,30 @@ function guid(i) {
 
 function boolean(i) { return Math.random() < 0.5 }
 
+function getIndexes(num, struct_types, array_indexes) {
+  if (struct_types[struct_types.length-1] == "repeat") return [...Array(num).keys()]
+  else if (struct_types[struct_types.length-1] == "array") return Array(num).fill(array_indexes[array_indexes.length-1])
+  else {
+    var index = struct_types.length-1
+    while (index >= 0 && struct_types[index] == "object") index--
+    if (index >= 0) {
+      if (struct_types[index] == "repeat") return [...Array(num).keys()]
+      else return Array(num).fill(array_indexes[array_indexes.length-1])
+    }
+    //else erro não pode usar index aqui
+  }
+}
+
+function index(offset, queue_last, struct_types, array_indexes, i) {
+    var arrays = []
+    if (offset == null) offset = 0
+
+    if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n, struct_types, array_indexes)))
+    else arrays = Array(queue_last.total/queue_last.value).fill(getIndexes(queue_last.value, struct_types, array_indexes))
+
+    return arrays.flat().map(k => k + offset)[i]
+}
+
 function integer(min, max, size, unit, i) {
     min = Array.isArray(min) ? min[i] : min
     max = Array.isArray(max) ? max[i] : max
@@ -147,6 +171,7 @@ module.exports = {
     objectId,
     guid,
     boolean,
+    index,
     integer,
     floating,
     position,

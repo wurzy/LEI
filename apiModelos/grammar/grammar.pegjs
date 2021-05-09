@@ -30,20 +30,6 @@
     return str.charAt(0).toUpperCase() + str.slice(1)
   }
 
-  function getIndexes(num) {
-    if (struct_types[struct_types.length-1] == "repeat") return [...Array(num).keys()]
-    else if (struct_types[struct_types.length-1] == "array") return Array(num).fill(array_indexes[array_indexes.length-1])
-    else {
-      var index = struct_types.length-1
-      while (index >= 0 && struct_types[index] == "object") index--
-      if (index >= 0) {
-        if (struct_types[index] == "repeat") return [...Array(num).keys()]
-        else return Array(num).fill(array_indexes[array_indexes.length-1])
-      }
-      //else erro não pode usar index aqui
-    }
-  }
-
   function getPositionPairs(min, max) {
     var minArr = Array.isArray(min), maxArr = Array.isArray(max)
 
@@ -75,6 +61,10 @@
     var join = args.join(",")
 
     if (key in genAPI) {
+      if (key == "index") {
+        if (!join.length) join = "null"
+        join += `, ${JSON.stringify(queue[queue.length-1])}, ${JSON.stringify(struct_types)}, ${JSON.stringify(array_indexes)}`
+      }
       if (key == "integer") {
         if (args.length == 2) join += ",null,null"
         else if (args.length == 3) {
@@ -436,7 +426,7 @@ array
       tail:(value_separator v:value_or_interpolation { return v })*
       { return [head].concat(tail) }
     )?
-    end_array
+    end_array func:functional?
     {
       var model = {attributes: {}}, data = []
       for (let i = 0; i < nr_copies; i++) data.push([])
@@ -444,13 +434,25 @@ array
 
       for (let j = 0; j < arr.length; j++) {
         arr[j] = createComponent("elem"+j, arr[j])
+
         model.attributes["elem"+j] = arr[j].model
+        if (func != null) model.attributes["elem"+j].type = "json"
 
         for (let k = 0; k < nr_copies; k++) data[k].push(arr[j].data[k])
       }
 
+      if (func != null) {
+        model = {type: "json", required: true}
+        var f = new Function("gen", "return gen.arr" + func)
+
+        for (let i = 0; i < data.length; i++) {
+          let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+          data[i] = f({genAPI, dataAPI, local, i, arr: data[i]})
+        }
+      }
+
       var dataModel = {data, model}
-      if (--open_structs > 1) dataModel.component = true
+      if (--open_structs > 1 && func == null) dataModel.component = true
       
       values_map[values_map.length-1].delete = true
       return dataModel
@@ -665,24 +667,18 @@ gen_moustaches
   / "guid(" ws ")" { return { model: {type: "string", required: true}, data: fillArray("gen", null, "guid", []) } }
   / "boolean(" ws ")" { return { model: {type: "boolean", required: true}, data: fillArray("gen", null, "boolean", []) } }
   / "index(" ws offset:(i:int ws { return i })? ")" {
-      var arrays = [], queue_last = queue[queue.length-1]
-      if (offset == null) offset = 0
-
-      if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n)))
-      else arrays = Array(queue_last.total/queue_last.value).fill(getIndexes(queue_last.value))
-
       return {
         model: {type: "integer", required: true},
-        data: arrays.flat().map(k => k + offset)
+        data: fillArray("gen", null, "index", [offset, queue[queue.length-1], struct_types, array_indexes])
       }
     }
-  / "integer(" ws min:intneg_or_local ws "," ws max:intneg_or_local ws size:("," ws c:int_or_local ws {return c})? unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u.join("")})? ")" {
+  / "integer(" ws min:intneg_or_local value_separator max:intneg_or_local ws size:("," ws c:int_or_local ws {return c})? unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u.join("")})? ")" {
     return {
       model: { type: (size == null && unit === null) ? "integer" : "string", required: true }, 
       data: fillArray("gen", null, "integer", [min, max, size, unit])
     }
   }
-  / "floating(" ws min:number_or_local ws "," ws max:number_or_local ws others:("," ws decimals:int_or_local ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
+  / "floating(" ws min:number_or_local value_separator max:number_or_local ws others:("," ws decimals:int_or_local ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
     if (!others) others = {decimals: null, format: null}
     return {
       model: { type: others.format === null ? "float" : "string", required: true }, 
@@ -717,7 +713,7 @@ gen_moustaches
         data: fillArray("gen", null, "random", [values])
       }
   }
-  / "lorem(" ws count:int_or_local ws "," ws units:lorem_string ws ")" {
+  / "lorem(" ws count:int_or_local value_separator units:lorem_string ws ")" {
     return {
       model: {type: "string", required: true},
       data: fillArray("gen", null, "lorem", [count, units])
@@ -785,7 +781,7 @@ directive
   / range
 
 repeat
-  = ws '[' ws num:repeat_signature ws repeat_separator ws val:value_or_interpolation ws ']' ws {
+  = ws '[' ws num:repeat_signature ws repeat_separator ws val:value_or_interpolation ws ']' func:functional? ws {
     queue.pop(); nr_copies = queue[queue.length-1].total
     struct_types.pop(); --open_structs
     
@@ -793,7 +789,23 @@ repeat
     if (open_structs > 1) {
       val.data = Array.isArray(num) ? chunkDifferent(val.data, num) : chunk(val.data, num)
       val = createComponent("repeat_elem", val)
-      for (let i = 0; i < num; i++) model.attributes["repeat_elem"+i] = val.model
+
+      for (let i = 0; i < num; i++) {
+        model.attributes["repeat_elem"+i] = val.model
+        if (func != null) model.attributes["repeat_elem"+i].type = "json"
+      }
+    }
+
+    if (func != null) {
+      model = {type: "json", required: true}
+      var f = new Function("gen", "return gen.arr" + func)
+      
+      for (let i = 0; i < (open_structs == 1 ? 1 : val.data.length); i++) {
+        let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
+
+        if (open_structs == 1) val.data = f({genAPI, dataAPI, local, i, arr: val.data})
+        else val.data[i] = f({genAPI, dataAPI, local, i, arr: val.data[i]})
+      }
     }
 
     cleanMapValues()
@@ -856,13 +868,15 @@ local_arg = ws "this" char:("."/"[") key:code_key ws {
   }
 
 range
-  = "range(" ws data:range_args ws ")" map:mapFilter? {
-    var dataModel = open_structs > 1 ? {component: true} : {}
+  = "range(" ws data:range_args ws ")" func:functional? {
+    var dataModel = (open_structs > 1 && func == null) ? {component: true} : {}
     var model = {attributes: {}}
     for (let i = 0; i < data[0].length; i++) model.attributes["elem"+i] = {type: "integer", required: true}
 
-    if (map != null) {
-      var f = new Function("gen", "return gen.arr" + map)
+    if (func != null) {
+      model = {type: "json", required: true}
+      var f = new Function("gen", "return gen.arr" + func)
+
       for (let i = 0; i < data.length; i++) {
         let local = Object.assign(..._.cloneDeep(values_map.map(x => x.data)))
         data[i] = f({genAPI, dataAPI, local, i, arr: data[i]})
@@ -875,15 +889,29 @@ range
   }
 
 range_args
-  = init:intneg_or_local args:(ws "," ws end:intneg_or_local step:(ws "," ws s:intneg_or_local { return s })? { return {end, step}})? {
+  = init:intneg_or_local args:(value_separator end:intneg_or_local step:(value_separator s:intneg_or_local { return s })? { return {end, step}})? {
     var end = !args ? null : args.end
     var step = (!args || args.step == null) ? null : args.step
     return fillArray("gen", null, "range", [init, end, step])
   }
 
+functional = (mapFilter / reduce) functional? { return text() }
+
 mapFilter
-  = "." ("map"/"filter") "(" ws "function(" ws elem:code_key ws ")" ws code:function_code ws ")" { return text() }
-  / "." ("map"/"filter") "(" ws code_key ws "=>" ws function_code ")" { return text() }
+  = "." ("map"/"filter") "(" ws "function(" mapFilter_args ")" ws function_code ws ")" { return text() }
+  / "." ("map"/"filter") "(" mapFilter_anon_args "=>" ws function_code ws ")" { return text() }
+
+mapFilter_args = ws code_key (value_separator code_key (value_separator code_key)?)? ws { return text() }
+
+mapFilter_anon_args
+  = ws code_key ws { return text() }
+  / ws "(" mapFilter_args ")" ws { return text() }
+
+reduce
+  = ".reduce(" ws "function" reduce_args function_code ws ")" { return text() }
+  / ".reduce(" ws reduce_args "=>" ws function_code ws ")" { return text() }
+
+reduce_args = "(" ws code_key value_separator code_key (value_separator code_key (value_separator code_key)?)? ws ")" ws { return text() }
 
 probability
   = sign:("missing" / "having" {return text()}) "(" ws probability:([1-9][0-9]?) ws ")" ws obj:object {

@@ -198,6 +198,9 @@ export default {
         //generated é um objeto em que o valor de cada prop é {dataset, model}
         var data = await axios.post('http://localhost:3000/datagen/',this.code, {headers: {'Content-Type': 'text/plain'}})
         var generated = data.data
+
+        console.log(generated.components)
+        console.log(generated.dataModel.model)
         
         if (this.output_format == "JSON") {
           this.cmOutput.mode = 'text/javascript'
