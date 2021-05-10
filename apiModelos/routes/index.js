@@ -8,6 +8,10 @@ const axios = require('axios')
 const isReachable = require('is-reachable');
 var execSync = require('child_process').execSync;
 const { cachedDataVersionTag } = require('v8');
+var rimraf = require("rimraf");
+
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
 
 
 const model123 = `{
@@ -73,23 +77,59 @@ const strServices = `'use strict';
 
 module.exports = {};
 `
+
+
+
+router.get('/ColNames', function(req, res, next) {
+  fs.readdir("../StrapiAPI/api/", (err, files) => { 
+    if(err) { 
+      res.status(500).jsonp({erro : "Error on fetching collections names: ",err})
+    } 
+    for (var i = files.length; i--;) {
+      if (files[i] === ".gitkeep") files.splice(i, 1);
+    }
+    res.status(200).jsonp({
+      ColNames: files,
+    })
+    res.end()
+  }); 
+});
+
+router.get('/Delete/:name', function(req, res, next) {
+  
+    MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology: true}).then((client) => {
   
 
+      const connect = client.db("StrapiAPI");
+    
+      //Collection name
+      const collection = connect.collection(req.params.name);
+    
+      collection.drop();  // Dropping the collection
+    
+      try {
 
+        if(fs.existsSync('../StrapiAPI/api/'+req.params.name)){rimraf.sync("../StrapiAPI/api/"+req.params.name);}
 
-router.get('/import', function(req, res, next) {
-  child = exec('mongoimport --db StrapiAPI --collection boas_8ce757e2-ab2f-49fe-83eb-1f5b38b4ca53 --file ./jsons/boas_8ce757e2-ab2f-49fe-83eb-1f5b38b4ca53.json --jsonArray',
-  function (error, stdout, stderr) {
-      console.log('stdout: ' + stdout);
-      console.log('stderr: ' + stderr);
-      if (error !== null) {
-           console.log('exec error: ' + error);
+        if(fs.existsSync('../StrapiAPI/components/'+req.params.name)){rimraf.sync('../StrapiAPI/components/'+req.params.name); }
+
+        console.log("Collection deleted Successfully");
+        res.status(200).jsonp("Collection deleted Successfully")
+        res.end() 
+      } catch (error) {
+        res.status(500).jsonp({erro : "Error when deleting collection: "+error})
+        res.end()      
       }
-  });
-  child();
-  res.status(200).jsonp("Import dado!")
-  res.end()
-});
+     
+          
+  }).catch((err) => {
+      console.log(err.Message);
+      res.status(500).jsonp({erro : "Error when deleting collection "+err})
+      res.end()
+  })
+
+})
+
 
 router.get('/download/:id', function(req, res, next) {
  
@@ -179,11 +219,14 @@ router.post('/genAPI', function(req, res, next) {
   var mkeys = Object.keys(req.body["model"])
   var apiname = req.body["apiName"]
   var dkeys = Object.keys(req.body["dataset"])
-  var dataName = dkeys[0]
-  var dataset = req.body["dataset"][`${dataName}`]
+  //var dataName = dkeys[0]
+  //var dataset = req.body["dataset"][`${dataName}`]
   
-  var model = JSON.stringify(req.body["model"][`${apiname}`], null, 2)
+  var model = JSON.stringify(req.body["model"], null, 2)
+  console.log("apiname: ",apiname)
+  console.log("model. ",req.body["model"])
   
+
   try {
     fs.mkdirSync("../StrapiAPI/api/"+apiname) 
 
@@ -265,13 +308,17 @@ router.post('/genAPI', function(req, res, next) {
     console.log('Directory created successfully!'); 
 
     var ckeys = Object.keys(req.body["componentes"])
-    var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
-    var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
-    
-    if(compKeys){
+    console.log("componentes: ",req.body["componentes"])
+
+    //var componentes = JSON.stringify(req.body["componentes"][`${ckeys[0]}`], null, 2)
+    //var compKeys = Object.keys(req.body["componentes"][`${ckeys[0]}`])
+    console.log("ckeys: ",ckeys)
+    console.log("ckeys size: ",ckeys.length)
+
+    if(ckeys.length > 0){
       fs.mkdirSync("../StrapiAPI/components/"+apiname) 
-      compKeys.forEach(k => {
-        var str =  JSON.stringify(req.body["componentes"][`${ckeys[0]}`][`${k}`], null, 2)
+      ckeys.forEach(k => {
+        var str =  JSON.stringify(req.body["componentes"][`${k}`], null, 2)
 
         fs.writeFileSync("../StrapiAPI/components/"+apiname+"/"+k+".json", str)        
       });
@@ -382,8 +429,8 @@ router.post('/import', function(req, res, next) {
 
   var dkeys = Object.keys(req.body["dataset"])
   var dataName = dkeys[0]
-  var dataset = req.body["dataset"][`${dataName}`]
-  
+  var dataset = req.body["dataset"]
+  console.log("dataset: ", dataset)
   function povoar() {
     (async () => {
       var bol = await isReachable('http://localhost:1337/')
@@ -404,7 +451,7 @@ router.post('/import', function(req, res, next) {
         })
         .then(dados => console.log("postado"))
         .catch(erro => {
-          console.log("---------erro no for----------",erro);
+          console.log("---------erro no for----------"+erro);
         })
       }
     }  
@@ -412,7 +459,7 @@ router.post('/import', function(req, res, next) {
   }
 
   try {
-    let pov = setTimeout(povoar, 3500);
+    let pov = setTimeout(povoar, 5500);
     
     res.status(200).jsonp("Import done!")
     res.end()
