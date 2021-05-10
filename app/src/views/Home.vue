@@ -343,7 +343,7 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-.row1 {margin-left: -8px !important; max-width: 100% !important; margin-bottom: 3px !important;}
+.row1 {margin-left: -8px !important; max-width: 100% !important; margin-bottom: 1px !important;}
 .col-md-6-1 {padding-right: 0px !important;}
 .stretcher {padding-right: 0px !important; height: 89vh !important;}
 .vue-codemirror{height:100%;}
