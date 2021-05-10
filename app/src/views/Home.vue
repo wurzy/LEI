@@ -93,6 +93,10 @@ export default {
         model: null,
         components: null,
         result: "",
+        colnames: [],
+        colecoes: [],
+        componentes: [],
+        datasets: [],
         code: `<!LANGUAGE pt>
 {
   colecao: [
@@ -195,6 +199,10 @@ export default {
         this.output_format = arg
       },
       async generate(){
+        this.colnames=[]
+        this.colecoes=[]
+        this.componentes=[]
+        this.datasets=[]
         //generated é um objeto em que o valor de cada prop é {dataset, model}
         var data = await axios.post('http://localhost:3000/datagen/',this.code, {headers: {'Content-Type': 'text/plain'}})
         var generated = data.data
@@ -216,8 +224,21 @@ export default {
         } */
 
         var mkeys = Object.keys(generated.dataModel.model)
-        //var ckeys = Object.keys(generated.components)
-        
+        var ckeys = Object.keys(generated.components)
+        var dkeys = Object.keys(generated.dataModel.data)
+
+        var index
+        for (index = 0; index < mkeys.length; index++) {
+          let mkey = mkeys[index]
+          let ckey = ckeys[index]
+          let dkey = dkeys[index]
+          this.colnames.push(mkey)
+          this.colecoes.push(generated.dataModel.model[`${mkey}`]) 
+          this.componentes.push(generated.components[`${ckey}`]) 
+          let dat = jsonToStrapi(generated.dataModel.data[`${dkey}`])
+
+          this.datasets.push(JSON.stringify(dat, null, 2))
+        }
         this.colname = mkeys[0]
         this.model = generated.dataModel.model
         this.components = generated.components
@@ -240,30 +261,45 @@ export default {
         $("#savemodels_modal").css("z-index", "1500");
       },
       createAPI(){
-        var body = {
-          apiName: this.colname,
-          model: this.model,
-          componentes: this.components,
-          dataset: JSON.parse(this.result)
+        var promises = [];
+
+        for (let index = 0; index < this.colecoes.length; index++) {
+          let body = {
+            apiName: this.colnames[index],
+            model: this.colecoes[index],
+            componentes: this.componentes[index],
+            dataset: JSON.parse(this.datasets[index])
+          }
+          //console.log("apiname "+index+": ", this.colnames[index])
+          //console.log("model "+index+": ", this.colecoes[index])
+          //console.log("componentes "+index+": ", this.componentes[index])
+          //console.log("dataset "+index+": ",  JSON.parse(this.datasets[index]))
+
+          let bodyImp= {
+              apiName: this.colnames[index],
+              dataset: JSON.parse(this.datasets[index])
+          }
+          console.log("dataset "+index+": ", body)
+          //console.log("dataset "+index+": ", bodyImp)
+  
+          promises.push(
+            axios.post('http://localhost:3000/genAPI/',body)
+            .then(dados => console.log("Modelo criado"))
+            .catch(erro => console.log(erro))
+          )
+          promises.push(
+            axios.post('http://localhost:3000/import/',bodyImp)
+            .then(dados => {
+              console.log("Import feito")
+              //window.open("http://localhost:1337/"+this.colnames[index]+"s", "_blank");    
+            })
+            .catch(erro => console.log(erro))
+          )
+
         }
 
-        var bodyImp= {
-            apiName: this.colname,
-            dataset: JSON.parse(this.result)
-        }
-
-        let promises = [];
-        promises.push(
-          axios.post('http://localhost:3000/genAPI/',body)
-          .then(dados => console.log("Modelo criado"))
-          .catch(erro => console.log(erro))
-        )
-        promises.push(
-          axios.post('http://localhost:3000/import/',bodyImp)
-          .then(dados => console.log("Import feito"))
-          .catch(erro => console.log(erro))
-        )
-        Promise.all(promises).then(() => console.log("API gerada!"));
+        Promise.all(promises).then(() => console.log("Uma API gerada!"));
+       
 
         //console.log("modelo aquii",document.getElementById("md").getAttribute("colname"))
        
