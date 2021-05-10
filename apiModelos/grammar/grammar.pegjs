@@ -153,7 +153,7 @@
   function createComponent(name, value) {
     if ("component" in value) {
       if (open_structs > 1) {
-        value.model.collectionName = "components_" + name
+        value.model.collectionName = "components_" + name + cur_collection.substring(cur_collection.lastIndexOf('_'))
         value.model.info = {name}
         value.model.options = {}
 
@@ -433,12 +433,12 @@ array
       if (arr == null) arr = []
 
       for (let j = 0; j < arr.length; j++) {
-        arr[j] = createComponent("elem"+j, arr[j])
-
-        model.attributes["elem"+j] = arr[j].model
-        if (func != null) model.attributes["elem"+j].type = "json"
-
         for (let k = 0; k < nr_copies; k++) data[k].push(arr[j].data[k])
+
+        if (func == null) {
+          arr[j] = createComponent("elem"+j, arr[j])
+          model.attributes["elem"+j] = arr[j].model
+        }
       }
 
       if (func != null) {
@@ -788,11 +788,10 @@ repeat
     var model = {attributes: {}}
     if (open_structs > 1) {
       val.data = Array.isArray(num) ? chunkDifferent(val.data, num) : chunk(val.data, num)
-      val = createComponent("repeat_elem", val)
 
-      for (let i = 0; i < num; i++) {
-        model.attributes["repeat_elem"+i] = val.model
-        if (func != null) model.attributes["repeat_elem"+i].type = "json"
+      if (func == null) {
+        val = createComponent("repeat_elem", val)
+        for (let i = 0; i < num; i++) model.attributes["repeat_elem"+i] = val.model
       }
     }
 
