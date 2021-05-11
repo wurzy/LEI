@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Confirm :msg="getConfirmMsg" id="deleteCollection_confirm_modal" @confirm="confirm"/>
 <table class="table">
   <thead class="thead-light">
     <tr>
@@ -22,7 +23,7 @@
 </template>
 
 <script>
-
+import Confirm from '../components/Confirm.vue'
 import axios from 'axios'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -30,18 +31,25 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 export default {
     name: 'Collections',
     components: {
-
+        Confirm
     },
     data() {
         return {
-            collections: []
+            collections: [],
+            confirmMsg: "Esta ação é irreversível. Tem a certeza que pretende remover a coleção \"-\"?",
+            toDelete: {}
         }
     },
     methods: {
         deleteCol(id){
-            axios.delete('http://localhost:3000/collection/' + this.collections[id])
+            this.toDelete = {id, val: this.collections[id]}
+            $("#deleteCollection_confirm_modal").modal("show");
+            $("#deleteCollection_confirm_modal").css("z-index", "1500");
+        },
+        confirm(){
+            axios.delete('http://localhost:3000/collection/' + this.toDelete.val)
                 .then(dados => {
-                    this.collections.splice(id,1)
+                    this.collections.splice(this.toDelete.id,1)
                 })
                 .catch(e => console.log(e))
         }
@@ -49,6 +57,9 @@ export default {
     computed: {
         getCollections(){
             return this.collections
+        },
+        getConfirmMsg(){
+            return this.confirmMsg.replace("-",this.toDelete.val)
         }
     },
     mounted() {
