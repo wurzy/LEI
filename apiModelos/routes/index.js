@@ -106,13 +106,17 @@ router.delete('/collection/:name', function(req, res, next) {
       var suc
       //var suc = collection.drop() // Dropping the collection
       collection.drop().catch(err =>{
-        if(err.message.match(/ns not found/)){
-          suc = 1
+        if(err){
+          if(err.message.match(/ns not found/)){
+            suc = 1
+          }else{
+            suc = 0
+            console.log("dabase error:",err)
+          } 
         }else{
-          suc = 0
-          console.log("dabase error:",err)} 
+          suc=1
         } 
-      );
+      });
 
      
       if(fs.existsSync('../StrapiAPI/api/'+req.params.name)){rimraf.sync("../StrapiAPI/api/"+req.params.name);}
@@ -125,7 +129,7 @@ router.delete('/collection/:name', function(req, res, next) {
         res.end() 
       }else{
         console.log("No Collection got deleted!");
-        res.status(200).jsonp("No Collection got deleted!")
+        res.status(404).jsonp("No Collection got deleted!")
         res.end() 
       }
   
