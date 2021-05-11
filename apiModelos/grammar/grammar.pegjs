@@ -65,27 +65,19 @@
         if (!join.length) join = "null"
         join += `, ${JSON.stringify(queue[queue.length-1])}, ${JSON.stringify(struct_types)}, ${JSON.stringify(array_indexes)}`
       }
-      if (key == "integer") {
-        if (args.length == 2) join += ",null,null"
-        else if (args.length == 3) {
-          if (args[2][0] == '"') { args.splice(2, 0, "null"); join = args.join(",") }
-          else join += ",null"
-        }
+      if (key == "float") {
+        if (args.length == 2) join += ",null"
       }
-      if (key == "floating") {
-        if (args.length == 2) join += ",null,null"
-        if (args.length == 3) join += ",null"
-        if (args.length == 4) {
-          var format = trimArg(args.slice(3, args.length).join(','), true)
-          join = args.slice(0,3).join(',') + ',' + format
-        }
+      if (key == "formattedFloat") {
+        var format = trimArg(args.slice(4, args.length).join(','), true)
+        join = args.slice(0,4).join(',') + ',' + format
       }
       if (key == "position") {
         if (args.length == 1) join = "null,null"
-      } 
+      }
       if (key == "date") {
-        if (args.length == 1) join = [args[0],"null",'"DD/MM/YYYY"'].join(",")
-        if (args.length == 2) join = (/\d/.test(args[1]) ? [args[0],args[1],'"DD/MM/YYYY"'] : [args[0],"null",trimArg(args[1],true)]).join(",")
+        if (args.length == 1) join += ",null,null"
+        if (args.length == 2) join = (/\d/.test(args[1]) ? [args[0],args[1],"null"] : [args[0],"null",trimArg(args[1],true)]).join(",")
         if (args.length == 3) { args[2] = trimArg(args[2],true); join = args.join(",") }
       }
       if (key == "lorem") { args[1] = trimArg(args[1],true); join = args.join(",") }
@@ -153,7 +145,9 @@
   function createComponent(name, value) {
     if ("component" in value) {
       if (open_structs > 1) {
-        value.model.collectionName = "components_" + name + cur_collection.substring(cur_collection.lastIndexOf('_'))
+        var id = cur_collection.substring(cur_collection.lastIndexOf('_'))
+
+        value.model.collectionName = "components_" + name + id
         value.model.info = {name}
         value.model.options = {}
 
@@ -161,7 +155,7 @@
         var keys = Object.keys(components[cur_collection])
         while (keys.includes(filename)) filename = name + i++
 
-        components[cur_collection][filename] = _.cloneDeep(value.model)
+        components[cur_collection][filename+id] = _.cloneDeep(value.model)
         value.model = { "type": "component", "repeatable": false, required: true, "component": cur_collection + '.' + filename }
       }
 
@@ -672,17 +666,28 @@ gen_moustaches
         data: fillArray("gen", null, "index", [offset, queue[queue.length-1], struct_types, array_indexes])
       }
     }
-  / "integer(" ws min:intneg_or_local value_separator max:intneg_or_local ws size:("," ws c:int_or_local ws {return c})? unit:("," ws quotation_mark u:[^"]* quotation_mark ws {return u.join("")})? ")" {
+  / "integer(" ws min:intneg_or_local value_separator max:intneg_or_local ws ")" {
     return {
-      model: { type: (size == null && unit === null) ? "integer" : "string", required: true }, 
-      data: fillArray("gen", null, "integer", [min, max, size, unit])
+      model: { type: "integer", required: true }, 
+      data: fillArray("gen", null, "integer", [min, max])
     }
   }
-  / "floating(" ws min:number_or_local value_separator max:number_or_local ws others:("," ws decimals:int_or_local ws format:("," f:float_format {return f})? {return {decimals, format} })? ")" {
-    if (!others) others = {decimals: null, format: null}
+  / "formattedInteger(" ws min:intneg_or_local value_separator max:intneg_or_local value_separator pad:int_or_local value_separator quotation_mark unit:[^"]* quotation_mark ws ")" {
     return {
-      model: { type: others.format === null ? "float" : "string", required: true }, 
-      data: fillArray("gen", null, "floating", [min, max, others.decimals, others.format])
+      model: { type: "string", required: true }, 
+      data: fillArray("gen", null, "formattedInteger", [min, max, pad, unit.join("")])
+    }
+  }
+  / "float(" ws min:number_or_local value_separator max:number_or_local decimals:(value_separator d:int_or_local {return d})? ws ")" {
+    return {
+      model: { type: "float", required: true }, 
+      data: fillArray("gen", null, "float", [min, max, decimals])
+    }
+  }
+  / "formattedFloat(" ws min:number_or_local value_separator max:number_or_local value_separator decimals:int_or_local value_separator pad:int_or_local value_separator format:float_format ")" {
+    return {
+      model: { type: "string", required: true }, 
+      data: fillArray("gen", null, "formattedFloat", [min, max, decimals, pad, format])
     }
   }
   / "position(" ws limits:(lat:(lat_interval/pair_local_arg) "," long:(long_interval/pair_local_arg) {return {lat, long} })? ")" {
@@ -700,7 +705,7 @@ gen_moustaches
   / "date(" ws start:date_or_local ws end:("," ws e:date_or_local ws { return e })? format:("," ws f:date_format ws { return f })? ")" {
     return {
       model: {type: "string", required: true},
-      data: fillArray("gen", null, "date", [start, end, !format ? 'DD/MM/YYYY' : format])
+      data: fillArray("gen", null, "date", [start, end, format])
     }
   }
   / "random(" ws values:(

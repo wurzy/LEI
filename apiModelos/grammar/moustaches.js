@@ -64,39 +64,78 @@ function index(offset, queue_last, struct_types, array_indexes, i) {
     return arrays.flat().map(k => k + offset)[i]
 }
 
-function integer(min, max, size, unit, i) {
-    min = Array.isArray(min) ? min[i] : min
-    max = Array.isArray(max) ? max[i] : max
-    size = Array.isArray(size) ? size[i] : size
-
-    var rand = Math.floor(Math.random() * ((max+1) - min) + min).toString()
-    var negative = false, pad = false
+function padding(rand, pad) {
+    var negative = false, decimal = false
 
     if (rand[0] == '-') {negative = true; rand = rand.substr(1)}
-    while (rand.length < size) {pad = true; rand = "0" + rand}
+    if (rand.includes('.')) {
+        let split = rand.split('.')
+        decimal = split[1]
+        rand = split[0]
+    }
+
+    while (rand.length < pad) rand = "0" + rand
 
     if (negative) rand = '-' + rand
-    if (!pad) rand = parseInt(rand)
-    
-    return unit == null ? rand : (rand + unit)
+    if (decimal != false) rand += '.' + decimal
+
+    return rand
 }
 
-function floating(min, max, decimals, format, i) {
+function decimalPadding(rand, pad) {
+    var len = rand.substring(rand.indexOf('.')).length
+    for (let i = len; i < pad; i++) rand += '0'
+
+    return rand
+}
+
+function integer(min, max, i) {
     min = Array.isArray(min) ? min[i] : min
     max = Array.isArray(max) ? max[i] : max
+
+    return Math.floor(Math.random() * ((max+1) - min) + min)
+}
+
+function formattedInteger(min, max, pad, unit, i) {
+    min = Array.isArray(min) ? min[i] : min
+    max = Array.isArray(max) ? max[i] : max
+    pad = Array.isArray(pad) ? pad[i] : pad
+
+    var rand = Math.floor(Math.random() * ((max+1) - min) + min).toString()
+    return padding(rand,pad) + unit
+}
+
+function float(min, max, decimals, i) {
+    min = Array.isArray(min) ? min[i] : min
+    max = Array.isArray(max) ? max[i] : max
+
     decimals = Array.isArray(decimals) ? decimals[i] : decimals
-    
-    decimals = decimals == null ? getDecimalsCount(min,max) : decimals
-    var random = min + (max - min) * Math.random();
+    if (decimals == null) decimals = getDecimalsCount(min,max)
+
+    var random = min + (max - min) * Math.random()
+    return Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
+}
+
+function formattedFloat(min, max, decimals, pad, format, i) {
+    min = Array.isArray(min) ? min[i] : min
+    max = Array.isArray(max) ? max[i] : max
+    pad = Array.isArray(pad) ? pad[i] : pad
+
+    decimals = Array.isArray(decimals) ? decimals[i] : decimals
+    if (decimals == null) decimals = getDecimalsCount(min,max)
+
+    var random = min + (max - min) * Math.random()
     var rounded = Math.round((random + Number.EPSILON) * Math.pow(10,decimals)) / Math.pow(10,decimals)
+
+    rounded = decimalPadding(rounded.toString(), decimals)
+    rounded = padding(rounded, pad)
   
-    if (format != null) {
-        var split = formatNumber(String(rounded)).split('.')
-        rounded = split[0].replace(/,/g, format[1])
+    var split = formatNumber(rounded).split('.')
+    rounded = split[0].replace(/,/g, format[1])
   
-        if (split[1] != null) rounded += format[3] + split[1] 
-        if (format.length > 6) rounded += format.substring(6)
-    }
+    if (split[1] != null) rounded += format[3] + split[1] 
+    if (format.length > 6) rounded += format.substring(6)
+
     return rounded
 }
 
@@ -104,12 +143,12 @@ function position(lat, long, i) {
     lat = (lat != null && Array.isArray(lat[0])) ? lat[i] : lat
     long = (long != null && Array.isArray(long[0])) ? long[i] : long
 
-    if (!lat) return "(" + floating(-90,90,5) + ", " + floating(-180,180,5) + ")"
+    if (!lat) return "(" + float(-90,90,5,null) + ", " + float(-180,180,5,null) + ")"
     else {
         if (lat[0] > lat[1]) {var latmax = lat[0]; lat[0] = lat[1]; lat[1] = latmax}
         if (long[0] > long[1]) {var longmax = long[0]; long[0] = long[1]; long[1] = longmax}
 
-        return "(" + floating(lat[0], lat[1], 5) + ", " + floating(long[0], long[1], 5) + ")"
+        return "(" + float(lat[0], lat[1], 5, null) + ", " + float(long[0], long[1], 5, null) + ")"
     }
 }
 
@@ -124,7 +163,7 @@ function pt_phone_number(extension, i) {
 
 function newDate(str) {
     var split = str.split("/")
-    return new Date(parseInt(split[2]), parseInt(split[1]), parseInt(split[0]))
+    return new Date(parseInt(split[2]), parseInt(split[1])-1, parseInt(split[0]))
 }
 
 function date(start, end, format, i) {
@@ -135,7 +174,9 @@ function date(start, end, format, i) {
     end = !end ? new Date() : newDate(end)
 
     var random = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
-    return moment(random).format(format.replace(/A/g, "Y"))
+    if (format != null) random = moment(random).format(format.replace(/A/g, "Y"))
+
+    return random
 }
 
 function lorem(count, units, i) {
@@ -173,7 +214,9 @@ module.exports = {
     boolean,
     index,
     integer,
-    floating,
+    formattedInteger,
+    float,
+    formattedFloat,
     position,
     pt_phone_number,
     date,
