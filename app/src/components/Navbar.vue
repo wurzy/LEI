@@ -81,6 +81,7 @@
 
               <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                 <a class="dropdown-item" href="#"><font-awesome-icon icon="wrench"/> Definições</a>
+                <router-link v-if="isAdmin" class="dropdown-item" to="colecoes"><font-awesome-icon icon="folder"/> Coleções</router-link>
                 <router-link class="dropdown-item" to="meusmodelos"><font-awesome-icon icon="save"/> Modelos Guardados</router-link>
                 <div class="dropdown-divider"></div>
                 <a href="#" class="dropdown-item" @click="logout"><font-awesome-icon icon="sign-out-alt"/> Logout</a>
@@ -147,6 +148,9 @@ export default {
     },
     isModelList(){
       return this.$route.name == "Models"
+    },
+    isAdmin(){
+      return this.user.nivel == "admin"
     }
   },
   created() {

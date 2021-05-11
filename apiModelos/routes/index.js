@@ -11,7 +11,7 @@ const { cachedDataVersionTag } = require('v8');
 var rimraf = require("rimraf");
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://localhost:27017";
 
 
 const model123 = `{
@@ -80,7 +80,7 @@ module.exports = {};
 
 
 
-router.get('/ColNames', function(req, res, next) {
+router.get('/collections', function(req, res, next) {
   fs.readdir("../StrapiAPI/api/", (err, files) => { 
     if(err) { 
       res.status(500).jsonp({erro : "Error on fetching collections names: ",err})
@@ -95,37 +95,46 @@ router.get('/ColNames', function(req, res, next) {
   }); 
 });
 
-router.get('/Delete/:name', function(req, res, next) {
+router.delete('/collection/:name', function(req, res, next) {
   
     MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology: true}).then((client) => {
   
-
+      
       const connect = client.db("StrapiAPI");
     
-      //Collection name
       const collection = connect.collection(req.params.name);
-    
-      collection.drop();  // Dropping the collection
-    
-      try {
+      var suc
+      //var suc = collection.drop() // Dropping the collection
+      collection.drop().catch(err =>{
+        if(err){
+          if(err.message.match(/ns not found/)){
+            suc = 1
+          }else{
+            suc = 0
+            console.log("dabase error:",err)
+          } 
+        }else{
+          suc=1
+        } 
+      });
 
-        if(fs.existsSync('../StrapiAPI/api/'+req.params.name)){rimraf.sync("../StrapiAPI/api/"+req.params.name);}
+     
+      if(fs.existsSync('../StrapiAPI/api/'+req.params.name)){rimraf.sync("../StrapiAPI/api/"+req.params.name);}
 
-        if(fs.existsSync('../StrapiAPI/components/'+req.params.name)){rimraf.sync('../StrapiAPI/components/'+req.params.name); }
+      if(fs.existsSync('../StrapiAPI/components/'+req.params.name)){rimraf.sync('../StrapiAPI/components/'+req.params.name); }
 
-        console.log("Collection deleted Successfully");
-        res.status(200).jsonp("Collection deleted Successfully")
+      if(suc) {
+        console.log("Collection deleted Successfully!");
+        res.status(200).jsonp("Collection deleted Successfully!")
         res.end() 
-      } catch (error) {
-        res.status(500).jsonp({erro : "Error when deleting collection: "+error})
-        res.end()      
+      }else{
+        console.log("No Collection got deleted!");
+        res.status(404).jsonp("No Collection got deleted!")
+        res.end() 
       }
+  
      
           
-  }).catch((err) => {
-      console.log(err.Message);
-      res.status(500).jsonp({erro : "Error when deleting collection "+err})
-      res.end()
   })
 
 })
