@@ -9526,9 +9526,9 @@ module.exports = /*
             var i = 1, filename = name
             var keys = Object.keys(components[cur_collection])
             while (keys.includes(filename)) filename = name + i++
-            
+
             components[cur_collection][filename+id] = _.cloneDeep(value.model)
-            value.model = { "type": "component", "repeatable": false, required: true, "component": cur_collection + '.' + filename }
+            value.model = { "type": "component", "repeatable": false, required: true, "component": cur_collection + '.' + filename + id }
           }
 
           delete value.component
