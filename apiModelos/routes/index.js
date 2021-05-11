@@ -78,7 +78,14 @@ const strServices = `'use strict';
 module.exports = {};
 `
 
-
+router.get('/teste', function(req, res, next) {
+  str = "components_range_86a6d01b-e2e3-400e-bb15-ee5f58cc7249.json"
+  str2 = str.replace(".json","")
+  console.log("string"+str2)
+    res.status(200)
+    res.end()
+  
+});
 
 router.get('/collections', function(req, res, next) {
   fs.readdir("../StrapiAPI/api/", (err, files) => { 
@@ -98,38 +105,54 @@ router.get('/collections', function(req, res, next) {
 router.delete('/collection/:name', function(req, res, next) {
   
     MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology: true}).then((client) => {
-  
-      
+     
+      var cols=[]
+      cols.push(req.params.name)
+      if(fs.existsSync('../StrapiAPI/components/'+req.params.name)){
+        fs.readdirSync('../StrapiAPI/components/'+req.params.name).forEach(file => {
+          String(file)
+          let str = file.replace(".json", "");
+          cols.push("components_"+str)
+        });
+      }
+      console.log("cols:"+cols)
       const connect = client.db("StrapiAPI");
-    
-      const collection = connect.collection(req.params.name);
-      var suc
-      //var suc = collection.drop() // Dropping the collection
-      collection.drop().catch(err =>{
-        if(err){
-          if(err.message.match(/ns not found/)){
-            suc = 1
+      var result = []
+      var collection
+      cols.forEach(element => {
+        collection = connect.collection(element);
+        //var suc = collection.drop() // Dropping the collection
+        collection.drop().catch(err =>{
+          if(err){
+            if(err.message.match(/ns not found/)){
+              result.push(2) 
+            }else{
+              result.push(0) 
+              console.log("dabase error:",err)
+            } 
           }else{
-            suc = 0
-            console.log("dabase error:",err)
+            result.push(1) 
           } 
-        }else{
-          suc=1
-        } 
+        });
       });
+    
 
      
       if(fs.existsSync('../StrapiAPI/api/'+req.params.name)){rimraf.sync("../StrapiAPI/api/"+req.params.name);}
 
       if(fs.existsSync('../StrapiAPI/components/'+req.params.name)){rimraf.sync('../StrapiAPI/components/'+req.params.name); }
 
-      if(suc) {
-        console.log("Collection deleted Successfully!");
-        res.status(200).jsonp("Collection deleted Successfully!")
+      if(result.includes(0)) {
+        console.log("Error deleting collection!");
+        res.status(500).jsonp("Error deleting collection!")
+        res.end() 
+      }else if(result.includes(2)){
+        console.log("Collection or components don´t exist!");
+        res.status(404).jsonp("Collection doesn´t exist!")
         res.end() 
       }else{
-        console.log("No Collection got deleted!");
-        res.status(404).jsonp("No Collection got deleted!")
+        console.log("Collection deleted Successfully!");
+        res.status(200).jsonp("Collection deleted Successfully!")
         res.end() 
       }
   
