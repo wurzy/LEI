@@ -80,7 +80,7 @@ module.exports = {};
 
 
 
-router.get('/ColNames', function(req, res, next) {
+router.get('/collections', function(req, res, next) {
   fs.readdir("../StrapiAPI/api/", (err, files) => { 
     if(err) { 
       res.status(500).jsonp({erro : "Error on fetching collections names: ",err})
@@ -95,7 +95,7 @@ router.get('/ColNames', function(req, res, next) {
   }); 
 });
 
-router.get('/Delete/:name', function(req, res, next) {
+router.delete('/collection/:name', function(req, res, next) {
   
     MongoClient.connect(url,{useNewUrlParser: true, useUnifiedTopology: true}).then((client) => {
   

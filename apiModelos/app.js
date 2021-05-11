@@ -63,6 +63,7 @@ passport.use('signup-auth', new LocalStrategy(
             User.inserir({
               nome: req.body.nome,
               email: email, 
+              nivel: "user",
               password: hash,
               dataRegisto: date,
               dataUltimoAcesso: date

@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Documentation from '../views/Documentation.vue'
 import UserModels from '../views/UserModels.vue'
 import Models from '../views/Models.vue'
+import Collections from '../views/Collections.vue'
 
 Vue.use(VueRouter)
 
@@ -36,7 +37,12 @@ const routes = [
     path: '/modelos',
     name: 'Models',
     component: Models
-  }
+  },
+  {
+    path: '/colecoes',
+    name: 'Collections',
+    component: Collections
+  },
 ]
 
 const router = new VueRouter({
