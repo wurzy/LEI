@@ -22,7 +22,7 @@
 				id: `l${id++}-${split[0]}-${split[1]}`,
 				origem: split[0],
 				destino: split[1],
-				distância: gen.floating(5, 600)
+				distância: gen.float(5, 600)
 			})
         }
 		
