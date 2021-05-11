@@ -25,6 +25,7 @@
 <script>
 import Confirm from '../components/Confirm.vue'
 import axios from 'axios'
+import $ from 'jquery'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 

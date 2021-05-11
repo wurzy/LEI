@@ -752,17 +752,23 @@ module.exports = /*
         peg$c377 = function(key, country) {
             var moustaches = key + (country != null ? "_from" : "")
             var args = country != null ? [country] : []
-            var model = key != "political_party" ? {type: "string", required: true} : {
-                type: {
-                  party_abbr: {type: "string", required: true},
-                  party_name: {type: "string", required: true}
-                }, required: true
-              }
-
-            return {
-              objectType: key == "political_party", model,
+            
+            var value = {
+              objectType: key == "political_party", model: {type: "string", required: true},
               data: fillArray("data", "political_parties", moustaches, args)
             }
+
+            if (key == "political_party") {
+              value.model = { attributes: {
+                party_abbr: {type: "string", required: true},
+                party_name: {type: "string", required: true}
+              } }
+              
+              value.component = true
+              value = createComponent(key, value)
+            }
+
+            return value
           },
         peg$c378 = "soccer_club(",
         peg$c379 = peg$literalExpectation("soccer_club(", false),
@@ -778,17 +784,22 @@ module.exports = /*
         peg$c383 = "()",
         peg$c384 = peg$literalExpectation("()", false),
         peg$c385 = function(key) {
-            var model = key != "pt_entity" ? {type: "string", required: true} : {
-                type: {
-                  abbr: {type: "string", required: true},
-                  name: {type: "string", required: true}
-                }, required: true
-              }
-
-            return {
-              objectType: key == "pt_entity", model,
+            var value = {
+              objectType: key == "pt_entity", model: {type: "string", required: true},
               data: fillArray("data", "pt_entities", key, [])
             }
+
+            if (key == "pt_entity") {
+              value.model = { attributes: {
+                abbr: {type: "string", required: true},
+                name: {type: "string", required: true}
+              } }
+              
+              value.component = true
+              value = createComponent(key, value)
+            }
+
+            return value
           },
         peg$c386 = function(num, val, func) {
             queue.pop(); nr_copies = queue[queue.length-1].total
@@ -9544,17 +9555,17 @@ module.exports = /*
         if ("component" in value) {
           if (open_structs > 1) {
             var id = cur_collection.substring(cur_collection.lastIndexOf('_'))
+            var i = 1, filename = name + id
 
-            value.model.collectionName = "components_" + name + id
+            var keys = Object.keys(components[cur_collection])
+            while (keys.includes(filename)) filename = name + i++ + id
+
+            value.model.collectionName = "components_" + filename
             value.model.info = {name}
             value.model.options = {}
 
-            var i = 1, filename = name
-            var keys = Object.keys(components[cur_collection])
-            while (keys.includes(filename)) filename = name + i++
-
-            components[cur_collection][filename+id] = _.cloneDeep(value.model)
-            value.model = { "type": "component", "repeatable": false, required: true, "component": cur_collection + '.' + filename + id }
+            components[cur_collection][filename] = _.cloneDeep(value.model)
+            value.model = { "type": "component", "repeatable": false, required: true, "component": cur_collection + '.' + filename }
           }
 
           delete value.component
