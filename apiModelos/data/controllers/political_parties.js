@@ -14,7 +14,7 @@ const political_partiesAPI = {
           var parties = pparties.map(x => x.parties).flat()
           if (sample > -1) return _.sampleSize(pparties, sample).map(x => x.party_name = x.party_name[lang])
           
-          var party = parties[Math.floor(Math.random() * parties.length)]
+          var party = _.cloneDeep(parties[Math.floor(Math.random() * parties.length)])
           party.party_name = party.party_name[lang]
           return party
      },
@@ -40,7 +40,7 @@ const political_partiesAPI = {
           if (Array.isArray(country)) return country.map(c => {
                let index = countries.findIndex(arr => arr.includes(c))
                if (index > -1) {
-                    let party = pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)]
+                    let party = _.cloneDeep(pparties[index].parties[Math.floor(Math.random() * pparties[index].parties.length)])
                     party.party_name = party.party_name[lang]
                     return party
                }
@@ -51,14 +51,14 @@ const political_partiesAPI = {
                     let parties = pparties[index].parties
                     if (sample > -1) return _.sampleSize(parties, sample).map(x => x.party_name = x.party_name[lang])
 
-                    let party = parties[Math.floor(Math.random() * parties.length)]
+                    let party = _.cloneDeep(parties[Math.floor(Math.random() * parties.length)])
                     party.party_name = party.party_name[lang]
                     return party
                }
           }
      },
 
-     political_party_from_abbr(lang, i, sample, country) {
+     political_party_abbr_from(lang, i, sample, country) {
           if (Array.isArray(country)) country = (sample > -1) ? country.map(x => normalize(x)) : normalize(country[i])
           else country = normalize(country)
 
@@ -79,7 +79,7 @@ const political_partiesAPI = {
           }
      },
      
-     political_party_from_name(lang, i, sample, country) {
+     political_party_name_from(lang, i, sample, country) {
           if (Array.isArray(country)) country = (sample > -1) ? country.map(x => normalize(x)) : normalize(country[i])
           else country = normalize(country)
 

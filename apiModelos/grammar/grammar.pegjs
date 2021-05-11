@@ -559,7 +559,7 @@ nameOrAbbr
 string_arg
   = ws quotation_mark chars:[^"]* quotation_mark ws { return chars.flat().join("").trim() }
 
-district_keyword = "pt_district" / "pt_county" / "pt_parish" / "pt_city"
+district_keyword = "pt_district" / "pt_county" / "pt_parish" / "pt_city" { return text() }
 
 place_label
   = ws quotation_mark ws label:(("district") / ("county") / ("parish") / ("city")) ws quotation_mark ws {
@@ -738,31 +738,20 @@ api_moustaches
       data: fillArray("data", "pt_districts", moustaches, [name])
     }
   }
-  / "political_party(" ws args:( t:nameOrAbbr {return [t]}
-                            / (country:string_or_local type:("," t:nameOrAbbr {return t})? {return type == null ? [country] : [country,type]}))? ")" {
-    var objectType = true, moustaches, model = {
-      type: {
-        party_abbr: {type: "string", required: true},
-        party_name: {type: "string", required: true}
-      }, required: true
-    }
-
-    if (!args) moustaches = "political_party"
-    else if (args.length == 1) {
-      if (["abbr","name"].includes(args[0])) {
-        moustaches = "political_party_" + args[0]
-        model.type = "string"
-        objectType = false
+  / key:("political_party" ("_name" / "_abbr")? {return text()}) "(" ws country:string_or_local? ws ")" {
+    var moustaches = key + (country != null ? "_from" : "")
+    var args = country != null ? [country] : []
+    var model = key != "political_party" ? {type: "string", required: true} : {
+        type: {
+          party_abbr: {type: "string", required: true},
+          party_name: {type: "string", required: true}
+        }, required: true
       }
-      else moustaches = "political_party_from"
-    } 
-    else {
-      moustaches = "political_party_from_" + args[1]
-      model.type = "string"
-      objectType = false
-    }
 
-    return { objectType, model, data: fillArray("data", "political_parties", moustaches, !args ? [] : args) }
+    return {
+      objectType: key == "political_party", model,
+      data: fillArray("data", "political_parties", moustaches, args)
+    }
   }
   / "soccer_club(" ws arg:string_or_local? ")" {
     var moustaches = !arg ? "soccer_club" : "soccer_club_from"
@@ -771,11 +760,17 @@ api_moustaches
       data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg])
     }
   }
-  / "pt_entity(" ws arg:nameOrAbbr? ")" {
+  / key:("pt_entity" ("_name" / "_abbr")? {return text()}) "()" {
+    var model = key != "pt_entity" ? {type: "string", required: true} : {
+        type: {
+          abbr: {type: "string", required: true},
+          name: {type: "string", required: true}
+        }, required: true
+      }
+
     return {
-      objectType: arg == null,
-      model: {type: "string", required: true},
-      data: fillArray("data", "pt_entities", "pt_entity" + (!arg ? '' : ('_'+arg)), [])
+      objectType: key == "pt_entity", model,
+      data: fillArray("data", "pt_entities", key, [])
     }
   }
 

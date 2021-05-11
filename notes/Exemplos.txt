@@ -1,5 +1,3 @@
-actors, animals, brands, buzzwords, capitals, car brands, continents, countries, cultural landmarks, governmental entities, hackers, job titles, months, musicians, names, nationalities, political parties, portuguese bussinessmen, portuguese districts, cities, counties and parishes, portuguese public entities, portuguese politicians, portuguese public figures, portuguese top 100 celebrities, religions, soccer clubs, soccer players, sports, top 100 celebrities, weekdays and writers. 
-
 <!LANGUAGE pt>
 {
   colecao: [
@@ -335,11 +333,11 @@ MOUSTACHES DE DATASETS:
           politico_pt: '{{pt_politician()}}',
           entidade_gov: '{{gov_entity()}}',
           partido: '{{political_party()}}',
-          partido_abbr: '{{political_party("abbr")}}',
-          partido_nome: '{{political_party("name")}}',
+          partido_abbr: '{{political_party_abbr()}}',
+          partido_nome: '{{political_party_name()}}',
           partido2: '{{political_party("Portugal")}}',
-          partido2_abbr: '{{political_party("Portugal","abbr")}}',
-          partido2_nome: '{{political_party("Portugal","name")}}',
+          partido2_abbr: '{{political_party_abbr("Portugal")}}',
+          partido2_nome: '{{political_party_name("Portugal")}}',
           celebridade: '{{top100_celebrity()}}',
           celebridade_pt: '{{pt_top100_celebrity()}}',
           empresario_pt: '{{pt_businessman()}}',
