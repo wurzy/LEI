@@ -79,10 +79,10 @@ module.exports = {};
 `
 
 router.get('/teste', function(req, res, next) {
-  str = "components_range_86a6d01b-e2e3-400e-bb15-ee5f58cc7249.json"
-  str2 = str.replace(".json","")
-  console.log("string"+str2)
-    res.status(200)
+  
+  console.log("Docker a funfar")
+
+    res.status(200).jsonp({msg : "Docker a funfar "})
     res.end()
   
 });

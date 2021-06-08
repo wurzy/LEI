@@ -3,7 +3,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors')
-var bcrypt = require('bcrypt')
+var bcrypt = require('bcryptjs')
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -19,7 +19,7 @@ var LocalStrategy = require('passport-local').Strategy
 var mongoose = require('mongoose');
 var User = require('./controllers/user')
 
-mongoose.connect('mongodb://127.0.0.1:27017/LEI2021', 
+mongoose.connect('mongodb://localhost:27017/LEI2021', 
       { useNewUrlParser: true,
         useUnifiedTopology: true,
         serverSelectionTimeoutMS: 5000});
