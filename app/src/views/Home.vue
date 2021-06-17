@@ -207,45 +207,44 @@ export default {
         var data = await axios.post('http://localhost:3000/datagen/',this.code, {headers: {'Content-Type': 'text/plain'}})
         var generated = data.data
 
-        console.log(generated.components)
-        console.log(generated.dataModel.model)
-        
-        if (this.output_format == "JSON") {
-          this.cmOutput.mode = 'text/javascript'
-          this.result = JSON.stringify(generated.dataModel.data, null, 2)
+        //deu erro
+        if ("message" in generated) {
+          alert(generated.expected)
         }
-        if (this.output_format == "XML") {
-          this.cmOutput.mode = 'text/xml'
-          this.result = jsonToXml(generated.dataModel.data)
+        else {        
+          if (this.output_format == "JSON") {
+            this.cmOutput.mode = 'text/javascript'
+            this.result = JSON.stringify(generated.dataModel.data, null, 2)
+          }
+          if (this.output_format == "XML") {
+            this.cmOutput.mode = 'text/xml'
+            this.result = jsonToXml(generated.dataModel.data)
+          }
+
+          var mkeys = Object.keys(generated.dataModel.model)
+          var ckeys = Object.keys(generated.components)
+          var dkeys = Object.keys(generated.dataModel.data)
+
+          var index
+          for (index = 0; index < mkeys.length; index++) {
+            let mkey = mkeys[index]
+            let ckey = ckeys[index]
+            let dkey = dkeys[index]
+            this.colnames.push(mkey)
+            this.colecoes.push(generated.dataModel.model[`${mkey}`]) 
+            this.componentes.push(generated.components[`${ckey}`]) 
+            let dat = jsonToStrapi(generated.dataModel.data[`${dkey}`])
+
+            this.datasets.push(JSON.stringify(dat, null, 2))
+          }
+          this.colname = mkeys[0]
+          this.model = generated.dataModel.model
+          this.components = generated.components
+
+          //document.getElementById("saveModelButton").disabled = false;
+          document.getElementById("defaultDownloadButton").disabled = false;
+          document.getElementById("generateAPIButton").disabled = false;
         }
-        /* if (output_format == "CSV") {
-          this.result = jsonToCsv(generated.dataModel.data)
-          this.cmOutput.mode == 'text/csv'
-        } */
-
-        var mkeys = Object.keys(generated.dataModel.model)
-        var ckeys = Object.keys(generated.components)
-        var dkeys = Object.keys(generated.dataModel.data)
-
-        var index
-        for (index = 0; index < mkeys.length; index++) {
-          let mkey = mkeys[index]
-          let ckey = ckeys[index]
-          let dkey = dkeys[index]
-          this.colnames.push(mkey)
-          this.colecoes.push(generated.dataModel.model[`${mkey}`]) 
-          this.componentes.push(generated.components[`${ckey}`]) 
-          let dat = jsonToStrapi(generated.dataModel.data[`${dkey}`])
-
-          this.datasets.push(JSON.stringify(dat, null, 2))
-        }
-        this.colname = mkeys[0]
-        this.model = generated.dataModel.model
-        this.components = generated.components
-
-        //document.getElementById("saveModelButton").disabled = false;
-        document.getElementById("defaultDownloadButton").disabled = false;
-        document.getElementById("generateAPIButton").disabled = false;
       },
       downloadAPI(){
         var cname = this.colname

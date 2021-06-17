@@ -1,70 +1,8 @@
 POR IMPLEMENTAR:
 
-- separar os moustaches que dão tipos diferentes para moustaches diferentes
 - lista de erros para apresentar de maneira user-friendly no vue -> keywords reservadas do Strapi
 
---- como fica o modelo se puser uma cena básica como coleção?
-
 --------------------------------------------------------
-
-
-MAP:
-- map(function(x) {...})
-- map(x => {...})
-
-- modelos de repeats com functionals
-
-<!LANGUAGE pt>
-{
-  colecao: [
-	'repeat(3)': {
-	  	range: ['repeat(3)': 1],
-	  	range2: ['repeat(3)': 1].map(x => { return x*2 }),
-	  	range3: ['repeat(3)': 1].filter(x => { return x>2 }),
-	  	range4: ['repeat(3)': 1].reduce(function(a,x) { return a+x })
-    }
-  ].map(x => { return x.range2 })
-}
-
-<!LANGUAGE pt>
-{
-  colecao: [
-	'repeat(3)': {
-	  	map1: range(5).map(value => { return value+1 }),
-	  	map2: range(5).map((value) => { return value+1 }),
-	  	map3: [0,1,2,3,4].map((value, index) => { return [0,1,2,3,4][index]+1 }),
-	  	map4: range(5).map((value, index, array) => { return array[index]+1 }),
-          
-	  	map5: range(5).map(function(value) { return value+1 }),
-	  	map6: range(5).map(function(value) { return value+1 }),
-	  	map7: [0,1,2,3,4].map(function(value, index) { return [0,1,2,3,4][index]+1 }),
-	  	map8: range(5).map(function(value, index, array) { return array[index]+1 }),
-    
-	  	filter1: range(5).filter(value => { return value>2 }),
-	  	filter2: range(5).filter((value) => { return value>2 }),
-	  	filter3: [0,1,2,3,4].filter((value, index) => { return [0,1,2,3,4][index]>2 }),
-	  	filter4: range(5).filter((value, index, array) => { return array[index]>2 }),
-          
-	  	filter5: range(5).filter(function(value) { return value>2 }),
-	  	filter6: range(5).filter(function(value) { return value>2 }),
-	  	filter7: [0,1,2,3,4].filter(function(value, index) { return [0,1,2,3,4][index]>2 }),
-	  	filter8: range(5).filter(function(value, index, array) { return array[index]>2 }),
-    
-	  	reduce1: range(5).reduce((accum, value) => { return accum + value }),
-	  	reduce2: [0,1,2,3,4].reduce((accum, value, index) => { return accum + [0,1,2,3,4][index] }),
-	  	reduce3: range(5).reduce((accum, value, index, array) => { return accum + array[index] }),
-          
-	  	reduce4: range(5).reduce(function(accum, value) { return accum + value }),
-	  	reduce5: [0,1,2,3,4].reduce(function(accum, value, index) { return accum + [0,1,2,3,4][index] }),
-	  	reduce6: range(5).reduce(function(accum, value, index, array) { return accum + array[index] }),
-
-		mix: range(5).map((value) => { return value+3 }).filter(x => { return x >= 10}).map(x => { return x*2 }).reduce((a,c) => { return a+c })
-    
-    }
-  ]
-}
-
-
 
 PROGRESSO DESTA SEMANA:
 
@@ -72,6 +10,38 @@ PROGRESSO DESTA SEMANA:
 	- função explícita ou anónima
 	- todos os argumentos possíveis em JS
 	- encadeamento
+	- modelos?
+
+- limpeza/reformulação de todos os moustaches por tipo e de maneira a ficarem mais intuitivos
+	- index -> bug fix
+	- integer -> integer (Int) e formattedInteger (String)
+	- float -> float (Float) e formattedFloat (String)
+	- date -> sem especificar formatação, devolve data em formato raw JS
+	- political_party -> political_party (Object) e political_party_abbr/name (String)
+	- pt_entity -> pt_entity (Object) e pt_entity_abbr/name (String)
+
+- correção de erros na parte do modelo Strapi em casos mais complicados
+
+- novo dataset: cidades do mundo
+	- city() -> cidade aleatória (String)
+	- city(country) -> cidade aleatória do país dado (String)
+	- city_coordinates(city, country) -> coordenadas da cidade especificada (é preciso dar o país também porque pode haver várias cidades com o mesmo nome) (Object)
+	- city_population(city, country) -> estimativa da população da cidade especificada (String)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

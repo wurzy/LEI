@@ -5,13 +5,13 @@ const converter = require('../grammar/conversions')
 
 // POST front-end route para obter a informação toda
 router.post('/', function(req,res){
-    let model = req.body 
+    let model = req.body
     try {
         data = parser.parse(model)
         res.status(201).jsonp({...data})
     } catch (err) {
         console.log(err)
-        res.status(404).jsonp(err)
+        res.status(201).jsonp(err)
     }
 })
 

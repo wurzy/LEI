@@ -727,7 +727,7 @@ gen_moustaches
 
 api_moustaches
   = simple_api_key
-  / key:district_keyword "(" moustaches:place_label "," name:string_or_local ")" {
+  / key:district_keyword "(" moustaches:place_label "," ws name:string_or_local ws ")" {
     if (key == "pt_district") moustaches = key + "Of" + moustaches
     if (key == "pt_county") moustaches = key + (moustaches == "District" ? "From" : "Of") + moustaches
     if (key == "pt_parish") moustaches = key + "From" + moustaches
@@ -759,11 +759,13 @@ api_moustaches
 
     return value
   }
-  / "soccer_club(" ws arg:string_or_local? ")" {
+  / "soccer_club(" ws arg:string_or_local? ws ")" {
     var moustaches = !arg ? "soccer_club" : "soccer_club_from"
+    var args = arg != null ? [arg] : []
+
     return {
       model: {type: "string", required: true},
-      data: fillArray("data", "soccer_clubs", moustaches, !arg ? [] : [arg])
+      data: fillArray("data", "soccer_clubs", moustaches, args)
     }
   }
   / key:("pt_entity" ("_name" / "_abbr")? {return text()}) "()" {
@@ -784,6 +786,38 @@ api_moustaches
 
     return value
   }
+  / "city" "(" ws arg:string_or_local? ws ")" {
+    var moustaches = "city" + (arg != null ? "_from" : "")
+    var args = arg != null ? [arg] : []
+
+    return {
+      model: {type: "string", required: true},
+      data: fillArray("data", "cities", moustaches, args)
+    }
+  }
+  / "city_" key:("coordinates" / "population" {return text()}) "(" ws city:string_or_local ws "," ws country:string_or_local ws ")" {
+    if (key == "coordinates") {
+      var value = {
+        component: true,
+        objectType: true,
+        model: { attributes: {
+          latitude: {type: "float", required: true},
+          longitude: {type: "float", required: true}
+        } },
+        data: fillArray("data", "cities", "city_" + key, [city,country])
+      }
+
+      value = createComponent("city_coordinates", value)
+      return value
+    }
+    else {
+      return {
+        model: {type: "integer", required: true},
+        data: fillArray("data", "cities", "city_" + key, [city,country])
+      }
+    }
+  }
+
 
 // ----- 9. Diretivas -----
 

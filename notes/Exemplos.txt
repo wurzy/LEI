@@ -2,6 +2,149 @@
 {
   colecao: [
 	'repeat(3)': {
+	  	map1: range(5).map(value => { return value+1 }),
+	  	map2: range(5).map((value) => { return value+1 }),
+	  	map3: [0,1,2,3,4].map((value, index) => { return [0,1,2,3,4][index]+1 }),
+	  	map4: range(5).map((value, index, array) => { return array[index]+1 }),
+          
+	  	map5: range(5).map(function(value) { return value+1 }),
+	  	map6: range(5).map(function(value) { return value+1 }),
+	  	map7: [0,1,2,3,4].map(function(value, index) { return [0,1,2,3,4][index]+1 }),
+	  	map8: range(5).map(function(value, index, array) { return array[index]+1 }),
+    
+	  	filter1: range(5).filter(value => { return value>2 }),
+	  	filter2: range(5).filter((value) => { return value>2 }),
+	  	filter3: [0,1,2,3,4].filter((value, index) => { return [0,1,2,3,4][index]>2 }),
+	  	filter4: range(5).filter((value, index, array) => { return array[index]>2 }),
+          
+	  	filter5: range(5).filter(function(value) { return value>2 }),
+	  	filter6: range(5).filter(function(value) { return value>2 }),
+	  	filter7: [0,1,2,3,4].filter(function(value, index) { return [0,1,2,3,4][index]>2 }),
+	  	filter8: range(5).filter(function(value, index, array) { return array[index]>2 }),
+    
+	  	reduce1: range(5).reduce((accum, value) => { return accum + value }),
+	  	reduce2: [0,1,2,3,4].reduce((accum, value, index) => { return accum + [0,1,2,3,4][index] }),
+	  	reduce3: range(5).reduce((accum, value, index, array) => { return accum + array[index] }),
+          
+	  	reduce4: range(5).reduce(function(accum, value) { return accum + value }),
+	  	reduce5: [0,1,2,3,4].reduce(function(accum, value, index) { return accum + [0,1,2,3,4][index] }),
+	  	reduce6: range(5).reduce(function(accum, value, index, array) { return accum + array[index] }),
+
+		mix: range(5).map((value) => { return value+3 }).filter(x => { return x >= 5}).map(x => { return x*2 }).reduce((a,c) => { return a+c })
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+	  	range: ['repeat(3)': 1],
+	  	range2: ['repeat(3)': 1].map(x => { return x*2 }),
+	  	range3: ['repeat(3)': 1].filter(x => { return x>2 }),
+	  	range4: ['repeat(3)': 1].reduce(function(a,x) { return a+x })
+    }
+  ].map(x => { return x.range2 })
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+        integer: '{{integer(30,70)}}',
+        formattedInteger: '{{formattedInteger(100, 400, 5, " quilos")}}',
+    
+        float: '{{float(-180.0451, 180)}}',
+        float2: '{{float(-180.0451, 180, 2)}}',
+        formattedFloat: '{{formattedFloat(1000, 4000, 2, 6, "0,0.00 €€€")}}',
+    
+        data: '{{date("10/01/2015")}}',
+        data2: '{{date("10/01/2015", "YYYY-MM-DD")}}',
+        data3: '{{date("10/05/2019","10/01/2018")}}',
+        data4: '{{date("10/05/2019","10/01/2018", "MM.DD.AAAA")}}',
+    
+        partido: '{{political_party()}}',
+        partido2: '{{political_party("Portugal")}}',
+    
+        partido_abbr: '{{political_party_abbr()}}',
+        partido2_abbr: '{{political_party_abbr("Portugal")}}',
+    
+        partido_nome: '{{political_party_name()}}',
+        partido2_nome: '{{political_party_name("Portugal")}}',
+    
+        entidade: '{{pt_entity()}}',
+    
+        entidade_abbr: '{{pt_entity()}}',
+        entidade_nome: '{{pt_entity()}}'
+    }
+  ]
+}
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
+        cidade: '{{city()}}',
+        cidade_pt: '{{city("portugal")}}',
+    	coordenadas: '{{city_coordinates("braga", "Portugal")}}',
+    	população: '{{city_population("Porto", "Portugal")}}'
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!LANGUAGE pt>
+{
+  colecao: [
+	'repeat(3)': {
         index: '{{index()}}',
         index_offset: '{{index(3)}}',
     	
