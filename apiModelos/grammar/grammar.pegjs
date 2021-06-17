@@ -786,37 +786,6 @@ api_moustaches
 
     return value
   }
-  / "city" "(" ws arg:string_or_local? ws ")" {
-    var moustaches = "city" + (arg != null ? "_from" : "")
-    var args = arg != null ? [arg] : []
-
-    return {
-      model: {type: "string", required: true},
-      data: fillArray("data", "cities", moustaches, args)
-    }
-  }
-  / "city_" key:("coordinates" / "population" {return text()}) "(" ws city:string_or_local ws "," ws country:string_or_local ws ")" {
-    if (key == "coordinates") {
-      var value = {
-        component: true,
-        objectType: true,
-        model: { attributes: {
-          latitude: {type: "float", required: true},
-          longitude: {type: "float", required: true}
-        } },
-        data: fillArray("data", "cities", "city_" + key, [city,country])
-      }
-
-      value = createComponent("city_coordinates", value)
-      return value
-    }
-    else {
-      return {
-        model: {type: "integer", required: true},
-        data: fillArray("data", "cities", "city_" + key, [city,country])
-      }
-    }
-  }
 
 
 // ----- 9. Diretivas -----
