@@ -9318,8 +9318,8 @@ module.exports = /*
           for (let i = 0; i < nr_copies; i++) {
             let val = resolveMoustaches(api, sub_api, moustaches, args, i, -1)
 
-            if (moustaches == "index" && !Array.isArray(val)) errors.push({ message: val, location: location() })
-            else arr.push()
+            if (moustaches == "index" && !Number.isInteger(val)) errors.push({ message: val, location: location() })
+            else arr.push(val)
           }
         }
 

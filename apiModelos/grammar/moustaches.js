@@ -62,6 +62,7 @@ function index(offset, queue_last, struct_types, array_indexes, i) {
     else arrays = Array(queue_last.total/queue_last.value).fill(getIndexes(queue_last.value, struct_types, array_indexes))
 
     if (arrays[0] == false) return 'Não faz sentido invocar "index" aqui porque não está dentro de nenhum array!'
+    console.log(arrays.flat().map(k => k + offset)[i])
     return arrays.flat().map(k => k + offset)[i]
 }
 
