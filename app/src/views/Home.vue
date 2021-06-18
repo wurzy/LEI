@@ -208,7 +208,7 @@ export default {
         var data = await axios.post('http://localhost:3000/datagen/',this.code, {headers: {'Content-Type': 'text/plain'}})
         var generated = data.data
 
-        //deu erro
+        //deu erro que crashou a gramática
         if ("message" in generated) {
           generated.message = generated.message.replace("Expected", "Era esperado")
           generated.message = generated.message.replace("or", "ou")
@@ -224,6 +224,7 @@ export default {
 
           alert(error_msg)
         }
+        //deu 1+ erros hard-coded na gramática
         else if (generated.errors.length) {
           let error_msg = "Tem um erro no modelo!\n"
           error_msg += generated.errors[0].message + "\n\n"

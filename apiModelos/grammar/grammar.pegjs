@@ -45,7 +45,10 @@
         for (let i = 0; i < min.length; i++) pairs.push([min[i], max[i]])
         return pairs
       }
-      //else erro
+      else errors.push({
+        message: 'Está a referenciar uma propriedade local através de "this" que não é uma posição válida!',
+        location: location()
+      })
     }
     return [min, max]
   }
@@ -237,7 +240,12 @@
       }
     }
     else {
-      for (let i = 0; i < nr_copies; i++) arr.push(resolveMoustaches(api, sub_api, moustaches, args, i, -1))
+      for (let i = 0; i < nr_copies; i++) {
+        let val = resolveMoustaches(api, sub_api, moustaches, args, i, -1)
+
+        if (moustaches == "index" && !Array.isArray(val)) errors.push({ message: val, location: location() })
+        else arr.push()
+      }
     }
 
     return arr
@@ -501,14 +509,8 @@ zero
 float_format
   = ws quotation_mark ws f:("0" int_sep:[^0-9"] "0" dec_sep:[^0-9"] "00" unit:[^0-9"]* { return text() }) ws quotation_mark ws { return f }
 
-latitude
-  = (minus / plus)?("90"(".""0"+)?/([1-8]?[0-9]("."[0-9]+)?)) { return parseFloat(text()); }
-
 lat_interval
   = ws '[' ws min:latitude_or_local value_separator max:latitude_or_local ws ']' ws { return getPositionPairs(min,max) }
-
-longitude
-  = (minus / plus)?("180"(".""0"+)?/(("1"[0-7][0-9])/([1-9]?[0-9]))("."[0-9]+)?) { return parseFloat(text()); }
 
 long_interval
   = ws '[' ws min:longitude_or_local value_separator max:longitude_or_local ws ']' ws { return getPositionPairs(min,max) }
@@ -619,8 +621,8 @@ unescaped
 int_or_local = int / int_local_arg
 intneg_or_local = int_neg / int_local_arg
 number_or_local = n:number {return n.data[0]} / num_local_arg
-latitude_or_local = latitude / num_local_arg
-longitude_or_local = longitude / num_local_arg
+latitude_or_local = n:number {return n.data[0]} / num_local_arg
+longitude_or_local = n:number {return n.data[0]} / num_local_arg
 string_or_local = string_local_arg / string_arg
 date_or_local = date / date_local_arg
 random_arg = v:(directive / object / array / false / true / number / string / moustaches_value) {return v.data} / local_arg
@@ -860,7 +862,7 @@ repeat_args
         for (let i = 0; i < min.length; i++) nums.push(Math.floor(Math.random() * ((max[i]+1) - min[i]) + min[i]))
       }
       else errors.push({
-        message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é um inteiro!',
+        message: 'Está a referenciar uma propriedade local através de "this" que não é uma posição válida!',
         location: location()
       })
       
@@ -870,7 +872,7 @@ repeat_args
 
 int_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && Number.isInteger(val) })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é um inteiro!',
+      message: 'Está a referenciar uma propriedade local através de "this" que não é um inteiro!',
       location: location()
     })
     return arg.map(x => parseInt(x))
@@ -878,7 +880,7 @@ int_local_arg = arg:local_arg {
 
 num_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && typeof val == 'number' })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é um número!',
+      message: 'Está a referenciar uma propriedade local através de "this" que não é um número!',
       location: location()
     })
     return arg.map(x => parseFloat(x))
@@ -886,7 +888,7 @@ num_local_arg = arg:local_arg {
 
 pair_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && Array.isArray(val) && val.length == 2 && typeof val[0] == 'number' && typeof val[1] == 'number' })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma posição válida!',
+      message: 'Está a referenciar uma propriedade local através de "this" que não é uma posição válida!',
       location: location()
     })
     return arg.map(x => x.map(y => parseFloat(y)))
@@ -894,7 +896,7 @@ pair_local_arg = arg:local_arg {
 
 string_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && typeof val == 'string' })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma string!',
+      message: 'Está a referenciar uma propriedade local através de "this" que não é uma string!',
       location: location()
     })
     return arg.map(x => String(x))
@@ -904,10 +906,13 @@ date_local_arg = arg:local_arg {
     var match = arg.every((val, i, arr) => /(((((0[1-9]|1[0-9]|2[0-8])[./-](0[1-9]|1[012]))|((29|30|31)[./-](0[13578]|1[02]))|((29|30)[./-](0[4,6,9]|11)))[./-](19|[2-9][0-9])[0-9][0-9])|(29[./-]02[./-](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)))/.test(val))
     
     if (match) return arg.map(x => x.replace(/[^\d]/g, "/"))
-    else errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma data válida!',
-      location: location()
-    })
+    else {
+      errors.push({
+        message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma data válida!',
+        location: location()
+      })
+      return "01/01/1950"
+    }
   }
 
 local_arg = ws "this" char:("."/"[") key:code_key ws {
@@ -920,7 +925,7 @@ local_arg = ws "this" char:("."/"[") key:code_key ws {
       if (args[i] in local) local = local[args[i]]
       else {
         errors.push({
-          message: 'Está a referenciar uma propriedade local inválida através de "this" num dos argumentos do "random"!',
+          message: 'Está a referenciar uma propriedade local inválida através de "this"!',
           location: location()
         })
         break
