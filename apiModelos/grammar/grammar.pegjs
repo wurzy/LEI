@@ -217,7 +217,7 @@
     var arr = []
     if (unique.moustaches > -1) unique.moustaches++
 
-    if (unique.moustaches == 1) {
+    if (unique.moustaches == 1 && (moustaches == "random" || api == "data")) {
       let queue_last = queue[queue.length-1]
 
       if (moustaches == "random" && args.length < queue_last.value) errors.push({
@@ -246,6 +246,8 @@
         if (moustaches == "index" && !Number.isInteger(val)) errors.push({ message: val, location: location() })
         else arr.push(val)
       }
+
+      unique.count += nr_copies
     }
 
     return arr

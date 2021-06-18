@@ -50,7 +50,7 @@ function getIndexes(num, struct_types, array_indexes) {
       if (struct_types[index] == "repeat") return [...Array(num).keys()]
       else return Array(num).fill(array_indexes[array_indexes.length-1])
     }
-    else return false //não pode usar index aqui
+    else return false //não está dentro de um array
   }
 }
 
@@ -62,7 +62,6 @@ function index(offset, queue_last, struct_types, array_indexes, i) {
     else arrays = Array(queue_last.total/queue_last.value).fill(getIndexes(queue_last.value, struct_types, array_indexes))
 
     if (arrays[0] == false) return 'Não faz sentido invocar "index" aqui porque não está dentro de nenhum array!'
-    console.log(arrays.flat().map(k => k + offset)[i])
     return arrays.flat().map(k => k + offset)[i]
 }
 

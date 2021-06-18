@@ -235,7 +235,7 @@ export default {
 
           alert(error_msg)
         }
-        else {        
+        else { 
           if (this.output_format == "JSON") {
             this.cmOutput.mode = 'text/javascript'
             this.result = JSON.stringify(generated.dataModel.data, null, 2)
