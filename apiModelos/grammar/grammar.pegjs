@@ -2,6 +2,9 @@
 // ============
 
 {
+  //nomes de atributos reservados do Strapi
+  var strapi_reserved = ['_id', 'id', 'length', 'attributes', 'relations', 'changed', 'created_by', 'updated_by', '_posts', '_pres', 'collection', 'emit', 'errors', 'get', 'init', 'isModified', 'isNew', 'listeners', 'modelName', 'on', 'once', 'populated', 'prototype', 'remove', 'removeListener', 'save', 'schema', 'toObject', 'validate']
+
   var language = "pt" //"pt" or "en", "pt" by default
   var components = {} //lista de componentes Strapi
 
@@ -46,7 +49,7 @@
         return pairs
       }
       else errors.push({
-        message: 'Está a referenciar uma propriedade local através de "this" que não é uma posição válida!',
+        message: 'A propriedade local que está a referenciar através do "this" não é uma posição válida!',
         location: location()
       })
     }
@@ -208,7 +211,7 @@
   }
 
   function resolveMoustaches(api, sub_api, moustaches, args, i, sample) {
-    if (moustaches == "random") return genAPI[moustaches](...args, i, sample)
+    if (moustaches == "random") return genAPI[moustaches](args, i, sample)
     if (api == "gen") return genAPI[moustaches](...args, i)
     if (api == "data") return dataAPI[sub_api][moustaches](language, i, sample, ...args)
   }
@@ -221,29 +224,30 @@
       let queue_last = queue[queue.length-1]
 
       if (moustaches == "random" && args.length < queue_last.value) errors.push({
-        message: 'Tem um "random" com um unique() dentro de um "repeat", mas o número de argumentos do "random" é inferior ao argumento do "repeat". Deve ser igual ou superior!',
+        message: 'A função "random" não tem argumentos suficientes para ser possível gerar um resultado diferente para cada elemento do "repeat" em que se encontra!',
         location: location()
       })
       
-      else {
-        for (let i = 0; i < queue_last.total/queue_last.value; i++) {
-          var uniqArr = resolveMoustaches(api, sub_api, moustaches, args, i, queue_last.value)
+      for (let i = 0; i < queue_last.total/queue_last.value; i++) {
+        var uniqArr = resolveMoustaches(api, sub_api, moustaches, args, i, queue_last.value)
 
-          let len = uniqArr.length
-          unique.count += len
+        let len = uniqArr.length
+        unique.count += len
 
-          for (let j = len; j < queue_last.value; j++)
-            uniqArr.push(resolveMoustaches(api, sub_api, moustaches, args, j, -1))
+        for (let j = len; j < queue_last.value; j++)
+          uniqArr.push(resolveMoustaches(api, sub_api, moustaches, args, j, -1))
 
-          arr = arr.concat(uniqArr)
-        }
+        arr = arr.concat(uniqArr)
       }
     }
     else {
       for (let i = 0; i < nr_copies; i++) {
         let val = resolveMoustaches(api, sub_api, moustaches, args, i, -1)
 
-        if (moustaches == "index" && !Number.isInteger(val)) errors.push({ message: val, location: location() })
+        if (moustaches == "index" && !Number.isInteger(val)) errors.push({
+          message: 'Não faz sentido invocar a função "index" aqui porque não está dentro de nenhum array!',
+          location: location()
+        })
         else arr.push(val)
       }
 
@@ -277,7 +281,7 @@
 
 // ----- 2. DSL Grammar -----
 
-DSL_text = language value:collection_object { return {dataModel: value, components, errors} }
+DSL_text = language value:collection_object { return {dataModel: value, components, errors, language} }
 
 begin_array      = ws "[" ws { ++open_structs; struct_types.push("array"); array_indexes.push(0); values_map.push({type: "array", data: []}) }
 begin_object     = ws "{" ws { ++open_structs; struct_types.push("object"); values_map.push({type: "object", data: {}}) }
@@ -420,6 +424,12 @@ value_or_interpolation = val:(value / interpolation / anon_function) {
 
 member_key = chars:(([$a-zA-Z_]/[^\x00-\x7F])([$a-zA-Z0-9_]/[^\x00-\x7F])*) {
     member_key = chars.flat().join("")
+
+    if (strapi_reserved.includes(member_key)) errors.push({
+      message: `${member_key} é uma chave reservada do Strapi! Por favor escolha outro nome para este atributo.`,
+      location: location()
+    })
+
     if (open_structs == 1) {
       cur_collection = member_key + "_" + uuidv4()
       collections.push(cur_collection)
@@ -643,7 +653,7 @@ interpolation_signature = apostrophe val:(moustaches / not_moustaches)* apostrop
 
   if (!val.length) data = Array(nr_copies).fill("")
   else if (unique.moustaches == 1 && unique.count < queue[queue.length-1].value) errors.push({
-    message: 'Tem uma função de interpolação dentro de um "repeat" cujo número de resultados distintos possíveis é inferior ao argumento do "repeat"!',
+    message: 'O número de resultados distintos possíveis desta função de interpolação é inferior ao argumento do "repeat" onde se encontra! Deve ser igual ou superior.',
     location: location()
   })
   else if (val.length == 1) {
@@ -729,7 +739,7 @@ gen_moustaches
     ) ")" {
       return {
         model: {type: "json", required: true},
-        data: fillArray("gen", null, "random", [values])
+        data: fillArray("gen", null, "random", values)
       }
   }
   / "lorem(" ws count:int_or_local value_separator units:lorem_string ws ")" {
@@ -864,7 +874,7 @@ repeat_args
         for (let i = 0; i < min.length; i++) nums.push(Math.floor(Math.random() * ((max[i]+1) - min[i]) + min[i]))
       }
       else errors.push({
-        message: 'Está a referenciar uma propriedade local através de "this" que não é uma posição válida!',
+        message: 'A propriedade local que está a referenciar através do "this" não é um inteiro!',
         location: location()
       })
       
@@ -874,7 +884,7 @@ repeat_args
 
 int_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && Number.isInteger(val) })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" que não é um inteiro!',
+      message: 'A propriedade local que está a referenciar através do "this" não é um inteiro!',
       location: location()
     })
     return arg.map(x => parseInt(x))
@@ -882,7 +892,7 @@ int_local_arg = arg:local_arg {
 
 num_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && typeof val == 'number' })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" que não é um número!',
+      message: 'A propriedade local que está a referenciar através do "this" não é um número!',
       location: location()
     })
     return arg.map(x => parseFloat(x))
@@ -890,7 +900,7 @@ num_local_arg = arg:local_arg {
 
 pair_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && Array.isArray(val) && val.length == 2 && typeof val[0] == 'number' && typeof val[1] == 'number' })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" que não é uma posição válida!',
+      message: 'A propriedade local que está a referenciar através do "this" não é uma posição válida!',
       location: location()
     })
     return arg.map(x => x.map(y => parseFloat(y)))
@@ -898,7 +908,7 @@ pair_local_arg = arg:local_arg {
 
 string_local_arg = arg:local_arg {
     if (!arg.reduce((res, val) => { return res && typeof val == 'string' })) errors.push({
-      message: 'Está a referenciar uma propriedade local através de "this" que não é uma string!',
+      message: 'A propriedade local que está a referenciar através do "this" não é uma string!',
       location: location()
     })
     return arg.map(x => String(x))
@@ -910,7 +920,7 @@ date_local_arg = arg:local_arg {
     if (match) return arg.map(x => x.replace(/[^\d]/g, "/"))
     else {
       errors.push({
-        message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma data válida!',
+        message: 'A propriedade local que está a referenciar através do "this" não é uma data válida!',
         location: location()
       })
       return "01/01/1950"
@@ -927,7 +937,7 @@ local_arg = ws "this" char:("."/"[") key:code_key ws {
       if (args[i] in local) local = local[args[i]]
       else {
         errors.push({
-          message: 'Está a referenciar uma propriedade local inválida através de "this"!',
+          message: 'A propriedade local que está a referenciar através do "this" não é válida!',
           location: location()
         })
         break

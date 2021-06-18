@@ -1,5 +1,6 @@
 const loremIpsum = require("lorem-ipsum").loremIpsum;
 const moment = require('moment')
+const _ = require('lodash')
 const getRandomValues = require('get-random-values');
 
 function hex(x) { return Math.floor(x).toString(16) }
@@ -61,7 +62,7 @@ function index(offset, queue_last, struct_types, array_indexes, i) {
     if (Array.isArray(queue_last.value)) queue_last.value.forEach(n => arrays.push(getIndexes(n, struct_types, array_indexes)))
     else arrays = Array(queue_last.total/queue_last.value).fill(getIndexes(queue_last.value, struct_types, array_indexes))
 
-    if (arrays[0] == false) return 'Não faz sentido invocar "index" aqui porque não está dentro de nenhum array!'
+    if (arrays[0] == false) return false
     return arrays.flat().map(k => k + offset)[i]
 }
 
