@@ -22,6 +22,8 @@
 
   var values_map = [] //estrutura de referenciação local a propriedades anteriores
 
+  var errors = [] //lista de erros ligados à lógica das funcionalidades que não crasham a gramática
+
   function mapToString(arr) {
     return arr.map(x => Array.isArray(x) ? mapToString(x) : (typeof x == "object" ? JSON.stringify(x) : String(x)))
   }
@@ -215,18 +217,23 @@
     if (unique.moustaches == 1) {
       let queue_last = queue[queue.length-1]
 
-      if (moustaches == "random" && args.length < queue_last.value) return "ERRO"
+      if (moustaches == "random" && args.length < queue_last.value) errors.push({
+        message: 'Tem um "random" com um unique() dentro de um "repeat", mas o número de argumentos do "random" é inferior ao argumento do "repeat". Deve ser igual ou superior!',
+        location: location()
+      })
+      
+      else {
+        for (let i = 0; i < queue_last.total/queue_last.value; i++) {
+          var uniqArr = resolveMoustaches(api, sub_api, moustaches, args, i, queue_last.value)
 
-      for (let i = 0; i < queue_last.total/queue_last.value; i++) {
-        var uniqArr = resolveMoustaches(api, sub_api, moustaches, args, i, queue_last.value)
+          let len = uniqArr.length
+          unique.count += len
 
-        let len = uniqArr.length
-        unique.count += len
+          for (let j = len; j < queue_last.value; j++)
+            uniqArr.push(resolveMoustaches(api, sub_api, moustaches, args, j, -1))
 
-        for (let j = len; j < queue_last.value; j++)
-          uniqArr.push(resolveMoustaches(api, sub_api, moustaches, args, j, -1))
-
-        arr = arr.concat(uniqArr)
+          arr = arr.concat(uniqArr)
+        }
       }
     }
     else {
@@ -260,7 +267,7 @@
 
 // ----- 2. DSL Grammar -----
 
-DSL_text = language value:collection_object { return {dataModel: value, components} }
+DSL_text = language value:collection_object { return {dataModel: value, components, errors} }
 
 begin_array      = ws "[" ws { ++open_structs; struct_types.push("array"); array_indexes.push(0); values_map.push({type: "array", data: []}) }
 begin_object     = ws "{" ws { ++open_structs; struct_types.push("object"); values_map.push({type: "object", data: {}}) }
@@ -631,7 +638,10 @@ interpolation_signature = apostrophe val:(moustaches / not_moustaches)* apostrop
   var model = { type: "string", required: true }, data
 
   if (!val.length) data = Array(nr_copies).fill("")
-  else if (unique.moustaches == 1 && unique.count < queue[queue.length-1].value) data = Array(nr_copies).fill("ERRO")
+  else if (unique.moustaches == 1 && unique.count < queue[queue.length-1].value) errors.push({
+    message: 'Tem uma função de interpolação dentro de um "repeat" cujo número de resultados distintos possíveis é inferior ao argumento do "repeat"!',
+    location: location()
+  })
   else if (val.length == 1) {
     model = val[0].model; data = val[0].data
     data = !str ? val[0].data : mapToString(val[0].data)
@@ -844,27 +854,61 @@ repeat_args
     else {
       if (!minArr) min = Array(max.length).fill(min)
       if (!maxArr) max = Array(min.length).fill(max)
-      
+      var nums = []
+
       if (min.length == max.length) {
-        var nums = []
-        for (let i = 0; i < min.length; i++) {
-          nums.push(Math.floor(Math.random() * ((max[i]+1) - min[i]) + min[i]))
-        }
-        return nums
+        for (let i = 0; i < min.length; i++) nums.push(Math.floor(Math.random() * ((max[i]+1) - min[i]) + min[i]))
       }
-      //else erro
+      else errors.push({
+        message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é um inteiro!',
+        location: location()
+      })
+      
+      return nums
     }
   }
 
-int_local_arg = arg:local_arg { return arg.map(x => parseInt(x)) }
-num_local_arg = arg:local_arg { return arg.map(x => parseFloat(x)) }
-pair_local_arg = arg:local_arg { return arg.map(x => x.map(y => parseFloat(y))) }
-string_local_arg = arg:local_arg { return arg.map(x => String(x)) }
+int_local_arg = arg:local_arg {
+    if (!arg.reduce((res, val) => { return res && Number.isInteger(val) })) errors.push({
+      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é um inteiro!',
+      location: location()
+    })
+    return arg.map(x => parseInt(x))
+  }
+
+num_local_arg = arg:local_arg {
+    if (!arg.reduce((res, val) => { return res && typeof val == 'number' })) errors.push({
+      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é um número!',
+      location: location()
+    })
+    return arg.map(x => parseFloat(x))
+  }
+
+pair_local_arg = arg:local_arg {
+    if (!arg.reduce((res, val) => { return res && Array.isArray(val) && val.length == 2 && typeof val[0] == 'number' && typeof val[1] == 'number' })) errors.push({
+      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma posição válida!',
+      location: location()
+    })
+    return arg.map(x => x.map(y => parseFloat(y)))
+  }
+
+string_local_arg = arg:local_arg {
+    if (!arg.reduce((res, val) => { return res && typeof val == 'string' })) errors.push({
+      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma string!',
+      location: location()
+    })
+    return arg.map(x => String(x))
+  }
+
 date_local_arg = arg:local_arg {
-  var match = arg.every((val, i, arr) => /(((((0[1-9]|1[0-9]|2[0-8])[./-](0[1-9]|1[012]))|((29|30|31)[./-](0[13578]|1[02]))|((29|30)[./-](0[4,6,9]|11)))[./-](19|[2-9][0-9])[0-9][0-9])|(29[./-]02[./-](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)))/.test(val))
-  if (match) return arg.map(x => x.replace(/[^\d]/g, "/"))
-  //else erro
-}
+    var match = arg.every((val, i, arr) => /(((((0[1-9]|1[0-9]|2[0-8])[./-](0[1-9]|1[012]))|((29|30|31)[./-](0[13578]|1[02]))|((29|30)[./-](0[4,6,9]|11)))[./-](19|[2-9][0-9])[0-9][0-9])|(29[./-]02[./-](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)))/.test(val))
+    
+    if (match) return arg.map(x => x.replace(/[^\d]/g, "/"))
+    else errors.push({
+      message: 'Está a referenciar uma propriedade local através de "this" no argumento que não é uma data válida!',
+      location: location()
+    })
+  }
 
 local_arg = ws "this" char:("."/"[") key:code_key ws {
     if (char == "[") key = char + key
@@ -874,7 +918,13 @@ local_arg = ws "this" char:("."/"[") key:code_key ws {
 
     for (let i = 0; i < args.length; i++) {
       if (args[i] in local) local = local[args[i]]
-      else break//erro
+      else {
+        errors.push({
+          message: 'Está a referenciar uma propriedade local inválida através de "this" num dos argumentos do "random"!',
+          location: location()
+        })
+        break
+      }
     }
 
     return local

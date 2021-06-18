@@ -1020,7 +1020,7 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Nothing
+                        Nenhum
                     </div>
                 </div>
             </div>
@@ -1117,7 +1117,7 @@
             <div class="col-md-3">
                 <div class="cell">
                     <div class="isrequired">
-                        Nothing
+                        Nenhum
                     </div>
                 </div>
             </div>

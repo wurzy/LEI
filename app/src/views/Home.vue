@@ -203,13 +203,36 @@ export default {
         this.colecoes=[]
         this.componentes=[]
         this.datasets=[]
+        
         //generated é um objeto em que o valor de cada prop é {dataset, model}
         var data = await axios.post('http://localhost:3000/datagen/',this.code, {headers: {'Content-Type': 'text/plain'}})
         var generated = data.data
 
         //deu erro
         if ("message" in generated) {
-          alert(generated.expected)
+          generated.message = generated.message.replace("Expected", "Era esperado")
+          generated.message = generated.message.replace("or", "ou")
+          generated.message = generated.message.replace("but", "mas foi encontrado")
+          generated.message = generated.message.replace(" found", "")
+
+          let error_msg = "Tem um erro no modelo!\n"
+          error_msg += generated.message + "\n\n"
+          error_msg += "Localização: {\n"
+          error_msg += `  início: { linha: ${generated.location.start.line}, coluna: ${generated.location.start.column} }\n`
+          error_msg += `  fim: { linha: ${generated.location.end.line}, coluna: ${generated.location.end.column} }\n`
+          error_msg += "}\n"
+
+          alert(error_msg)
+        }
+        else if (generated.errors.length) {
+          let error_msg = "Tem um erro no modelo!\n"
+          error_msg += generated.errors[0].message + "\n\n"
+          error_msg += "Localização: {\n"
+          error_msg += `  início: { linha: ${generated.errors[0].location.start.line}, coluna: ${generated.errors[0].location.start.column} }\n`
+          error_msg += `  fim: { linha: ${generated.errors[0].location.end.line}, coluna: ${generated.errors[0].location.end.column} }\n`
+          error_msg += "}\n"
+
+          alert(error_msg)
         }
         else {        
           if (this.output_format == "JSON") {
