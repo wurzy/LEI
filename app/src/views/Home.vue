@@ -1,5 +1,6 @@
 <template>
   <div>
+  <GrammarError :msg="grammar_error" id="grammar_error_modal"/>
   <SaveModel :model="code"/>
     <div class="row row1">
       <div class="col-md-6 col-md-6-1">
@@ -61,6 +62,7 @@
 <script>
 import ButtonGroup from '../components/ButtonGroup'
 import SaveModel from '../components/SaveModel.vue';
+import GrammarError from '../components/GrammarError.vue'
 
 import axios from 'axios';
 import $ from 'jquery'
@@ -79,7 +81,8 @@ export default {
   name: 'Home',
   components: {
     ButtonGroup,
-    SaveModel
+    SaveModel,
+    GrammarError
   },
   props: ["userModel"],
   data() {
@@ -93,6 +96,7 @@ export default {
         colecoes: [],
         componentes: [],
         datasets: [],
+        grammar_error: '',
         code: `<!LANGUAGE pt>
 {
   colecao: [
@@ -217,8 +221,10 @@ export default {
           error_msg += `  início: { linha: ${generated.location.start.line}, coluna: ${generated.location.start.column} }\n`
           error_msg += `  fim: { linha: ${generated.location.end.line}, coluna: ${generated.location.end.column} }\n`
           error_msg += "}\n"
-
-          alert(error_msg)
+          this.grammar_error = error_msg
+          $("#grammar_error_modal").modal("show");
+          $("#grammar_error_modal").css("z-index", "1500");
+          //alert(error_msg)
         }
         //deu 1+ erros hard-coded na gramática
         else if (generated.errors.length) {
@@ -228,8 +234,10 @@ export default {
           error_msg += `  início: { linha: ${generated.errors[0].location.start.line}, coluna: ${generated.errors[0].location.start.column} }\n`
           error_msg += `  fim: { linha: ${generated.errors[0].location.end.line}, coluna: ${generated.errors[0].location.end.column} }\n`
           error_msg += "}\n"
-
-          alert(error_msg)
+          this.grammar_error = error_msg
+          $("#grammar_error_modal").modal("show");
+          $("#grammar_error_modal").css("z-index", "1500");
+          //alert(error_msg)
         }
         else { 
           if (this.output_format == "JSON") {
