@@ -75,10 +75,6 @@ import 'codemirror/keymap/sublime'
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/mode/xml/xml.js'
 
-//import 'codemirror/addon/hint/javascript-hint.js';
-//import 'codemirror/addon/hint/show-hint.css';
-//import 'codemirror/addon/hint/show-hint.js';
-
 export default {
   name: 'Home',
   components: {
