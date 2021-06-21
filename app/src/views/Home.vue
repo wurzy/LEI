@@ -1,6 +1,5 @@
 <template>
   <div>
-  <GrammarError :errors="grammar_errors" id="grammar_error_modal"/>
   <SaveModel :model="code"/>
     <div class="row row1">
       <div class="col-md-6 col-md-6-1">
@@ -48,7 +47,8 @@
         />
       </div>
       <div class="col-md-6 col-md-6-1 col-md-offset-2 stretcher">
-        <codemirror
+        <GrammarError v-if="grammar_errors.length>0" :errors="grammar_errors" id="grammar_error"/>
+        <codemirror v-else
                 ref="output"
                 :value="result"
                 :options="cmOutput"
@@ -96,7 +96,7 @@ export default {
         colecoes: [],
         componentes: [],
         datasets: [],
-        grammar_errors: '',
+        grammar_errors: [],
         code: `<!LANGUAGE pt>
 {
   colecao: [
@@ -217,9 +217,6 @@ export default {
 
           let error_msg = [{msg: generated.message, location: generated.location}]
           this.grammar_errors = error_msg
-
-          $("#grammar_error_modal").modal("show");
-          $("#grammar_error_modal").css("z-index", "1500");
         }
         //deu 1+ erros hard-coded na gramática
         else if (generated.errors.length) {
@@ -229,11 +226,10 @@ export default {
             error_msg.push({msg: error.message, location: error.location})
           })
           this.grammar_errors = error_msg
-
-          $("#grammar_error_modal").modal("show");
-          $("#grammar_error_modal").css("z-index", "1500");
+          
         }
         else { 
+          this.grammar_errors = []
           if (this.output_format == "JSON") {
             this.cmOutput.mode = 'text/javascript'
             this.result = JSON.stringify(generated.dataModel.data, null, 2)
@@ -374,4 +370,11 @@ export default {
 .CodeMirror-linenumber{
   font-size: smaller !important;
 }
+
+#grammar_error{
+  height: 89vh !important;
+  margin: 0;
+  overflow:scroll;
+}
+
 </style>

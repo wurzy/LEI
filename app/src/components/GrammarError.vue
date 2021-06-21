@@ -1,30 +1,28 @@
 <template>
 <div>
     <!-- Modal HTML -->
-    <div :id="id" class="modal fade">
-        <div class="modal-dialog modal-confirm">
-            <div class="modal-content">
+    <div :id="id" >
+        <div>
+		<div class="modal-dialog modal-confirm">
+			<div class="modal-content">
                 <div class="modal-header">
                     <div class="icon-box">
                         <i class="material-icons"></i>
                     </div>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
-                <div class="modal-body text-center">
-                    <h4>Existem erros no modelo!</h4>	
-					<ol>
-						<div v-for="(error, idx) in errors" :key="idx">
-							<li style="text-align: left !important;"> {{error.msg}}</li>
-							<ul style="margin: 0 0 10px 0;" >
-								<li style="text-align: left !important;"> <b> Início:</b> Linha <b>{{error.location.start.line}}</b>, Coluna <b>{{error.location.start.column}}</b></li>
-								<li style="text-align: left !important;"> <b> Fim:</b> Linha <b>{{error.location.end.line}}</b>, Coluna <b>{{error.location.end.column}}</b></li>
-							</ul>
-						</div>
-					</ol>
-                    <button class="btn btn-success" data-dismiss="modal"><span>Continuar</span> <i class="material-icons">&#xE5C8;</i></button>
-                </div>
-            </div>
+			</div>
+            <h4 style="text-align:center;">Existem erros no modelo!</h4>	
+			<ol>
+				<div v-for="(error, idx) in errors" :key="idx">
+					<li style="text-align: left !important;"> {{error.msg}}</li>
+					<ul style="margin: 0 0 10px 0;" >
+						<li style="text-align: left !important;"> <b> Início:</b> Linha <b>{{error.location.start.line}}</b>, Coluna <b>{{error.location.start.column}}</b></li>
+						<li style="text-align: left !important;"> <b> Fim:</b> Linha <b>{{error.location.end.line}}</b>, Coluna <b>{{error.location.end.column}}</b></li>
+					</ul>
+				</div>
+			</ol>
         </div>
+		</div>
     </div>   
 </div>
 </template>
@@ -38,21 +36,19 @@ export default {
 
     .modal-confirm {		
 		color: #434e65;
-		width: 525px;
-		margin: 30px auto;
+		margin:0;
 	}
 	.modal-confirm .modal-content {
-		padding: 20px;
 		font-size: 16px;
 		border-radius: 5px;
 		border: none;
+	
 	}
 	.modal-confirm .modal-header {
 		background: #cc4242;
 		border-bottom: none;   
         position: relative;
 		text-align: center !important;
-		margin: -20px -20px 0;
 		border-radius: 5px 5px 0 0;
 		padding: 35px;
 	}
@@ -133,10 +129,14 @@ export default {
 }
 
 .modal-dialog {
+	
   display: inline-block;
   text-align: left;
   vertical-align: middle;
-  margin-bottom: 200px;
+  max-width: 100% !important;
+  position:none;
+  width:none;
+  display:inherit;
 }
 
 ol > div > li::marker {
