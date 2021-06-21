@@ -15,7 +15,7 @@
 					<ol>
 						<div v-for="(error, idx) in errors" :key="idx">
 							<li style="text-align: left !important;"> {{error.msg}}</li>
-							<ul>
+							<ul style="margin: 0 0 10px 0;" >
 								<li style="text-align: left !important;"> <b> Início:</b> Linha <b>{{error.location.start.line}}</b>, Coluna <b>{{error.location.start.column}}</b></li>
 								<li style="text-align: left !important;"> <b> Fim:</b> Linha <b>{{error.location.end.line}}</b>, Coluna <b>{{error.location.end.column}}</b></li>
 							</ul>
