@@ -11,8 +11,16 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 </div>
                 <div class="modal-body text-center">
-                    <h4>Erro!</h4>	
-                    <p> {{msg}} </p>
+                    <h4>Existem erros no modelo!</h4>	
+					<ol>
+						<div v-for="(error, idx) in errors" :key="idx">
+							<li style="text-align: left !important;"> {{error.msg}}</li>
+							<ul>
+								<li style="text-align: left !important;"> <b> Início:</b> Linha <b>{{error.location.start.line}}</b>, Coluna <b>{{error.location.start.column}}</b></li>
+								<li style="text-align: left !important;"> <b> Fim:</b> Linha <b>{{error.location.end.line}}</b>, Coluna <b>{{error.location.end.column}}</b></li>
+							</ul>
+						</div>
+					</ol>
                     <button class="btn btn-success" data-dismiss="modal"><span>Continuar</span> <i class="material-icons">&#xE5C8;</i></button>
                 </div>
             </div>
@@ -23,7 +31,7 @@
 <script>
 export default {
     name: "GrammarError",
-    props: ['msg', 'id']
+    props: ['errors', 'id']
 }
 </script>
 <style scoped>
@@ -129,5 +137,9 @@ export default {
   text-align: left;
   vertical-align: middle;
   margin-bottom: 200px;
+}
+
+ol > div > li::marker {
+	font-weight: bold;
 }
 </style>

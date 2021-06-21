@@ -1,6 +1,6 @@
 <template>
   <div>
-  <GrammarError :msg="grammar_error" id="grammar_error_modal"/>
+  <GrammarError :errors="grammar_errors" id="grammar_error_modal"/>
   <SaveModel :model="code"/>
     <div class="row row1">
       <div class="col-md-6 col-md-6-1">
@@ -96,7 +96,7 @@ export default {
         colecoes: [],
         componentes: [],
         datasets: [],
-        grammar_error: '',
+        grammar_errors: '',
         code: `<!LANGUAGE pt>
 {
   colecao: [
@@ -215,29 +215,23 @@ export default {
           generated.message = generated.message.replace("but", "mas foi encontrado")
           generated.message = generated.message.replace(" found", "")
 
-          let error_msg = "Tem um erro no modelo!\n"
-          error_msg += generated.message + "\n\n"
-          error_msg += "Localização: {\n"
-          error_msg += `  início: { linha: ${generated.location.start.line}, coluna: ${generated.location.start.column} }\n`
-          error_msg += `  fim: { linha: ${generated.location.end.line}, coluna: ${generated.location.end.column} }\n`
-          error_msg += "}\n"
-          this.grammar_error = error_msg
+          let error_msg = [{msg: generated.message, location: generated.location}]
+          this.grammar_errors = error_msg
+
           $("#grammar_error_modal").modal("show");
           $("#grammar_error_modal").css("z-index", "1500");
-          //alert(error_msg)
         }
         //deu 1+ erros hard-coded na gramática
         else if (generated.errors.length) {
-          let error_msg = "Tem um erro no modelo!\n"
-          error_msg += generated.errors[0].message + "\n\n"
-          error_msg += "Localização: {\n"
-          error_msg += `  início: { linha: ${generated.errors[0].location.start.line}, coluna: ${generated.errors[0].location.start.column} }\n`
-          error_msg += `  fim: { linha: ${generated.errors[0].location.end.line}, coluna: ${generated.errors[0].location.end.column} }\n`
-          error_msg += "}\n"
-          this.grammar_error = error_msg
+        
+          let error_msg = []
+          generated.errors.forEach(error => {
+            error_msg.push({msg: error.message, location: error.location})
+          })
+          this.grammar_errors = error_msg
+
           $("#grammar_error_modal").modal("show");
           $("#grammar_error_modal").css("z-index", "1500");
-          //alert(error_msg)
         }
         else { 
           if (this.output_format == "JSON") {
