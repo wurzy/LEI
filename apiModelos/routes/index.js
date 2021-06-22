@@ -164,7 +164,7 @@ router.delete('/collection/:name', function(req, res, next) {
 
 router.get('/download/:id', function(req, res, next) {
   try{
-    var zip = AdmZip('../Strapi.zip');
+    var zip = AdmZip('./utils/Strapi.zip');
     if (fs.existsSync('../StrapiAPI/api/'+req.params.id) && fs.existsSync('../StrapiAPI/components/'+req.params.id)) {
       fs.readdirSync('../StrapiAPI/api/'+req.params.id).forEach(folder => {
         fs.readdirSync('../StrapiAPI/api/'+req.params.id+"/"+folder).forEach(file=>{
