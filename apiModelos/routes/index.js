@@ -162,64 +162,91 @@ router.delete('/collection/:name', function(req, res, next) {
 
 })
 
-
 router.get('/download/:id', function(req, res, next) {
- 
-  console.log(req.params.id)
-  try {
-    //const output = fs.createWriteStream("./api-"+req.params.id+".zip");
-    const archive = archiver('zip', {
-      zlib: { level: 9 } // Sets the compression level.
-    });
-    // listen for all archive data to be written
-    // 'close' event is fired only when a file descriptor is involved
-    archive.on('close', function() {
-      console.log(archive.pointer() + ' total bytes');
-      console.log('archiver has been finalized and the output file descriptor has closed.');
-      
-    });
-    
-    // This event is fired when the data source is drained no matter what was the data source.
-    // It is not part of this library but rather from the NodeJS Stream API.
-    // @see: https://nodejs.org/api/stream.html#stream_event_end
-    archive.on('end', function() {
-      console.log('Data has been drained');
-      res.end()
-    });
-
-    archive.on('warning', function(err) {
-      if (err.code === 'ENOENT') {
-        console.log('ENOENT')
-      } else {
-        throw err;
-      }
-    });
-    archive.on('error', function(err) {
-      throw err;
-    });
-
-    archive.pipe(res);
-
+  try{
+    var zip = AdmZip('../Strapi.zip');
     if (fs.existsSync('../StrapiAPI/api/'+req.params.id) && fs.existsSync('../StrapiAPI/components/'+req.params.id)) {
-      archive.append(fs.createReadStream("../Strapi.zip"), { name: 'Strapi.zip' });
-      archive.directory('../StrapiAPI/api/'+req.params.id,'api/'+req.params.id);
-      archive.directory('../StrapiAPI/components/'+req.params.id,'components/'+req.params.id);
-
-      archive.finalize();
-
+      fs.readdirSync('../StrapiAPI/api/'+req.params.id).forEach(folder => {
+        fs.readdirSync('../StrapiAPI/api/'+req.params.id+"/"+folder).forEach(file=>{
+          zip.addLocalFile('../StrapiAPI/api/'+req.params.id+"/"+folder+"/"+file, '../Strapi/api/'+req.params.id+"/"+folder)
+        })
+      })
+      fs.readdirSync('../StrapiAPI/components/'+req.params.id).forEach(file => {
+        zip.addLocalFile('../StrapiAPI/components/'+req.params.id +"/"+file, "/Strapi/components/"+req.params.id)
+      })
+      //zip.writeZip("file.zip");
       res.writeHead(200, {
         "Content-Type": "application/zip",
         "Content-Disposition": `attachment; filename=${req.params.id}.zip`,
       })
+      res.write(zip.toBuffer())
+      res.end()
     } else {
       res.status(500).jsonp({erro : "API não existente"})
     }
-    
-  } catch (error) {
-      res.status(500).jsonp({erro : "Erro ao zipar"})
-      
   }
-});
+  catch(error){
+    console.log(error)
+  }
+})
+
+//router.get('/download/:id', function(req, res, next) {
+// 
+//  console.log(req.params.id)
+//  try {
+//    //const output = fs.createWriteStream("./api-"+req.params.id+".zip");
+//    const archive = archiver('zip', {
+//      zlib: { level: 9 } // Sets the compression level.
+//    });
+//    // listen for all archive data to be written
+//    // 'close' event is fired only when a file descriptor is involved
+//    archive.on('close', function() {
+//      console.log(archive.pointer() + ' total bytes');
+//      console.log('archiver has been finalized and the output file descriptor has closed.');
+//      
+//    });
+//    
+//    // This event is fired when the data source is drained no matter what was the data source.
+//    // It is not part of this library but rather from the NodeJS Stream API.
+//    // @see: https://nodejs.org/api/stream.html#stream_event_end
+//    archive.on('end', function() {
+//      console.log('Data has been drained');
+//      res.end()
+//    });
+//
+//    archive.on('warning', function(err) {
+//      if (err.code === 'ENOENT') {
+//        console.log('ENOENT')
+//      } else {
+//        throw err;
+//      }
+//    });
+//    archive.on('error', function(err) {
+//      throw err;
+//    });
+//
+//    archive.pipe(res);
+//
+//    if (fs.existsSync('../StrapiAPI/api/'+req.params.id) && fs.existsSync('../StrapiAPI/components/'+req.params.id)) {
+//      archive.append(fs.createReadStream("../Strapi.zip"), { name: 'Strapi.zip' });
+//      archive.directory('../StrapiAPI/api/'+req.params.id,'api/'+req.params.id);
+//      archive.directory('../StrapiAPI/components/'+req.params.id,'components/'+req.params.id);
+//
+//      archive.finalize();
+//
+//      res.writeHead(200, {
+//        "Content-Type": "application/zip",
+//        "Content-Disposition": `attachment; filename=${req.params.id}.zip`,
+//      })
+//    } else {
+//      res.status(500).jsonp({erro : "API não existente"})
+//    }
+//    
+//  } catch (error) {
+//      res.status(500).jsonp({erro : "Erro ao zipar"})
+//      
+//  }
+//});
 
 
 /*//var zip = new AdmZip()
@@ -246,6 +273,7 @@ router.get('/download/:id', function(req, res, next) {
     //  "Content-Type": "application/zip",
     //  "Content-Disposition": `attachment; filename=${filename}.zip`,
     //})*/
+    
 
 router.post('/genAPI', function(req, res, next) {
   var mkeys = Object.keys(req.body["model"])
