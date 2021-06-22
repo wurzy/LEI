@@ -267,7 +267,18 @@ export default {
       downloadAPI(){
         var cname = this.colname
         console.log("collection name:"+cname)
-
+        axios({
+          url: 'http://localhost:3000/download/'+cname, //your url
+          method: 'GET',
+          responseType: 'blob', // important
+        }).then((response) => {
+           const url = window.URL.createObjectURL(new Blob([response.data]));
+           const link = document.createElement('a');
+           link.href = url;
+           link.setAttribute('download', cname + '.zip'); //or any other extension
+           document.body.appendChild(link);
+           link.click();
+        });
         //var id = "colecao_c400bb89-41a0-4a94-80de-a0f29100afc9"
         axios.get('http://localhost:3000/download/'+cname)
           .then(dados => console.log("Zip criado"))
@@ -279,7 +290,6 @@ export default {
       },
       createAPI(){
         var promises = [];
-
         for (let index = 0; index < this.colecoes.length; index++) {
           let body = {
             apiName: this.colnames[index],
@@ -308,13 +318,12 @@ export default {
             axios.post('http://localhost:3000/import/',bodyImp)
             .then(dados => {
               console.log("Import feito")
-              //window.open("http://localhost:1337/"+this.colnames[index]+"s", "_blank");    
+              window.open("http://localhost:1337/"+this.colnames[index]+"s", "_blank");    
             })
             .catch(erro => console.log(erro))
           )
 
         }
-
         Promise.all(promises).then(() => console.log("Uma API gerada!"));
        
 
