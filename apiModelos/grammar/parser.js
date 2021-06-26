@@ -197,7 +197,11 @@ module.exports = /*
               var model = {}, data = {}, i = 0
 
               for (let p in members) {
-                if ("or" in members[p]) {
+                if (!("attributes" in members[p].model)) {
+                  data[p] = members[p].data[0]
+                  model[p] = members[p].model
+                }
+                else if ("or" in members[p]) {
                   data[members[p].data[0].key] = members[p].data[0].value
                   model = addCollectionModel(model, p+"_"+uuidv4(), members[p].model)
                 }
