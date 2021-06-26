@@ -816,8 +816,8 @@ module.exports = /*
               val.data = Array.isArray(num) ? chunkDifferent(val.data, num) : chunk(val.data, num)
 
               if (func == null) {
-                val = createComponent("repeat_elem", val)
-                for (let i = 0; i < num; i++) model.attributes["repeat_elem"+i] = val.model
+                val = createComponent("elem", val)
+                for (let i = 0; i < num; i++) model.attributes["elem"+i] = val.model
               }
             }
 
