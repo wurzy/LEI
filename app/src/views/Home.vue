@@ -47,7 +47,8 @@
         />
       </div>
       <div class="col-md-6 col-md-6-1 col-md-offset-2 stretcher">
-        <codemirror
+        <GrammarError v-if="grammar_errors.length>0" :errors="grammar_errors" id="grammar_error"/>
+        <codemirror v-else
                 ref="output"
                 :value="result"
                 :options="cmOutput"
@@ -61,6 +62,7 @@
 <script>
 import ButtonGroup from '../components/ButtonGroup'
 import SaveModel from '../components/SaveModel.vue';
+import GrammarError from '../components/GrammarError.vue'
 
 import axios from 'axios';
 import $ from 'jquery'
@@ -75,15 +77,12 @@ import 'codemirror/keymap/sublime'
 import 'codemirror/mode/javascript/javascript.js'
 import 'codemirror/mode/xml/xml.js'
 
-//import 'codemirror/addon/hint/javascript-hint.js';
-//import 'codemirror/addon/hint/show-hint.css';
-//import 'codemirror/addon/hint/show-hint.js';
-
 export default {
   name: 'Home',
   components: {
     ButtonGroup,
-    SaveModel
+    SaveModel,
+    GrammarError
   },
   props: ["userModel"],
   data() {
@@ -97,6 +96,7 @@ export default {
         colecoes: [],
         componentes: [],
         datasets: [],
+        grammar_errors: [],
         code: `<!LANGUAGE pt>
 {
   colecao: [
@@ -215,27 +215,21 @@ export default {
           generated.message = generated.message.replace("but", "mas foi encontrado")
           generated.message = generated.message.replace(" found", "")
 
-          let error_msg = "Tem um erro no modelo!\n"
-          error_msg += generated.message + "\n\n"
-          error_msg += "Localização: {\n"
-          error_msg += `  início: { linha: ${generated.location.start.line}, coluna: ${generated.location.start.column} }\n`
-          error_msg += `  fim: { linha: ${generated.location.end.line}, coluna: ${generated.location.end.column} }\n`
-          error_msg += "}\n"
-
-          alert(error_msg)
+          let error_msg = [{msg: generated.message, location: generated.location}]
+          this.grammar_errors = error_msg
         }
         //deu 1+ erros hard-coded na gramática
         else if (generated.errors.length) {
-          let error_msg = "Tem um erro no modelo!\n"
-          error_msg += generated.errors[0].message + "\n\n"
-          error_msg += "Localização: {\n"
-          error_msg += `  início: { linha: ${generated.errors[0].location.start.line}, coluna: ${generated.errors[0].location.start.column} }\n`
-          error_msg += `  fim: { linha: ${generated.errors[0].location.end.line}, coluna: ${generated.errors[0].location.end.column} }\n`
-          error_msg += "}\n"
-
-          alert(error_msg)
+        
+          let error_msg = []
+          generated.errors.forEach(error => {
+            error_msg.push({msg: error.message, location: error.location})
+          })
+          this.grammar_errors = error_msg
+          
         }
         else { 
+          this.grammar_errors = []
           if (this.output_format == "JSON") {
             this.cmOutput.mode = 'text/javascript'
             this.result = JSON.stringify(generated.dataModel.data, null, 2)
@@ -273,7 +267,18 @@ export default {
       downloadAPI(){
         var cname = this.colname
         console.log("collection name:"+cname)
-
+        axios({
+          url: 'http://localhost:3000/download/'+cname, //your url
+          method: 'GET',
+          responseType: 'blob', // important
+        }).then((response) => {
+           const url = window.URL.createObjectURL(new Blob([response.data]));
+           const link = document.createElement('a');
+           link.href = url;
+           link.setAttribute('download', cname + '.zip'); //or any other extension
+           document.body.appendChild(link);
+           link.click();
+        });
         //var id = "colecao_c400bb89-41a0-4a94-80de-a0f29100afc9"
         axios.get('http://localhost:3000/download/'+cname)
           .then(dados => console.log("Zip criado"))
@@ -285,7 +290,6 @@ export default {
       },
       createAPI(){
         var promises = [];
-
         for (let index = 0; index < this.colecoes.length; index++) {
           let body = {
             apiName: this.colnames[index],
@@ -314,13 +318,12 @@ export default {
             axios.post('http://localhost:3000/import/',bodyImp)
             .then(dados => {
               console.log("Import feito")
-              //window.open("http://localhost:1337/"+this.colnames[index]+"s", "_blank");    
+              window.open("http://localhost:1337/"+this.colnames[index]+"s", "_blank");    
             })
             .catch(erro => console.log(erro))
           )
 
         }
-
         Promise.all(promises).then(() => console.log("Uma API gerada!"));
        
 
@@ -376,4 +379,11 @@ export default {
 .CodeMirror-linenumber{
   font-size: smaller !important;
 }
+
+#grammar_error{
+  height: 89vh !important;
+  margin: 0;
+  overflow:scroll;
+}
+
 </style>
