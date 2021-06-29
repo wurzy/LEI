@@ -18,7 +18,7 @@ Gerar:
 Setup:
 - cd api
 - yarn develop
-  - http://localhost:1337/admin/ ---> mail: a83631@alunos.uminho.pt (passe: Qwerty123)
+  - http://localhost:1337/admin/ ---> mail: a*****@alunos.uminho.pt (passe: ******)
    > "Content-Types Builder" > criar coleções novas
    > popular coleções
   - fazer pedidos no Postman (http://localhost:1337/produtos)
